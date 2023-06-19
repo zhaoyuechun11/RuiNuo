@@ -102,14 +102,14 @@ export const PILITICAL_CLIMATE = ['党员', '团员', '群众', '其他'];
 export const MARRIAGE_STUATS = ['未婚', '已婚', '离异', '丧偶', '分居'];
 
 //户口性质
-export const CENSUS_REGISTER = [
-  '本地城镇',
-  '本地农村',
-  '外地城镇（省内）',
-  '外地农村（省内）',
-  '外地城镇（省外)',
-  '外地农村（省外）',
-];
+// export const CENSUS_REGISTER = [
+//   '本地城镇',
+//   '本地农村',
+//   '外地城镇（省内）',
+//   '外地农村（省内）',
+//   '外地城镇（省外)',
+//   '外地农村（省外）',
+// ];
 
 //紧急联系人关系
 // export const EMERGENEY_CONTACT = ['父母', '配偶', '子女', '亲属', '朋友', '同事', '其他'];

@@ -118,7 +118,7 @@ export const CENSUS_REGISTER = [
 
 
 // 反馈状态文字
-export const STATUS_TEXT = ['已反馈', '部分反馈', '未反馈', '面试已取消'];
+// export const STATUS_TEXT = ['已反馈', '部分反馈', '未反馈', '面试已取消'];
 // 邮箱验证
 export const REG_EMAIL = /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/g;
 export const SUFFIX = ['vip.163.com', 'vip.126.com', '188.com', '163.com', '126.com', 'yeah.net'];

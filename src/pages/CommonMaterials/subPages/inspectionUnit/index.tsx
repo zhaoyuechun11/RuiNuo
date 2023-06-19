@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'umi';
-import { stringify } from 'qs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message, Switch } from 'antd';
-import env from '@/utils/env';
 import { downLoad } from '@/utils';
 import { deleteHospital,hospitalExport } from '../../models/server';
 import styles from '../index.less';

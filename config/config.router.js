@@ -27,8 +27,8 @@ export default {
     {
       path: '/login',
       exact: true,
-      component: '@/pages/Other/login',
-      // component: '@/pages/CommonMaterials/subPages/basicData',
+      // component: '@/pages/Other/login',
+      component: '@/pages/CommonMaterials/subPages/insUnitDiscount',
       title: '登录',
     },
     {

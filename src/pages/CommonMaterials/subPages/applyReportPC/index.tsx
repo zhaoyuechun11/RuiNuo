@@ -46,6 +46,9 @@ const ApplyReportPC = () => {
       dataIndex: 'itemCode',
       align: 'center',
       width: 150,
+      key: 'itemCode',
+      sorter: (a, b) => a.itemCode.length - b.itemCode.length,
+      sortOrder: sortedInfo.columnKey === 'itemCode' ? sortedInfo.order : null,
     },
     {
       title: '中文名称',
@@ -53,12 +56,17 @@ const ApplyReportPC = () => {
       align: 'center',
       width: 150,
       key: 'itemName',
+      sorter: (a, b) => a.itemName.length - b.itemName.length,
+      sortOrder: sortedInfo.columnKey === 'itemName' ? sortedInfo.order : null,
     },
     {
       title: '英文名称',
       dataIndex: 'enName',
       align: 'center',
       width: 150,
+      key: 'enName',
+      sorter: (a, b) => a.enName.length - b.enName.length,
+      sortOrder: sortedInfo.columnKey === 'enName' ? sortedInfo.order : null,
     },
     {
       title: '缩写代号',
@@ -335,25 +343,24 @@ const ApplyReportPC = () => {
         title={'报告'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>
-      
-        <Tabs type="card">
-          <TabPane tab="仪器通道号" key="0">
-            <InstrChannelNum parent={currentItem || list[0]} />
-          </TabPane>
-          <TabPane tab="参考值" key="1">
-            <ReferenceValue parent={currentItem || list[0]} />
-          </TabPane>
-          <TabPane tab="危机值" key="2">
-            <CriticalValue parent={currentItem || list[0]} />
-          </TabPane>
-          <TabPane tab="计算公式" key="3">
-            <Formula parent={currentItem || list[0]} />
-          </TabPane>
-          <TabPane tab="常用结果" key="4">
-            <CommonResults parent={currentItem || list[0]} />
-          </TabPane>
-        </Tabs>
-  
+
+      <Tabs type="card">
+        <TabPane tab="仪器通道号" key="0">
+          <InstrChannelNum parent={currentItem || list[0]} />
+        </TabPane>
+        <TabPane tab="参考值" key="1">
+          <ReferenceValue parent={currentItem || list[0]} />
+        </TabPane>
+        <TabPane tab="危机值" key="2">
+          <CriticalValue parent={currentItem || list[0]} />
+        </TabPane>
+        <TabPane tab="计算公式" key="3">
+          <Formula parent={currentItem || list[0]} />
+        </TabPane>
+        <TabPane tab="常用结果" key="4">
+          <CommonResults parent={currentItem || list[0]} />
+        </TabPane>
+      </Tabs>
     </>
   );
 };

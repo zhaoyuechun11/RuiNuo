@@ -20,8 +20,6 @@ import ServerTip from './components/ServerTip'; // 服务到期弹框
 import { getExpireInfo } from './models/server';
 // import { DetailModal } from '@common';
 
-
-
 const VERSION = '4.4';
 
 class index extends Component {
@@ -55,7 +53,7 @@ class index extends Component {
     //     version: '3.0.5',
     //   },
     // });
-    console.log('xml', xmlstr)
+    console.log('xml', xmlstr);
     this.init_num();
     this.init_WillInterview();
     this.init_ResumeList();
@@ -82,14 +80,13 @@ class index extends Component {
     }
     //this.initBpmn()
   }
-   initBpmn = () => {
-
-   let bpmnModeler = new BpmnModeler({
+  initBpmn = () => {
+    let bpmnModeler = new BpmnModeler({
       container: '#canvas', // 这里为数组的第一个元素
       height: '100vh',
       //添加控制板
       propertiesPanel: {
-        parent: '.properties-panel'
+        parent: '.properties-panel',
       },
       additionalModules: [
         // 左边工具栏以及节点
@@ -98,29 +95,29 @@ class index extends Component {
       ],
       moddleExtensions: {
         // camunda: camundaModdleDescriptor
-       }
+      },
     });
 
-   // this.createBpmnDiagram();
-   try {
-    const result =  bpmnModeler.importXML(xmlstr);
-   // console.log(result);
-   // console.log('属性面板数据: ', bpmnModeler.get('propertiesPanel'));
- } catch (error) {
-   console.error(error)
- }
-  }
-//  createBpmnDiagram = async (value) => {
-//     // 开始绘制出事bpmn的图
-//     try {
-//        const result = await bpmnModeler.importXML(xmlstr);
-//       // console.log(result);
-//       // console.log('属性面板数据: ', bpmnModeler.get('propertiesPanel'));
-//     } catch (error) {
-//       console.error(error)
-//     }
-//   }
-  
+    // this.createBpmnDiagram();
+    try {
+      const result = bpmnModeler.importXML(xmlstr);
+      // console.log(result);
+      // console.log('属性面板数据: ', bpmnModeler.get('propertiesPanel'));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  //  createBpmnDiagram = async (value) => {
+  //     // 开始绘制出事bpmn的图
+  //     try {
+  //        const result = await bpmnModeler.importXML(xmlstr);
+  //       // console.log(result);
+  //       // console.log('属性面板数据: ', bpmnModeler.get('propertiesPanel'));
+  //     } catch (error) {
+  //       console.error(error)
+  //     }
+  //   }
+
   initServer() {
     getExpireInfo().then((res) => {
       if (res.status_code == 200) {
@@ -245,7 +242,6 @@ class index extends Component {
     );
   };
 
-
   checkStep = (val) => {
     this.setState(
       {
@@ -285,7 +281,7 @@ class index extends Component {
       //   )}
       //   <div className={style.rowBlock}>
       //     {/* <Card width={540} classNames={style.cardpos} style={{ height: 140 }}>
-           
+
       //     </Card> */}
       //     <Card
       //       width={'66%'}

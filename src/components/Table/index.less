@@ -1,0 +1,115 @@
+.handleBtn {
+  height: 14px;
+  padding: 7px 12px;
+  color: rgba(84, 84, 84, 1);
+  font-weight: 400;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  line-height: 14px;
+  text-align: center;
+  border: 1px solid rgba(222, 222, 222, 1);
+  cursor: pointer;
+  &:hover {
+    color: #0c7bd7;
+    border: 1px solid #0c7bd7;
+  }
+}
+.selectBtn {
+  box-sizing: border-box;
+  width: 100%;
+  height: 24px;
+  margin-bottom: 20px;
+  padding-left: 6px;
+  .cancleBtn {
+    margin-left: 10px;
+  }
+}
+.my_table {
+  position: relative;
+  width: 100%;
+  // height: 100%;
+  .my_table_handleBtn {
+    position: absolute;
+    top: 0;
+    left: 45px;
+    z-index: 9;
+    box-sizing: border-box;
+    width: calc(100% - 60px);
+    height: 60px;
+    padding-right: 34px;
+    padding-left: 20px;
+    background-color: #fafbfe;
+    .btn_group {
+      width: 100%;
+      height: 60px;
+    }
+  }
+}
+
+.my_table {
+  :global {
+    .ant-table-thead > tr {
+      height: 60px !important;
+      th {
+        height: 60px;
+        padding: 0 10px;
+        background: #fafbfe !important;
+        border-bottom: none !important;
+        span {
+          font-weight: 500;
+        }
+      }
+    }
+    .ant-table-tbody > tr:hover {
+      cursor: pointer;
+      td {
+        background: #fafbfe;
+      }
+    }
+    .ant-table-tbody > tr:not(.ant-table-measure-row) {
+      height: 76px !important;
+      td {
+        height: 76px;
+        padding: 0 10px;
+      }
+      button[class*='btn-primary'] {
+        visibility: hidden;
+      }
+      &:hover {
+        button[class*='btn-primary'] {
+          visibility: visible;
+        }
+      }
+    }
+
+    .ant-table-ping-left .ant-table-cell-fix-left-first::after,
+    .ant-table-ping-left .ant-table-cell-fix-left-last::after {
+      box-shadow: inset 10px 0 8px -8px #f5f8fa !important;
+    }
+
+    .ant-table-ping-right .ant-table-cell-fix-right-first::after,
+    .ant-table-ping-right .ant-table-cell-fix-right-last::after {
+      box-shadow: inset -10px 0 8px -8px #f5f8fa !important;
+    }
+  }
+}
+
+.emptyWarp {
+  padding: 190px 0 320px;
+  img {
+    width: 115px;
+    height: 99px;
+  }
+  div {
+    margin-top: 30px;
+    color: #858ea6;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 14px;
+    letter-spacing: 0;
+    text-align: center;
+  }
+}
+.tableLoading {
+  background: pink;
+}

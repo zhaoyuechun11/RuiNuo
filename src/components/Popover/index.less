@@ -1,0 +1,19 @@
+// 气泡卡片样式
+.popoverClass {
+  width: 330px;
+}
+
+.hideArrow {
+  :global {
+    .ant-popover-arrow {
+      // 隐藏侧边三角
+      display: none;
+    }
+  }
+}
+
+:global {
+  .ant-popover-inner {
+    border-radius: 10px;
+  }
+}

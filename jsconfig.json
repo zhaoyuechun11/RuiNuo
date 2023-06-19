@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@@/*": ["src/.umi/*"],
+      "@/components": ["src/components/index"],
+      "@/common": ["src/common/index"],
+      "@/assets/*": ["src/assets/*"]
+    }
+  },
+  "include": [
+    "mock/**/*",
+    "src/**/*",
+    "config/**/*",
+    ".umirc.js",
+    ".eslintrc.js",
+    "jest.config.js"
+  ],
+  "exclude": ["node_modules"]
+}

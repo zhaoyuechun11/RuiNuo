@@ -1,0 +1,193 @@
+import React, { useImperativeHandle, useRef, useState } from 'react';
+import { Dialog } from '@components';
+import { Form, Input, message, Select } from 'antd';
+import { addMajorGroup, updateMajorGroup, manageListSelect } from '../../../../models/server';
+import ColorPicker from '@/pages/CommonMaterials/commones/colorPicker';
+const layout = {
+  labelCol: { span: 5 },
+  wrapperCol: { span: 16 },
+};
+const EditOrAddModal = ({ Ref, refresh }) => {
+  const dialogRef = useRef();
+  const [form] = Form.useForm();
+  const [list, setList] = useState([]);
+
+  const [id, setId] = useState();
+  useImperativeHandle(Ref, () => ({
+    show: (record) => {
+      getManageList();
+      dialogRef.current && dialogRef.current.show();
+      if (record) {
+        form.setFieldsValue({ ...record });
+        setId(record.id);
+      } else {
+        form && form.resetFields();
+        setId(null);
+      }
+    },
+    hide: () => {
+      dialogRef.current && dialogRef.current.hide();
+    },
+  }));
+  const onOk = () => {
+    form.validateFields().then((value) => {
+      if (id) {
+        updateMajorGroup({ id: id, ...value }).then((res) => {
+          if (res.code === 200) {
+            message.success('修改成功');
+            dialogRef.current && dialogRef.current.hide();
+            refresh();
+          }
+        });
+      } else {
+        addMajorGroup({ ...value }).then((res) => {
+          if (res.code === 200) {
+            message.success('添加成功');
+            dialogRef.current && dialogRef.current.hide();
+            refresh();
+          }
+        });
+      }
+    });
+  };
+  const getManageList = () => {
+    manageListSelect().then((res) => {
+      if (res.code === 200) {
+        setList(res.data);
+      }
+    });
+  };
+
+  return (
+    <Dialog
+      ref={dialogRef}
+      width={864}
+      title={id ? '编辑' : '新增'}
+      onCancel={() => {
+        dialogRef.current && dialogRef.current.hide();
+      }}
+      onOk={onOk}
+      //   confirmLoading={submitLoading}
+    >
+      <Form form={form} {...layout}>
+        <Form.Item
+          label="条码号内容(01样本条码，02病理编号)"
+          name="barcodeContent"
+          rules={[{ required: true, message: '请选择条码号内容(01样本条码，02病理编号)' }]}
+        >
+          <Select
+            placeholder="请选择条码号内容(01样本条码，02病理编号)"
+            autoComplete="off"
+            allowClear
+          >
+            <Option value={`01`} key={1}>
+              01
+            </Option>
+            <Option value={`02`} key={2}>
+              02
+            </Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="分类编码" name="classCode">
+          <Input
+            style={{ backgroundColor: '#ffffff' }}
+            maxLength={10}
+            placeholder="请输入分类编码"
+          />
+        </Form.Item>
+        <Form.Item
+          label="分类名称"
+          name="className"
+          rules={[{ required: true, message: '请输入分类名称' }]}
+        >
+          <Input
+            style={{ backgroundColor: '#ffffff' }}
+            maxLength={10}
+            placeholder="请输入分类名称"
+          />
+        </Form.Item>
+        <Form.Item label="颜色" name="color">
+          {/* <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入颜色" /> */}
+          <ColorPicker />
+        </Form.Item>
+        <Form.Item
+          label="样本号重置规则"
+          name="sampleIdResetRule"
+          rules={[{ required: true, message: '请选择样本号重置规则' }]}
+        >
+          <Select placeholder="请选择样本号重置规则" autoComplete="off" allowClear>
+            <Option value={`yy`} key={1}>
+              yy年
+            </Option>
+            <Option value={`mm`} key={2}>
+              mm月
+            </Option>
+            <Option value={`dd`} key={3}>
+              dd日
+            </Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="样本号生成规则"
+          name="sampleIdRule"
+          rules={[{ required: true, message: '请输入样本号生成规则' }]}
+        >
+          <Input
+            style={{ backgroundColor: '#ffffff' }}
+            maxLength={10}
+            placeholder="请输入样本号生成规则"
+          />
+        </Form.Item>
+        <Form.Item label="顺序" name="seq" rules={[{ required: true, message: '请输入顺序' }]}>
+          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入顺序" />
+        </Form.Item>
+        <Form.Item
+          name="isAutoSampleId"
+          label="是否自动生成预制样本号"
+          rules={[{ required: true, message: '请选择是否自动生成预制样本号' }]}
+        >
+          <Select placeholder="请选择是否自动生成预制样本号" autoComplete="off" allowClear>
+            <Option value={true} key={1}>
+              是
+            </Option>
+            <Option value={false} key={2}>
+              否
+            </Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="isPrintBarcode" label="是否打印样本条码">
+          <Select placeholder="请选择是否打印样本条码" autoComplete="off" allowClear>
+            <Option value={true} key={1}>
+              是
+            </Option>
+            <Option value={false} key={2}>
+              否
+            </Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="isSampleIdAsBarcode" label="是否样本号用作样本条码号">
+          <Select placeholder="请选择是否样本号用作样本条码号" autoComplete="off" allowClear>
+            <Option value={true} key={1}>
+              是
+            </Option>
+            <Option value={false} key={2}>
+              否
+            </Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="labClassManageId" label="管理分类">
+          <Select placeholder="请选择管理分类" autoComplete="off" allowClear>
+            {list.map((item) => {
+              return (
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+      </Form>
+    </Dialog>
+  );
+};
+export default EditOrAddModal;

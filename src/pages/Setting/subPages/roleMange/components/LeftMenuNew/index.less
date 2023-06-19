@@ -1,0 +1,59 @@
+.LeftMenu {
+  background: #ffffff;
+  border-radius: 8px;
+  // min-height: 800px;
+  // height: 100vh;
+  @media screen and (min-width: 1600px) {
+    min-width: 300px !important;
+  }
+  @media screen and (min-width: 1200px) and (max-width: 1600px) {
+    min-width: 250px !important;
+  }
+  @media screen and (min-width: 992px) and (max-width: 1200px) {
+    min-width: 250px !important;
+  }
+  @media screen and (min-width: 768px) and (max-width: 992px) {
+    min-width: 200px !important;
+  }
+  :global {
+    .ant-menu-inline {
+      border-right: none;
+    }
+    .ant-menu-item {
+      &::after {
+        content: none;
+      }
+    }
+  }
+  padding: 0 16px;
+  .LeftMenuHead {
+    height: 78px;
+    border-bottom: 1px solid #e5e5ea;
+    font-size: 16px;
+    font-family: PingFang, PingFang-SC;
+    font-weight: SC;
+    text-align: left;
+    color: #333333;
+    line-height: 78px;
+    padding-left: 15px;
+  }
+  .Tree {
+    margin-top: 30px;
+    :global {
+      .ant-tree-switcher {
+        height: 48px;
+        line-height: 48px;
+        color: #007bff;
+      }
+      .ant-tree-node-content-wrapper {
+        min-height: 48px;
+        line-height: 48px;
+        background-color: #fff !important;
+        &.ant-tree-node-selected {
+          font-weight: 500;
+          color: #007bff;
+        }
+      }
+    }
+  }
+}

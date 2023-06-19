@@ -1,0 +1,44 @@
+.header {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  img {
+    width: 40px;
+  }
+}
+.headPop {
+  width: 263px;
+  border-radius: 8px;
+}
+.headPop .ant-popover-inner {
+  border-radius: 8px;
+}
+.showContent {
+  display: flex;
+  align-items: center;
+  width: 233px;
+  padding: 8px 0;
+  white-space: nowrap;
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  .rightContent {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    .left {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      .corpId:hover {
+        color: #007bff;
+      }
+    }
+    .right {
+      color: #007bff;
+    }
+  }
+}

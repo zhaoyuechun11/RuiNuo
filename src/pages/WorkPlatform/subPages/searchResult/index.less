@@ -1,0 +1,19 @@
+.searchResult {
+  height: calc(100vh - 117px);
+  padding-right: 0 !important;
+  .spinWrapper {
+    :global {
+      .ant-spin-container {
+        height: 100%;
+      }
+    }
+    height: calc(100% - 58px);
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 33px);
+      overflow-y: overlay;
+    }
+  }
+}

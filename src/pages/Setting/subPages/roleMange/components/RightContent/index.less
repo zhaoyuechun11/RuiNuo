@@ -1,0 +1,213 @@
+.RightContent {
+  position: relative;
+
+  .rcTitle {
+    display: flex;
+    display: flex;
+    align-items: center;
+    align-items: center;
+    height: 78px;
+    color: #303133;
+    font-weight: 400;
+    font-size: 15px;
+    font-family: PingFang, PingFang-SC;
+    line-height: 21px;
+    border-bottom: 1px solid #e5e5ea;
+
+    .account {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      margin-left: 16px;
+      padding: 6px 16px;
+      color: #007bff;
+      font-weight: 400;
+      font-size: 12px;
+      font-family: PingFangSC, PingFangSC-Regular;
+      text-align: left;
+      background: #eff7ff;
+      border-radius: 4px;
+    }
+    .icon {
+      margin-right: 6px;
+      font-size: 16px;
+      line-height: 16px;
+    }
+    .accountTitle {
+      line-height: 12px;
+    }
+    .addRole {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 109px;
+      height: 32px;
+      color: #007bff;
+      font-weight: 400;
+      font-size: 14px;
+      font-family: PingFangSC, PingFangSC-Regular;
+      line-height: 14px;
+      background: #e0efff;
+      border-radius: 4px;
+      cursor: pointer;
+      span {
+        margin-left: 8px;
+      }
+    }
+  }
+  .memberName {
+    display: flex;
+    align-items: center;
+  }
+  .nameTips {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    margin-left: 10px;
+    color: #5389f5;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 19px;
+    text-align: center;
+    background-color: #d2eafb;
+    border: 1px solid #5389f5;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .rightContentForm {
+    padding: 30px 0 20px;
+
+    .name {
+      width: 224px;
+    }
+
+    .role_id {
+      position: relative;
+      display: inline-block;
+      width: 160px;
+      margin-right: 16px;
+    }
+
+    :global {
+      .ant-select-clear {
+        background: #f9fafb;
+      }
+
+      .ant-form-item {
+        margin-bottom: 10px;
+
+        .ant-input-affix-wrapper {
+          padding: 2px 11px;
+          background: white !important;
+          border: 1px solid #f1f1f4 !important;
+          border-radius: 4px;
+
+          &.ant-input-affix-wrapper-focused {
+            box-shadow: none;
+          }
+
+          input {
+            background: white !important;
+          }
+        }
+      }
+    }
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .TableContainer {
+    position: relative;
+
+    .selected {
+      display: flex;
+      align-items: center;
+      .selectedButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 32px;
+        margin-left: 12px;
+        padding: 0 16px;
+
+        color: #007bff;
+        background: #e0efff;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .iconName {
+    margin-right: 5px;
+  }
+
+  .iconStyle {
+    color: #007bff;
+    font-size: 22px;
+  }
+
+  .iconSouSuo {
+    color: #606266;
+  }
+
+  .pay {
+    display: flex;
+    align-items: center;
+
+    .payTip {
+      width: 20px;
+      height: 20px;
+      margin-left: 10px;
+      color: #2ecb47;
+      line-height: 19px;
+      text-align: center;
+      background-color: #cdecd7;
+      border: 1px solid #2ecb47;
+      border-radius: 20px;
+    }
+  }
+
+  .rowStyle:hover {
+    td {
+      background: #fafbfe !important;
+    }
+  }
+}
+
+.tablePadding {
+  :global {
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td {
+      padding: 16px 16px 16px 0 !important;
+    }
+
+    .ant-table-thead > tr > th {
+      background: #fafbfe;
+    }
+
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background-color: white !important;
+    }
+  }
+}
+.operatorMenu {
+  width: 170px !important;
+  padding: 10px !important;
+}
+.operatorMenu .ant-dropdown-menu-item {
+  padding: 8px 10px;
+  color: #909399;
+}
+.operatorMenu .ant-dropdown-menu-item:hover {
+  color: #007aff !important;
+  background: #f8fafe !important;
+}
+.operatorMenu .ant-dropdown-menu-item span {
+  display: inline-block;
+  width: 100%;
+  text-align: center !important;
+}

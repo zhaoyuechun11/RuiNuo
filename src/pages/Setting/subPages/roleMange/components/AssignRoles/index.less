@@ -1,0 +1,68 @@
+.AssignRolesDialog {
+  padding: 30px 30px 40px;
+  .head {
+    padding: 27px 0 27px 20px;
+    border: 1px solid #e5e5ea;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    .headItem {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .hiLeft {
+        width: 18px;
+        height: 18px;
+        background: #e0efff;
+        border-radius: 50%;
+        font-size: 12px;
+        font-family: PingFangSC, PingFangSC-Medium;
+        font-weight: 500;
+        color: #007bff;
+        line-height: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .hiRight {
+        font-size: 14px;
+        font-family: PingFangSC, PingFangSC-Regular;
+        font-weight: 400;
+        color: #606266;
+        line-height: 20px;
+        letter-spacing: 0px;
+        margin-left: 12px;
+      }
+    }
+  }
+  .AssignRolesDialogForm {
+    :global {
+      .ant-form-item-control-input {
+        line-height: 32px;
+      }
+    }
+  }
+  #role_ids {
+    position: relative;
+  }
+  :global {
+    .ant-select-tree-treenode-selected {
+      .ant-select-tree-node-selected {
+        background-color: #fafbfe;
+        .ant-select-tree-title {
+          color: #007bff;
+        }
+      }
+    }
+  }
+}
+.selectRole {
+  :global {
+    .ant-select-selector {
+      background: #f9fafb;
+      border: none;
+    }
+  }
+}

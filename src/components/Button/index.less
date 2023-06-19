@@ -1,0 +1,95 @@
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 8px 20px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 14px;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  cursor: pointer;
+  &:active,
+  &:focus {
+    outline: 0;
+  }
+
+  &:hover:not(.btn-info):not(.btn-default),
+  &:focus {
+    opacity: 0.85;
+  }
+  &.disabled,
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+  &.btn-loading {
+    cursor: not-allowed;
+    opacity: 0.35;
+  }
+}
+.btn-default {
+  color: @main;
+  background: #ffffff;
+  border: 1px solid #e0efff;
+  &:hover {
+    border: 1px solid @main;
+  }
+}
+.btn-clear {
+  color: #909399;
+  background: #f4f5f8;
+  border: 1px solid #f4f5f8;
+  &.ghost {
+    color: #909399;
+    background: transparent;
+    border: 1px solid #909399;
+  }
+}
+.btn-primary {
+  color: #fff;
+  background: @main;
+  border: 1px solid @main;
+  &.ghost {
+    color: @main;
+    background: transparent;
+  }
+}
+.btn-info {
+  color: #007bff;
+  background: #e0efff;
+  border: 1px solid #e0efff;
+  &:hover {
+    background: #c9e3ff;
+    border: 1px solid #c9e3ff;
+  }
+}
+.btn-danger {
+  color: #fff;
+  background: #ff4d4f;
+  border: 1px solid #ff4d4f;
+  &.ghost {
+    color: #ff4d4f;
+    background: transparent;
+  }
+}
+.btn-link {
+  color: @main;
+  background: transparent;
+  border: 1px solid transparent;
+  &.ghost {
+    color: #6f7071;
+  }
+  &.disabled {
+    color: #909399;
+  }
+}
+
+.btn-sm {
+  padding: 6px 16px;
+}
+.btn-lg {
+}

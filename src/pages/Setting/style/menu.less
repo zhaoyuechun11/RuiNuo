@@ -1,0 +1,36 @@
+.menuTitle {
+  position: relative;
+  .line {
+    width: 100%;
+    height: 1px;
+    background-color: #e3e7ef;
+    margin: 38px 0;
+  }
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: @mainfont;
+    background-color: @mainbg;
+    padding-right: 20px;
+    position: absolute;
+    left: 0;
+    top: -12px;
+  }
+}
+.items {
+  display: flex;
+  flex-wrap: wrap;
+  .round {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #f5f7fe;
+    border-radius: 50%;
+    margin-bottom: 15px;
+  }
+  a {
+    color: @mainfont;
+    &:hover {
+      color: @main;
+    }
+  }
+}

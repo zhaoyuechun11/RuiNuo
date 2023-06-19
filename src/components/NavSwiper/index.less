@@ -1,0 +1,238 @@
+.navBox {
+  display: flex;
+
+  .more {
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #FAFBFE;
+    box-shadow: -8px 0px 8px 0px rgba(142, 163, 200, 0.08);
+    .iconStyle {
+      color: #909399;
+      font-size: 22px;
+    }
+  }
+}
+
+.box {
+  width: 100%;
+  overflow-x: scroll;
+  border-bottom: 20px solid #F5F7FE;
+  background: #fff;
+  border-radius: 8px 8px 0px 0px;
+  padding: 12px 30px;
+}
+
+.nav {
+  
+  //box-shadow: 0px -5px 20px 0px rgba(0, 73, 152, 0.05);
+
+  .navWrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #E7E9EB;
+    border-radius: 4px;
+    height: 64px;
+  }
+  //box-shadow: 0px -5px 20px 0px rgba(0, 73, 152, 0.05);
+  .navItem {
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    // flex-shrink: 0;
+    min-width: 140px;
+    .num {
+      color: #909399;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 500;
+      display: inline-block;
+      position: relative;
+    }
+
+    .label {
+      color: #909399;
+      font-size: 16px;
+      line-height: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 5px;
+      margin-top: 7px;
+    }
+
+    .radiusCenterBg {
+      flex: 1;
+      height: 100%;
+
+      .radiusCenter {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        .content {
+          text-align: center;
+          width: 100%;
+          height: 100%;
+          border-bottom: 4px solid #fff;
+          padding: 8px 0 6px;
+          margin: 0 5px;
+          .arrowWrap {
+            width: 72px;
+            height: 44px;
+            border-radius: 4px;
+            background-color: #F8F8F9;
+            float: right;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            .arrow {
+              width: 14px;
+              height: 12px;
+              background: url("../../assets/images/commom/double_arrow_grey.png") no-repeat;
+              background-size: cover;
+            }
+            &:hover {
+              .arrow {
+                background: url("../../assets/images/commom/double_arrow_blue.png") no-repeat;
+                background-size: cover;
+              }
+            }
+          }
+        }
+
+        .point {
+          border-radius: 50%;
+          position: absolute;
+          top: 0;
+          right: -8px;
+          width: 6px;
+          height: 6px;
+          background: #ff3b30;
+        }
+        .line {
+          width: 1px;
+          height: 44px;
+          background-color: #E7E9EB;
+          display: inline-block;
+        }
+      }
+    }
+
+    &:first-child {
+      .radiusCenterBg {
+        .radiusCenter {
+          .content {
+            border-left: 1px solid transparent;
+          }
+        }
+      }
+    }
+    &:last-child {
+      .radiusCenterBg {
+        .radiusCenter {
+          .line {
+           display: none;
+          }
+        }
+      }
+    }
+    &.active {
+      .radiusCenter {
+        .content {
+          border-bottom: 4px solid @main;
+        }
+      }
+      .num {
+        color: @main;
+      }
+      .label {
+        color: @main;
+      }
+
+      // .content {
+      //   border-left: 1px solid transparent !important;
+      // }
+    }
+
+    &:hover {
+      .radiusCenter {
+        .content {
+          border-bottom: 4px solid @main!important;
+        }
+        .num {
+          color: @main!important;
+        }
+        .label {
+          color: @main!important;
+        }
+      }
+    }
+
+    &.active+.navItem {
+      // .content {
+      //   border-left: 1px solid transparent !important;
+      // }
+    }
+  }
+}
+
+.listBox {
+  .list {
+    height: 270px;
+    overflow-y: auto;
+    margin-top: 8px;
+    .item {
+      font-size: 14px;
+      color: #909399;
+      padding: 8px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      &:hover {
+        color: #303133;
+        background: #F8FAFE;
+      }
+      &.itemActive {
+        color: #007AFF;
+        background: #F8FAFE;
+      }
+    }
+  }
+}
+.listBox .list, .navBox .box {
+  // 滚动条样式
+  &::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background: #ededed;
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #c6cddd;
+  }
+
+  &::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 6px;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+  }
+}
+.navBox .box {
+  &::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 6px;
+    /*高宽分别对应横竖滚动条的尺寸*/
+    height: 6px;
+  }
+}

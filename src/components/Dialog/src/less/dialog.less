@@ -1,0 +1,120 @@
+.ic-dialog-modal {
+  :global {
+    .ant-modal-content {
+      border-radius: 8px;
+      .ant-modal-close-x {
+        svg {
+          color: #007bff;
+        }
+      }
+      .ant-modal-header {
+        border-radius: 8px 8px 0 0;
+        padding: 18.5px 30px;
+        background: #fafbfe;
+        border-bottom: none;
+        .ant-modal-title {
+          font-size: 15px;
+          font-family: PingFangSC, PingFangSC-Medium;
+          font-weight: 500;
+          color: #303133;
+        }
+      }
+      .ant-modal-body {
+        padding: 0;
+      }
+      .ant-modal-footer {
+        padding: 29.5px 16px;
+      }
+      .ant-input-affix-wrapper {
+        // background: #f9fafb;
+        border-radius: 4px;
+        border: none;
+        &.ant-input-affix-wrapper-focused {
+          box-shadow: none;
+        }
+      }
+      .ant-input {
+        // background: #f9fafb;
+        // border: 1px solid #e5e5ea;
+        border-radius: 4px;
+        &:focus {
+          box-shadow: none;
+        }
+      }
+      .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+        // background-color: initial !important;
+      }
+      .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+        // border: none !important;
+        background-color: #fff !important;
+        border-radius: 4px !important;
+      }
+      .ant-select-focused {
+        .ant-select-selector {
+          box-shadow: none !important;
+        }
+      }
+      .ant-form-item {
+        .ant-form-item-control-input-content {
+          height: 100%;
+          .ant-picker,
+          .ant-cascader-picker {
+            width: 100%;
+            background: #ffff;
+            height: 100%;
+            border-radius: 4px;
+            // border: none;
+            &.ant-picker-focused {
+              box-shadow: none;
+            }
+          }
+          .ant-cascader-picker:focus .ant-cascader-input {
+            box-shadow: none;
+          }
+        }
+      }
+    }
+  }
+  .ic-dialog-footer {
+    display: flex;
+    justify-content: center;
+    .submitDisabled {
+      box-shadow: none !important;
+      border: none !important;
+      background: #fafbfe !important;
+      color: #909399 !important;
+    }
+    :global {
+      button {
+        border-radius: 4px;
+        font-family: PingFangSC, PingFangSC-Regular;
+        font-weight: 400;
+        &::after {
+          display: none;
+        }
+        &:nth-child(1) {
+          box-shadow: none;
+          border: none;
+          background: #fafbfe;
+          color: #909399;
+        }
+        &:last-child {
+          box-shadow: none;
+          border: none;
+          background-color: #007bff;
+          font-size: 14px;
+          color: #ffffff;
+          margin-left: 32px;
+        }
+      }
+    }
+  }
+  .ic-dialog-loading {
+    text-align: center;
+    padding-top: 15px;
+  }
+
+  // .ic-dialog-body {
+  //   overflow: auto;
+  // }
+}

@@ -1,0 +1,195 @@
+.content {
+  min-height: 450px;
+  // padding: 50px 30px;
+  padding: 0 30px;
+  .tip {
+    display: flex;
+    padding: 40px 0 33px;
+    & span:first-child {
+      width: 3px;
+      height: 14px;
+      background: #007bff;
+      opacity: 1;
+    }
+    & span:last-child {
+      margin-left: 7px;
+      color: #0e1114;
+      font-weight: 500;
+      font-size: 16px;
+      font-family: PingFangSC, PingFangSC-Medium;
+      line-height: 16px;
+    }
+  }
+  .template_content {
+    // margin-top: 60px;
+    // height: 54px;
+    // background: #fafbfe;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    // padding: 0 24px;
+    padding-left: 9px;
+
+    .template_left {
+      color: #007bff;
+      font-size: 16px;
+      img {
+        display: inline-block;
+        width: 17px;
+        height: 18px;
+      }
+      .template_left_text {
+        margin-left: 5px;
+        color: #0e1114;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+  .uploadBox {
+    width: 100%;
+    margin-top: 20px;
+    span {
+      &:nth-of-type(1) {
+        display: table;
+        width: 100%;
+        color: #909399;
+        div {
+          &:nth-of-type(1) {
+            width: 100%;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    .upload {
+      cursor: pointer;
+    }
+  }
+  .import_right {
+    width: 112px;
+    color: #007bff;
+    text-align: center;
+    background: #e0efff;
+    border-radius: 4px;
+    cursor: pointer;
+
+    .import_right_img {
+      color: #007bff;
+      vertical-align: text-top;
+    }
+
+    .import_right_text {
+      margin-left: 10px;
+      color: #007bff;
+    }
+    :global {
+      .ant-upload.ant-upload-drag {
+        background-color: #fff;
+        border: none;
+        .ant-upload-drag-container {
+          height: 32px;
+          background-color: #e6f2ff;
+        }
+      }
+    }
+  }
+  .import_file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 90px;
+    margin-top: 22px;
+    // box-shadow: 0px 3px 11px 0px rgba(0, 123, 255, 0.08);
+    padding: 0 20px;
+    background: #ffffff;
+    border: 1px solid #e7e9eb;
+
+    .file_content {
+      display: flex;
+      align-items: flex-start;
+      .excel_icon {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    .import_file_info {
+      flex-direction: row;
+      margin-left: 14px;
+
+      .file_title {
+        margin-bottom: 14px;
+        color: #0e1114;
+        // color: #007bff;
+        font-weight: 500;
+      }
+
+      .file_status {
+        color: #909399;
+        font-size: 13px;
+
+        span {
+          margin-right: 30px;
+        }
+      }
+    }
+
+    .import_right {
+      width: 112px;
+      color: #007bff;
+      text-align: center;
+      background: #e0efff;
+      border-radius: 4px;
+      cursor: pointer;
+
+      .import_right_img {
+        color: #007bff;
+        vertical-align: text-top;
+      }
+
+      .import_right_text {
+        margin-left: 10px;
+        color: #007bff;
+      }
+      :global {
+        .ant-upload.ant-upload-drag {
+          background-color: #fff;
+          border: none;
+          .ant-upload-drag-container {
+            height: 32px;
+            background-color: #e6f2ff;
+          }
+        }
+      }
+    }
+  }
+  :global .ant-spin {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+.progress_div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 240px;
+  height: 200px;
+  background: #fff;
+  border-radius: 8px;
+  div {
+    color: #333;
+    font-size: 16px;
+  }
+}

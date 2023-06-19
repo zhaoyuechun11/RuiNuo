@@ -1,0 +1,140 @@
+.DataHandoverTableDialog {
+  max-height: 600px;
+  padding: 0 30px 40px;
+  overflow-y: scroll;
+  .head {
+    padding: 40px 0 0;
+    color: #0e1114;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1;
+    text-align: left;
+  }
+  .position_message_left {
+    padding: 4px 0 4px 0;
+    .pmi_top {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      .pmitLeft {
+        color: #303133;
+        font-weight: 500;
+        font-size: 16px;
+        font-family: PingFangSC, PingFangSC-Medium;
+        line-height: 14px;
+      }
+      .pmitRight {
+        margin-left: 4px;
+        color: #606266;
+        font-weight: 400;
+        font-size: 14px;
+        font-family: PingFangSC, PingFangSC-Regular;
+        line-height: 14px;
+        .positionSummary {
+          padding: 0 4px;
+          color: #808695;
+          font-weight: 400;
+          font-size: 13px;
+          line-height: 1;
+          text-align: left;
+          &:not(:last-of-type) {
+            border-right: 1px solid #808695;
+          }
+        }
+      }
+    }
+    .pmi_bottom {
+      display: flex;
+      align-items: center;
+      .pmib_item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 12px;
+        line-height: 1.5;
+        border-radius: 4px;
+        cursor: pointer;
+        &:not(:last-of-type) {
+          border-right: 1px solid #e7e9eb;
+        }
+        .pmib_item_text {
+          color: #303133;
+          font-weight: 400;
+          font-size: 14px;
+          font-family: PingFangSC, PingFangSC-Regular;
+          line-height: 14px;
+        }
+        .pmib_item_count {
+          margin-left: 8px;
+          color: #007bff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: PingFangSC, PingFangSC-Medium;
+          line-height: 14px;
+        }
+      }
+    }
+  }
+  .formBtn {
+    display: flex;
+  }
+  .formStyle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0;
+  }
+  .button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin-left: 12px;
+    padding: 8px 20px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 14px;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  .primary {
+    color: #fff;
+    background-color: @main;
+  }
+  .reset {
+    margin-right: 10px;
+    color: #909399;
+    background-color: #f4f5f8;
+  }
+  :global {
+    .ant-form-item-control {
+      width: 270px;
+    }
+
+    .ant-table-row.ant-table-row-level-0 {
+      td {
+        // border-bottom: 1px solid @border-color-base;
+      }
+    }
+  }
+  .tablePadding {
+    :global {
+      .ant-table-thead > tr > th,
+      .ant-table-tbody > tr > td {
+        padding: 24px 16px 24px 0 !important;
+      }
+      .ant-table-thead > tr > th {
+        background: #fafbfe;
+      }
+      .ant-table-tbody > tr.ant-table-row-selected > td {
+        background-color: white !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100vh;
+  // padding-top: 72px;
+  // padding-left: 100px;
+  background-color: #f5f7fe;
+}
+
+.right {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: calc(100% - 240px);
+  min-width: 700px;
+
+  //-moz-user-select: none; /*火狐*/
+  //-webkit-user-select: none; /*webKit 浏览器*/
+  //-ms-user-select: none; /*IE10*/
+  //-khtml-user-select: none; /*低版本浏览器*/
+  //user-select: none; /*其中 user-select 的参数值 none 表示不能选中文本，而 text 则表示可以选择文本*/
+}
+.main {
+  flex: 1;
+  min-width: 1100px;
+  padding: 14px 30px 30px 30px;
+  background-color: #f5f7fe;
+  // min-height: calc(100vh - 72px);
+  //overflow: auto;
+}
+
+.updataModel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  min-width: 1440px;
+  height: 150%;
+  min-height: 1163px;
+  overflow-y: auto;
+  background: #49494b;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+.btn {
+  position: absolute;
+  top: 52%;
+  left: 40%;
+  width: 20%;
+  height: 50px;
+  color: #275ffe;
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 50px;
+  text-align: center;
+  background: #fff;
+  border-radius: 50px;
+}
+.btnMak {
+  position: absolute;
+  top: 57.3%;
+  left: 42%;
+  z-index: 9999999;
+  width: 16%;
+  height: 5%;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.close {
+  position: absolute;
+  top: 32.5%;
+  left: 64%;
+  z-index: 9999999;
+  width: 2%;
+  height: 3%;
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+// 页面自适应
+// @media only screen and (max-width: 1480px) {
+//   .main {
+//     padding: 14px 30px 40px;
+//   }
+//   .contentLeft {
+//     width: 200px;
+//   }
+// }
+// @media only screen and (max-width: 1200px) {
+//   .container {
+//     width: 100%;
+//     padding-left: 240px;
+//   }
+// }

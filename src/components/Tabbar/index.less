@@ -1,0 +1,46 @@
+.taberContent {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  border-bottom: 1px solid #e5e5ea;
+  .taberItem {
+    cursor: pointer;
+    height: 16px;
+    font-size: 16px;
+    font-family: PingFangSC, PingFangSC-Regular;
+    font-weight: 400;
+    text-align: center;
+    color: @lightfont;
+    line-height: 16px;
+    letter-spacing: 0px;
+    padding-bottom: 28px;
+    margin-right: 30px;
+    white-space: nowrap;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  .actived {
+    color: @main;
+    position: relative;
+    font-weight: 800;
+    font-size: 18px;
+    &::before {
+      content: '';
+      position: absolute;
+      // left: 25%;
+      bottom: 0px;
+      width: 100%;
+      height: 3px;
+      background-color: @main;
+    }
+  }
+}
+@media only screen and (max-width: 1440px) {
+  .taberContent {
+    .taberItem {
+      margin-right: 18px;
+    }
+  }
+}

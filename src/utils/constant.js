@@ -99,7 +99,7 @@ export const CARD_TYPE = ['身份证', '港澳居民来往内地通行证', '台
 export const PILITICAL_CLIMATE = ['党员', '团员', '群众', '其他'];
 
 //婚姻状态列表
-export const MARRIAGE_STUATS = ['未婚', '已婚', '离异', '丧偶', '分居'];
+// export const MARRIAGE_STUATS = ['未婚', '已婚', '离异', '丧偶', '分居'];
 
 //户口性质
 // export const CENSUS_REGISTER = [

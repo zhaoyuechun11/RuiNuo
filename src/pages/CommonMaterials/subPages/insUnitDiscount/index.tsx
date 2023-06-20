@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Form, message, Select } from 'antd';
+import { Form, message, Select, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Table } from '@/components';
+import { Button, Table, Icon } from '@/components';
 import { useDispatch, useSelector } from 'umi';
+import { downLoad } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
-// import { transferInstrList, formulaDele } from '../../../../models/server';
+import styles from '../index.less';
+import BatchImport from '../../commones/batchImport';
+import { insUnitDiscountListExport,hospitalSelectList,insUnitDiscountDele } from '../../models/server';
 const { Option } = Select;
-const insUnitDiscount = ({ parent }) => {
+const insUnitDiscount = () => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -15,99 +18,115 @@ const insUnitDiscount = ({ parent }) => {
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
   const addModal = useRef();
-  const [instrList, setInstrList] = useState([]);
-
+  const [hospitalList, setHospitalList] = useState([]);
   const [list, setList] = useState([]);
+  const importRef = useRef();
+  const searchVal = useRef();
   const Columns = [
     {
       title: '单位编码',
-      dataIndex: 'instrName',
+      dataIndex: 'hospitalCode',
       align: 'center',
+      width: 150,
       fixed: 'left',
     },
     {
       title: '送检单位名称',
-      dataIndex: 'formula',
+      dataIndex: 'hospitalName',
       align: 'center',
+      width: 150,
     },
     {
       title: '回款类别',
-      dataIndex: 'formula',
+      dataIndex: 'returnTypeName',
       align: 'center',
+      width: 150,
     },
     {
       title: '申请项目编码',
-      dataIndex: 'formula',
+      dataIndex: 'reqItemCode',
       align: 'center',
+      width: 150,
     },
     {
       title: '申请项目名称',
-      dataIndex: 'formula',
+      dataIndex: 'reqItemName',
       align: 'center',
+      width: 150,
     },
     {
       title: '标准价格',
-      dataIndex: 'formula',
+      dataIndex: 'standardPrice',
       align: 'center',
+      width: 150,
     },
     {
       title: '销售报价',
-      dataIndex: 'formula',
+      dataIndex: 'salePrice',
       align: 'center',
+      width: 150,
     },
     {
       title: '销售报价扣率',
-      dataIndex: 'formula',
+      dataIndex: 'saleRate',
       align: 'center',
+      width: 150,
     },
     {
       title: '合同价格',
-      dataIndex: 'formula',
+      dataIndex: 'contractPrice',
       align: 'center',
+      width: 150,
     },
     {
       title: '合同扣率',
-      dataIndex: 'formula',
+      dataIndex: 'contractRate',
       align: 'center',
+      width: 150,
     },
     {
       title: '销售成本',
-      dataIndex: 'formula',
+      dataIndex: 'saleCosts',
       align: 'center',
+      width: 150,
     },
     {
       title: '销售成本扣率',
-      dataIndex: 'formula',
+      dataIndex: 'saleRate',
       align: 'center',
+      width: 150,
     },
     {
       title: '净额',
-      dataIndex: 'formula',
+      dataIndex: 'netAmount',
       align: 'center',
+      width: 150,
     },
     {
       title: '启用',
-      dataIndex: 'formula',
+      dataIndex: 'isDisable',
       align: 'center',
-    },
-    {
-      title: '启用日期',
-      dataIndex: 'formula',
-      align: 'center',
+      width: 150,
+      render: (text) => {
+        return text ? '启用' : '禁用';
+      },
     },
     {
       title: '创建人',
-      dataIndex: 'formula',
+      dataIndex: 'creatEr',
       align: 'center',
+      width: 150,
     },
     {
       title: '创建日期',
-      dataIndex: 'formula',
+      dataIndex: 'createDate',
       align: 'center',
+      width: 150,
     },
     {
       title: '操作',
       align: 'center',
+      width: 200,
       fixed: 'right',
       render: (record: { id: any }) => {
         return (
@@ -137,7 +156,7 @@ const insUnitDiscount = ({ parent }) => {
   const getList = useCallback(
     (params: any) => {
       dispatch({
-        type: 'commonMaterials/fetchFormulaList',
+        type: 'commonMaterials/fetchInsUnitDiscountList',
         payload: {
           ...params,
           callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
@@ -153,10 +172,10 @@ const insUnitDiscount = ({ parent }) => {
   );
   useEffect(() => {
     if (parent) {
-      getList({ pageNum, pageSize, labItemId: parent.id });
-      getInstrList();
+      getList({ pageNum, pageSize });
+      getHospitalList();
     }
-  }, [pageNum, pageSize, parent]);
+  }, [pageNum, pageSize]);
 
   const onTableChange = (
     pagination: Record<string, unknown>,
@@ -174,54 +193,88 @@ const insUnitDiscount = ({ parent }) => {
     setPageSize(size);
   };
   const handleSearch = (changedValues, allValues) => {
+    searchVal.current = allValues;
     const values = {
       pageNum,
       pageSize,
-      reqItemId: parent.id,
       ...allValues,
     };
     getList(values);
   };
   const deleteBind = (id: any) => {
-    formulaDele({ ids: [id] }).then((res) => {
+    insUnitDiscountDele({ ids: [id] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
-        getList({ pageNum, pageSize, labItemId: parent.id });
+        getList({ pageNum, pageSize});
       }
     });
   };
-  const getInstrList = () => {
-    transferInstrList().then((res) => {
+  const getHospitalList = () => {
+    hospitalSelectList().then((res) => {
       if (res.code === 200) {
-        setInstrList(res.data);
+        setHospitalList(res.data);
       }
+    });
+  };
+  const importData = () => {
+    importRef.current.show();
+  };
+  const exportData = () => {
+    insUnitDiscountListExport({ ...searchVal.current }).then((res) => {
+      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
+      const href = URL.createObjectURL(blob);
+      downLoad(href, '运检单位折扣');
     });
   };
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
-        <Form.Item name="instrId">
+        <Form.Item name="hospitalName">
           <Select
-            placeholder="请选择仪器"
+            placeholder="请选择单位名称"
             autoComplete="off"
             allowClear
             // onChange={projectCategoryChange}
           >
-            {instrList.map((item) => {
+            {hospitalList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
-                  {item.instrName}
+                  {item.hospitalName}
                 </Option>
               );
             })}
           </Select>
+        </Form.Item>
+        <Form.Item name="hospitalCode">
+          <Input
+            placeholder="请输入单位编号"
+            autoComplete="off"
+            suffix={<Icon name="icongongzuotai-sousuo" />}
+            allowClear
+          />
+        </Form.Item>
+        <Form.Item name="reqItemCode">
+          <Input
+            placeholder="请输入项目编码"
+            autoComplete="off"
+            suffix={<Icon name="icongongzuotai-sousuo" />}
+            allowClear
+          />
+        </Form.Item>
+        <Form.Item name="reqItemName">
+          <Input
+            placeholder="请输入项目名称或缩写"
+            autoComplete="off"
+            suffix={<Icon name="icongongzuotai-sousuo" />}
+            allowClear
+          />
         </Form.Item>
       </Form>
     );
   };
   return (
     <>
-      <div>
+      <div className={styles.operateBtns}>
         <Button
           btnType="primary"
           onClick={() => {
@@ -230,6 +283,12 @@ const insUnitDiscount = ({ parent }) => {
         >
           <PlusOutlined style={{ marginRight: 4 }} />
           新增
+        </Button>
+        <Button btnType="primary" onClick={importData}>
+          导入
+        </Button>
+        <Button btnType="primary" onClick={exportData}>
+          导出
         </Button>
       </div>
       {renderForm()}
@@ -251,11 +310,16 @@ const insUnitDiscount = ({ parent }) => {
         }}
         dataSource={list}
       />
+      <BatchImport
+        cRef={importRef}
+        actionUrl={`${process.env.baseURL}/basic/hospitalItemPrice/importHospitalItemPrice`}
+        title={'运检单位折扣'}
+        refresh={() => getList({ pageNum, pageSize })}
+      ></BatchImport>
       <EditOrAddModal
         Ref={addModal}
-        instrList={instrList}
-        parent={parent}
-        refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id })}
+        hospitalList={hospitalList}
+        refresh={() => getList({ pageNum, pageSize })}
       ></EditOrAddModal>
     </>
   );

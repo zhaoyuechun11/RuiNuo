@@ -14,7 +14,7 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 const { Option } = Select;
-const prompt = ['↑', '↓', '+', '*'];
+const prompt = ['↑↑', '↓↓', '↑', '↓', '+', '*'];
 const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();

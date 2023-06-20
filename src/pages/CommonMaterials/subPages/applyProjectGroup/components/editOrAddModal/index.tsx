@@ -9,7 +9,7 @@ import {
   oneLevelTypeModalSel,
   hospitalSelectList,
   getSameProfessionList,
-  getDifferentProfessionList,
+  getBindsList,
 } from '../../../../models/server';
 const layout = {
   labelCol: { span: 4 },
@@ -26,6 +26,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
   const [testMethod, setTestMethod] = useState([]);
   const [cycleType, setCycleType] = useState('hour');
   const [id, setId] = useState();
+  const idRef = useRef();
   const editorRef = useRef();
   const [targetKeys, setTargetKeys] = useState([]);
   const [comTransferTitle, setComTransferTitle] = useState(0);
@@ -37,6 +38,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
   const [isOut, setIsOut] = useState(false);
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
+      idRef.current = null;
       getList({ type: 'BT' });
       getList({ type: 'FF' });
       getHospitalSelectList();
@@ -49,14 +51,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           reportCycle: record?.reportCycle.split(','),
         });
         setId(record.id);
-        // setId(record.id=>id)
-        // setId(record.id => {
-        //   // // 更新状态
-        //   return id;
-        // }, () => {
-        //   // 在回调函数中执行操作
-        //   console.log('id', id)
-        // });
+        idRef.current = record.id;
 
         await getSameProfessionListData(record.labClassId);
 
@@ -75,7 +70,11 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
         setCycleType('hour');
         getSameProfessionListData(majorGroupData[0]?.id);
         getDifferentProfessionListData(majorGroupData[0]?.id);
-        form.setFieldsValue({ labClassId: majorGroupData[0]?.id, reportCycleType: 'hour',isCombo:0 });
+        form.setFieldsValue({
+          labClassId: majorGroupData[0]?.id,
+          reportCycleType: 'hour',
+          isCombo: 0,
+        });
       }
     },
     hide: () => {
@@ -242,11 +241,15 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
   const getSameProfessionListData = (val) => {
     getSameProfessionList({ labClassId: val }).then((res) => {
       if (res.code === 200) {
-        let result = res.data.map((item: { id: any }) => {
+        let result = {};
+        result = res.data.map((item: { id: any }) => {
           return { ...item, key: item.id };
         });
-        console.log(result.filter((item) => item.id !== id));
-        debugger;
+        if (idRef.current) {
+          result = res.data
+            .map((item: { id: any }) => ({ ...item, key: item.id }))
+            .filter((item) => item.id !== idRef.current);
+        }
         setSameProfessionList(result);
       }
     });
@@ -260,12 +263,18 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
     }
   }, [id, differentProfessionList, sameProfessionList]);
   const getDifferentProfessionListData = (val: any) => {
-    getDifferentProfessionList({ labClassId: val }).then(
+    getBindsList({ labClassId: val }).then(
       (res: { code: number; data: React.SetStateAction<never[]> }) => {
         if (res.code === 200) {
-          let result = res.data.map((item: { id: any }) => {
+          let result = {};
+          result = res.data.map((item: { id: any }) => {
             return { ...item, key: item.id };
           });
+          if (idRef.current) {
+            result = res.data
+              .map((item: { id: any }) => ({ ...item, key: item.id }))
+              .filter((item) => item.id !== idRef.current);
+          }
           setDifferentProfessionList(result);
         }
       },

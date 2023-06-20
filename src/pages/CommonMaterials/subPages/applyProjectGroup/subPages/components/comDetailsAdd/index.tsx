@@ -5,7 +5,7 @@ import {
   applyProjectItemByCompBindAdd,
   applyProjectItemByCompGetBinds,
   getSameProfessionList,
-  getDifferentProfessionList,
+  getBindsList,
 } from '../../../../../models/server';
 const layout = {
   labelCol: { span: 5 },
@@ -88,9 +88,9 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
     getSameProfessionList({ labClassId: parent?.labClassId }).then(
       (res: { code: number; data: React.SetStateAction<never[]> }) => {
         if (res.code === 200) {
-          const result = res.data.map((item) => {
-            return { ...item, key: item.id };
-          });
+          let result = res.data
+            .map((item) => ({ ...item, key: item.id }))
+            .filter((item) => item.id !== parent.id);
           setTransferData(result);
         }
       },
@@ -98,12 +98,12 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
     GetBinds();
   };
   const DifProfessionList = () => {
-    getDifferentProfessionList({ labClassId: parent?.labClassId }).then(
+    getBindsList({ labClassId: parent?.labClassId }).then(
       (res: { code: number; data: React.SetStateAction<never[]> }) => {
         if (res.code === 200) {
-          const result = res.data.map((item) => {
-            return { ...item, key: item.id };
-          });
+          let result = res.data
+            .map((item) => ({ ...item, key: item.id }))
+            .filter((item) => item.id !== parent.id);
           setTransferData(result);
         }
       },
@@ -129,7 +129,7 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
       //   confirmLoading={submitLoading}
     >
       <Table columns={columns} rowKey="id" dataSource={[parent]} pagination={false} />
-      <Form form={form} {...layout} style={{marginTop:'20px'}}>
+      <Form form={form} {...layout} style={{ marginTop: '20px' }}>
         <Form.Item name="comboDescribe" label="明细描述">
           <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入明细描述" />
         </Form.Item>

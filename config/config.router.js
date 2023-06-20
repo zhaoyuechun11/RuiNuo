@@ -27,8 +27,7 @@ export default {
     {
       path: '/login',
       exact: true,
-      // component: '@/pages/Other/login',
-      component: '@/pages/CommonMaterials/subPages/insUnitDiscount',
+      component: '@/pages/Other/login',
       title: '登录',
     },
     {
@@ -150,6 +149,11 @@ export default {
               path: '/commonMaterials/applyReportPC',
               component: '@/pages/CommonMaterials/subPages/applyReportPC',
               title: '申请项目和报告项目对照',
+            },
+            {
+              path: '/commonMaterials/insUnitDiscount',
+              component: '@/pages/CommonMaterials/subPages/insUnitDiscount',
+              title: '运检单位折扣维护',
             },
           ],
         },

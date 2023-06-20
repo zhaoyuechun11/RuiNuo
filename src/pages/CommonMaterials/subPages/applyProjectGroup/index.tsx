@@ -51,7 +51,7 @@ const ApplyProjectGroup = () => {
       align: 'center',
       width: 150,
       key: 'priceCode',
-      sorter: (a, b) => a.priceCode.length - b.priceCode.length,
+      sorter: (a, b) => a.priceCode?.length - b.priceCode?.length,
       sortOrder: sortedInfo.columnKey === 'priceCode' ? sortedInfo.order : null,
     },
     {

@@ -23,7 +23,8 @@ import {
   RPCriticalValue,
   formulaList,
   commonResults,
-  printOrder
+  printOrder,
+  insUnitDiscountList
 } from './server';
 
 import isFunction from 'lodash/isFunction';
@@ -154,6 +155,11 @@ const commonMaterials = {
     *fetchPrintOrder({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(printOrder, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInsUnitDiscountList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(insUnitDiscountList, { ...params });
       isFunction(callback) && callback(response);
     },
   },

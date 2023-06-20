@@ -1,13 +1,12 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { message, Checkbox, Row, Col } from 'antd';
+import { message, Transfer } from 'antd';
 import { Dialog } from '@components';
 import { getBinds, getBindsList, addBind } from '../../../../models/server';
 const BindModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [list, setList] = useState([]);
-  const selectedVal = useRef();
   const taskId = useRef();
-  const [bindedVal, setBindedVal] = useState([]);
+  const [targetKeys, setTargetKeys] = useState([]);
   useImperativeHandle(Ref, () => ({
     show: (val) => {
       dialogRef.current && dialogRef.current.show();
@@ -23,7 +22,7 @@ const BindModal = ({ Ref, refresh }) => {
   const getBindsData = (id) => {
     getBinds({ taskId: id }).then((res) => {
       if (res.code === 200) {
-        setBindedVal(res.data);
+        setTargetKeys(res.data);
       }
     });
   };
@@ -35,10 +34,10 @@ const BindModal = ({ Ref, refresh }) => {
     });
   };
   const onOk = () => {
-    let newVal = selectedVal.current.map((item) => {
+    const result = targetKeys.map((item) => {
       return { reqItemId: item };
     });
-    let params = { reqItems: newVal, taskId: taskId.current };
+    let params = { reqItems: result, taskId: taskId.current };
     addBind(params).then((res) => {
       if (res.code === 200) {
         message.success('绑定成功');
@@ -47,15 +46,14 @@ const BindModal = ({ Ref, refresh }) => {
       }
     });
   };
-  const onChange = (checkedValues) => {
-    selectedVal.current = checkedValues;
-    setBindedVal(checkedValues);
+  const filterOption = (inputValue, option) => option.reqItemName.indexOf(inputValue) > -1;
+  const handleChange = (targetKeys) => {
+    setTargetKeys(targetKeys);
   };
-
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={564}
       title={`绑定`}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -63,27 +61,16 @@ const BindModal = ({ Ref, refresh }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Checkbox.Group
-        style={{
-          maxHeight: '500px',
-          overflowY: 'scroll',
-          margin: '20px 10px',
-          minHeight: '300px',
-          width: '98%',
-        }}
-        onChange={onChange}
-        value={bindedVal}
-      >
-        <Row>
-          {list.map((item) => {
-            return (
-              <Col span={8} key={item.id}>
-                <Checkbox value={item.id}>{item.reqItemName}</Checkbox>
-              </Col>
-            );
-          })}
-        </Row>
-      </Checkbox.Group>
+      <Transfer
+        dataSource={list}
+        showSearch
+        filterOption={filterOption}
+        targetKeys={targetKeys}
+        onChange={handleChange}
+        render={(item) => item.reqItemName}
+        rowKey={(item) => item.id}
+        style={{margin:' 20px 80px'}}
+      />
     </Dialog>
   );
 };

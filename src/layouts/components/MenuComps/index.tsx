@@ -383,7 +383,7 @@ const menu = [
         selIcon: 'iconT8-shezhi-xuanzhong',
         children: [],
       },
-   
+
       {
         key: 'inspectionUnit',
         path: '/commonMaterials/inspectionUnit',
@@ -428,6 +428,14 @@ const menu = [
         key: 'applyReportPC',
         path: '/commonMaterials/applyReportPC',
         title: '申请项目和报告项目对照',
+        icon: 'iconT8-shezhi-weixuanzhong',
+        selIcon: 'iconT8-shezhi-xuanzhong',
+        children: [],
+      },
+      {
+        key: 'insUnitDiscount',
+        path: '/commonMaterials/insUnitDiscount',
+        title: '运检单位折扣维护',
         icon: 'iconT8-shezhi-weixuanzhong',
         selIcon: 'iconT8-shezhi-xuanzhong',
         children: [],

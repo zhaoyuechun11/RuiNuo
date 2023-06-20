@@ -11,7 +11,7 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 const { Option } = Select;
-const prompt = ['↑', '↓', '+', '*'];
+const prompt = ['↑↑', '↓↓', '↑', '↓', '+', '*'];
 const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -111,7 +111,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
             })}
           </Select>
         </Form.Item>
-        <div id="sampleTypeId">
+        <div id="sampleType">
           <Form.Item
             name="sampleTypeId"
             label="样本类型"
@@ -121,7 +121,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               placeholder="请选择样本类型"
               autoComplete="off"
               allowClear
-              getPopupContainer={() => document.getElementById('sampleTypeId')}
+              getPopupContainer={() => document.getElementById('sampleType')}
             >
               {sampleTypeList.map((item) => {
                 return (

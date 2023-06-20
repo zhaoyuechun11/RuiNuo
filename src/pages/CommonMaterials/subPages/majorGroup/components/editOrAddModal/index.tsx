@@ -3,10 +3,13 @@ import { Dialog } from '@components';
 import { Form, Input, message, Select } from 'antd';
 import { addMajorGroup, updateMajorGroup, manageListSelect } from '../../../../models/server';
 import ColorPicker from '@/pages/CommonMaterials/commones/colorPicker';
+const InputGroup = Input.Group;
+const { Option } = Select;
 const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 16 },
 };
+const sampleRule = ['yyyy', 'yyyymm', 'yyyymmdd', 'mm', 'mmdd', 'dd'];
 const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -31,8 +34,48 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   }));
   const onOk = () => {
     form.validateFields().then((value) => {
+      const {
+        barcodeContent,
+        classCode,
+        className,
+        color,
+        isAutoSampleId,
+        isPrintBarcode,
+        isSampleIdAsBarcode,
+        labClassManageId,
+        sampleIdResetRule,
+        sampleIdRule0,
+        sampleIdRule1,
+        sampleIdRule2,
+        seq,
+      } = value;
+      let firstVal = sampleIdRule0;
+      let secondVal = sampleIdRule1;
+      let third = sampleIdRule2;
+      if (!sampleIdRule0) {
+        firstVal = '';
+      }
+      if (!sampleIdRule1) {
+        secondVal = '';
+      }
+      if (!sampleIdRule2) {
+      }
+      let params = {
+        barcodeContent,
+        classCode,
+        className,
+        color,
+        isAutoSampleId,
+        isPrintBarcode,
+        isSampleIdAsBarcode,
+        labClassManageId,
+        sampleIdResetRule,
+        sampleIdRule: firstVal + '-' + secondVal + '-' + third,
+        seq,
+      };
+      debugger;
       if (id) {
-        updateMajorGroup({ id: id, ...value }).then((res) => {
+        updateMajorGroup({ id: id, ...params }).then((res) => {
           if (res.code === 200) {
             message.success('修改成功');
             dialogRef.current && dialogRef.current.hide();
@@ -40,7 +83,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           }
         });
       } else {
-        addMajorGroup({ ...value }).then((res) => {
+        addMajorGroup({ ...params }).then((res) => {
           if (res.code === 200) {
             message.success('添加成功');
             dialogRef.current && dialogRef.current.hide();
@@ -107,7 +150,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           />
         </Form.Item>
         <Form.Item label="颜色" name="color">
-          {/* <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入颜色" /> */}
           <ColorPicker />
         </Form.Item>
         <Form.Item
@@ -129,14 +171,23 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         </Form.Item>
         <Form.Item
           label="样本号生成规则"
-          name="sampleIdRule"
           rules={[{ required: true, message: '请输入样本号生成规则' }]}
         >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入样本号生成规则"
-          />
+          <div style={{ display: 'flex' }}>
+            <Form.Item name="sampleIdRule0">
+              <Input style={{ width: '50%' }} />
+            </Form.Item>
+            <Form.Item name="sampleIdRule1">
+              <Select style={{ width: '100%' }}>
+                {sampleRule.map((item) => {
+                  return <Option value={item}>{item}</Option>;
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item name="sampleIdRule2">
+              <Input style={{ width: '50%' }} />
+            </Form.Item>
+          </div>
         </Form.Item>
         <Form.Item label="顺序" name="seq" rules={[{ required: true, message: '请输入顺序' }]}>
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入顺序" />

@@ -14,18 +14,22 @@ const UploadImgWithCrop = ({ disabled, imgURL, onChange }) => {
     const uploadProps = {
       method: 'post',
       accept: '.png, .jpeg, jpg, .JPG',
-      action: `${process.env.baseURL}/apiweb/upload`,
+      action: `${process.env.baseURL}/file/upload`,
       showUploadList: false,
+      headers: {
+        Authorization: `${localStorage.getItem('access_token')}`,
+        'X-Requested-With': null,
+      },
       onChange(info) {
         const { status, response } = info.file;
 
         if (status === 'done') {
-          const { full_url, url } = response.data;
+          const { fileServerUrl, fileServerName } = response.data;
           setUploadedImage({
-            full_url,
-            url,
+            fileServerUrl,
+            fileServerName,
           });
-          triggerChange(url);
+          triggerChange(fileServerUrl);
         } else if (status === 'error') {
           message.error('图片上传失败');
         }
@@ -70,7 +74,7 @@ const UploadImgWithCrop = ({ disabled, imgURL, onChange }) => {
       {disabled ? (
         <img
           src={
-            uploadedImage.full_url || imgURL || require('@assets/images/setting/companyinfo.png')
+            uploadedImage.fileServerUrl || imgURL || require('@assets/images/setting/companyinfo.png')
           }
         />
       ) : (
@@ -78,7 +82,7 @@ const UploadImgWithCrop = ({ disabled, imgURL, onChange }) => {
           <img
             className={style.picImg}
             src={
-              uploadedImage.full_url || imgURL || require('@assets/images/setting/companyinfo.png')
+              uploadedImage.fileServerUrl || imgURL || require('@assets/images/setting/companyinfo.png')
             }
             alt=""
           />

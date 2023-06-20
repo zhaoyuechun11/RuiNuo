@@ -334,3 +334,15 @@ export function printOrderUpdate(params) {
 export function printOrderDele(params) {
   return axios('/basic/labItemPrintOrder/delete', 'post', params);
 }
+export function insUnitDiscountList(params) {
+  return axios('/basic/hospitalItemPrice/page', 'get', params);
+}
+export function insUnitDiscountListExport(params) {
+  return axios('/basic/hospitalItemPrice/export', 'get', params);
+}
+export function insUnitDiscountAdd(params) {
+  return axios('/basic/hospitalItemPrice/add', 'post', params);
+}
+export function insUnitDiscountDele(params) {
+  return axios('/basic/hospitalItemPrice/delete', 'post', params);
+}

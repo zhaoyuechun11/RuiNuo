@@ -269,7 +269,11 @@ export function wangEditorUploadImage(editor) {
   editor.customConfig.uploadFileName = 'file'; //设置文件上传的参数名称
   editor.customConfig.uploadImgMaxSize = 10 * 1024 * 1024;
   // editor.customConfig.uploadImgMaxLength = 5;
-  editor.customConfig.uploadImgServer = URL.apiurl_web + '/apiweb/upload';
+  editor.customConfig.uploadImgServer = URL.apiurl_web + '/file/upload';
+  editor.customConfig.uploadImgHeaders = {
+    Authorization: `${localStorage.getItem('access_token')}`,
+
+  };
   editor.customConfig.uploadImgHooks = {
     success: function (xhr, editor, result) {
       // 图片上传并返回结果，图片插入成功之后触发
@@ -284,7 +288,7 @@ export function wangEditorUploadImage(editor) {
       // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
     },
     customInsert: function (insertImg, result, editor) {
-      var url = result.data.full_url;
+      var url = result.data.fileServerUrl;
       insertImg(url);
     },
   };

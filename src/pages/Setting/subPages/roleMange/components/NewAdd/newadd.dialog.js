@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Dialog from '@components/Dialog';
-import { Button, message, Form, Input, Select, TreeSelect } from 'antd';
+import {  message, Form, Input, Select } from 'antd';
 import UploadImgWithCrop from '@components/UploadImg/UploadImgWithCrop';
 import isFunction from 'lodash/isFunction';
 import debounce from 'lodash/debounce';

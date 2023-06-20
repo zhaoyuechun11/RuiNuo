@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
-import { Form, Input, message, Tabs, Select, Switch } from 'antd';
+import { Form, Input, message, Tabs, Select } from 'antd';
 import { downLoad } from '@/utils';
 import { reportProjectExport, majorGroup, reportProjectDelete } from '../../models/server';
 import styles from '../index.less';

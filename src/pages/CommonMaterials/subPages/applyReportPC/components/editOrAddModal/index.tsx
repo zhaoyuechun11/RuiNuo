@@ -4,7 +4,6 @@ import { Form, Input, message, Select } from 'antd';
 import Edit from 'wangeditor';
 import { wangEditorUploadImage } from '@/utils';
 import {
-
   reportProjectUpdate,
   oneLevelTypeModalSel,
   reportProjectAdd,
@@ -17,6 +16,7 @@ const { Option } = Select;
 const dataType = [
   { id: 1, name: '数字' },
   { id: 2, name: '文字' },
+  { id: 3, name: '数值文字混合型' },
 ];
 const decimalPlacesData = [
   { id: 0, name: '保留小数位' },
@@ -231,11 +231,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           />
         </Form.Item>
         <Form.Item label="单位" name="unit">
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入单位"
-          />
+          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入单位" />
         </Form.Item>
         <div id="dataType">
           <Form.Item

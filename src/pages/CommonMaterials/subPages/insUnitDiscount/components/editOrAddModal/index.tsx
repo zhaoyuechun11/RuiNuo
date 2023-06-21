@@ -1,6 +1,17 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select, InputNumber, Tooltip, Switch, Transfer } from 'antd';
+import {
+  Form,
+  Input,
+  message,
+  Select,
+  InputNumber,
+  Tooltip,
+  Switch,
+  Transfer,
+  Row,
+  Col,
+} from 'antd';
 
 import styles from './index.less';
 import {
@@ -8,10 +19,10 @@ import {
   majorGroup,
   getBindsList,
   insUnitDiscountAdd,
+  insUnitDiscountUpdate,
 } from '../../../../models/server';
 const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 6 },
 };
 const { Option } = Select;
 
@@ -24,6 +35,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
   const [majorGroupList, setMajorGroupList] = useState([]);
   const [targetKeys, setTargetKeys] = useState([]);
   const [isDisableVal, setDisableVal] = useState(false);
+  const [hospitalName, setHospitalName] = useState([]);
 
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
@@ -36,9 +48,12 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
       if (record) {
         form.setFieldsValue({
           ...record,
+          hospitalIds: record.hospitalId,
         });
+
         setId(record.id);
         setDisableVal(record.isDisable);
+        setHospitalName(record.hospitalId);
       } else {
         setId(null);
       }
@@ -50,10 +65,15 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
   const onOk = () => {
     form.validateFields().then((value) => {
       if (id) {
-        formulaUpdate({
-          id: id,
-          instrId: value.instrId,
-          formula: value.formula,
+        const { contractRate, isDisable, returnTypeId, saleCosts, saleRate, seq } = value;
+        insUnitDiscountUpdate({
+          id,
+          contractRate,
+          isDisable,
+          returnTypeId,
+          saleCosts,
+          saleRate,
+          seq,
         }).then((res: { code: number }) => {
           if (res.code === 200) {
             message.success('修改成功');
@@ -123,21 +143,39 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
   //     position_name: e.target.value,
   //   });
   // };
+  const contractRriceChange = (e) => {
+    const result = e / form.getFieldValue('salesQuotation');
+    const netAmount = e - form.getFieldValue('saleCosts');
+    form.setFieldsValue({ contractRate: result, netAmount });
+  };
+  const salesQuotationChange = (e) => {
+    const result = e / form.getFieldValue('standardPrice');
+
+    form.setFieldsValue({ saleRate: result });
+  };
+  const contractRateChange = (e) => {
+    const result = e * form.getFieldValue('salesQuotation');
+    form.setFieldsValue({ contractRrice: result });
+  };
+
+  const saleRateChange = (e) => {
+    const rusult = e * form.getFieldValue('standardPrice');
+    form.setFieldsValue({ salesQuotation: rusult });
+  };
+  const netAmountChange = (e) => {
+    const contractRrice = e + form.getFieldValue('saleCosts');
+    form.setFieldsValue({ contractRrice });
+  };
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={740}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
       }}
-      // footer={
-      //   <Button disabled={activation} onClick={onOk}>
-      //     保存
-      //   </Button>
-      // }
       onOk={onOk}
-
+      className={styles.dialogWap}
       //   confirmLoading={submitLoading}
     >
       <Form form={form} {...layout}>
@@ -145,12 +183,15 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
           label="单位名称"
           name="hospitalIds"
           rules={[{ required: true, message: '请选择单位名称' }]}
+          labelCol={{ span: 3 }}
         >
           <Select
             placeholder="请选择单位名称"
             autoComplete="off"
             allowClear
             mode="tags"
+            defaultValue={hospitalName}
+            disabled={id ? true : false}
             // onInputKeyDown={onInputKeyDownPosition}
             // optionFilterProp="searchData"
             // filterOption={(input, option) =>
@@ -170,10 +211,82 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
             })}
           </Select>
         </Form.Item>
+
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item name="contractRate" label="合同价扣率">
+              <InputNumber onChange={contractRateChange} className={styles.number}></InputNumber>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="saleRate" label={<Tooltip title="标准价折数">销售报价扣率</Tooltip>}>
+              <InputNumber onChange={saleRateChange} className={styles.number}></InputNumber>
+            </Form.Item>
+          </Col>
+        </Row>
+        {id && (
+          <>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item name="salesQuotation" label="销售报价">
+                  <InputNumber
+                    className={styles.number}
+                    onChange={salesQuotationChange}
+                  ></InputNumber>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="contractRrice" label="合同价格">
+                  <InputNumber
+                    className={styles.number}
+                    onChange={contractRriceChange}
+                  ></InputNumber>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item name="netAmount" label="净额">
+                  <InputNumber className={styles.number} onChange={netAmountChange}></InputNumber>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="reqItemCode" label="申请项目编码">
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item name="standardPrice" label="标准价格">
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="reqItemName" label="申请项目名称">
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+            </Row>
+          </>
+        )}
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item label="启用" name="isDisable">
+              <Switch checked={isDisableVal} onChange={isDisableChange}></Switch>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="saleCosts" label="销售成本">
+              <InputNumber className={styles.number}></InputNumber>
+            </Form.Item>
+          </Col>
+        </Row>
         <Form.Item
           label="回款类别"
           name="returnTypeId"
           rules={[{ required: true, message: '请选择回款类别' }]}
+          labelCol={{ span: 3 }}
         >
           <Select placeholder="请选择回款类别" autoComplete="off" allowClear>
             {dictList?.map((item) => {
@@ -185,20 +298,8 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item name="contractRate" label="合同价扣率">
-          <InputNumber className={styles.number}></InputNumber>
-        </Form.Item>
-        <Form.Item name="saleCosts" label="销售成本">
-          <InputNumber className={styles.number}></InputNumber>
-        </Form.Item>
-        <Form.Item name="saleRate" label={<Tooltip title="标准价折数">销售报价扣率</Tooltip>}>
-          <InputNumber className={styles.number}></InputNumber>
-        </Form.Item>
-        <Form.Item label="启用" name="isDisable">
-          <Switch checked={isDisableVal} onChange={isDisableChange}></Switch>
-        </Form.Item>
         {!id && (
-          <Form.Item label="项目类别" name="reqItemIds">
+          <Form.Item label="项目类别" name="reqItemIds" labelCol={{ span: 3 }}>
             <Select
               placeholder="请选择项目类别"
               autoComplete="off"
@@ -222,6 +323,10 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
               filterOption={filterOption}
               targetKeys={targetKeys}
               render={(item) => item.reqItemName}
+              listStyle={{
+                width: 250,
+                height: 300,
+              }}
             />
           </Form.Item>
         )}

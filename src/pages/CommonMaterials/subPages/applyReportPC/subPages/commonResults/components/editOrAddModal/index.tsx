@@ -91,7 +91,11 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item name="resultFlag" label="结果标志" rules={[{ required: true, message: '请选择结果标志' }]}>
+        <Form.Item
+          name="resultFlag"
+          label="结果标志"
+          rules={[{ required: true, message: '请选择结果标志' }]}
+        >
           <Select
             placeholder="请选择结果标志"
             autoComplete="off"
@@ -107,15 +111,11 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item
-          label="快速录入码"
-          name="shortCode"
-        >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入快速录入码"
-          />
+        <Form.Item name="result" label="结果">
+          <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入结果" />
+        </Form.Item>
+        <Form.Item label="快速录入码" name="shortCode">
+          <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入快速录入码" />
         </Form.Item>
         <Form.Item label="顺序" name="seq">
           <InputNumber />

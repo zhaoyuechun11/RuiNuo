@@ -346,3 +346,6 @@ export function insUnitDiscountAdd(params) {
 export function insUnitDiscountDele(params) {
   return axios('/basic/hospitalItemPrice/delete', 'post', params);
 }
+export function insUnitDiscountUpdate(params) {
+  return axios('/basic/hospitalItemPrice/update', 'post', params);
+}

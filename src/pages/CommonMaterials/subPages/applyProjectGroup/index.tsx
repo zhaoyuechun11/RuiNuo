@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
+import { Button, Icon, Table, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select, Switch } from 'antd';
 import { downLoad } from '@/utils';
 import { applyProjectDelete, applyProjectExport, majorGroup } from '../../models/server';
@@ -28,6 +28,8 @@ const ApplyProjectGroup = () => {
   const [currentItem, setCurrentItem] = useState();
   const importRef = useRef();
   const [list, setList] = useState([]);
+  const confirmModalRef = useRef();
+  const idRef = useRef();
   const columns = [
     {
       title: '项目类别',
@@ -265,10 +267,15 @@ const ApplyProjectGroup = () => {
     modalRef.current && modalRef.current.show();
   };
   const deleteCurrentItem = (id: any) => {
-    applyProjectDelete({ ids: [id] }).then((res: { code: number }) => {
+    idRef.current = id;
+    confirmModalRef.current.show();
+  };
+  const handleConfirmOk = () => {
+    applyProjectDelete({ ids: [idRef.current] }).then((res: { code: number }) => {
       if (res.code === 200) {
         getList({ pageNum, pageSize });
         message.success('删除成功');
+        confirmModalRef.current.hide();
       }
     });
   };
@@ -369,12 +376,18 @@ const ApplyProjectGroup = () => {
         majorGroupData={majorGroupData}
         refresh={() => getList({ pageNum, pageSize })}
       ></EditOrAddModal>
-       <BatchImport
+      <BatchImport
         cRef={importRef}
         actionUrl={`${process.env.baseURL}/basic/labItem/importLabItem`}
         title={'申请'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>
+      <div>
+        <span>项目编码:</span>
+        {currentItem?.reqItemCode || list[0]?.reqItemCode}
+        <span style={{marginLeft:'20px'}}>项目名称:</span>
+        {currentItem?.reqItemName || list[0]?.reqItemName}
+      </div>
       <Tabs>
         <TabPane tab="使用医院" key="0">
           <UseHospital parent={currentItem || list[0]} />
@@ -392,6 +405,15 @@ const ApplyProjectGroup = () => {
           <GuidePrice parent={currentItem || list[0]} />
         </TabPane>
       </Tabs>
+      <Confirm
+        confirmRef={confirmModalRef}
+        img="commom/remind.png"
+        imgStyle={{ width: 73 }}
+        title="是否确认删除?"
+        content="你正在删除该条数据, 删除后不能恢复"
+        width={640}
+        onOk={handleConfirmOk}
+      />
     </>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
+import { Button, Icon, Table, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select } from 'antd';
 import { downLoad } from '@/utils';
 import { reportProjectExport, majorGroup, reportProjectDelete } from '../../models/server';
@@ -28,6 +28,8 @@ const ApplyReportPC = () => {
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [currentItem, setCurrentItem] = useState();
   const importRef = useRef();
+  const confirmModalRef = useRef();
+  const idRef = useRef();
 
   const [list, setList] = useState([]);
   const columns = [
@@ -233,9 +235,14 @@ const ApplyReportPC = () => {
     modalRef.current && modalRef.current.show();
   };
   const deleteCurrentItem = (id: any) => {
-    reportProjectDelete({ ids: [id] }).then((res: { code: number }) => {
+    confirmModalRef.current.show();
+    idRef.current = id;
+  };
+  const handleConfirmOk = () => {
+    reportProjectDelete({ ids: [idRef.current] }).then((res: { code: number }) => {
       if (res.code === 200) {
         getList({ pageNum, pageSize });
+        confirmModalRef.current.hide();
         message.success('删除成功');
       }
     });
@@ -343,7 +350,12 @@ const ApplyReportPC = () => {
         title={'报告'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>
-
+      <div style={{marginBottom:'20px'}}>
+        <span>项目类别:</span>
+        {currentItem?.labClassName || list[0]?.labClassName}
+        <span style={{ marginLeft: '20px' }}>项目编号:</span>
+        {currentItem?.itemCode || list[0]?.itemCode}
+      </div>
       <Tabs type="card">
         <TabPane tab="仪器通道号" key="0">
           <InstrChannelNum parent={currentItem || list[0]} />
@@ -361,6 +373,15 @@ const ApplyReportPC = () => {
           <CommonResults parent={currentItem || list[0]} />
         </TabPane>
       </Tabs>
+      <Confirm
+        confirmRef={confirmModalRef}
+        img="commom/remind.png"
+        imgStyle={{ width: 73 }}
+        title="是否确认删除?"
+        content="你正在删除该条数据, 删除后不能恢复"
+        width={640}
+        onOk={handleConfirmOk}
+      />
     </>
   );
 };

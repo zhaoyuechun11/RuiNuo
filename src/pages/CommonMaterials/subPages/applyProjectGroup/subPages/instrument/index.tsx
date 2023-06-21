@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form, Input, Switch, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
+import { Button, Icon, Table, Confirm } from '@/components';
 import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import Add from '../components/add';
@@ -20,12 +20,14 @@ const Instrument = ({ parent }) => {
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
   const addModal = useRef();
+  const confirmModalRef = useRef();
+  const idRef = useRef();
 
   const [list, setList] = useState([]);
   const Columns = [
     {
       title: '顺序',
-      dataIndex: 'seq',
+      dataIndex: 'id',
       align: 'center',
     },
     {
@@ -131,10 +133,15 @@ const Instrument = ({ parent }) => {
     getList(values);
   };
   const deleteBind = (id: any) => {
-    APItemInstrBindsDelete({ ids: [id] }).then((res) => {
+    confirmModalRef.current.show();
+    idRef.current = id;
+  };
+  const handleConfirmOk = () => {
+    APItemInstrBindsDelete({ ids: [idRef.current] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
         getList({ pageNum, pageSize, reqItemId: parent.id });
+        confirmModalRef.current.hide();
       }
     });
   };
@@ -202,6 +209,15 @@ const Instrument = ({ parent }) => {
         refresh={() => getList({ pageNum, pageSize, reqItemId: parent?.id })}
         type={3}
       ></Add>
+      <Confirm
+        confirmRef={confirmModalRef}
+        img="commom/remind.png"
+        imgStyle={{ width: 73 }}
+        title="是否确认删除?"
+        content="你正在删除该条数据, 删除后不能恢复"
+        width={640}
+        onOk={handleConfirmOk}
+      />
     </>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Table } from '@/components';
+import { Button, Table, Confirm } from '@/components';
 import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
@@ -17,8 +17,9 @@ const Formula = ({ parent }) => {
   const loading = useSelector((state: any) => state.loading.global);
   const addModal = useRef();
   const [instrList, setInstrList] = useState([]);
-
   const [list, setList] = useState([]);
+  const confirmModalRef = useRef();
+  const idRef = useRef();
   const Columns = [
     {
       title: '仪器',
@@ -108,10 +109,15 @@ const Formula = ({ parent }) => {
     getList(values);
   };
   const deleteBind = (id: any) => {
-    formulaDele({ ids: [id] }).then((res) => {
+    confirmModalRef.current.show();
+    idRef.current = id;
+  };
+  const handleConfirmOk = () => {
+    formulaDele({ ids: [idRef.current] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
         getList({ pageNum, pageSize, labItemId: parent.id });
+        confirmModalRef.current.hide();
       }
     });
   };
@@ -182,6 +188,15 @@ const Formula = ({ parent }) => {
         parent={parent}
         refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id })}
       ></EditOrAddModal>
+      <Confirm
+        confirmRef={confirmModalRef}
+        img="commom/remind.png"
+        imgStyle={{ width: 73 }}
+        title="是否确认删除?"
+        content="你正在删除该条数据, 删除后不能恢复"
+        width={640}
+        onOk={handleConfirmOk}
+      />
     </>
   );
 };

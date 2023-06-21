@@ -394,21 +394,23 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
         <Form.Item name="isOut" label="外送">
           <Switch onChange={isOutChange} checked={isOut} />
         </Form.Item>
-        <Form.Item
-          name="outCompanyId"
-          label="外送单位"
-          rules={[{ required: true, message: '请选择外送单位' }]}
-        >
-          <Select placeholder="请选择外送单位" autoComplete="off" allowClear>
-            {hospitalList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.hospitalName}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
+        {isOut && (
+          <Form.Item
+            name="outCompanyId"
+            label="外送单位"
+            rules={[{ required: true, message: '请选择外送单位' }]}
+          >
+            <Select placeholder="请选择外送单位" autoComplete="off" allowClear>
+              {hospitalList.map((item) => {
+                return (
+                  <Option value={item.id} key={item.id}>
+                    {item.hospitalName}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+        )}
         <Form.Item name="priceCode" label="物价编码">
           <Input
             style={{ backgroundColor: '#ffffff' }}

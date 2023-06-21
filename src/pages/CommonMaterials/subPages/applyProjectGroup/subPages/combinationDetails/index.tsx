@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form, Input, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
+import { Button, Icon, Table, Confirm } from '@/components';
 import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import ComDetailsAdd from '../components/comDetailsAdd';
@@ -15,12 +15,14 @@ const CombinationDetails = ({ parent }) => {
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
   const addModal = useRef();
+  const confirmModalRef = useRef();
+  const idRef = useRef();
 
   const [list, setList] = useState([]);
   const Columns = [
     {
       title: '顺序',
-      dataIndex: 'seq',
+      dataIndex: 'id',
       align: 'center',
     },
     {
@@ -31,9 +33,7 @@ const CombinationDetails = ({ parent }) => {
     {
       title: '项目名称',
       dataIndex: 'reqItemName',
-      // sorter: true,
       align: 'center',
-      // sorter: (a, b) => a.dictValue - b.dictValue,
     },
     {
       title: '缩写',
@@ -48,7 +48,7 @@ const CombinationDetails = ({ parent }) => {
           <Button
             style={{ margin: 'auto' }}
             onClick={() => {
-              deleteCurrentItem(record);
+              deleteCurrentItem(record.id);
             }}
           >
             删除
@@ -106,10 +106,15 @@ const CombinationDetails = ({ parent }) => {
     getList(values);
   };
   const deleteCurrentItem = (id) => {
-    applyProjectItemByCompBindDe({ ids: [id.id] }).then((res) => {
+    confirmModalRef.current.show();
+    idRef.current = id;
+  };
+  const handleConfirmOk = () => {
+    applyProjectItemByCompBindDe({ ids: [idRef.current] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
         getList({ pageNum, pageSize, reqItemId: parent.id });
+        confirmModalRef.current.hide();
       }
     });
   };
@@ -173,6 +178,15 @@ const CombinationDetails = ({ parent }) => {
         parent={parent}
         refresh={() => getList({ pageNum, pageSize, reqItemId: parent?.id })}
       ></ComDetailsAdd>
+      <Confirm
+        confirmRef={confirmModalRef}
+        img="commom/remind.png"
+        imgStyle={{ width: 73 }}
+        title="是否确认删除?"
+        content="你正在删除该条数据, 删除后不能恢复"
+        width={640}
+        onOk={handleConfirmOk}
+      />
     </>
   );
 };

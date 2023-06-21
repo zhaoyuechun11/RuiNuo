@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select } from 'antd';
+import { Form, Input, message, Select, Row, Col } from 'antd';
 import { addMajorGroup, updateMajorGroup, manageListSelect } from '../../../../models/server';
 import ColorPicker from '@/pages/CommonMaterials/commones/colorPicker';
 const InputGroup = Input.Group;
@@ -14,6 +14,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [list, setList] = useState([]);
+  const [record, setRecord] = useState({});
 
   const [id, setId] = useState();
   useImperativeHandle(Ref, () => ({
@@ -21,11 +22,22 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       getManageList();
       dialogRef.current && dialogRef.current.show();
       if (record) {
-        form.setFieldsValue({ ...record });
+        let sampleRuleVal = '';
+        if (record.sampleIdRule) {
+          sampleRuleVal = record.sampleIdRule.split('-');
+        }
+        form.setFieldsValue({
+          ...record,
+          sampleIdRule0: sampleRuleVal[0],
+          sampleIdRule1: sampleRuleVal[1],
+          sampleIdRule2: sampleRuleVal[2],
+        });
         setId(record.id);
+        setRecord(record);
       } else {
         form && form.resetFields();
         setId(null);
+        setRecord({});
       }
     },
     hide: () => {
@@ -73,7 +85,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         sampleIdRule: firstVal + '-' + secondVal + '-' + third,
         seq,
       };
-      debugger;
       if (id) {
         updateMajorGroup({ id: id, ...params }).then((res) => {
           if (res.code === 200) {
@@ -150,7 +161,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           />
         </Form.Item>
         <Form.Item label="颜色" name="color">
-          <ColorPicker />
+          <ColorPicker backgroundColor={record} />
         </Form.Item>
         <Form.Item
           label="样本号重置规则"
@@ -169,26 +180,34 @@ const EditOrAddModal = ({ Ref, refresh }) => {
             </Option>
           </Select>
         </Form.Item>
+
         <Form.Item
           label="样本号生成规则"
           rules={[{ required: true, message: '请输入样本号生成规则' }]}
         >
-          <div style={{ display: 'flex' }}>
-            <Form.Item name="sampleIdRule0">
-              <Input style={{ width: '50%' }} />
-            </Form.Item>
-            <Form.Item name="sampleIdRule1">
-              <Select style={{ width: '100%' }}>
-                {sampleRule.map((item) => {
-                  return <Option value={item}>{item}</Option>;
-                })}
-              </Select>
-            </Form.Item>
-            <Form.Item name="sampleIdRule2">
-              <Input style={{ width: '50%' }} />
-            </Form.Item>
-          </div>
+          <Row>
+            <Col span={8}>
+              <Form.Item name="sampleIdRule0">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="sampleIdRule1">
+                <Select allowClear>
+                  {sampleRule.map((item) => {
+                    return <Option value={item}>{item}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="sampleIdRule2">
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form.Item>
+
         <Form.Item label="顺序" name="seq" rules={[{ required: true, message: '请输入顺序' }]}>
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入顺序" />
         </Form.Item>

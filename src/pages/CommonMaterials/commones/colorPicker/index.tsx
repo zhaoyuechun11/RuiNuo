@@ -13,7 +13,7 @@ interface ColorPickerProps {
   onChange?: (value: any) => void;
 }
 
-export const ColorPicker: FC<ColorPickerProps> = ({ onChange }) => {
+export const ColorPicker: FC<ColorPickerProps> = ({ onChange, backgroundColor }) => {
   const [selectColor, setSelectColor] = useSetState<State>({
     displayColorPicker: false,
     color: '#fff',
@@ -38,7 +38,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChange }) => {
         width: '36px',
         height: '14px',
         borderRadius: '2px',
-        background: selectColor.color,
+        background: backgroundColor.color || selectColor.color,
       },
       swatch: {
         padding: '5px',

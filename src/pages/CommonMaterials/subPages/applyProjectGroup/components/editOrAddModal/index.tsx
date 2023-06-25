@@ -1,6 +1,6 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select, Switch, Radio, InputNumber, Transfer } from 'antd';
+import { Form, Input, message, Select, Switch, Radio, InputNumber, Transfer, Row, Col } from 'antd';
 import Edit from 'wangeditor';
 import { wangEditorUploadImage } from '@/utils';
 import {
@@ -12,8 +12,7 @@ import {
   getBindsList,
 } from '../../../../models/server';
 const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
+  wrapperCol: { span: 24 },
 };
 const { Option } = Select;
 const specialCycle = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'];
@@ -185,11 +184,8 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           form.validateFields(['significance']);
           return false;
         }
-        // if (record) {
-        //   form.setFieldsValue({ significance: record.significance });
-        // } else {
+
         form.setFieldsValue({ significance: html });
-        // }
       };
       wangEditorUploadImage(editor);
       editor.customConfig.menus = [
@@ -315,85 +311,220 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
-        <Form.Item
-          label="项目类别"
-          name="labClassId"
-          rules={[{ required: true, message: '请选择项目类别' }]}
-        >
-          <Select
-            placeholder="请选择项目类别"
-            autoComplete="off"
-            allowClear
-            onChange={projectCategoryChange}
-            value={majorGroupData[0]?.id}
-            defaultValue={majorGroupData[0]?.id}
-          >
-            {majorGroupData.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.className}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-        <Form.Item label="顺序" name="seq" rules={[{ required: true, message: '请输入顺序' }]}>
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入顺序" />
-        </Form.Item>
-        <Form.Item
-          label="项目编码"
-          name="reqItemCode"
-          rules={[{ required: true, message: '请输入项目编码' }]}
-        >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入项目编码"
-          />
-        </Form.Item>
-        <Form.Item
-          label="项目名称"
-          name="reqItemName"
-          rules={[{ required: true, message: '请输入项目名称' }]}
-        >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入项目名称"
-          />
-        </Form.Item>
-        <Form.Item label="缩写" name="shortName">
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入缩写" />
-        </Form.Item>
-        <div id="defaultSampleTypeId">
-          <Form.Item
-            name="defaultSampleTypeId"
-            label="默认样本类型"
-            rules={[{ required: true, message: '请选择默认样本类型' }]}
-          >
-            <Select
-              placeholder="请选择默认样本类型"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('defaultSampleTypeId')}
+      <Form
+        form={form}
+        {...layout}
+        layout={'vertical'}
+        style={{ padding: '20px', maxHeight: '700px', overflowY: 'scroll' }}
+      >
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              label="项目类别"
+              name="labClassId"
+              rules={[{ required: true, message: '请选择项目类别' }]}
             >
-              {sampleTypeList.map((item) => {
-                return (
-                  <Option value={item.id} key={item.id}>
-                    {item.dictValue}
-                  </Option>
-                );
-              })}
-            </Select>
+              <Select
+                placeholder="请选择项目类别"
+                autoComplete="off"
+                allowClear
+                onChange={projectCategoryChange}
+                value={majorGroupData[0]?.id}
+                defaultValue={majorGroupData[0]?.id}
+              >
+                {majorGroupData.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.className}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="顺序" name="seq" rules={[{ required: true, message: '请输入顺序' }]}>
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入顺序"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              label="项目编码"
+              name="reqItemCode"
+              rules={[{ required: true, message: '请输入项目编码' }]}
+            >
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入项目编码"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="项目名称"
+              name="reqItemName"
+              rules={[{ required: true, message: '请输入项目名称' }]}
+            >
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入项目名称"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item label="缩写" name="shortName">
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入缩写"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <div id="defaultSampleTypeId">
+              <Form.Item
+                name="defaultSampleTypeId"
+                label="默认样本类型"
+                rules={[{ required: true, message: '请选择默认样本类型' }]}
+              >
+                <Select
+                  placeholder="请选择默认样本类型"
+                  autoComplete="off"
+                  allowClear
+                  getPopupContainer={() => document.getElementById('defaultSampleTypeId')}
+                >
+                  {sampleTypeList.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.dictValue}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </div>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item name="isDisable" label="禁用">
+              <Switch onChange={isDisableChange} checked={isDisable} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="isOut" label="外送">
+              <Switch onChange={isOutChange} checked={isOut} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item name="priceCode" label="物价编码">
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入物价编码"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="method" label="检测方法">
+              <Select
+                placeholder="请选择检测方法"
+                // showSearch
+                allowClear
+                // showArrow={false}
+                onInputKeyDown={onInputKeyDownPosition}
+                autoComplete="off"
+                // defaultActiveFirstOption={false}
+              >
+                {testMethod.map((item) => {
+                  return (
+                    <Option value={item.dictValue} key={item.id}>
+                      {item.dictValue}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item name="reportCycleType" label="报告周期" onChange={cycleTypeChange}>
+              <Radio.Group defaultValue="hour" buttonStyle="solid" value={`hour`}>
+                <Radio.Button value="hour">小时</Radio.Button>
+                <Radio.Button value="day">工作日</Radio.Button>
+                <Radio.Button value="special">特定周期</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="reportCycle" label="报告周期">
+              {cycleType !== 'special' ? (
+                <InputNumber precision={0} placeholder="请输入报告周期" min={0} />
+              ) : (
+                <Select placeholder="请选择报告周期" autoComplete="off" allowClear mode="multiple">
+                  {specialCycle.map((item) => {
+                    return (
+                      <Option value={item} key={item}>
+                        {item}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              )}
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item name="comboDescribe" label="明细描述">
+              <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入明细描述" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="isCombo" label="是否组合">
+              <Radio.Group
+                value={combinationDefault}
+                buttonStyle="solid"
+                onChange={combinationChange}
+                defaultValue={combinationDefault}
+              >
+                <Radio.Button value={0}>非组合</Radio.Button>
+                <Radio.Button value={1}>同专业组合</Radio.Button>
+                <Radio.Button value={2}>跨专业组合</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
+          </Col>
+        </Row>
+        {comTransferTitle !== 0 && (
+          <Form.Item label={comTransferTitle === 1 ? '同专业组合' : '跨专业组合'} name="group">
+            <Transfer
+              dataSource={transferData}
+              showSearch
+              filterOption={filterOption}
+              targetKeys={targetKeys}
+              onChange={handleChange}
+              onSearch={handleSearch}
+              render={(item) => item.reqItemName}
+              listStyle={{
+                width: 550,
+                height: 300,
+              }}
+            />
           </Form.Item>
-        </div>
-        <Form.Item name="isDisable" label="禁用">
-          <Switch onChange={isDisableChange} checked={isDisable} />
-        </Form.Item>
-        <Form.Item name="isOut" label="外送">
-          <Switch onChange={isOutChange} checked={isOut} />
-        </Form.Item>
+        )}
         {isOut && (
           <Form.Item
             name="outCompanyId"
@@ -411,55 +542,6 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
             </Select>
           </Form.Item>
         )}
-        <Form.Item name="priceCode" label="物价编码">
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入物价编码"
-          />
-        </Form.Item>
-        <Form.Item name="method" label="检测方法">
-          <Select
-            placeholder="请选择检测方法"
-            // showSearch
-            allowClear
-            // showArrow={false}
-            onInputKeyDown={onInputKeyDownPosition}
-            autoComplete="off"
-            // defaultActiveFirstOption={false}
-          >
-            {testMethod.map((item) => {
-              return (
-                <Option value={item.dictValue} key={item.id}>
-                  {item.dictValue}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-        <Form.Item name="reportCycleType" label="报告周期" onChange={cycleTypeChange}>
-          <Radio.Group defaultValue="hour" buttonStyle="solid" value={`hour`}>
-            <Radio.Button value="hour">小时</Radio.Button>
-            <Radio.Button value="day">工作日</Radio.Button>
-            <Radio.Button value="special">特定周期</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-
-        <Form.Item name="reportCycle" label="报告周期">
-          {cycleType !== 'special' ? (
-            <InputNumber precision={0} placeholder="请输入报告周期" min={0} />
-          ) : (
-            <Select placeholder="请选择报告周期" autoComplete="off" allowClear mode="multiple">
-              {specialCycle.map((item) => {
-                return (
-                  <Option value={item} key={item}>
-                    {item}
-                  </Option>
-                );
-              })}
-            </Select>
-          )}
-        </Form.Item>
         <Form.Item
           label="采样标准临床意义"
           name="significance"
@@ -482,34 +564,6 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
             <div ref={editorRef} />
           </React.Fragment>
         </Form.Item>
-        <Form.Item name="comboDescribe" label="明细描述">
-          <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入明细描述" />
-        </Form.Item>
-        <Form.Item name="isCombo" label="是否组合">
-          <Radio.Group
-            value={combinationDefault}
-            buttonStyle="solid"
-            onChange={combinationChange}
-            defaultValue={combinationDefault}
-          >
-            <Radio.Button value={0}>非组合</Radio.Button>
-            <Radio.Button value={1}>同专业组合</Radio.Button>
-            <Radio.Button value={2}>跨专业组合</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
-        {comTransferTitle !== 0 && (
-          <Form.Item label={comTransferTitle === 1 ? '同专业组合' : '跨专业组合'} name="group">
-            <Transfer
-              dataSource={transferData}
-              showSearch
-              filterOption={filterOption}
-              targetKeys={targetKeys}
-              onChange={handleChange}
-              onSearch={handleSearch}
-              render={(item) => item.reqItemName}
-            />
-          </Form.Item>
-        )}
       </Form>
     </Dialog>
   );

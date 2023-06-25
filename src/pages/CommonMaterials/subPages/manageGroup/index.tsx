@@ -7,7 +7,7 @@ import { Form, Input, message } from 'antd';
 import { downLoad } from '@/utils';
 import env from '@/utils/env';
 import EditOrAddModal from './components/editOrAddModal';
-import { deleteManageGroup ,manageGroupExport} from '../../models/server';
+import { deleteManageGroup, manageGroupExport } from '../../models/server';
 import styles from './index.less';
 const ManageGroup = () => {
   const dispatch = useDispatch();
@@ -30,6 +30,18 @@ const ManageGroup = () => {
       title: '颜色',
       dataIndex: 'color',
       align: 'center',
+      render: (text: any) => {
+        return (
+          <span
+            style={{
+              backgroundColor: text,
+              display: 'inline-block',
+              width: '10px',
+              height: '10px',
+            }}
+          ></span>
+        );
+      },
     },
     {
       title: '名称',

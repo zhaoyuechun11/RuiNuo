@@ -38,7 +38,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChange, backgroundColor })
         width: '36px',
         height: '14px',
         borderRadius: '2px',
-        background: backgroundColor.color || selectColor.color,
+        background: backgroundColor?.color || selectColor.color,
       },
       swatch: {
         padding: '5px',

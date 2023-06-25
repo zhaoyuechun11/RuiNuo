@@ -8,7 +8,7 @@ export function getFirstPage(params) {
   return axios('/basic/dict/firstPage', 'get', params);
 }
 export function getSecondPage(params) {
-  return axios('/basic/dict/SecondPage', 'get', params);
+  return axios('/basic/dict/secondPage', 'get', params);
 }
 export function add(params) {
   return axios('/basic/dict/add', 'post', params);

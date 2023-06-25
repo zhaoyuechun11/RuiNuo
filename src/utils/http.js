@@ -75,7 +75,7 @@ axios.interceptors.response.use(
     // console.log('res', res)
     const data = res.data;
     const { status } = res;
-    if (status === 200 || status === 402) {
+    if (data.code === 200 || data.code === 402) {
       return Promise.resolve(res);
     } else if (status === 401) {
       history.push('/login');

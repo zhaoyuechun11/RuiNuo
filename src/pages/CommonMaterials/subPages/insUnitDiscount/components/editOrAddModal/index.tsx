@@ -12,7 +12,7 @@ import {
   Row,
   Col,
 } from 'antd';
-
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import {
   oneLevelTypeModalSel,
@@ -22,7 +22,7 @@ import {
   insUnitDiscountUpdate,
 } from '../../../../models/server';
 const layout = {
-  labelCol: { span: 6 },
+  labelCol: { span: 8 },
 };
 const { Option } = Select;
 
@@ -56,6 +56,10 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
         setHospitalName(record.hospitalId);
       } else {
         setId(null);
+        setHospitalName([]);
+        form.setFieldsValue({
+          hospitalIds: [],
+        });
       }
     },
     hide: () => {
@@ -65,15 +69,15 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
   const onOk = () => {
     form.validateFields().then((value) => {
       if (id) {
-        const { contractRate, isDisable, returnTypeId, saleCosts, saleRate, seq } = value;
+        const { isDisable, returnTypeId, saleCosts, seq ,salePrice,contractPrice} = value;
         insUnitDiscountUpdate({
           id,
-          contractRate,
           isDisable,
           returnTypeId,
           saleCosts,
-          saleRate,
           seq,
+          salePrice,
+          contractPrice
         }).then((res: { code: number }) => {
           if (res.code === 200) {
             message.success('修改成功');
@@ -144,7 +148,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
   //   });
   // };
   const contractRriceChange = (e) => {
-    const result = e / form.getFieldValue('salesQuotation');
+    const result = e / form.getFieldValue('salePrice');
     const netAmount = e - form.getFieldValue('saleCosts');
     form.setFieldsValue({ contractRate: result, netAmount });
   };
@@ -152,19 +156,6 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
     const result = e / form.getFieldValue('standardPrice');
 
     form.setFieldsValue({ saleRate: result });
-  };
-  const contractRateChange = (e) => {
-    const result = e * form.getFieldValue('salesQuotation');
-    form.setFieldsValue({ contractRrice: result });
-  };
-
-  const saleRateChange = (e) => {
-    const rusult = e * form.getFieldValue('standardPrice');
-    form.setFieldsValue({ salesQuotation: rusult });
-  };
-  const netAmountChange = (e) => {
-    const contractRrice = e + form.getFieldValue('saleCosts');
-    form.setFieldsValue({ contractRrice });
   };
   return (
     <Dialog
@@ -180,7 +171,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
     >
       <Form form={form} {...layout}>
         <Form.Item
-          label="单位名称"
+          label={<div>单位名称</div>}
           name="hospitalIds"
           rules={[{ required: true, message: '请选择单位名称' }]}
           labelCol={{ span: 3 }}
@@ -192,11 +183,12 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
             mode="tags"
             defaultValue={hospitalName}
             disabled={id ? true : false}
+            showSearch
             // onInputKeyDown={onInputKeyDownPosition}
-            // optionFilterProp="searchData"
-            // filterOption={(input, option) =>
-            //   option.searchData?.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            // }
+            optionFilterProp="searchData"
+            filterOption={(input, option) =>
+              option.searchData?.hospitalName.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
             // filterSort={(optionA, optionB) =>
             //   optionA.searchData?.toLowerCase().localeCompare(optionB.searchData.toLowerCase())
             // }
@@ -212,59 +204,25 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
           </Select>
         </Form.Item>
 
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item name="contractRate" label="合同价扣率">
-              <InputNumber onChange={contractRateChange} className={styles.number}></InputNumber>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="saleRate" label={<Tooltip title="标准价折数">销售报价扣率</Tooltip>}>
-              <InputNumber onChange={saleRateChange} className={styles.number}></InputNumber>
-            </Form.Item>
-          </Col>
-        </Row>
         {id && (
           <>
             <Row gutter={24}>
               <Col span={12}>
-                <Form.Item name="salesQuotation" label="销售报价">
-                  <InputNumber
-                    className={styles.number}
-                    onChange={salesQuotationChange}
-                  ></InputNumber>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="contractRrice" label="合同价格">
+                <Form.Item name="contractPrice" label="合同价格" labelCol={{ span: 7 }}>
                   <InputNumber
                     className={styles.number}
                     onChange={contractRriceChange}
+                    precision={2}
                   ></InputNumber>
                 </Form.Item>
               </Col>
-            </Row>
-            <Row gutter={24}>
               <Col span={12}>
-                <Form.Item name="netAmount" label="净额">
-                  <InputNumber className={styles.number} onChange={netAmountChange}></InputNumber>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="reqItemCode" label="申请项目编码">
-                  <Input disabled />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col span={12}>
-                <Form.Item name="standardPrice" label="标准价格">
-                  <Input disabled />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="reqItemName" label="申请项目名称">
-                  <Input disabled />
+                <Form.Item name="salePrice" label="销售报价">
+                  <InputNumber
+                    className={styles.number}
+                    onChange={salesQuotationChange}
+                    precision={2}
+                  ></InputNumber>
                 </Form.Item>
               </Col>
             </Row>
@@ -272,7 +230,66 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
         )}
         <Row gutter={24}>
           <Col span={12}>
-            <Form.Item label="启用" name="isDisable">
+            <Form.Item name="contractRate" label="合同价扣率" labelCol={{ span: 7 }}>
+              <InputNumber className={styles.number} disabled={id ? true : false}></InputNumber>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="saleRate"
+              label={
+                <>
+                  销售报价扣率
+                  <Tooltip title="标准价折数" placement="top" arrowPointAtCenter={true}>
+                    <ExclamationCircleOutlined
+                      style={{
+                        color: '#007BFF',
+                        marginLeft: 5,
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        lineHeight: '35px',
+                      }}
+                    />
+                  </Tooltip>
+                </>
+              }
+            >
+              <InputNumber className={styles.number} disabled={id ? true : false} defaultValue={1}></InputNumber>
+            </Form.Item>
+          </Col>
+        </Row>
+        {id && (
+          <>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item name="reqItemCode" label="申请项目编码" labelCol={{ span: 7 }}>
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="standardPrice" label="标准价格">
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={24}>
+              <Col span={12}>
+                <Form.Item name="reqItemName" label="申请项目名称" labelCol={{ span: 7 }}>
+                  <Input disabled />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name="netAmount" label="净额">
+                  <InputNumber className={styles.number} disabled></InputNumber>
+                </Form.Item>
+              </Col>
+            </Row>
+          </>
+        )}
+
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item label="启用" name="isDisable" labelCol={{ span: 7 }}>
               <Switch checked={isDisableVal} onChange={isDisableChange}></Switch>
             </Form.Item>
           </Col>
@@ -288,7 +305,11 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
           rules={[{ required: true, message: '请选择回款类别' }]}
           labelCol={{ span: 3 }}
         >
-          <Select placeholder="请选择回款类别" autoComplete="off" allowClear>
+          <Select
+            placeholder="请选择回款类别"
+            autoComplete="off"
+            allowClear
+          >
             {dictList?.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>

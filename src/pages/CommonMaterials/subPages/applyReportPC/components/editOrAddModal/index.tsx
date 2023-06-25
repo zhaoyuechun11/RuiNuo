@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select } from 'antd';
+import { Form, Input, message, Select, Row, Col } from 'antd';
 import Edit from 'wangeditor';
 import { wangEditorUploadImage } from '@/utils';
 import {
@@ -9,8 +9,7 @@ import {
   reportProjectAdd,
 } from '../../../../models/server';
 const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
+  wrapperCol: { span: 24 },
 };
 const { Option } = Select;
 const dataType = [
@@ -124,11 +123,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           form.validateFields(['significance']);
           return false;
         }
-        // if (record) {
-        //   form.setFieldsValue({ significance: record.significance });
-        // } else {
         form.setFieldsValue({ significance: html });
-        // }
       };
       wangEditorUploadImage(editor);
       editor.customConfig.menus = [
@@ -153,8 +148,6 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
     }, 500);
   };
 
-  const projectCategoryChange = (val: any) => {};
-
   return (
     <Dialog
       ref={dialogRef}
@@ -166,153 +159,168 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
-        <Form.Item
-          label="项目类别"
-          name="labClassId"
-          rules={[{ required: true, message: '请选择项目类别' }]}
-        >
-          <Select
-            placeholder="请选择项目类别"
-            autoComplete="off"
-            allowClear
-            onChange={projectCategoryChange}
-            value={majorGroupData[0]?.id}
-            defaultValue={majorGroupData[0]?.id}
-          >
-            {majorGroupData.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.className}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
+      <Form form={form} {...layout} layout={'vertical'} style={{ padding: '20px' }}>
+        <Row gutter={12}>
+          <Col span={12}>
+            <Form.Item
+              label="项目类别"
+              name="labClassId"
+              rules={[{ required: true, message: '请选择项目类别' }]}
+            >
+              <Select
+                placeholder="请选择项目类别"
+                autoComplete="off"
+                allowClear
+                value={majorGroupData[0]?.id}
+                defaultValue={majorGroupData[0]?.id}
+              >
+                {majorGroupData.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.className}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="项目编码"
+              name="itemCode"
+              rules={[{ required: true, message: '请输入项目编码' }]}
+            >
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入项目编码"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={12}>
+          <Col span={12}>
+            <Form.Item
+              label="中文名称"
+              name="itemName"
+              rules={[{ required: true, message: '请输入项目中文名称' }]}
+            >
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入项目中文名称"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="英文名称"
+              name="enName"
+              rules={[{ required: true, message: '请输入项目英文名称' }]}
+            >
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入项目英文名称"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={12}>
+          <Col span={12}>
+            <Form.Item label="缩写代号" name="shortName">
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入缩写代号"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="单位" name="unit">
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入单位"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={12}>
+          <Col span={12}>
+            <div id="dataType">
+              <Form.Item
+                name="dataType"
+                label="数据类型"
+                rules={[{ required: true, message: '请选择数据类型' }]}
+              >
+                <Select
+                  placeholder="请选择数据类型"
+                  autoComplete="off"
+                  allowClear
+                  getPopupContainer={() => document.getElementById('dataType')}
+                >
+                  {dataType.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </div>
+          </Col>
+          <Col span={12}>
+            <div id="decimalPlaces">
+              <Form.Item
+                name="decimalPlaces"
+                label="小数位"
+                rules={[{ required: true, message: '请选择小数位' }]}
+              >
+                <Select
+                  placeholder="请选择小数位"
+                  autoComplete="off"
+                  allowClear
+                  getPopupContainer={() => document.getElementById('decimalPlaces')}
+                >
+                  {decimalPlacesData.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </div>
+          </Col>
+        </Row>
+        <Row gutter={12}>
+          <Col span={12}>
+            <Form.Item label="其他编码1" name="extCode1">
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入其他编码1"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="其他编码2" name="extCode2">
+              <Input
+                style={{ backgroundColor: '#ffffff' }}
+                maxLength={10}
+                placeholder="请输入其他编码2"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item
-          label="项目编码"
-          name="itemCode"
-          rules={[{ required: true, message: '请输入项目编码' }]}
-        >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入项目编码"
-          />
-        </Form.Item>
-        <Form.Item
-          label="中文名称"
-          name="itemName"
-          rules={[{ required: true, message: '请输入项目中文名称' }]}
-        >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入项目中文名称"
-          />
-        </Form.Item>
-        <Form.Item
-          label="英文名称"
-          name="enName"
-          rules={[{ required: true, message: '请输入项目英文名称' }]}
-        >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入项目英文名称"
-          />
-        </Form.Item>
-        <Form.Item label="缩写代号" name="shortName">
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入缩写代号"
-          />
-        </Form.Item>
-        <Form.Item label="单位" name="unit">
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入单位" />
-        </Form.Item>
-        <div id="dataType">
-          <Form.Item
-            name="dataType"
-            label="数据类型"
-            rules={[{ required: true, message: '请选择数据类型' }]}
-          >
-            <Select
-              placeholder="请选择数据类型"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('dataType')}
-            >
-              {dataType.map((item) => {
-                return (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        </div>
-        <div id="decimalPlaces">
-          <Form.Item
-            name="decimalPlaces"
-            label="小数位"
-            rules={[{ required: true, message: '请选择小数位' }]}
-          >
-            <Select
-              placeholder="请选择小数位"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('decimalPlaces')}
-            >
-              {decimalPlacesData.map((item) => {
-                return (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        </div>
-        <Form.Item name="method" label="检测方法">
-          <Select
-            placeholder="请选择检测方法"
-            // showSearch
-            allowClear
-            // showArrow={false}
-            onInputKeyDown={onInputKeyDownPosition}
-            autoComplete="off"
-            // defaultActiveFirstOption={false}
-          >
-            {testMethod.map((item) => {
-              return (
-                <Option value={item.dictValue} key={item.id}>
-                  {item.dictValue}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-        <Form.Item label="其他编码1" name="extCode1">
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入其他编码1"
-          />
-        </Form.Item>
-        <Form.Item label="其他编码2" name="extCode2">
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入其他编码2"
-          />
-        </Form.Item>
         <Form.Item
           label="采样标准临床意义"
           name="significance"
+       
           // rules={[
           //   {
           //     required: true,
@@ -331,6 +339,25 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           <React.Fragment>
             <div ref={editorRef} />
           </React.Fragment>
+        </Form.Item>
+        <Form.Item name="method" label="检测方法" >
+          <Select
+            placeholder="请选择检测方法"
+            showSearch
+            allowClear
+            // showArrow={false}
+            onInputKeyDown={onInputKeyDownPosition}
+            autoComplete="off"
+            // defaultActiveFirstOption={false}
+          >
+            {testMethod.map((item) => {
+              return (
+                <Option value={item.dictValue} key={item.id}>
+                  {item.dictValue}
+                </Option>
+              );
+            })}
+          </Select>
         </Form.Item>
       </Form>
     </Dialog>

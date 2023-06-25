@@ -45,6 +45,18 @@ const MajorGroup = () => {
       dataIndex: 'color',
       align: 'center',
       width: 150,
+      render: (text) => {
+        return (
+          <span
+            style={{
+              backgroundColor: text,
+              display: 'inline-block',
+              width: '10px',
+              height: '10px',
+            }}
+          ></span>
+        );
+      },
     },
     {
       title: '创建者id',

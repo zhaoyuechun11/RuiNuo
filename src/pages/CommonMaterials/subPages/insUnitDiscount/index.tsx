@@ -7,7 +7,12 @@ import { downLoad } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import styles from '../index.less';
 import BatchImport from '../../commones/batchImport';
-import { insUnitDiscountListExport,hospitalSelectList,insUnitDiscountDele } from '../../models/server';
+import {
+  insUnitDiscountListExport,
+  hospitalSelectList,
+  insUnitDiscountDele,
+  oneLevelTypeModalSel,
+} from '../../models/server';
 const { Option } = Select;
 const insUnitDiscount = () => {
   const dispatch = useDispatch();
@@ -20,6 +25,7 @@ const insUnitDiscount = () => {
   const addModal = useRef();
   const [hospitalList, setHospitalList] = useState([]);
   const [list, setList] = useState([]);
+  const [returnTypeList, setReturnTypeList] = useState([]);
   const importRef = useRef();
   const searchVal = useRef();
   const Columns = [
@@ -29,12 +35,16 @@ const insUnitDiscount = () => {
       align: 'center',
       width: 150,
       fixed: 'left',
+      key: 'hospitalCode',
+      sorter: (a, b) => a.hospitalCode.length - b.hospitalCode.length,
     },
     {
       title: '送检单位名称',
       dataIndex: 'hospitalName',
       align: 'center',
       width: 150,
+      key: 'hospitalName',
+      sorter: (a, b) => a.hospitalName.length - b.hospitalName.length,
     },
     {
       title: '回款类别',
@@ -47,12 +57,16 @@ const insUnitDiscount = () => {
       dataIndex: 'reqItemCode',
       align: 'center',
       width: 150,
+      key: 'reqItemCode',
+      sorter: (a, b) => a.reqItemCode?.length - b.reqItemCode?.length,
     },
     {
       title: '申请项目名称',
       dataIndex: 'reqItemName',
       align: 'center',
       width: 150,
+      key: 'reqItemName',
+      sorter: (a, b) => a.reqItemName?.length - b.reqItemName?.length,
     },
     {
       title: '标准价格',
@@ -168,14 +182,16 @@ const insUnitDiscount = () => {
         },
       });
     },
-    [dispatch, sort, order],
+    [dispatch],
   );
   useEffect(() => {
-    if (parent) {
-      getList({ pageNum, pageSize });
-      getHospitalList();
-    }
+    getList({ pageNum, pageSize });
+    getHospitalList();
   }, [pageNum, pageSize]);
+  useEffect(() => {
+    getHospitalList();
+    getReturnTypeList();
+  }, []);
 
   const onTableChange = (
     pagination: Record<string, unknown>,
@@ -205,7 +221,7 @@ const insUnitDiscount = () => {
     insUnitDiscountDele({ ids: [id] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
-        getList({ pageNum, pageSize});
+        getList({ pageNum, pageSize });
       }
     });
   };
@@ -226,15 +242,31 @@ const insUnitDiscount = () => {
       downLoad(href, '运检单位折扣');
     });
   };
+  const getReturnTypeList = () => {
+    oneLevelTypeModalSel({ type: 'PM' }).then((res) => {
+      if (res.code === 200) {
+        setReturnTypeList(res.data);
+      }
+    });
+  };
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
-        <Form.Item name="hospitalName">
+        <Form.Item name="hospitalCode">
+          <Input
+            placeholder="请输入单位编号"
+            autoComplete="off"
+            suffix={<Icon name="icongongzuotai-sousuo" />}
+            allowClear
+          />
+        </Form.Item>
+        <Form.Item name="hospitalId">
           <Select
             placeholder="请选择单位名称"
             autoComplete="off"
             allowClear
-            // onChange={projectCategoryChange}
+            showSearch
+            style={{ width: 224, height: 35 }}
           >
             {hospitalList.map((item) => {
               return (
@@ -244,14 +276,6 @@ const insUnitDiscount = () => {
               );
             })}
           </Select>
-        </Form.Item>
-        <Form.Item name="hospitalCode">
-          <Input
-            placeholder="请输入单位编号"
-            autoComplete="off"
-            suffix={<Icon name="icongongzuotai-sousuo" />}
-            allowClear
-          />
         </Form.Item>
         <Form.Item name="reqItemCode">
           <Input
@@ -268,6 +292,22 @@ const insUnitDiscount = () => {
             suffix={<Icon name="icongongzuotai-sousuo" />}
             allowClear
           />
+        </Form.Item>
+        <Form.Item name="returnTypeId">
+          <Select
+            placeholder="请选择回款类别"
+            autoComplete="off"
+            allowClear
+            style={{ width: 224, height: 35 }}
+          >
+            {returnTypeList?.map((item) => {
+              return (
+                <Option value={item.id} key={item.id} className={styles.returnType}>
+                  {item.dictValue}
+                </Option>
+              );
+            })}
+          </Select>
         </Form.Item>
       </Form>
     );

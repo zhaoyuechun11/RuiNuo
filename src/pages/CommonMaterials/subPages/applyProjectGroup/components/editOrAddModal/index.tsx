@@ -472,7 +472,12 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           <Col span={12}>
             <Form.Item name="reportCycle" label="报告周期">
               {cycleType !== 'special' ? (
-                <InputNumber precision={0} placeholder="请输入报告周期" min={0} />
+                <InputNumber
+                  precision={0}
+                  placeholder="请输入报告周期"
+                  min={0}
+                  style={{ width: '100%' }}
+                />
               ) : (
                 <Select placeholder="请选择报告周期" autoComplete="off" allowClear mode="multiple">
                   {specialCycle.map((item) => {

@@ -11,6 +11,7 @@ const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 },
 };
+const {Option} = Select;
 const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -75,7 +76,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -83,7 +84,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
         <Form.Item label="资产编号" name="assetsNo">
           <Input
             style={{ backgroundColor: '#ffffff' }}

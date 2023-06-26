@@ -51,7 +51,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -65,7 +65,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         </Form.Item>
         <Form.Item label="颜色" name="color">
           <ColorPicker />
-          {/* <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入颜色" /> */}
         </Form.Item>
         <Form.Item label="名称" name="name" rules={[{ required: true, message: '请输入code值' }]}>
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入名称" />

@@ -53,7 +53,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={type === 'edit' ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -61,7 +61,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
         <Form.Item
           label="字典编码"
           name="dictCode"

@@ -74,11 +74,14 @@ axios.interceptors.response.use(
     // ------------------------------------------------------------------------------------------
     // console.log('res', res)
     const data = res.data;
-    const { status } = res;
+    // const { status } = res;
+    //const status=401
+
     if (data.code === 200 || data.code === 402) {
       return Promise.resolve(res);
-    } else if (status === 401) {
+    } else if (data.code === 401) {
       history.push('/login');
+      return;
     } else {
       // 后台返回非200状态码做错误提示
       message.warning(data.msg);

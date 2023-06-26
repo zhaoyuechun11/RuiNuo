@@ -1,10 +1,7 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Form, Input, message, Select, Switch } from 'antd';
-import {
-  RPInstrChannelNumAdd,
-  RPInstrChannelNumUpdate,
-} from '../../../../../../models/server';
+import { RPInstrChannelNumAdd, RPInstrChannelNumUpdate } from '../../../../../../models/server';
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 },
@@ -65,11 +62,11 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   const isDisableChange = (e: boolean | ((prevState: boolean) => boolean)) => {
     setDisable(e);
   };
-  const projectCategoryChange = (val: any) => {};
+ 
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -81,9 +78,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
         <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
           <Select
             placeholder="请选择仪器"
-            autoComplete="off"
             allowClear
-            // onChange={projectCategoryChange}
           >
             {instrList.map((item) => {
               return (
@@ -94,15 +89,15 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item name="isDisable" label="禁用">
-          <Switch onChange={isDisableChange} checked={disable} />
-        </Form.Item>
         <Form.Item
           label="通道号"
           name="interCode"
           rules={[{ required: true, message: '请输入通道号' }]}
         >
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入通道号" />
+        </Form.Item>
+        <Form.Item name="isDisable" label="禁用">
+          <Switch onChange={isDisableChange} checked={disable} />
         </Form.Item>
       </Form>
     </Dialog>

@@ -60,13 +60,13 @@ const LinkCard = ({ global, icon, title, path, classNames, setLoading }) => {
           </div>
           <p className={s.title}>
             {title}
-            {newFeatureList.includes(title) && (
+            {/* {newFeatureList.includes(title) && (
               <img
                 className={s.newImg}
                 src={require('@assets/images/commom/new.png')}
                 alt="新增功能图标"
               />
-            )}
+            )} */}
           </p>
         </div>
       </div>

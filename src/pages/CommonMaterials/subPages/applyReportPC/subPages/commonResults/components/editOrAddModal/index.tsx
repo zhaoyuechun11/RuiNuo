@@ -66,7 +66,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -74,13 +74,12 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
         <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
           <Select
             placeholder="请选择仪器"
             autoComplete="off"
             allowClear
-            // onChange={projectCategoryChange}
           >
             {instrList.map((item) => {
               return (

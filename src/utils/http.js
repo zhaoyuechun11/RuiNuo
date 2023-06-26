@@ -72,14 +72,14 @@ axios.interceptors.response.use(
     // ------------------------------------------------------------------------------------------
     removePending(res.config); //在一个ajax响应后再执行一下取消操作，把已经完成的请求从pending中移除
     // ------------------------------------------------------------------------------------------
-    // console.log('res', res)
+    console.log('res', res);
     const data = res.data;
-    // const { status } = res;
+    const { status } = res;
     //const status=401
 
-    if (data.code === 200 || data.code === 402) {
+    if (status === 200&& data.code===200|| status === 402) {
       return Promise.resolve(res);
-    } else if (data.code === 401) {
+    } else if (status === 401) {
       history.push('/login');
       return;
     } else {

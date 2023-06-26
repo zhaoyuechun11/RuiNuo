@@ -1,8 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import reactCSS from 'reactcss';
 import { SketchPicker } from 'react-color';
 import { useSetState } from 'ahooks';
-// import { useRequest } from "ahooks";
 
 interface State {
   displayColorPicker: boolean;
@@ -18,7 +17,11 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChange, backgroundColor })
     displayColorPicker: false,
     color: '#fff',
   });
-
+  useEffect(() => {
+    if (backgroundColor) {
+      setSelectColor({ color: backgroundColor?.color });
+    }
+  }, [backgroundColor]);
   const handleClick = () => {
     setSelectColor({ displayColorPicker: !selectColor.displayColorPicker });
   };
@@ -38,7 +41,7 @@ export const ColorPicker: FC<ColorPickerProps> = ({ onChange, backgroundColor })
         width: '36px',
         height: '14px',
         borderRadius: '2px',
-        background: backgroundColor?.color || selectColor.color,
+        background: selectColor.color,
       },
       swatch: {
         padding: '5px',

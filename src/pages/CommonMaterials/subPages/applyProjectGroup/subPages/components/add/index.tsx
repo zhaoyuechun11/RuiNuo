@@ -4,22 +4,15 @@ import { Dialog } from '@/components';
 import style from '../index.less'
 const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type }) => {
   const dialogRef = useRef();
-  const [list, setList] = useState([]);
-  const selectedVal = useRef();
-  const [bindedVal, setBindedVal] = useState([]);
   const [leftListData, setLeftListData] = useState([]);
   const [mockData, setMockData] = useState([]);
   const [targetKeys, setTargetKeys] = useState([]);
   const [oldMockData, setOldMockData] = useState([]);
-  const [defaultVal, setDefaultVal] = useState();
+
 
   useImperativeHandle(Ref, () => ({
     show: (val) => {
       dialogRef.current && dialogRef.current.show();
-      // id.current = val;
-
-      // List();
-
       getList();
       getLeftList();
     },

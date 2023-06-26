@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select, InputNumber } from 'antd';
+import { Form, message, Select, InputNumber } from 'antd';
 import {
   printOrderAdd,
   printOrderUpdate,
@@ -11,14 +11,7 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 const { Option } = Select;
-const defaultValData = [
-  { id: 'P', name: '阳性' },
-  { id: 'NP', name: '弱阳性' },
-  { id: 'N', name: '阴性' },
-  { id: 'H', name: '偏高' },
-  { id: 'L', name: '偏低' },
-  { id: 'NOR', name: '正常' },
-];
+
 const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -78,7 +71,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -86,7 +79,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
         <Form.Item
           name="labItemId"
           label="报告项目"
@@ -94,9 +87,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
         >
           <Select
             placeholder="请选择报告项目"
-            autoComplete="off"
             allowClear
-            // onChange={handleChangeSelect}
           >
             {reportProjectlist.map((item) => {
               return (

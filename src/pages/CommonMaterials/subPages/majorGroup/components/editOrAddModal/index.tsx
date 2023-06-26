@@ -70,6 +70,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         secondVal = '';
       }
       if (!sampleIdRule2) {
+        third = '';
       }
       let params = {
         barcodeContent,

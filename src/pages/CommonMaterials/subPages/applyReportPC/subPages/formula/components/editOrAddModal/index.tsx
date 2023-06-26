@@ -101,7 +101,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       case 6:
         form.setFieldsValue({ formula: '' });
         break;
-        case 7:
+      case 7:
         calculationResults();
         break;
     }
@@ -170,13 +170,27 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
         </Form.Item>
         <Form.Item label="检测项目">
           <div>
-            <Input placeholder="请输入关键字" onChange={keywordsChange} allowClear />
+            <Input
+              placeholder="请输入关键字"
+              onChange={keywordsChange}
+              allowClear
+              style={{ marginBottom: '10px' }}
+            />
+
             {list?.map((item) => {
               return (
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>{item.itemName}</div>
-                  <div>
-                    <Button onClick={() => add(item.id)}>添加</Button>
+                <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    <div>{item.itemName}</div>
+                    <div>
+                      <Button onClick={() => add(item.id)}>添加</Button>
+                    </div>
                   </div>
                 </div>
               );

@@ -69,7 +69,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
   const onOk = () => {
     form.validateFields().then((value) => {
       if (id) {
-        const { isDisable, returnTypeId, saleCosts, seq ,salePrice,contractPrice} = value;
+        const { isDisable, returnTypeId, saleCosts, seq, salePrice, contractPrice } = value;
         insUnitDiscountUpdate({
           id,
           isDisable,
@@ -77,7 +77,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
           saleCosts,
           seq,
           salePrice,
-          contractPrice
+          contractPrice,
         }).then((res: { code: number }) => {
           if (res.code === 200) {
             message.success('修改成功');
@@ -125,7 +125,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
     getBindsDataList(e);
   };
   const hospitalChange = (e, option) => {
-    if (e.length === 1) {
+    if (e.length === 1 && Object.keys(option[0]).length !== 0) {
       const { priceRate } = option[0].searchData;
       form.setFieldsValue({ contractRate: priceRate });
     } else {
@@ -178,9 +178,8 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
         >
           <Select
             placeholder="请选择单位名称"
-            autoComplete="off"
             allowClear
-            mode="tags"
+            mode="multiple"
             defaultValue={hospitalName}
             disabled={id ? true : false}
             showSearch
@@ -254,7 +253,11 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
                 </>
               }
             >
-              <InputNumber className={styles.number} disabled={id ? true : false} defaultValue={1}></InputNumber>
+              <InputNumber
+                className={styles.number}
+                disabled={id ? true : false}
+                defaultValue={1}
+              ></InputNumber>
             </Form.Item>
           </Col>
         </Row>
@@ -305,11 +308,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
           rules={[{ required: true, message: '请选择回款类别' }]}
           labelCol={{ span: 3 }}
         >
-          <Select
-            placeholder="请选择回款类别"
-            autoComplete="off"
-            allowClear
-          >
+          <Select placeholder="请选择回款类别" autoComplete="off" allowClear>
             {dictList?.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>

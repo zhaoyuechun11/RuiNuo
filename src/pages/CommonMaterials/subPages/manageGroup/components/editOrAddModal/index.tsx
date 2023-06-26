@@ -11,14 +11,17 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
+  const [record, setRecord] = useState({});
   useImperativeHandle(Ref, () => ({
     show: (record) => {
       dialogRef.current && dialogRef.current.show();
       if (record) {
         form.setFieldsValue({ ...record });
         setId(record.id);
+        setRecord(record);
       } else {
         setId(null);
+        setRecord({});
         form && form.resetFields();
       }
     },
@@ -63,11 +66,11 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         <Form.Item label="code值" name="code" rules={[{ required: true, message: '请输入code值' }]}>
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入code值" />
         </Form.Item>
-        <Form.Item label="颜色" name="color">
-          <ColorPicker />
-        </Form.Item>
         <Form.Item label="名称" name="name" rules={[{ required: true, message: '请输入code值' }]}>
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入名称" />
+        </Form.Item>
+        <Form.Item label="颜色" name="color">
+          <ColorPicker backgroundColor={record} />
         </Form.Item>
       </Form>
     </Dialog>

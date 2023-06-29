@@ -1,34 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import styles from './index.less';
 import { UserAddOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Form, Select, Tooltip, Button, message } from 'antd';
-import { connect } from 'umi';
-import { Icon } from '@/components';
-import Table from '../../../../components/Table/index';
+import { useDispatch, useSelector } from 'umi';
+import { Table, Icon } from '@/components';
 import DelRole from '../DelRole';
 import NewAdd from '../NewAdd';
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-
-@connect(({ role, loading, global }) => ({
-  role,
-  global,
-  roleindexLoading: loading.effects['role/fetchRoleIndex'],
-}))
-class RightContent extends Component {
-  constructor(props) {
-    super(props);
-    let { enterprise_id, operator_id } = this.props.global;
-    this.state = {
-      formValues: {
-        operator_id,
-        enterprise_id,
-      },
-    };
-    this.formRef = React.createRef();
-  }
-  columns = [
+const RightContent = () => {
+  const loading = useSelector((state) => state.loading.global);
+  const { rolelistData } = useSelector((state) => state.role);
+  console.log(rolelistData);
+  const dispatch = useDispatch();
+  const [pageNum, setPageNum] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const columns = [
     {
       title: '角色名称',
       dataIndex: 'name',
@@ -103,7 +90,7 @@ class RightContent extends Component {
               {...others}
               type="edit"
               onReload={() => {
-                this.fetchRoleIndex();
+                fetchRoleIndex();
               }}
             >
               <Button className={styles.newadd}>
@@ -114,7 +101,7 @@ class RightContent extends Component {
             <DelRole
               {...others}
               onReload={() => {
-                this.fetchRoleIndex();
+                fetchRoleIndex();
               }}
             >
               <Button className={styles.delete}>
@@ -127,52 +114,37 @@ class RightContent extends Component {
       },
     },
   ];
-  componentDidMount() {
-    this.fetchRoleIndex();
-  }
-  fetchRoleIndex = () => {
-    this.props.dispatch({
+  useEffect(() => {
+    fetchRoleIndex();
+  }, [pageNum, pageSize]);
+
+  const fetchRoleIndex = () => {
+    dispatch({
       type: 'role/fetchRoleIndex',
-      payload: {},
+      payload: { pageNum, pageSize },
     });
   };
-  handleSearch = () => {};
-  handleStandardTableChange = () => {};
-  // renderForm = () => {
-  //   return (
-  //     <Form
-  //       layout="inline"
-  //       onValuesChange={this.handleSearch}
-  //       layout="inline"
-  //       className={styles.rightContentForm}
-  //       ref={this.formRef}
-  //     >
-  //       <FormItem name="">
-  //         <Select placeholder="请选择"></Select>
-  //       </FormItem>
-  //     </Form>
-  //   );
-  // };
-  render() {
-    let { role, roleindexLoading = true } = this.props;
-    let { rolelistData = {} } = role;
 
-    return (
-      <div className={styles.RightContent}>
-        <div className={styles.Head}>
-          {/* {this.renderForm()} */}
-          <NewAdd
-            onReload={() => {
-              this.fetchRoleIndex();
-            }}
-          >
-            <div className={styles.addRole}>
-              <UserAddOutlined />
-              <span>新增角色</span>
-            </div>
-          </NewAdd>
-        </div>
-        <Table
+  const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
+    setPageNum(page);
+    setPageSize(size);
+  };
+
+  return (
+    <div className={styles.RightContent}>
+      <div className={styles.Head}>
+        <NewAdd
+          onReload={() => {
+            fetchRoleIndex();
+          }}
+        >
+          <div className={styles.addRole}>
+            <UserAddOutlined />
+            <span>新增角色</span>
+          </div>
+        </NewAdd>
+      </div>
+      {/* <Table
           className={styles.tablePadding}
           rowClassName={styles.rowStyle}
           columns={this.columns}
@@ -180,10 +152,22 @@ class RightContent extends Component {
           // pagination={false}
           loading={roleindexLoading}
           isRowSelection={false}
-        />
-      </div>
-    );
-  }
-}
+        /> */}
+      <Table
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+        pagination={{
+          current: pageNum,
+          pageSize: pageSize,
+          total: rolelistData.total,
+          onChange: pageChange,
+          showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
+        }}
+        dataSource={rolelistData.list}
+      />
+    </div>
+  );
+};
 
 export default RightContent;

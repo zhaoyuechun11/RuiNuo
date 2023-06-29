@@ -30,6 +30,11 @@ let tabber = [
         path: '/setting/permissionMange',
       },
       {
+        icon: 'iconSZ-renyuanguanli',
+        title: '系统全局选项设置',
+        path: '/setting/globalOptionsSet',
+      },
+      {
         icon: 'iconSZ-gongsixinxi',
         title: '公司信息',
         path: '/setting/companyInfo',
@@ -39,8 +44,6 @@ let tabber = [
 ];
 
 const Setting = ({ global, ...props }) => {
-
-
   const [loading, setLoading] = useState(false);
 
   // 新手引导
@@ -53,7 +56,6 @@ const Setting = ({ global, ...props }) => {
     // 配置钉钉鉴权环境
     `   // INIT_SET_CONFIG();`;
   }, []);
-
 
   // if (global.is_admin * 1 !== 1 && global.is_hr * 1 !== 1) {
   //   tabber.forEach((item, ind) => {

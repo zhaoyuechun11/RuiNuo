@@ -1,6 +1,4 @@
-import {
-  globalSearch,
-} from './server';
+import { userDetail } from './server';
 import isFunction from 'lodash/isFunction';
 let role_type = localStorage.getItem('role_type_arr');
 let router_from = undefined;
@@ -49,7 +47,6 @@ export default {
 
   state: {
     role_type,
-
     positionList: [], // 不需要展示删除职位的数据
     positionDeleteList: [], // 展示删除职位的数据
     departmentList: [], // 不需要展示删除部门的数据
@@ -71,37 +68,24 @@ export default {
     enterInfo: {},
     noticeInfo: {},
     headerShow: true,
-
-    defaultObj: {
-      // 默认的新手引导的值
-      candidateStep: 0,
-      recruitmentStep: 0,
-      talenterStep: 0,
-      calendarStep: 0,
-      settingStep: 0,
-      candidateDetailStep: 0,
-      interviewStep: 0,
-      resumeStep: 0,
-      workStep: 0,
-    },
     navCurrentKey: '',
     showNav: false,
     longSearch: false, //全局搜索候选搜索框
     selectValue: [], //全局搜索候选人选中z值
     selectOption: [], //全局搜索候选人选中条件
     globalSearchParams: null, //全局搜索候选人筛选条件
-    globalSearchList: { count: 0, list: [] }, //全局搜索候选人数据
+    useDetail: { }, //全局搜索候选人数据
     searchList: initialSearchList,
   },
 
   effects: {
-    *globalSearch({ payload: { callback, dataSource } }, { put, call }) {
-      const res = yield call(globalSearch, dataSource);
+    *fetchUserDetail({ payload: { callback, dataSource } }, { put, call }) {
+      const res = yield call(userDetail, dataSource);
       isFunction(callback) && callback(res.data);
       yield put({
         type: 'save',
         payload: {
-          type: 'globalSearchList',
+          type: 'useDetail',
           dataSource: res.data,
         },
       });
@@ -185,7 +169,6 @@ export default {
 
   reducers: {
     save(state, { payload: { type, dataSource } }) {
-      //
       return {
         ...state,
         [type]: dataSource,
@@ -201,7 +184,6 @@ export default {
       return Object.assign({}, state, { ...payload });
     },
     setStepNum(state, { payload }) {
-      //
       return {
         ...state,
         stepObj: { ...state.stepObj, ...payload },

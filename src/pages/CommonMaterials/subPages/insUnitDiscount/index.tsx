@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form, message, Select, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Icon } from '@/components';
-import { useDispatch, useSelector } from 'umi';
-import { downLoad } from '@/utils';
+import { useDispatch, useSelector, useLocation } from 'umi';
+import { downLoad, main } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import styles from '../index.less';
 import BatchImport from '../../commones/batchImport';
@@ -16,18 +16,21 @@ import {
 const { Option } = Select;
 const insUnitDiscount = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
+  const { useDetail } = useSelector((state: any) => state.global);
   const addModal = useRef();
   const [hospitalList, setHospitalList] = useState([]);
   const [list, setList] = useState([]);
   const [returnTypeList, setReturnTypeList] = useState([]);
   const importRef = useRef();
   const searchVal = useRef();
+  const [btnPermissions, setBtnPermissions] = useState([]);
   const Columns = [
     {
       title: '单位编码',
@@ -145,22 +148,31 @@ const insUnitDiscount = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteBind(record.id);
-              }}
-            >
-              删除
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                addModal.current.show(record, 'edit');
-              }}
-            >
-              编辑
-            </Button>
+            {btnPermissions.map((item) => {
+              return (
+                <>
+                  {item.mark === 'delete' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        deleteBind(record.id);
+                      }}
+                    >
+                      删除
+                    </Button>
+                  ) : item.mark === 'edit' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        addModal.current.show(record, 'edit');
+                      }}
+                    >
+                      编辑
+                    </Button>
+                  ) : null}
+                </>
+              );
+            })}
           </div>
         );
       },
@@ -191,6 +203,8 @@ const insUnitDiscount = () => {
   useEffect(() => {
     getHospitalList();
     getReturnTypeList();
+    const { btn } = main(useDetail.permissions, location.pathname);
+    setBtnPermissions(btn);
   }, []);
 
   const onTableChange = (
@@ -315,21 +329,31 @@ const insUnitDiscount = () => {
   return (
     <>
       <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-        <Button btnType="primary" onClick={importData}>
-          导入
-        </Button>
-        <Button btnType="primary" onClick={exportData}>
-          导出
-        </Button>
+        {btnPermissions.map((item) => {
+          return (
+            <>
+              {item.mark === 'add' ? (
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              ) : item.mark === 'import' ? (
+                <Button btnType="primary" onClick={importData}>
+                  导入
+                </Button>
+              ) : item.mark === 'export' ? (
+                <Button btnType="primary" onClick={exportData}>
+                  导出
+                </Button>
+              ) : null}
+            </>
+          );
+        })}
       </div>
       {renderForm()}
       <Table

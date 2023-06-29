@@ -11,7 +11,7 @@ import {
   APItemInstrBindsAdd,
   APItemInstrBindsDelete,
 } from '../../../../models/server';
-const Instrument = ({ parent }) => {
+const Instrument = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -71,16 +71,20 @@ const Instrument = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <Button
-            style={{ margin: 'auto' }}
-            onClick={() => {
-              deleteBind(record.id);
-            }}
-          >
-            删除
-          </Button>
-        );
+        return btnPermissions.map((item) => {
+          return (
+            item.mark === 'instrumentDelete' && (
+              <Button
+                style={{ margin: 'auto' }}
+                onClick={() => {
+                  deleteBind(record.id);
+                }}
+              >
+                删除
+              </Button>
+            )
+          );
+        });
       },
     },
   ];
@@ -169,17 +173,23 @@ const Instrument = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'instrumentAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

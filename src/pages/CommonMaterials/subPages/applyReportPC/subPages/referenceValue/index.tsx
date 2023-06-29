@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, RPreferenceValueDele } from '../../../../models/server';
 const { Option } = Select;
-const ReferenceValue = ({ parent }) => {
+const ReferenceValue = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -93,26 +93,33 @@ const ReferenceValue = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteBind(record.id);
-              }}
-            >
-              删除
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                addModal.current.show(record, 'edit');
-              }}
-            >
-              编辑
-            </Button>
-          </div>
-        );
+        return btnPermissions.map((item) => {
+          {
+            return (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                {item.mark === 'referenceValueDelete' ? (
+                  <Button
+                    style={{ margin: '0 8px' }}
+                    onClick={() => {
+                      deleteBind(record.id);
+                    }}
+                  >
+                    删除
+                  </Button>
+                ) : item.mark === 'referenceValueEdit' ? (
+                  <Button
+                    style={{ margin: '0 8px' }}
+                    onClick={() => {
+                      addModal.current.show(record, 'edit');
+                    }}
+                  >
+                    编辑
+                  </Button>
+                ) : null}
+              </div>
+            );
+          }
+        });
       },
     },
   ];
@@ -209,17 +216,23 @@ const ReferenceValue = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'referenceValueAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

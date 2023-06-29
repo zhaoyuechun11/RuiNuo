@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, RPInstrChannelNumDele } from '../../../../models/server';
 const { Option } = Select;
-const InstrChannelNum = ({ parent }) => {
+const InstrChannelNum = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -53,26 +53,31 @@ const InstrChannelNum = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteBind(record.id);
-              }}
-            >
-              删除
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                addModal.current.show(record, 'edit');
-              }}
-            >
-              编辑
-            </Button>
-          </div>
-        );
+        return btnPermissions.map((item) => {
+          return (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              {item.mark === 'instrumentNumberDelete' ? (
+                <Button
+                  style={{ margin: '0 8px' }}
+                  onClick={() => {
+                    deleteBind(record.id);
+                  }}
+                >
+                  删除
+                </Button>
+              ) : item.mark === 'instrumentNumberEdit' ? (
+                <Button
+                  style={{ margin: '0 8px' }}
+                  onClick={() => {
+                    addModal.current.show(record, 'edit');
+                  }}
+                >
+                  编辑
+                </Button>
+              ) : null}
+            </div>
+          );
+        });
       },
     },
   ];
@@ -177,17 +182,23 @@ const InstrChannelNum = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'instrumentNumberAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

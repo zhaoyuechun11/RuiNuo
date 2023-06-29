@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'umi';
-import { downLoad } from '@/utils';
+import { useDispatch, useSelector, useLocation } from 'umi';
+import { downLoad,main } from '@/utils';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message, Tabs } from 'antd';
@@ -9,20 +9,26 @@ import styles from '../index.less';
 import EditOrAddModal from './components/editOrAddModal';
 import BindModal from './components/bindModal';
 import PrintSeq from './subPages/printSeq';
+
 const { TabPane } = Tabs;
 const inspectionInstruments = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state) => state.loading.global);
+  const { useDetail } = useSelector((state: any) => state.global);
   const bindRef = useRef();
   const modalRef = useRef();
   const searchVal = useRef();
   const [list, setList] = useState([]);
   const [currentItem, setCurrentItem] = useState();
+  const [btnPermissions, setBtnPermissions] = useState([]);
+  console.log('location', location);
+  console.log('useDetail', useDetail);
   const columns = [
     {
       title: '资产编号',
@@ -70,30 +76,40 @@ const inspectionInstruments = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                modalRef.current.show(record);
-              }}
-            >
-              修改
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteCurrentItem(record.id);
-              }}
-            >
-              删除
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                bindRef.current.show(record.id);
-              }}
-            >
-              绑定
-            </Button>
+            {btnPermissions.map((item) => {
+              return (
+                <>
+                  {item.mark === 'edit' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        modalRef.current.show(record);
+                      }}
+                    >
+                      修改
+                    </Button>
+                  ) : item.mark === 'delete' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        deleteCurrentItem(record.id);
+                      }}
+                    >
+                      删除
+                    </Button>
+                  ) : item.mark === 'bind' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        bindRef.current.show(record.id);
+                      }}
+                    >
+                      绑定
+                    </Button>
+                  ) : null}
+                </>
+              );
+            })}
             <Button
               onClick={() => {
                 getCurrentItem(record);
@@ -129,7 +145,11 @@ const inspectionInstruments = () => {
   );
   useEffect(() => {
     getList({ pageNum, pageSize });
+    const { btn } = main(useDetail.permissions, location.pathname);
+    setBtnPermissions(btn);
   }, [pageNum, pageSize]);
+
+ 
 
   const onTableChange = (
     pagination: Record<string, unknown>,
@@ -203,16 +223,22 @@ const inspectionInstruments = () => {
   return (
     <>
       <div className={styles.operateBtns}>
-        <Button btnType="primary" onClick={add}>
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-        <Button btnType="primary" onClick={importData}>
-          导入
-        </Button>
-        <Button btnType="primary" onClick={exportData}>
-          导出
-        </Button>
+        {btnPermissions.map((item) => {
+          return item.mark === 'add' ? (
+            <Button btnType="primary" onClick={add}>
+              <PlusOutlined style={{ marginRight: 4 }} />
+              新增
+            </Button>
+          ) : item.mark === 'import' ? (
+            <Button btnType="primary" onClick={importData}>
+              导入
+            </Button>
+          ) : item.mark === 'export' ? (
+            <Button btnType="primary" onClick={exportData}>
+              导出
+            </Button>
+          ) : null;
+        })}
       </div>
       {renderForm()}
       <Table
@@ -240,7 +266,7 @@ const inspectionInstruments = () => {
       ></EditOrAddModal>
       <Tabs type="card">
         <TabPane tab="打印顺序" key="0">
-          <PrintSeq parent={currentItem || list[0]} />
+          <PrintSeq parent={currentItem || list[0]} btnPermissions={btnPermissions}/>
         </TabPane>
       </Tabs>
     </>

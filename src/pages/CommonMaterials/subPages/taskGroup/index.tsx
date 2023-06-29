@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector, history } from 'umi';
+import { useDispatch, useSelector, useLocation } from 'umi';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input } from 'antd';
+import { main } from '@/utils';
 import BindModal from './components/bindModal';
 const TaskGroup = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state) => state.loading.global);
+  const { useDetail } = useSelector((state: any) => state.global);
   const bindRef = useRef();
-
+  const [btnPermissions, setBtnPermissions] = useState([]);
   const [list, setList] = useState([]);
   const statisticsColumns = [
     {
@@ -79,16 +82,20 @@ const TaskGroup = () => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <Button
-            style={{ display: 'initial' }}
-            onClick={() => {
-              bindRef.current.show(record.id);
-            }}
-          >
-            绑定
-          </Button>
-        );
+        return btnPermissions.map((item) => {
+          return (
+            item.mark === 'bind' && (
+              <Button
+                style={{ display: 'initial' }}
+                onClick={() => {
+                  bindRef.current.show(record.id);
+                }}
+              >
+                绑定
+              </Button>
+            )
+          );
+        });
       },
     },
   ];
@@ -113,7 +120,10 @@ const TaskGroup = () => {
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
-
+  useEffect(() => {
+    const { btn } = main(useDetail.permissions, location.pathname);
+    setBtnPermissions(btn);
+  }, []);
   const onTableChange = (
     pagination: Record<string, unknown>,
     filters: Record<string, unknown>,

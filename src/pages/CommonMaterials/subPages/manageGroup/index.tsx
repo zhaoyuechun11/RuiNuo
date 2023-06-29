@@ -1,25 +1,28 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'umi';
+import { useDispatch, useSelector, useLocation } from 'umi';
 import { stringify } from 'qs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message } from 'antd';
-import { downLoad } from '@/utils';
+import { downLoad, main } from '@/utils';
 import env from '@/utils/env';
 import EditOrAddModal from './components/editOrAddModal';
 import { deleteManageGroup, manageGroupExport } from '../../models/server';
 import styles from './index.less';
 const ManageGroup = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state) => state.loading.global);
+  const { useDetail } = useSelector((state: any) => state.global);
   const modalRef = useRef();
   const searchVal = useRef();
   const [list, setList] = useState([]);
+  const [btnPermissions, setBtnPermissions] = useState([]);
   const manageGroupColumns = [
     {
       title: 'code值',
@@ -54,22 +57,31 @@ const ManageGroup = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                modalRef.current.show(record);
-              }}
-            >
-              修改
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteCurrentItem(record.id);
-              }}
-            >
-              删除
-            </Button>
+            {btnPermissions.map((item) => {
+              return (
+                <>
+                  {item.mark === 'edit' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        modalRef.current.show(record);
+                      }}
+                    >
+                      修改
+                    </Button>
+                  ) : item.mark === 'delete' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        deleteCurrentItem(record.id);
+                      }}
+                    >
+                      删除
+                    </Button>
+                  ) : null}
+                </>
+              );
+            })}
           </div>
         );
       },
@@ -99,7 +111,10 @@ const ManageGroup = () => {
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
-
+  useEffect(() => {
+    const { btn } = main(useDetail.permissions, location.pathname);
+    setBtnPermissions(btn);
+  }, []);
   const onTableChange = (
     pagination: Record<string, unknown>,
     filters: Record<string, unknown>,
@@ -169,16 +184,26 @@ const ManageGroup = () => {
   return (
     <>
       <div className={styles.operateBtns}>
-        <Button btnType="primary" onClick={add}>
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-        <Button btnType="primary" onClick={importData}>
-          导入
-        </Button>
-        <Button btnType="primary" onClick={exportData}>
-          导出
-        </Button>
+        {btnPermissions.map((item) => {
+          return (
+            <>
+              {item.mark === 'add' ? (
+                <Button btnType="primary" onClick={add}>
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              ) : item.mark === 'import' ? (
+                <Button btnType="primary" onClick={importData}>
+                  导入
+                </Button>
+              ) : item.mark === 'export' ? (
+                <Button btnType="primary" onClick={exportData}>
+                  导出
+                </Button>
+              ) : null}
+            </>
+          );
+        })}
       </div>
       {renderForm()}
       <Table

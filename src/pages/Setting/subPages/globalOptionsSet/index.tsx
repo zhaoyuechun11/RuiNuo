@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector, useLocation } from 'umi';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Form, message, Select, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
-import { Form, Input, message } from 'antd';
+import { Button, Table, Icon } from '@/components';
+import { useDispatch, useSelector, useLocation } from 'umi';
 import { downLoad, main } from '@/utils';
-import { deleteMajorGroup, majorGroupExport } from '../../models/server';
-import styles from './index.less';
 import EditOrAddModal from './components/editOrAddModal';
-import BindModal from './components/bindModal';
-const MajorGroup = () => {
+import styles from './index.less';
+import { dictList, paramsSetExport,paramsSetDelete } from '../../models/server';
+import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
+const { Option } = Select;
+const GlobalOptionsSet = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
@@ -16,114 +17,101 @@ const MajorGroup = () => {
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
-  const loading = useSelector((state) => state.loading.global);
+  const loading = useSelector((state: any) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
-  const modalRef = useRef();
-  const searchVal = useRef();
-  const bindRef = useRef();
+  const addModal = useRef();
+  const [paramTypeList, setParamTypeList] = useState([]);
   const [list, setList] = useState([]);
-  const [btnPermissions, setBtnPermissions] = useState([]);
-  const columns = [
+  const importRef = useRef();
+  const searchVal = useRef();
+  const [btnPermissions, setBtnPermissions] = useState([
     {
-      title: '条码号内容(01样本条码，02病理编号)',
-      dataIndex: 'barcodeContent',
+      mark: 'add',
+      path: '',
+      title: '新增',
+      icon: 'T8-shezhi-weixuanzhong',
+      selIcon: 'T8-shezhi-xuanzhong',
+      children: [],
+    },
+    {
+      mark: 'edit',
+      path: '',
+      title: '编辑',
+      icon: 'T8-shezhi-weixuanzhong',
+      selIcon: 'T8-shezhi-xuanzhong',
+      children: [],
+    },
+    {
+      mark: 'delete',
+      path: '',
+      title: '删除',
+      icon: 'T8-shezhi-weixuanzhong',
+      selIcon: 'T8-shezhi-xuanzhong',
+      children: [],
+    },
+    {
+      mark: 'import',
+      path: '',
+      title: '导入',
+      icon: 'T8-shezhi-weixuanzhong',
+      selIcon: 'T8-shezhi-xuanzhong',
+      children: [],
+    },
+    {
+      mark: 'export',
+      path: '',
+      title: '导出',
+      icon: 'T8-shezhi-weixuanzhong',
+      selIcon: 'T8-shezhi-xuanzhong',
+      children: [],
+    },
+  ]);
+  const Columns = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      align: 'center',
+      width: 150,
       fixed: 'left',
+      key: 'id',
+    },
+    {
+      title: '参数类别',
+      dataIndex: 'paramTypeName',
+      align: 'center',
+      width: 150,
+      key: 'paramTypeName',
+      sorter: (a, b) => a.paramTypeName.length - b.paramTypeName.length,
+    },
+    {
+      title: '参数编码',
+      dataIndex: 'code',
+      align: 'center',
+      width: 150,
+      key: 'code',
+      sorter: (a, b) => a.code.length - b.code.length,
+    },
+    {
+      title: '参数值1',
+      dataIndex: 'value1',
       align: 'center',
       width: 150,
     },
     {
-      title: '分类编码',
-      dataIndex: 'classCode',
+      title: '参数值2',
+      dataIndex: 'value2',
       align: 'center',
       width: 150,
     },
     {
-      title: '分类名称',
-      dataIndex: 'className',
+      title: '参数值3',
+      dataIndex: 'value3',
       align: 'center',
       width: 150,
     },
     {
-      title: '颜色',
-      dataIndex: 'color',
-      align: 'center',
-      width: 150,
-      render: (text) => {
-        return (
-          <span
-            style={{
-              backgroundColor: text,
-              display: 'inline-block',
-              width: '10px',
-              height: '10px',
-            }}
-          ></span>
-        );
-      },
-    },
-    {
-      title: '创建者id',
-      dataIndex: 'createBy',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '创建日期',
-      dataIndex: 'createDate',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '是否自动生成预制样本号',
-      dataIndex: 'isAutoSampleId',
-      align: 'center',
-      width: 180,
-    },
-    {
-      title: '创建者id',
-      dataIndex: 'createBy',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '是否打印样本条码',
-      dataIndex: 'isPrintBarcode',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '样本号用作样本条码号',
-      dataIndex: 'isSampleIdAsBarcode',
-      align: 'center',
-      width: 180,
-    },
-    {
-      title: '管理分类id',
-      dataIndex: 'labClassManageId',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '管理分类名称',
-      dataIndex: 'labClassManageName',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '实验室编码',
-      dataIndex: 'labId',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '样本号重置规则',
-      dataIndex: 'sampleIdResetRule',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '样本号生成规则',
-      dataIndex: 'sampleIdRule',
+      title: '备注',
+      dataIndex: 'remark',
       align: 'center',
       width: 150,
     },
@@ -131,45 +119,38 @@ const MajorGroup = () => {
       title: '顺序',
       dataIndex: 'seq',
       align: 'center',
-      width: 100,
+      width: 150,
+      key: 'code',
+      sorter: (a, b) => a.seq.length - b.seq.length,
     },
     {
       title: '操作',
-      fixed: 'right',
       align: 'center',
-      width: 250,
+      width: 200,
+      fixed: 'right',
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {btnPermissions.map((item) => {
               return (
                 <>
-                  {item.mark === 'edit' ? (
+                  {item.mark === 'delete' ? (
                     <Button
                       style={{ margin: '0 8px' }}
                       onClick={() => {
-                        modalRef.current.show(record);
-                      }}
-                    >
-                      修改
-                    </Button>
-                  ) : item.mark === 'delete' ? (
-                    <Button
-                      style={{ margin: '0 8px' }}
-                      onClick={() => {
-                        deleteCurrentItem(record.id);
+                        deleteBind(record.id);
                       }}
                     >
                       删除
                     </Button>
-                  ) : item.mark === 'bind' ? (
+                  ) : item.mark === 'edit' ? (
                     <Button
                       style={{ margin: '0 8px' }}
                       onClick={() => {
-                        bindRef.current.show(record.id);
+                        addModal.current.show(record, 'edit');
                       }}
                     >
-                      绑
+                      编辑
                     </Button>
                   ) : null}
                 </>
@@ -182,15 +163,12 @@ const MajorGroup = () => {
   ];
 
   const getList = useCallback(
-    (params) => {
+    (params: any) => {
       dispatch({
-        type: 'commonMaterials/fetchMajorGroupList',
+        type: 'Setting/fetchParamsSetList',
         payload: {
           ...params,
-          callback: (res: {
-            code: number;
-            data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
-          }) => {
+          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
             if (res.code === 200) {
               setList(res.data.records);
               setTotal(res.data.total);
@@ -199,15 +177,18 @@ const MajorGroup = () => {
         },
       });
     },
-    [dispatch, sort, order],
+    [dispatch],
   );
   useEffect(() => {
     getList({ pageNum, pageSize });
+    getDictList();
   }, [pageNum, pageSize]);
   useEffect(() => {
-    const { btn } = main(useDetail.permissions, location.pathname);
-    setBtnPermissions(btn);
+    // const { btn } = main(useDetail.permissions, 'commonMaterials/inspectionUnit');
+    // debugger;
+    // setBtnPermissions(btn);
   }, []);
+
   const onTableChange = (
     pagination: Record<string, unknown>,
     filters: Record<string, unknown>,
@@ -223,7 +204,7 @@ const MajorGroup = () => {
     setPageNum(page);
     setPageSize(size);
   };
-  const handleSearch = (changedValues: any, allValues: undefined) => {
+  const handleSearch = (changedValues, allValues) => {
     searchVal.current = allValues;
     const values = {
       pageNum,
@@ -232,39 +213,58 @@ const MajorGroup = () => {
     };
     getList(values);
   };
-  const add = () => {
-    modalRef.current && modalRef.current.show();
-  };
-  const deleteCurrentItem = (id: any) => {
-    deleteMajorGroup({ ids: [id] }).then((res: { code: number }) => {
+  const deleteBind = (id: any) => {
+    paramsSetDelete({ ids: [id] }).then((res) => {
       if (res.code === 200) {
-        getList({ pageNum, pageSize });
         message.success('删除成功');
+        getList({ pageNum, pageSize });
       }
     });
   };
-  const importData = () => {};
-  const exportData = () => {
-    majorGroupExport({ ...searchVal.current }).then((res) => {
-      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
-      const href = URL.createObjectURL(blob);
-      downLoad(href, '专业分类维护');
+  const getDictList = () => {
+    dictList({ type: 'GP' }).then((res) => {
+      if (res.code === 200) {
+        setParamTypeList(res.data);
+      }
     });
   };
+  const importData = () => {
+    importRef.current.show();
+  };
+  const exportData = () => {
+    paramsSetExport({ ...searchVal.current }).then((res) => {
+      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
+      const href = URL.createObjectURL(blob);
+      downLoad(href, '系统全局选项');
+    });
+  };
+
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
+        <Form.Item name="paramTypeId">
+          <Select placeholder="请选择类别" allowClear showSearch style={{ width: 224, height: 35 }}>
+            {paramTypeList.map((item) => {
+              return (
+                <Option value={item.id} key={item.id}>
+                  {item.dictValue}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+
         <Form.Item name="code">
           <Input
-            placeholder="请输入分类编码"
+            placeholder="请输入参数编码"
             autoComplete="off"
             suffix={<Icon name="icongongzuotai-sousuo" />}
             allowClear
           />
         </Form.Item>
-        <Form.Item name="name">
+        <Form.Item name="remark">
           <Input
-            placeholder="请输入分类名称"
+            placeholder="请输入备注"
             autoComplete="off"
             suffix={<Icon name="icongongzuotai-sousuo" />}
             allowClear
@@ -276,11 +276,16 @@ const MajorGroup = () => {
   return (
     <>
       <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
+        {btnPermissions?.map((item) => {
           return (
             <>
               {item.mark === 'add' ? (
-                <Button btnType="primary" onClick={add}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
                   <PlusOutlined style={{ marginRight: 4 }} />
                   新增
                 </Button>
@@ -299,7 +304,7 @@ const MajorGroup = () => {
       </div>
       {renderForm()}
       <Table
-        columns={columns}
+        columns={Columns}
         rowKey="id"
         // onSelectCount={(count, keys) => {
         //   setSelectedCount(count);
@@ -316,12 +321,18 @@ const MajorGroup = () => {
         }}
         dataSource={list}
       />
+      <BatchImport
+        cRef={importRef}
+        actionUrl={`${process.env.baseURL}/basic/parameter/importParameter`}
+        title={'系统全局选项设置'}
+        refresh={() => getList({ pageNum, pageSize })}
+      ></BatchImport>
       <EditOrAddModal
-        Ref={modalRef}
+        Ref={addModal}
+        paramTypeList={paramTypeList}
         refresh={() => getList({ pageNum, pageSize })}
       ></EditOrAddModal>
-      <BindModal Ref={bindRef} refresh={() => getList({ pageNum, pageSize })}></BindModal>
     </>
   );
 };
-export default MajorGroup;
+export default GlobalOptionsSet;

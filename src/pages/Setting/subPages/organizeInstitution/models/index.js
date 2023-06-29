@@ -47,6 +47,7 @@ export default {
         let list = parseJson(response.data.records);
         let payloadData = {
           list,
+          total:response.data.total
         };
         yield put({
           type: 'saveRoleList',

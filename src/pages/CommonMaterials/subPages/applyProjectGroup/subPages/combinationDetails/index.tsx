@@ -6,7 +6,7 @@ import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import ComDetailsAdd from '../components/comDetailsAdd';
 import { applyProjectItemByCompBindDe } from '../../../../models/server';
-const CombinationDetails = ({ parent }) => {
+const CombinationDetails = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -44,16 +44,20 @@ const CombinationDetails = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <Button
-            style={{ margin: 'auto' }}
-            onClick={() => {
-              deleteCurrentItem(record.id);
-            }}
-          >
-            删除
-          </Button>
-        );
+        return btnPermissions.map((item) => {
+          return (
+            item.mark === 'combinationDetailsDelete' && (
+              <Button
+                style={{ margin: 'auto' }}
+                onClick={() => {
+                  deleteCurrentItem(record.id);
+                }}
+              >
+                删除
+              </Button>
+            )
+          );
+        });
       },
     },
   ];
@@ -142,17 +146,23 @@ const CombinationDetails = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'combinationDetailsAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

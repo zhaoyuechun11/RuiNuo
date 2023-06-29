@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, printOrderDele } from '../../../../models/server';
 const { Option } = Select;
-const PrintSeq = ({ parent }) => {
+const PrintSeq = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -42,22 +42,31 @@ const PrintSeq = ({ parent }) => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteBind(record.id);
-              }}
-            >
-              删除
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                addModal.current.show(record, 'edit');
-              }}
-            >
-              编辑
-            </Button>
+            {btnPermissions.map((item) => {
+              return (
+                <>
+                  {item.mark === 'printDelete' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        deleteBind(record.id);
+                      }}
+                    >
+                      删除
+                    </Button>
+                  ) : item.mark === 'printEdit' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        addModal.current.show(record, 'edit');
+                      }}
+                    >
+                      编辑
+                    </Button>
+                  ) : null}
+                </>
+              );
+            })}
           </div>
         );
       },
@@ -151,17 +160,23 @@ const PrintSeq = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'printAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

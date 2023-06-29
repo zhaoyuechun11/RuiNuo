@@ -4,7 +4,7 @@ import { message, Form, Input, TreeSelect } from 'antd';
 import isFunction from 'lodash/isFunction';
 import debounce from 'lodash/debounce';
 import { connect } from 'umi';
-import { permissList, listForRole} from '../../models/server';
+import { permissList, listForRole } from '../../models/server';
 import styles from './index.less';
 
 const layout = {
@@ -13,6 +13,9 @@ const layout = {
 };
 const FormItem = Form.Item;
 const { SHOW_ALL } = TreeSelect;
+const { TreeNode } = TreeSelect;
+
+
 @connect(({ role, loading }) => ({
   role,
   addLoading: loading.effects['role/addRole'],
@@ -23,7 +26,6 @@ class NewaddRoleDialog extends Component {
     this.state = {
       loading: true,
       value: undefined,
-      valuePermis: [],
       permissListTreeData: [],
     };
     this.onOk = debounce(this.onOk.bind(this), 200);
@@ -32,8 +34,13 @@ class NewaddRoleDialog extends Component {
     this.dialogRef = React.createRef();
   }
 
-  onChange = (newValue) => {
-    this.setState({ valuePermis: newValue });
+  onChange = (newValue, label, extra) => {
+    console.log('label', label, extra, newValue);
+    console.log('extra', extra);
+    console.log('newValue', newValue);
+  };
+  onSelect = (value, node, extra) => {
+    console.log('onSelect', value, node, extra);
   };
 
   componentDidMount() {
@@ -45,6 +52,7 @@ class NewaddRoleDialog extends Component {
     permissList().then((res) => {
       if (res.code === 200) {
         this.setState({ permissListTreeData: res.data });
+     
       }
     });
   };
@@ -83,17 +91,11 @@ class NewaddRoleDialog extends Component {
   };
 
   onFinish = (values) => {
-    const permissId = values.pid?.map((item) => {
-      if (item.value) {
-        return item.value;
-      } else {
-        return item;
-      }
-    });
+    debugger;
     let { onReload, type = '', id } = this.props;
     let formData = {
-      ...values,
-      permissionIds: permissId,
+      name: values.name,
+      permissionIds: values.pid,
     };
     if (type === 'edit') {
       this.props.dispatch({
@@ -105,6 +107,12 @@ class NewaddRoleDialog extends Component {
             message.success(`编辑成功`, 2.5);
             this.dialogRef.current.hide();
             isFunction(onReload) && onReload();
+            this.props.dispatch({
+              type: 'global/fetchUserDetail',
+              payload: {
+                callback: (res) => {},
+              },
+            });
           },
         },
       });
@@ -114,15 +122,45 @@ class NewaddRoleDialog extends Component {
       type: 'role/addRole',
       payload: {
         ...formData,
-        permissionIds: permissId,
         callback: () => {
           message.success(`添加成功`, 2.5);
           this.dialogRef.current.hide();
           isFunction(onReload) && onReload();
+          this.props.dispatch({
+            type: 'global/fetchUserDetail',
+            payload: {
+              callback: (res) => {},
+            },
+          });
         },
       },
     });
   };
+  renderUserTreeNodes = (data) =>
+    data.map((item) => {
+      if (item.children) {
+        return (
+          <TreeNode
+            checkable
+            dataRef={item}
+            title={item.title}
+            key={`${item.key}`}
+            value={item.key}
+          >
+            {this.renderUserTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return (
+        <TreeNode
+          checkable
+          dataRef={item}
+          key={`${item.key}`}
+          title={item.title}
+          value={item.key}
+        />
+      );
+    });
   render() {
     let { addLoading = false, type = '' } = this.props;
     let { loading } = this.state;
@@ -184,7 +222,7 @@ class NewaddRoleDialog extends Component {
           >
             <Input placeholder="请填写角色描述" autoComplete="off" allowClear />
           </FormItem>
-          <div id="pid" className={styles.pid}>
+          {/* <div id="pid" className={styles.pid}>
             <FormItem
               name="pid"
               label="角色权限"
@@ -202,10 +240,28 @@ class NewaddRoleDialog extends Component {
                 treeData={this.state.permissListTreeData}
                 treeCheckable
                 showCheckedStrategy={SHOW_ALL}
-                treeCheckStrictly
-                onChange={this.onChange}
+                // onChange={this.onChange}
+                // onSelect={this.onSelect}
                 getPopupContainer={() => document.getElementById('pid')}
               />
+            </FormItem>
+          </div> */}
+          <div id="pid" className={styles.pid}>
+            <FormItem name="pid" label="角色权限">
+              <TreeSelect
+                showSearch
+                style={{ width: '100%' }}
+                value={this.state.value}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                placeholder="Please select"
+                allowClear
+                multiple
+                // treeCheckable
+                // treeDefaultExpandAll
+                onChange={this.onChange}
+              >
+                {this.renderUserTreeNodes(this.state.permissListTreeData)}
+              </TreeSelect>
             </FormItem>
           </div>
         </Form>

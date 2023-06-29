@@ -13,7 +13,7 @@ import {
   labItemResultsUpdate,
 } from '../../../../models/server';
 import ReportAdd from '../components/reportAdd';
-const ReportProject = ({ parent }) => {
+const ReportProject = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -73,16 +73,20 @@ const ReportProject = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <Button
-            style={{ margin: 'auto' }}
-            onClick={() => {
-              deleteBind(record.id);
-            }}
-          >
-            删除
-          </Button>
-        );
+        return btnPermissions.map((item) => {
+          return (
+            item.mark === 'reportDelete' && (
+              <Button
+                style={{ margin: 'auto' }}
+                onClick={() => {
+                  deleteBind(record.id);
+                }}
+              >
+                删除
+              </Button>
+            )
+          );
+        });
       },
     },
   ];
@@ -180,17 +184,23 @@ const ReportProject = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'reportAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

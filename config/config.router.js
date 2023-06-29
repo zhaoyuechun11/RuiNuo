@@ -90,9 +90,9 @@ export default {
             },
 
             {
-              path: '/setting/standardResume',
-              component: '@/pages/Setting/subPages/standardResume',
-              title: '设置/标准简历',
+              path: '/setting/globalOptionsSet',
+              component: '@/pages/Setting/subPages/globalOptionsSet',
+              title: '系统全局选项设置',
             },
           ],
         },

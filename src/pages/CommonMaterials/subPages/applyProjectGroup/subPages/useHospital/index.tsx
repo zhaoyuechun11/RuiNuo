@@ -11,7 +11,7 @@ import {
   hospitalSelectList,
   applyProjectByIdDeleteBind,
 } from '../../../../models/server';
-const UseHospital = ({ parent }) => {
+const UseHospital = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -49,18 +49,22 @@ const UseHospital = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteBind(record.id);
-              }}
-            >
-              删除
-            </Button>
-          </div>
-        );
+        return btnPermissions.map((item) => {
+          return (
+            item.mark === 'usingHospitalsDelete' && (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  style={{ margin: '0 8px' }}
+                  onClick={() => {
+                    deleteBind(record.id);
+                  }}
+                >
+                  删除
+                </Button>
+              </div>
+            )
+          );
+        });
       },
     },
   ];
@@ -150,17 +154,23 @@ const UseHospital = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'usingHospitalsAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

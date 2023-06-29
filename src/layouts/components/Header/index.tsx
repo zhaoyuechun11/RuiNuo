@@ -1,24 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Popover, Button } from 'antd';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Popover } from 'antd';
 import style from './index.less';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { detail } from './server';
+import { useDispatch } from 'umi';
 import UpdatePassword from './components/UpdatePassword';
 
 const HeaderContent = () => {
   const [userData, setUserData] = useState();
   const updatePwd = useRef();
+  const dispatch = useDispatch();
   useEffect(() => {
     getUserDetail();
   }, []);
-  const getUserDetail = () => {
-    detail().then((res) => {
-      if (res.code === 200) {
-        setUserData(res.data);
-      }
-    });
-  };
 
+  const getUserDetail = useCallback(() => {
+    dispatch({
+      type: 'global/fetchUserDetail',
+      payload: {
+        callback: (res) => {
+          setUserData(res);
+        },
+      },
+    });
+  }, [dispatch]);
   const infoMenu = (
     <div>
       <p className={style.showContent}>

@@ -75,16 +75,17 @@ axios.interceptors.response.use(
     console.log('res', res);
     const data = res.data;
     const { status } = res;
-    //const status=401
 
-    if (status === 200&& data.code===200|| status === 402) {
+    if (data.code === 200 || data.code === 402) {
       return Promise.resolve(res);
     } else if (status === 401) {
       history.push('/login');
       return;
     } else {
       // 后台返回非200状态码做错误提示
-      message.warning(data.msg);
+      if (toString.call(data) !== '[object Blob]') {
+        message.warning(data.msg);
+      }
       return Promise.resolve(res);
     }
   },

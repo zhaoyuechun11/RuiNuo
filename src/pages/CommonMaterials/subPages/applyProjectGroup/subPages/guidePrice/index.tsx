@@ -6,7 +6,7 @@ import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { guidPriceDeleteBind } from '../../../../models/server';
-const GuidePrice = ({ parent }) => {
+const GuidePrice = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -39,26 +39,29 @@ const GuidePrice = ({ parent }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return (
+        return btnPermissions.map((item) => {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteBind(record.id);
-              }}
-            >
-              删除
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                addModal.current.show(record, 'edit');
-              }}
-            >
-              编辑
-            </Button>
-          </div>
-        );
+            {item.mark === 'guidePriceDelete' ? (
+              <Button
+                style={{ margin: '0 8px' }}
+                onClick={() => {
+                  deleteBind(record.id);
+                }}
+              >
+                删除
+              </Button>
+            ) : item.mark === 'guidePriceEdit' ? (
+              <Button
+                style={{ margin: '0 8px' }}
+                onClick={() => {
+                  addModal.current.show(record, 'edit');
+                }}
+              >
+                编辑
+              </Button>
+            ) : null}
+          </div>;
+        });
       },
     },
   ];
@@ -139,17 +142,23 @@ const GuidePrice = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          item.mark === 'guidePriceAdd' && (
+            <div className={styles.operateBtns}>
+              <Button
+                btnType="primary"
+                onClick={() => {
+                  addModal.current.show();
+                }}
+              >
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            </div>
+          )
+        );
+      })}
       {renderForm()}
       <Table
         columns={Columns}

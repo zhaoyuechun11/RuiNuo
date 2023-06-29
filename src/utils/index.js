@@ -272,7 +272,6 @@ export function wangEditorUploadImage(editor) {
   editor.customConfig.uploadImgServer = URL.apiurl_web + '/file/upload';
   editor.customConfig.uploadImgHeaders = {
     Authorization: `${localStorage.getItem('access_token')}`,
-
   };
   editor.customConfig.uploadImgHooks = {
     success: function (xhr, editor, result) {
@@ -314,4 +313,70 @@ export const downLoad = (href, fileName) => {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+};
+export const main = (data, path) => {
+  let result = {};
+  data.forEach(function (item) {
+    //if用来判断外层，else if用来判断里层，调用递归函数的有2个判断条件在“有goods属性并且不为空”情况下才调用
+    if (item.url === path) {
+      result = item;
+      console.log('item', item);
+    } else if (item.children && item.children.length > 0) {
+      result = main(item.children, path); //递归
+    }
+  });
+  return result;
+};
+/**
+ * 扁平化数据转树形结构
+ * @param {*} data
+ * @returns
+ */
+export const flatToTree = (data) => {
+  const result = [];
+  const itemMap = {};
+  for (const item of data) {
+    const id = item.id;
+    const pId = item.parentId;
+
+    if (itemMap[id]) {
+      itemMap[id] = {
+        ...itemMap[id],
+        ...item,
+      };
+    } else {
+      itemMap[id] = { ...item };
+    }
+
+    const treeItem = itemMap[id];
+
+    if (!pId || pId === '0') {
+      result.push(treeItem);
+    } else {
+      if (!itemMap[pId]) {
+        itemMap[pId] = {
+          children: [],
+        };
+      }
+      if (!itemMap[pId].children) {
+        itemMap[pId].children = [];
+      }
+      itemMap[pId].children.push(treeItem);
+    }
+  }
+  return result;
+};
+export const flatToTree2 = (data) => {
+  const result = [];
+  const fn = (arr, cArr, parentId = '0') => {
+    for (let i = 0; i < arr?.length; i++) {
+      const item = { ...arr[i], children: [] };
+      if (arr[i].parentId === parentId) {
+        cArr.push(item);
+        fn(arr, item.children, arr[i].id);
+      }
+    }
+  };
+  fn(data, result);
+  return result;
 };

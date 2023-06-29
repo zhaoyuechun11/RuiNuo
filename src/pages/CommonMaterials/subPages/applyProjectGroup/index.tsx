@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector } from 'umi';
+import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select, Switch } from 'antd';
-import { downLoad } from '@/utils';
+import { downLoad, main } from '@/utils';
 import { applyProjectDelete, applyProjectExport, majorGroup } from '../../models/server';
 import styles from '../index.less';
 import UseHospital from './subPages/useHospital';
@@ -16,12 +16,14 @@ import BatchImport from '../../commones/batchImport';
 const { TabPane } = Tabs;
 const ApplyProjectGroup = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
   const [sortedInfo, setSortedInfo] = useState({});
   const loading = useSelector((state) => state.loading.global);
+  const { useDetail } = useSelector((state: any) => state.global);
   const modalRef = useRef();
   const searchVal = useRef();
   const [majorGroupData, setMajorGroupData] = useState([]);
@@ -30,6 +32,7 @@ const ApplyProjectGroup = () => {
   const [list, setList] = useState([]);
   const confirmModalRef = useRef();
   const idRef = useRef();
+  const [btnPermissions, setBtnPermissions] = useState([]);
   const columns = [
     {
       title: '项目类别',
@@ -180,22 +183,31 @@ const ApplyProjectGroup = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                modalRef.current.show(record);
-              }}
-            >
-              修改
-            </Button>
-            <Button
-              style={{ margin: '0 8px' }}
-              onClick={() => {
-                deleteCurrentItem(record.id);
-              }}
-            >
-              删除
-            </Button>
+            {btnPermissions.map((item) => {
+              return (
+                <>
+                  {item.mark === 'edit' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        modalRef.current.show(record);
+                      }}
+                    >
+                      修改
+                    </Button>
+                  ) : item.mark === 'delete' ? (
+                    <Button
+                      style={{ margin: '0 8px' }}
+                      onClick={() => {
+                        deleteCurrentItem(record.id);
+                      }}
+                    >
+                      删除
+                    </Button>
+                  ) : null}
+                </>
+              );
+            })}
             <Button
               onClick={() => {
                 getCurrentItem(record);
@@ -235,6 +247,8 @@ const ApplyProjectGroup = () => {
   }, [pageNum, pageSize]);
   useEffect(() => {
     majorGroupList();
+    const { btn } = main(useDetail.permissions, location.pathname);
+    setBtnPermissions(btn);
   }, []);
 
   const onTableChange = (
@@ -340,18 +354,26 @@ const ApplyProjectGroup = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button btnType="primary" onClick={add}>
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
-        <Button btnType="primary" onClick={importData}>
-          导入
-        </Button>
-        <Button btnType="primary" onClick={exportData}>
-          导出
-        </Button>
-      </div>
+      {btnPermissions.map((item) => {
+        return (
+          <div className={styles.operateBtns}>
+            {item.mark === 'add' ? (
+              <Button btnType="primary" onClick={add}>
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            ) : item.mark === 'import' ? (
+              <Button btnType="primary" onClick={importData}>
+                导入
+              </Button>
+            ) : item.mark === 'export' ? (
+              <Button btnType="primary" onClick={exportData}>
+                导出
+              </Button>
+            ) : null}
+          </div>
+        );
+      })}
       {renderForm()}
       <Table
         columns={columns}
@@ -385,24 +407,24 @@ const ApplyProjectGroup = () => {
       <div>
         <span>项目编码:</span>
         {currentItem?.reqItemCode || list[0]?.reqItemCode}
-        <span style={{marginLeft:'20px'}}>项目名称:</span>
+        <span style={{ marginLeft: '20px' }}>项目名称:</span>
         {currentItem?.reqItemName || list[0]?.reqItemName}
       </div>
       <Tabs>
         <TabPane tab="使用医院" key="0">
-          <UseHospital parent={currentItem || list[0]} />
+          <UseHospital parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="组合明细" key="1">
-          <CombinationDetails parent={currentItem || list[0]} />
+          <CombinationDetails parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="仪器" key="2">
-          <Instrument parent={currentItem || list[0]} />
+          <Instrument parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="报告项目" key="3">
-          <ReportProject parent={currentItem || list[0]} />
+          <ReportProject parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="基准价格" key="4">
-          <GuidePrice parent={currentItem || list[0]} />
+          <GuidePrice parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
       </Tabs>
       <Confirm

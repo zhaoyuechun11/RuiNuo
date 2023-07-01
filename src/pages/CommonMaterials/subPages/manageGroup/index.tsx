@@ -4,7 +4,7 @@ import { stringify } from 'qs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message } from 'antd';
-import { downLoad, main } from '@/utils';
+import { downLoad, main ,transformTree} from '@/utils';
 import env from '@/utils/env';
 import EditOrAddModal from './components/editOrAddModal';
 import { deleteManageGroup, manageGroupExport } from '../../models/server';
@@ -57,7 +57,7 @@ const ManageGroup = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {btnPermissions.map((item) => {
+            {btnPermissions?.map((item) => {
               return (
                 <>
                   {item.mark === 'edit' ? (
@@ -112,7 +112,7 @@ const ManageGroup = () => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
   useEffect(() => {
-    const { btn } = main(useDetail.permissions, location.pathname);
+    const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
   const onTableChange = (
@@ -184,7 +184,7 @@ const ManageGroup = () => {
   return (
     <>
       <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
+        {btnPermissions?.map((item) => {
           return (
             <>
               {item.mark === 'add' ? (

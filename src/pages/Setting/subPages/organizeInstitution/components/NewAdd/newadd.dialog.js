@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Dialog from '@components/Dialog';
-import { message, Form, Input, TreeSelect } from 'antd';
+import { message, Form, Input, Tree, Icon } from 'antd';
 import isFunction from 'lodash/isFunction';
 import debounce from 'lodash/debounce';
 import { connect } from 'umi';
+import { getArrDifference, searchTreeNodes, searchTreeNodesAllId, getParentIdList } from '@/utils';
 import { permissList, listForRole } from '../../models/server';
 import styles from './index.less';
 
@@ -12,10 +13,9 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 const FormItem = Form.Item;
-const { SHOW_ALL } = TreeSelect;
-const { TreeNode } = TreeSelect;
-
-
+// const { SHOW_ALL } = TreeSelect;
+const { TreeNode } = Tree;
+//let checkedAuthKeys = [];
 @connect(({ role, loading }) => ({
   role,
   addLoading: loading.effects['role/addRole'],
@@ -27,6 +27,9 @@ class NewaddRoleDialog extends Component {
       loading: true,
       value: undefined,
       permissListTreeData: [],
+      checkedKeys: [],
+      beforeCheckedAuthKeys: [],
+      checkedAuthKeys: [],
     };
     this.onOk = debounce(this.onOk.bind(this), 200);
     this.onBeforeShow = debounce(this.onBeforeShow.bind(this), 100);
@@ -39,9 +42,9 @@ class NewaddRoleDialog extends Component {
     console.log('extra', extra);
     console.log('newValue', newValue);
   };
-  onSelect = (value, node, extra) => {
-    console.log('onSelect', value, node, extra);
-  };
+  // onSelect = (value, node, extra) => {
+  //   console.log('onSelect', value, node, extra);
+  // };
 
   componentDidMount() {
     let props = this.props;
@@ -52,7 +55,7 @@ class NewaddRoleDialog extends Component {
     permissList().then((res) => {
       if (res.code === 200) {
         this.setState({ permissListTreeData: res.data });
-     
+        sessionStorage.setItem('permissListTreeData', res.data);
       }
     });
   };
@@ -60,10 +63,11 @@ class NewaddRoleDialog extends Component {
     this.getPermisList();
     listForRole({ roleId: id }).then((res) => {
       if (res.code === 200) {
-        let form = this.formRef.current;
-        form.setFieldsValue({
-          pid: res.data,
-        });
+        // let form = this.formRef.current;
+        // form.setFieldsValue({
+        //   pid: res.data,
+        // });
+        this.setState({ checkedKeys: res.data, beforeCheckedAuthKeys: res.data });
       }
     });
   };
@@ -95,7 +99,7 @@ class NewaddRoleDialog extends Component {
     let { onReload, type = '', id } = this.props;
     let formData = {
       name: values.name,
-      permissionIds: values.pid,
+      permissionIds: this.state.checkedKeys,
     };
     if (type === 'edit') {
       this.props.dispatch({
@@ -161,6 +165,61 @@ class NewaddRoleDialog extends Component {
         />
       );
     });
+  onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+  };
+
+  onCheck = (checkedKeys, e) => {
+    const beforeCheckedAuthKeys = this.state.beforeCheckedAuthKeys; //上一次选中的ids 如果没有就是初始进入选中的集合
+    // console.log('上一次选中ids', beforeCheckedAuthKeys)
+    // console.log('选中ids', checkedKeys.checked)
+    const changeNodes = getArrDifference(checkedKeys.checked, beforeCheckedAuthKeys); //比对这次选中与上次选中的差异
+    // console.log('改变的节点', changeNodes);
+    let checkedList = [];
+    for (let i = 0; i < changeNodes.length; i++) {
+      let itemNode = searchTreeNodes(this.state.permissListTreeData, changeNodes[i]); //查找该节点数据 authTreeList为树型数据
+      let childrenNodesIds = searchTreeNodesAllId(itemNode?.children); //向下查找所有子节点的ids
+      checkedList = [...new Set([...checkedList, ...childrenNodesIds])]; //合并去重
+    }
+    // console.log('该节点下所有ids', checkedList)
+    //获取选中的节点的所有父节点
+    let parentNodes = changeNodes;
+    parentNodes.forEach(
+      (item) =>
+        (parentNodes = parentNodes.concat(getParentIdList(item, this.state.permissListTreeData))),
+    );
+    // console.log('选中的所有父节点', parentNodes)
+    if (e.checked) {
+      debugger;
+      // 勾选
+      this.state.checkedAuthKeys = [
+        ...new Set([...checkedKeys.checked, ...checkedList, ...parentNodes]),
+      ];
+      //this.setState({checkedAuthKeys: [...new Set([...checkedKeys.checked, ...checkedList, ...parentNodes])]})
+    } else {
+      // 取消勾选
+      if (checkedList && checkedList.length) {
+        //如果取消勾选需要移除该节点下所有子节点ids
+        this.state.checkedAuthKeys = checkedKeys.checked.filter(
+          (item) => checkedList.indexOf(item) == -1,
+        );
+        //this.setState({checkedAuthKeys: checkedKeys.checked.filter((item) => checkedList.indexOf(item) == -1)})
+      } else {
+        this.state.checkedAuthKeys = checkedKeys.checked;
+        //this.setState({checkedAuthKeys:this.state.checkedAuthKeys?.checked})
+      }
+    }
+
+    //this.beforeCheckedAuthKeys = this.checkedAuthKeys; //本次选择处理结束 赋值当前选择供下次使用
+    this.setState({
+      beforeCheckedAuthKeys: this.state.checkedAuthKeys,
+      checkedKeys: this.state.checkedAuthKeys,
+    });
+    //sessionStorage.setItem('beforeCheckedAuthKeys', checkedAuthKeys);
+    // this.setState({ checkedKeys: checkedAuthKeys });
+    console.log('选中', this.state.checkedAuthKeys);
+  };
+
   render() {
     let { addLoading = false, type = '' } = this.props;
     let { loading } = this.state;
@@ -246,7 +305,7 @@ class NewaddRoleDialog extends Component {
               />
             </FormItem>
           </div> */}
-          <div id="pid" className={styles.pid}>
+          {/* <div id="pid" className={styles.pid}>
             <FormItem name="pid" label="角色权限">
               <TreeSelect
                 showSearch
@@ -263,7 +322,17 @@ class NewaddRoleDialog extends Component {
                 {this.renderUserTreeNodes(this.state.permissListTreeData)}
               </TreeSelect>
             </FormItem>
-          </div>
+          </div> */}
+          <FormItem name="pid" label="角色权限">
+            <Tree
+              checkable
+              onSelect={this.onSelect}
+              onCheck={this.onCheck}
+              treeData={this.state.permissListTreeData}
+              checkStrictly
+              checkedKeys={this.state.checkedKeys}
+            ></Tree>
+          </FormItem>
         </Form>
       </Dialog>
     );

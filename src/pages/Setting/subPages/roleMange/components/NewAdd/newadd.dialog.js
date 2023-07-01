@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Dialog from '@components/Dialog';
-import {  message, Form, Input, Select } from 'antd';
+import { message, Form, Input, Select } from 'antd';
 import UploadImgWithCrop from '@components/UploadImg/UploadImgWithCrop';
 import isFunction from 'lodash/isFunction';
 import debounce from 'lodash/debounce';
@@ -46,6 +46,7 @@ class NewaddRoleDialog extends Component {
   };
   onBeforeShow = () => {
     let { type = '' } = this.props;
+
     this.setState({
       loading: false,
     });
@@ -195,7 +196,7 @@ class NewaddRoleDialog extends Component {
             <Input placeholder="名称" autoComplete="off" allowClear />
           </FormItem>
           <Form.Item name="headPortrait" label="头像">
-            <UploadImgWithCrop />
+            <UploadImgWithCrop image={this.props.headPortrait}/>
           </Form.Item>
           <FormItem name="sex" label="性别">
             <Select placeholder="请选择性别" autoComplete="off" allowClear>

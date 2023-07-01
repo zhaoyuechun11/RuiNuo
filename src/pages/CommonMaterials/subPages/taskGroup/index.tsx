@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input } from 'antd';
-import { main } from '@/utils';
+import { main ,transformTree} from '@/utils';
 import BindModal from './components/bindModal';
 const TaskGroup = () => {
   const dispatch = useDispatch();
@@ -82,7 +82,7 @@ const TaskGroup = () => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return btnPermissions.map((item) => {
+        return btnPermissions?.map((item) => {
           return (
             item.mark === 'bind' && (
               <Button
@@ -121,7 +121,7 @@ const TaskGroup = () => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
   useEffect(() => {
-    const { btn } = main(useDetail.permissions, location.pathname);
+    const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
   const onTableChange = (

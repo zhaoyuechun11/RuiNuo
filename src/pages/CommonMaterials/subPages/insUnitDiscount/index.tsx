@@ -3,7 +3,7 @@ import { Form, message, Select, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Icon } from '@/components';
 import { useDispatch, useSelector, useLocation } from 'umi';
-import { downLoad, main } from '@/utils';
+import { downLoad, main,transformTree } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import styles from '../index.less';
 import BatchImport from '../../commones/batchImport';
@@ -203,7 +203,7 @@ const insUnitDiscount = () => {
   useEffect(() => {
     getHospitalList();
     getReturnTypeList();
-    const { btn } = main(useDetail.permissions, location.pathname);
+    const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
 

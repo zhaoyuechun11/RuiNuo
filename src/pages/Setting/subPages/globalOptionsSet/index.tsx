@@ -6,7 +6,7 @@ import { useDispatch, useSelector, useLocation } from 'umi';
 import { downLoad, main } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import styles from './index.less';
-import { dictList, paramsSetExport,paramsSetDelete } from '../../models/server';
+import { dictList, paramsSetExport, paramsSetDelete } from '../../models/server';
 import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 const { Option } = Select;
 const GlobalOptionsSet = () => {
@@ -24,48 +24,7 @@ const GlobalOptionsSet = () => {
   const [list, setList] = useState([]);
   const importRef = useRef();
   const searchVal = useRef();
-  const [btnPermissions, setBtnPermissions] = useState([
-    {
-      mark: 'add',
-      path: '',
-      title: '新增',
-      icon: 'T8-shezhi-weixuanzhong',
-      selIcon: 'T8-shezhi-xuanzhong',
-      children: [],
-    },
-    {
-      mark: 'edit',
-      path: '',
-      title: '编辑',
-      icon: 'T8-shezhi-weixuanzhong',
-      selIcon: 'T8-shezhi-xuanzhong',
-      children: [],
-    },
-    {
-      mark: 'delete',
-      path: '',
-      title: '删除',
-      icon: 'T8-shezhi-weixuanzhong',
-      selIcon: 'T8-shezhi-xuanzhong',
-      children: [],
-    },
-    {
-      mark: 'import',
-      path: '',
-      title: '导入',
-      icon: 'T8-shezhi-weixuanzhong',
-      selIcon: 'T8-shezhi-xuanzhong',
-      children: [],
-    },
-    {
-      mark: 'export',
-      path: '',
-      title: '导出',
-      icon: 'T8-shezhi-weixuanzhong',
-      selIcon: 'T8-shezhi-xuanzhong',
-      children: [],
-    },
-  ]);
+  const [btnPermissions, setBtnPermissions] = useState([]);
   const Columns = [
     {
       title: 'Id',
@@ -131,7 +90,7 @@ const GlobalOptionsSet = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {btnPermissions.map((item) => {
+            {btnPermissions?.map((item) => {
               return (
                 <>
                   {item.mark === 'delete' ? (
@@ -184,10 +143,9 @@ const GlobalOptionsSet = () => {
     getDictList();
   }, [pageNum, pageSize]);
   useEffect(() => {
-    // const { btn } = main(useDetail.permissions, 'commonMaterials/inspectionUnit');
-    // debugger;
-    // setBtnPermissions(btn);
-  }, []);
+    const { btn } = main(useDetail.permissions, location.pathname);
+    setBtnPermissions(btn);
+  }, [useDetail]);
 
   const onTableChange = (
     pagination: Record<string, unknown>,
@@ -305,7 +263,7 @@ const GlobalOptionsSet = () => {
       {renderForm()}
       <Table
         columns={Columns}
-        rowKey="id"
+        rowKey
         // onSelectCount={(count, keys) => {
         //   setSelectedCount(count);
         //   setSelectedKeys(keys);

@@ -48,7 +48,6 @@ class StandardTable extends PureComponent {
     const { selectedRowKeys = [], classStyle } = this.props;
     const { data = {}, rowKey, isRowSelection, unit = '', ...rest } = this.props;
     const { list = [], pagination } = data;
-    console.log('list', list);
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,

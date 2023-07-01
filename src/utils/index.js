@@ -3,6 +3,7 @@ import URL from './env';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 import pinyin from 'pinyin';
+let permissionsResult = {};
 // 日期选择 按照 周为单位
 function formatDate(date) {
   var year = date.getFullYear() + '年';
@@ -315,68 +316,127 @@ export const downLoad = (href, fileName) => {
   document.body.removeChild(a);
 };
 export const main = (data, path) => {
-  let result = {};
-  data.forEach(function (item) {
+  data?.forEach(function (item) {
     //if用来判断外层，else if用来判断里层，调用递归函数的有2个判断条件在“有goods属性并且不为空”情况下才调用
     if (item.url === path) {
-      result = item;
+      permissionsResult = item;
       console.log('item', item);
     } else if (item.children && item.children.length > 0) {
-      result = main(item.children, path); //递归
+      permissionsResult = main(item.children, path); //递归
     }
   });
-  return result;
+  return permissionsResult;
 };
-/**
- * 扁平化数据转树形结构
- * @param {*} data
- * @returns
- */
-export const flatToTree = (data) => {
-  const result = [];
-  const itemMap = {};
-  for (const item of data) {
-    const id = item.id;
-    const pId = item.parentId;
 
-    if (itemMap[id]) {
-      itemMap[id] = {
-        ...itemMap[id],
-        ...item,
-      };
-    } else {
-      itemMap[id] = { ...item };
-    }
+export const transformTree = (list) => {
+  const tree = [];
 
-    const treeItem = itemMap[id];
+  for (let i = 0, len = list?.length; i < len; i++) {
+    if (!list[i].parentId) {
+      const item = queryChildren(list[i], list);
 
-    if (!pId || pId === '0') {
-      result.push(treeItem);
-    } else {
-      if (!itemMap[pId]) {
-        itemMap[pId] = {
-          children: [],
-        };
-      }
-      if (!itemMap[pId].children) {
-        itemMap[pId].children = [];
-      }
-      itemMap[pId].children.push(treeItem);
+      tree.push(item);
     }
   }
-  return result;
+
+  return tree;
 };
-export const flatToTree2 = (data) => {
-  const result = [];
-  const fn = (arr, cArr, parentId = '0') => {
-    for (let i = 0; i < arr?.length; i++) {
-      const item = { ...arr[i], children: [] };
-      if (arr[i].parentId === parentId) {
-        cArr.push(item);
-        fn(arr, item.children, arr[i].id);
+
+export const queryChildren = (parent, list) => {
+  const children = [];
+  const btn = [];
+  for (let i = 0, len = list.length; i < len; i++) {
+    if (list[i].parentId === parent.id && list[i].type !== 'button') {
+      const item = queryChildren(list[i], list);
+
+      children.push(item);
+    }
+    if (list[i].parentId === parent.id && list[i].type === 'button') {
+      const item = queryChildren(list[i], list);
+
+      btn.push(item);
+    }
+  }
+
+  if (children.length) {
+    parent.children = children;
+  }
+  if (btn.length) {
+    parent.btn = btn;
+  }
+
+  return parent;
+};
+
+/**
+ * 比较两个数组差异
+ */
+export function getArrDifference(arr1 = [], arr2 = []) {
+  return arr1.concat(arr2).filter((v, i, arr) => {
+    return arr.indexOf(v) === arr.lastIndexOf(v);
+  })
+}
+ 
+/**
+ * 根据id查找节点 输出节点
+ * @param nodes 树
+ * @param searchKey id
+ */
+ export function searchTreeNodes(nodes, searchKey) {
+  for (let _i = 0; _i < nodes.length; _i++) {
+    if (nodes[_i].value== searchKey) {
+      return nodes[_i]
+    } else {
+      if (nodes[_i].children && nodes[_i].children.length > 0) {
+        let res = searchTreeNodes(nodes[_i].children, searchKey);
+        if (res) {
+          return res
+        }
       }
     }
-  };
-  fn(data, result);
-  return result;
-};
+  }
+  return null
+}
+ 
+/**
+ * 获取该节点下子孙节点的id
+ * @param data 节点
+ * @param arr 返回数组
+ */
+ export function searchTreeNodesAllId(data = [], arr = []) {
+  Object.keys(data).forEach((key) => {
+    arr.push(data[key].value)
+    if (data[key].children && data[key].children.length) searchTreeNodesAllId(data[key].children, arr)
+  })
+  return arr
+}
+ 
+/**
+ * 通过当前节点id，获取树状结构所有的祖先节点id，包含当前节点id
+ * @param {String|Number} code 当前节点id
+ * @param {Array} tree 树状数组
+ * @returns {Array} 所有祖先id，包含当前code
+ */
+ export const getParentIdList = (code, tree) => {
+  let arr = []; //要返回的数组
+  for (let i = 0; i < tree.length; i++) {
+    let item = tree[i];
+    arr = [];
+    arr.push(item.value); //保存当前节点id
+    if (code == item.value) {
+      //判断当前id是否是默认id
+      return arr; //是则退出循环、返回数据
+    } else {
+      //否则进入下面判断，判断当前节点是否有子节点数据
+      if (item.children && item.children.length > 0) {
+        //合并子节点返回的数据
+        arr = arr.concat(getParentIdList(code, item.children));
+        if (arr.includes(code)) {
+          //如果当前数据中已包含默认节点，则退出循环、返回数据
+          return arr;
+        }
+      }
+    }
+  }
+}
+

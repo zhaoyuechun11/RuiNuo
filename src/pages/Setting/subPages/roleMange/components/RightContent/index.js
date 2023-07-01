@@ -29,38 +29,25 @@ class RightContent extends Component {
     this.state = {
       selectedRows: [],
       formValues: {
-        page: 1,
-        page_size: 20,
+        pageNum: 1,
+        pageSize: 10,
         name: undefined,
         role_id: undefined,
       },
       description: '',
       isRole: 'auth',
       userId: 0,
-      memberList: {},
+      memberlistData: { list: [] },
+      total: 0,
     };
     this.formRef = React.createRef();
     this.modalRef = React.createRef();
     this.handleSearch = debounce(this.handleSearch.bind(this), 500);
   }
   componentDidMount() {
-    const { formValues = {} } = this.state;
-    // const thisId = this.props.location.pathname.split('/')[4];
     this.fetchRoleList();
-    // if (thisId !== '-1') {
-    //   this.setState({
-    //     formValues: {
-    //       ...this.state.formValues,
-    //       dept_id: thisId,
-    //     },
-    //   });
-    //   this.fetchMemberList({
-    //     ...formValues,
-    //     dept_id: thisId,
-    //   });
-    //   return false;
-    // }
-    this.fetchMemberList({ page: 1, page_size: 20 });
+
+    this.fetchMemberList({ pageNum: 1, pageSize: 10 });
   }
 
   fetchMemberList = (data) => {
@@ -71,6 +58,17 @@ class RightContent extends Component {
         callback: (data) => {
           this.setState({
             selectedRows: [],
+            memberlistData: {
+              list: data.records,
+              pagination: {
+                pageSize: this.state.formValues.page_size,
+                current: this.state.formValues.page,
+                total: data.total,
+                onChange: this.pageChange,
+                pageSizeOptions: ['10', '20', '30', '40'],
+              },
+            },
+           
           });
           this.formRef.current &&
             this.formRef.current.setFieldsValue({
@@ -80,7 +78,6 @@ class RightContent extends Component {
       },
     });
   };
- 
 
   fetchRoleList = () => {
     this.props.dispatch({
@@ -134,7 +131,7 @@ class RightContent extends Component {
                   callback: (res) => {
                     const { code = '' } = res;
                     if (code === 200) {
-                      this.fetchMemberList({ page: 1, page_size: 20 });
+                      this.fetchMemberList({ pageNum: this.state.page, pageSize: this.state.page_size  });
                     }
                   },
                 },
@@ -203,7 +200,7 @@ class RightContent extends Component {
     },
   ];
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { formValues } = this.state;
+
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -212,9 +209,8 @@ class RightContent extends Component {
     }, {});
 
     const params = {
-      ...formValues,
-      page: pagination.current,
-      page_size: pagination.pageSize,
+      pageNum: pagination.current,
+      pageSize: pagination.pageSize,
       ...filters,
     };
     this.setState({
@@ -311,7 +307,7 @@ class RightContent extends Component {
     const { formValues } = this.state;
     const values = {
       ...formValues,
-      page: 1,
+      pageNum:1,
       ...allValues,
     };
     this.setState({
@@ -342,17 +338,19 @@ class RightContent extends Component {
       if (res.code === 200) {
         message.success('删除成功!');
         this.modalRef.current.hide();
-        this.fetchMemberList({ page: 1, page_size: 20 });
+        this.fetchMemberList({ pageNum: 1, pageSize: 10 });
       }
     });
   };
+  pageChange = (pageNum, pageSize) => {
+    this.setState({
+      pageNum,
+      pageSize,
+    });
+  };
   render() {
-    const {
-      rolemanage: { memberlistData, roleList },
-    } = this.props;
-    
     const { fetchMemberListLoading } = this.props;
-    const { selectedRows, isRole,  } = this.state;
+    const { selectedRows, } = this.state;
 
     return (
       <div className={styles.RightContent}>
@@ -379,7 +377,7 @@ class RightContent extends Component {
             columns={this.columns}
             selectedRowKeys={selectedRows.map((i) => i.id)}
             loading={fetchMemberListLoading}
-            data={memberlistData}
+            data={this.state.memberlistData}
             onChange={this.handleStandardTableChange}
             onSelectRow={this.handleSelectRows}
             isRowSelection={true}

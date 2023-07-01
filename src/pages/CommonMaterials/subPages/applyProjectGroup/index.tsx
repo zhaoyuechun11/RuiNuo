@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select, Switch } from 'antd';
-import { downLoad, main } from '@/utils';
+import { downLoad, main,transformTree } from '@/utils';
 import { applyProjectDelete, applyProjectExport, majorGroup } from '../../models/server';
 import styles from '../index.less';
 import UseHospital from './subPages/useHospital';
@@ -183,7 +183,7 @@ const ApplyProjectGroup = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {btnPermissions.map((item) => {
+            {btnPermissions?.map((item) => {
               return (
                 <>
                   {item.mark === 'edit' ? (
@@ -247,7 +247,7 @@ const ApplyProjectGroup = () => {
   }, [pageNum, pageSize]);
   useEffect(() => {
     majorGroupList();
-    const { btn } = main(useDetail.permissions, location.pathname);
+    const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
 
@@ -354,7 +354,7 @@ const ApplyProjectGroup = () => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
+      {btnPermissions?.map((item) => {
         return (
           <div className={styles.operateBtns}>
             {item.mark === 'add' ? (
@@ -363,11 +363,11 @@ const ApplyProjectGroup = () => {
                 新增
               </Button>
             ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData}>
+              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }} >
                 导入
               </Button>
             ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData}>
+              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }} >
                 导出
               </Button>
             ) : null}

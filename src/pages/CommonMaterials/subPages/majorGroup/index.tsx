@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message } from 'antd';
-import { downLoad, main } from '@/utils';
+import { downLoad, main,transformTree } from '@/utils';
 import { deleteMajorGroup, majorGroupExport } from '../../models/server';
 import styles from './index.less';
 import EditOrAddModal from './components/editOrAddModal';
@@ -205,7 +205,7 @@ const MajorGroup = () => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
   useEffect(() => {
-    const { btn } = main(useDetail.permissions, location.pathname);
+    const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
   const onTableChange = (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Table, Button,message } from 'antd';
+import { Table, Button, message } from 'antd';
 import AliasEdit from './components/Edit/index';
 import { permission, deletePermission } from './models/server';
 import { Confirm } from '@/components';
@@ -9,6 +9,7 @@ const permissionMange = () => {
   const [pageSize, setPageSize] = useState(10);
   const [permissionListData, setPermissionListData] = useState([]);
   const [currentRowPermis, setCurrentRowPermis] = useState({});
+  const [total, setTotal] = useState();
   const childRef = useRef();
   const modalRef = useRef();
   const columns = [
@@ -54,11 +55,12 @@ const permissionMange = () => {
   ];
   useEffect(() => {
     permissionList();
-  }, []);
+  }, [page, pageSize]);
   const permissionList = () => {
-    const params = { page, pageSize };
+    const params = { pageNum: page, pageSize };
     permission(params).then((res) => {
       setPermissionListData(res.data.records);
+      setTotal(res.data.total);
     });
   };
   const editAlias = (record) => {
@@ -74,9 +76,26 @@ const permissionMange = () => {
       }
     });
   };
+  const pageChange = (page, pageSize) => {
+    setPage(page);
+    setPageSize(pageSize);
+  };
   return (
     <>
-      <Table columns={columns} dataSource={permissionListData} />{' '}
+      <Table
+        columns={columns}
+        dataSource={permissionListData}
+        pagination={{
+          pageSize,
+          current: page,
+          total,
+          onChange: pageChange,
+          showTotal: (total, range) => `共 ${total} 条`,
+          showQuickJumper: true,
+          pageSizeOptions: ['10', '20', '30', '40'],
+          showSizeChanger: true,
+        }}
+      />
       <AliasEdit refresh={permissionList} cRef={childRef}></AliasEdit>
       <Confirm
         confirmRef={modalRef}

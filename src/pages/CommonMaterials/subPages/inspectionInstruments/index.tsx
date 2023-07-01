@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
-import { downLoad,main } from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message, Tabs } from 'antd';
@@ -76,7 +76,7 @@ const inspectionInstruments = () => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {btnPermissions.map((item) => {
+            {btnPermissions?.map((item) => {
               return (
                 <>
                   {item.mark === 'edit' ? (
@@ -145,11 +145,14 @@ const inspectionInstruments = () => {
   );
   useEffect(() => {
     getList({ pageNum, pageSize });
-    const { btn } = main(useDetail.permissions, location.pathname);
-    setBtnPermissions(btn);
-  }, [pageNum, pageSize]);
-
- 
+    if (useDetail) {
+      // const { btn } = main(transformTree(useDetail.permissions), location.pathname);
+      // console.log(transformTree(useDetail.permissions));
+      // console.log(useDetail.permissions);
+      const { btn } = main(transformTree(useDetail.permissions), location.pathname);
+      setBtnPermissions(btn);
+    }
+  }, [pageNum, pageSize, useDetail]);
 
   const onTableChange = (
     pagination: Record<string, unknown>,
@@ -223,7 +226,7 @@ const inspectionInstruments = () => {
   return (
     <>
       <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
+        {btnPermissions?.map((item) => {
           return item.mark === 'add' ? (
             <Button btnType="primary" onClick={add}>
               <PlusOutlined style={{ marginRight: 4 }} />
@@ -266,7 +269,7 @@ const inspectionInstruments = () => {
       ></EditOrAddModal>
       <Tabs type="card">
         <TabPane tab="打印顺序" key="0">
-          <PrintSeq parent={currentItem || list[0]} btnPermissions={btnPermissions}/>
+          <PrintSeq parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
       </Tabs>
     </>

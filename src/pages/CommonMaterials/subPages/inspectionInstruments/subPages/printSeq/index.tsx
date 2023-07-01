@@ -42,7 +42,7 @@ const PrintSeq = ({ parent, btnPermissions }) => {
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-            {btnPermissions.map((item) => {
+            {btnPermissions?.map((item) => {
               return (
                 <>
                   {item.mark === 'printDelete' ? (
@@ -160,7 +160,7 @@ const PrintSeq = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
+      {btnPermissions?.map((item) => {
         return (
           item.mark === 'printAdd' && (
             <div className={styles.operateBtns}>

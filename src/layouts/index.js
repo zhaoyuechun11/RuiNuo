@@ -2,7 +2,7 @@ import React, { Component,  } from 'react';
 import MenuComps from './components/MenuComps/index';
 import Header from './components/Header/index';
 import CatchError from './components/Error/index';
-import s from './index.less';
+
 import { connect } from 'react-redux';
 
 import { ConfigProvider, Spin, Layout,} from 'antd';
@@ -40,9 +40,9 @@ class index extends Component {
       <CatchError>
         <ConfigProvider locale={zhCN}>
           <Spin spinning={this.state.pageLoading}>
-            <Layout style={{ minHeight: '100vh' }}>
+            <Layout style={{ minHeight: '100vh' }} key={1}>
               <MenuComps renderSuccess={this._renderSuccess} />
-              <Layout style={{backgroundColor:'#fff'}}>
+              <Layout style={{backgroundColor:'#fff'}} key={2}>
                 <Header />
                 <Content style={{ margin: '50px 16px' }}>{this.props.children}</Content>
               </Layout>

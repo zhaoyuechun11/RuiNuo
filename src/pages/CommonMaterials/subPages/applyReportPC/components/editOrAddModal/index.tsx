@@ -316,11 +316,34 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
             </Form.Item>
           </Col>
         </Row>
+        <Row gutter={12}>
+          <Col span={12}>
+            <Form.Item name="method" label="检测方法">
+              <Select
+                placeholder="请选择检测方法"
+                showSearch
+                allowClear
+                // showArrow={false}
+                onInputKeyDown={onInputKeyDownPosition}
+                autoComplete="off"
+                // defaultActiveFirstOption={false}
+              >
+                {testMethod.map((item) => {
+                  return (
+                    <Option value={item.dictValue} key={item.id}>
+                      {item.dictValue}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
 
         <Form.Item
           label="采样标准临床意义"
           name="significance"
-       
+
           // rules={[
           //   {
           //     required: true,
@@ -339,25 +362,6 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           <React.Fragment>
             <div ref={editorRef} />
           </React.Fragment>
-        </Form.Item>
-        <Form.Item name="method" label="检测方法" >
-          <Select
-            placeholder="请选择检测方法"
-            showSearch
-            allowClear
-            // showArrow={false}
-            onInputKeyDown={onInputKeyDownPosition}
-            autoComplete="off"
-            // defaultActiveFirstOption={false}
-          >
-            {testMethod.map((item) => {
-              return (
-                <Option value={item.dictValue} key={item.id}>
-                  {item.dictValue}
-                </Option>
-              );
-            })}
-          </Select>
         </Form.Item>
       </Form>
     </Dialog>

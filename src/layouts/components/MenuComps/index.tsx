@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
-import { flatToTree2 } from '@/utils';
+import { flatToTree2,transformTree } from '@/utils';
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 import { Link, history, useSelector } from 'umi';
@@ -1191,45 +1191,45 @@ const MenuComps: React.FC = (props) => {
     setMenuData(transformTree(useDetail.permissions));
   }, [useDetail]);
 
-  const transformTree = (list) => {
-    const tree = [];
+  // const transformTree = (list) => {
+  //   const tree = [];
 
-    for (let i = 0, len = list?.length; i < len; i++) {
-      if (!list[i].parentId) {
-        const item = queryChildren(list[i], list);
+  //   for (let i = 0, len = list?.length; i < len; i++) {
+  //     if (!list[i].parentId) {
+  //       const item = queryChildren(list[i], list);
 
-        tree.push(item);
-      }
-    }
+  //       tree.push(item);
+  //     }
+  //   }
 
-    return tree;
-  };
+  //   return tree;
+  // };
 
-  const queryChildren = (parent, list) => {
-    const children = [];
-    const btn = [];
-    for (let i = 0, len = list.length; i < len; i++) {
-      if (list[i].parentId === parent.id && list[i].type !== 'button') {
-        const item = queryChildren(list[i], list);
+  // const queryChildren = (parent, list) => {
+  //   const children = [];
+  //   const btn = [];
+  //   for (let i = 0, len = list.length; i < len; i++) {
+  //     if (list[i].parentId === parent.id && list[i].type !== 'button') {
+  //       const item = queryChildren(list[i], list);
 
-        children.push(item);
-      }
-      if (list[i].parentId === parent.id && list[i].type === 'button') {
-        const item = queryChildren(list[i], list);
+  //       children.push(item);
+  //     }
+  //     if (list[i].parentId === parent.id && list[i].type === 'button') {
+  //       const item = queryChildren(list[i], list);
 
-        btn.push(item);
-      }
-    }
+  //       btn.push(item);
+  //     }
+  //   }
 
-    if (children.length) {
-      parent.children = children;
-    }
-    if (btn.length) {
-      parent.btn = btn;
-    }
+  //   if (children.length) {
+  //     parent.children = children;
+  //   }
+  //   if (btn.length) {
+  //     parent.btn = btn;
+  //   }
 
-    return parent;
-  };
+  //   return parent;
+  // };
 
   // const flatToTree = (data) => {
   //   const result = [];

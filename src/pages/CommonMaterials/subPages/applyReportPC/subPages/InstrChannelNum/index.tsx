@@ -53,10 +53,10 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return btnPermissions.map((item) => {
-          return (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              {item.mark === 'instrumentNumberDelete' ? (
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {btnPermissions.map((item) => {
+              return item.mark === 'instrumentNumberDelete' ? (
                 <Button
                   style={{ margin: '0 8px' }}
                   onClick={() => {
@@ -74,10 +74,10 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
                 >
                   编辑
                 </Button>
-              ) : null}
-            </div>
-          );
-        });
+              ) : null;
+            })}
+          </div>
+        );
       },
     },
   ];

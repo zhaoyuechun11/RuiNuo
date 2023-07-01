@@ -81,20 +81,14 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       dataIndex: 'highChar',
       align: 'center',
     },
-    // {
-    //   title: '显示参考范围',
-    //   dataIndex: 'displayRef',
-    //   align: 'center',
-    // },
-
     {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return btnPermissions.map((item) => {
-          return (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              {item.mark === 'criticalValueDelete' ? (
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {btnPermissions?.map((item) => {
+              return item.mark === 'criticalValueDelete' ? (
                 <Button
                   style={{ margin: '0 8px' }}
                   onClick={() => {
@@ -112,10 +106,10 @@ const CriticalValue = ({ parent, btnPermissions }) => {
                 >
                   编辑
                 </Button>
-              ) : null}
-            </div>
-          );
-        });
+              ) : null;
+            })}
+          </div>
+        );
       },
     },
   ];
@@ -212,7 +206,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
+      {btnPermissions?.map((item) => {
         return (
           item.mark === 'criticalValueAdd' && (
             <div className={styles.operateBtns}>

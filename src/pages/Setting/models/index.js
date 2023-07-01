@@ -5,7 +5,7 @@ const IndexModel = {
   namespace: 'Setting',
   state: {
 
-  }, // 仓库初始值
+  }, 
   effects: {
     *fetchParamsSetList({ payload }, { call }) {
       const { callback, ...params } = payload;

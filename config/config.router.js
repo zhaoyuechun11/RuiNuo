@@ -1,29 +1,5 @@
 export default {
   routes: [
-    // {
-    //   path: '/auth',
-    //   exact: true,
-    //   component: '@/pages/Other/auth',
-    //   title: '暂无权限',
-    // },
-    // {
-    //   path: '/timeOut',
-    //   exact: true,
-    //   component: '@/pages/Other/timeOut',
-    //   title: '试用期过期',
-    // },
-    // {
-    //   path: '/serverOut',
-    //   exact: true,
-    //   component: '@/pages/Other/serverout',
-    //   title: '应用服务过期',
-    // },
-    // {
-    //   path: '/role',
-    //   exact: true,
-    //   component: '@/pages/Other/role',
-    //   title: '选择角色',
-    // },
     {
       path: '/login',
       exact: true,
@@ -45,23 +21,21 @@ export default {
     {
       path: '/',
       component: '@/layouts/index',
-
-      //  redirect: '/',
       routes: [
         {
           path: '/',
-          // redirect: '/workPlatform/index',
-          redirect: '/setting/index',
+          redirect: '/setting/globalOptionsSet',
+          // redirect: '/setting/index',
         },
         {
           path: '/setting',
           name: 'setting',
           routes: [
-            {
-              path: '/setting/index',
-              component: '@/pages/Setting',
-              title: '设置页面',
-            },
+            // {
+            //   path: '/setting/index',
+            //   component: '@/pages/Setting',
+            //   title: '设置页面',
+            // },
             {
               path: '/setting/roleMange',
               component: '@/pages/Setting/subPages/roleMange',

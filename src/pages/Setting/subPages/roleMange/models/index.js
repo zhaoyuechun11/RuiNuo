@@ -78,7 +78,7 @@ export default {
       let { code = '' } = response;
       console.log('response', response);
       if (code * 1 === 200) {
-        const { records = [], count = 0, account_num = 0, pay_status = 0 } = response.data || {};
+        const { records = [], total = 0, account_num = 0, pay_status = 0 } = response.data || {};
         const { page, page_size } = payload;
         records.forEach((item) => {
           item.roleList = item?.roles?.map((i) => {
@@ -95,7 +95,7 @@ export default {
           account_num,
           pay_status,
           pagination: {
-            total: count,
+            total,
             current: page,
             pageSize: page_size,
           },

@@ -1,5 +1,3 @@
-// const ReferenceValue = () => {};
-// export default ReferenceValue;
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -93,33 +91,31 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
       title: '操作',
       align: 'center',
       render: (record: { id: any }) => {
-        return btnPermissions.map((item) => {
-          {
-            return (
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                {item.mark === 'referenceValueDelete' ? (
-                  <Button
-                    style={{ margin: '0 8px' }}
-                    onClick={() => {
-                      deleteBind(record.id);
-                    }}
-                  >
-                    删除
-                  </Button>
-                ) : item.mark === 'referenceValueEdit' ? (
-                  <Button
-                    style={{ margin: '0 8px' }}
-                    onClick={() => {
-                      addModal.current.show(record, 'edit');
-                    }}
-                  >
-                    编辑
-                  </Button>
-                ) : null}
-              </div>
-            );
-          }
-        });
+        return (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            {btnPermissions.map((item) => {
+              return item.mark === 'referenceValueDelete' ? (
+                <Button
+                  style={{ margin: '0 8px' }}
+                  onClick={() => {
+                    deleteBind(record.id);
+                  }}
+                >
+                  删除
+                </Button>
+              ) : item.mark === 'referenceValueEdit' ? (
+                <Button
+                  style={{ margin: '0 8px' }}
+                  onClick={() => {
+                    addModal.current.show(record, 'edit');
+                  }}
+                >
+                  编辑
+                </Button>
+              ) : null;
+            })}
+          </div>
+        );
       },
     },
   ];

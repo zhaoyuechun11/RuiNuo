@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ImgCrop from 'antd-img-crop';
-import { Upload,message } from 'antd';
+import { Upload, message } from 'antd';
 import style from './index.less';
 
-const UploadImgWithCrop = ({ disabled, imgURL, onChange }) => {
+const UploadImgWithCrop = ({ disabled, imgURL, onChange, image }) => {
   const [uploadedImage, setUploadedImage] = useState({});
 
   const triggerChange = (changedValue) => {
     onChange?.(changedValue);
   };
-
+  useEffect(() => {
+    setUploadedImage({ fileServerUrl: image });
+  }, [image]);
   const uploadHTML = (isIcon = false) => {
     const uploadProps = {
       method: 'post',
@@ -74,7 +76,9 @@ const UploadImgWithCrop = ({ disabled, imgURL, onChange }) => {
       {disabled ? (
         <img
           src={
-            uploadedImage.fileServerUrl || imgURL || require('@assets/images/setting/companyinfo.png')
+            uploadedImage.fileServerUrl ||
+            imgURL ||
+            require('@assets/images/setting/companyinfo.png')
           }
         />
       ) : (
@@ -82,7 +86,9 @@ const UploadImgWithCrop = ({ disabled, imgURL, onChange }) => {
           <img
             className={style.picImg}
             src={
-              uploadedImage.fileServerUrl || imgURL || require('@assets/images/setting/companyinfo.png')
+              uploadedImage.fileServerUrl ||
+              imgURL ||
+              require('@assets/images/setting/companyinfo.png')
             }
             alt=""
           />

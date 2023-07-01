@@ -4,7 +4,7 @@ import { useDispatch, useSelector, useParams } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, BackButton } from '@/components';
 import { Table } from '@/common';
-import { downLoad, main } from '@/utils';
+import { downLoad, transformTree, main } from '@/utils';
 import { deleteBasic, basicDataExport } from '../../../models/server';
 import styles from './index.less';
 import EditOrAddModal from './components/editOrAddModal';
@@ -61,9 +61,9 @@ const Specimen = () => {
     getList({ pageNum, pageSize, parentId: Number(params.id) });
   }, [pageNum, pageSize]);
   useEffect(() => {
-    const { btn } = main(useDetail.permissions, '/commonMaterials/basicData');
+    const { btn } = main(transformTree(useDetail.permissions), '/commonMaterials/basicData');
     setBtnPermissions(btn);
-  }, []);
+  }, [useDetail]);
 
   const Columns = [
     {

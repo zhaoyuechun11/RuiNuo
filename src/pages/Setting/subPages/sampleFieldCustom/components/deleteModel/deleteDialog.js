@@ -6,7 +6,7 @@ import { message } from 'antd';
 import { connect } from 'umi';
 import debounce from 'lodash/debounce';
 import isFunction from 'lodash/isFunction';
-import { deleteModule, deleteField } from './../../models/server';
+import { deleteModule, deleteField } from '../../models/server';
 const WarnSvg = () => (
   <svg
     t="1599458282858"

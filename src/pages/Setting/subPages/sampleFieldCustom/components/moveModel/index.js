@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Dialog } from '@components';
 import s from './index.less';
 
-import { moveModule, patchMove } from './../../models/server';
+import { moveModule, patchMove } from '../../models/server';
 const { confirm } = Modal;
 
 const Index = ({ moveModelRef, resumeList, refresh, operator_id, enterprise_id }) => {

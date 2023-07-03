@@ -9,7 +9,7 @@ import { PhoneCode, Dialog, Icon } from '@components';
 import debounce from 'lodash/debounce';
 import style from './index.less';
 // import { PositionSelect } from '@common';
-import { create } from './../../models/server';
+import { create } from '../../models/server';
 //import axios from 'axios';
 
 const { confirm } = Modal;

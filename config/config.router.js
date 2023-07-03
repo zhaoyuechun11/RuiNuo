@@ -24,8 +24,8 @@ export default {
       routes: [
         {
           path: '/',
-          redirect: '/setting/globalOptionsSet',
-          // redirect: '/setting/index',
+          // redirect: '/setting/globalOptionsSet',
+           redirect: '/setting/sampleFieldCustom',
         },
         {
           path: '/setting',
@@ -67,6 +67,11 @@ export default {
               path: '/setting/globalOptionsSet',
               component: '@/pages/Setting/subPages/globalOptionsSet',
               title: '系统全局选项设置',
+            },
+            {
+              path: '/setting/sampleFieldCustom',
+              component: '@/pages/Setting/subPages/sampleFieldCustom',
+              title: '标本字段设置',
             },
           ],
         },

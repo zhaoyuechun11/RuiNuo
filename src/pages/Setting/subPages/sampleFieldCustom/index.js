@@ -18,8 +18,8 @@ import {
   patchStructureMove,
 } from './models/server';
 import s from './index.less';
-import { ca } from 'date-fns/locale';
-// import { checkEnterpriseInfo } from '../../../Recruitment/models/server.js';
+
+
 const Index = ({ operator_id, enterprise_id }) => {
   const addFieldRef = useRef();
   const editFieldRef = useRef();
@@ -521,10 +521,9 @@ const Index = ({ operator_id, enterprise_id }) => {
   );
 };
 
-const mapStateToProps = ({ global: { operator_id, enterprise_id } }) => {
+const mapStateToProps = ({ global: {  } }) => {
   return {
-    operator_id,
-    enterprise_id,
+  
   };
 };
 

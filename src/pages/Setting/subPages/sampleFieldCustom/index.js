@@ -23,17 +23,14 @@ import s from './index.less';
 const Index = ({ operator_id, enterprise_id }) => {
   const addFieldRef = useRef();
   const editFieldRef = useRef();
-  const addModuleRef = useRef();
   const moveModelRef = useRef();
   const addRef = useRef();
   const modelForm = useRef();
-  const [isLoading, setIsLoading] = useState(true); // 页面loading
+  const [isLoading, setIsLoading] = useState(false); // 页面loading
   const [resumeList, setResumeList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [type, setType] = useState('add');
-  const [record, setRecord] = useState(null);
-  const [dataSource, setDataSource] = useState([]);
   const [modelId, setModelId] = useState();
   const [form] = Form.useForm();
   const [modelItemId, setModelItemId] = useState();
@@ -137,7 +134,7 @@ const Index = ({ operator_id, enterprise_id }) => {
     },
   ];
   useEffect(() => {
-    getResumeList();
+    //getResumeList();
   }, []);
   const getResumeList = () => {
     setIsLoading(true);

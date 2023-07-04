@@ -25,7 +25,7 @@ export default {
         {
           path: '/',
           // redirect: '/setting/globalOptionsSet',
-           redirect: '/setting/sampleFieldCustom',
+          redirect: '/setting/sampleFieldCustom',
         },
         {
           path: '/setting',
@@ -79,11 +79,6 @@ export default {
           path: '/commonMaterials',
           name: 'commonMaterials',
           routes: [
-            // {
-            //   path: '/commonMaterials/index',
-            //   component: '@/pages/CommonMaterials',
-            //   title: '常用资料设置',
-            // },
             {
               path: '/commonMaterials/inspectionInstruments',
               component: '@/pages/CommonMaterials/subPages/inspectionInstruments',
@@ -133,6 +128,32 @@ export default {
               path: '/commonMaterials/insUnitDiscount',
               component: '@/pages/CommonMaterials/subPages/insUnitDiscount',
               title: '运检单位折扣维护',
+            },
+          ],
+        },
+        {
+          path: '/preProcessingMag',
+          name: 'preProcessingMag',
+          routes: [
+            {
+              path: '/preProcessingMag/sampleRegistration',
+              component: '@/pages/PreProcessingMag/subPages/sampleRegistration',
+              title: '样本登记列表',
+            },
+            {
+              path: '/preProcessingMag/sampleRegistration/addOrEdit',
+              component: '@/pages/PreProcessingMag/subPages/sampleRegistration/components/AddOrEdit',
+              title: '样本登新增',
+            },
+            {
+              path: '/preProcessingMag/sampleReceipt',
+              component: '@/pages/PreProcessingMag/subPages/sampleReceipt',
+              title: '单个签收',
+            },
+            {
+              path: '/preProcessingMag/bloodDistributionMag',
+              component: '@/pages/PreProcessingMag/subPages/bloodDistributionMag',
+              title: '单个签收',
             },
           ],
         },

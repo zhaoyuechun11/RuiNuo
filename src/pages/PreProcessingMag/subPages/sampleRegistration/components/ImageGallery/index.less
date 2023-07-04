@@ -1,0 +1,99 @@
+@import (reference) url('/src/polyfills.less');
+
+.uploadPic {
+  // margin-top: 30px;
+  .subTitle {
+    margin-bottom: 12px;
+    color: #909399;
+  }
+
+  .picBox {
+    display: flex;
+    flex-wrap: wrap;
+    .flex-gap(12px, 'row wrap');
+    .picList {
+      position: relative;
+      cursor: pointer;
+
+      &.uploadWrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 144px;
+        height: 67px;
+        border: 1px dashed #e5e5ea;
+        border-radius: 4px;
+        cursor: pointer;
+
+        .uploadIcon {
+          display: block;
+          width: 14px;
+          height: 14px;
+        }
+
+        span {
+          padding-left: 6px;
+          color: #909399;
+          font-size: 12px;
+        }
+      }
+
+      .picImg {
+        display: block;
+        width: 144px;
+        height: 67px;
+        background: coral;
+        border-radius: 4px;
+      }
+
+      .triangle {
+        position: absolute;
+        right: 1px;
+        bottom: 1px;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(315deg, #fff, #fff 50%, transparent 50%, transparent 100%);
+        border-bottom-right-radius: 4px;
+
+        .icon {
+          position: absolute;
+          right: 3px;
+          bottom: 3px;
+          color: #007bff;
+        }
+      }
+      &:hover {
+        .mask {
+          display: flex;
+        }
+      }
+      .mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: #000000;
+        border-radius: 4px;
+
+        .rejectIcon {
+          color: #007bff;
+          font-size: 20px;
+        }
+        .activeIcon {
+          margin: 0 12px;
+          color: #00c042;
+          font-size: 20px;
+        }
+        .delIcon {
+          color: #ff4d4f;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}

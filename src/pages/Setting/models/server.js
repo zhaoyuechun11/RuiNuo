@@ -26,3 +26,15 @@ export function paramsSetExport(params) {
 export function paramsSetDelete(params) {
   return axiosBase('/basic/parameter/delete', 'post', params);
 }
+export function mainEnterPage(params) {
+  return axiosBase('sys/module/mainEnterPage', 'get', params);
+}
+export function mainEnterPageAdd(params) {
+  return axiosBase('sys/module/addReqMainEnter', 'post', params);
+}
+export function mainEnterPageUpdate(params) {
+  return axiosBase('sys/module/update', 'post', params);
+}
+export function mainEnterPageDele(params) {
+  return axiosBase('sys/module/delete', 'post', params);
+}

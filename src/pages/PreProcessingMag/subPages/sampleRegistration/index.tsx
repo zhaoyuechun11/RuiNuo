@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useDispatch, useSelector, history, useLocation } from 'umi';
+import {  history } from 'umi';
 import { Icon, Button } from '@/components';
 import { Tooltip, message, Spin } from 'antd';
 import SetHeaderModal from './components/SetHeaderModal';

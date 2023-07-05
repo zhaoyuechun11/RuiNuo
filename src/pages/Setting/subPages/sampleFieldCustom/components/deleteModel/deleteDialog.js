@@ -6,7 +6,7 @@ import { message } from 'antd';
 import { connect } from 'umi';
 import debounce from 'lodash/debounce';
 import isFunction from 'lodash/isFunction';
-import { deleteModule, deleteField } from '../../models/server';
+import { fieldDelete } from '../../models/server';
 const WarnSvg = () => (
   <svg
     t="1599458282858"
@@ -42,25 +42,13 @@ class DeleteDialog extends Component {
   }
   onBeforeShow = () => {};
   onOk = () => {
-    // return
-    let { id, operator_id, enterprise_id, refresh, type, title } = this.props;
+    let { id, refresh } = this.props;
     let params = {
-      enterprise_id: enterprise_id,
-      operator_id: operator_id,
-      id: id,
+      ids: [id],
     };
-    if (type !== 'delete_field') {
-      deleteModule(params).then((res) => {
-        if (res.status_code === 200) {
-          this.refs.deleteposition.hide();
-          isFunction(refresh) && refresh();
-          message.success('删除成功!');
-        }
-      });
-      return;
-    }
-    deleteField(params).then((res) => {
-      if (res.status_code === 200) {
+
+    fieldDelete(params).then((res) => {
+      if (res.code === 200) {
         this.refs.deleteposition.hide();
         isFunction(refresh) && refresh();
         message.success('删除成功!');

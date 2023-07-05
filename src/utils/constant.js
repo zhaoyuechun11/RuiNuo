@@ -1367,6 +1367,14 @@ export const menu = [
           },
         ],
       },
+      {
+        key: 'roleMange',
+        url: '/setting/applicationFormModel',
+        name: '组件模块设置',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
     ],
   },
 ];

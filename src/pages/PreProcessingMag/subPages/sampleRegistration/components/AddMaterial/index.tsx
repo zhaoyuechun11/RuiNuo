@@ -44,9 +44,10 @@ const AddMaterial = ({ refs }) => {
     setImagesList(newList);
   };
 
-  const onDelete = () => {
+  const onDelete = (index) => {
+    debugger
     const newList = [
-      ...imagesList.slice(0, -1),
+      ...imagesList.slice(index, 1),
       {
         full_url: '',
         url: '',

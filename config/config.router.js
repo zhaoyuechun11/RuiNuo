@@ -25,7 +25,7 @@ export default {
         {
           path: '/',
           // redirect: '/setting/globalOptionsSet',
-          redirect: '/setting/sampleFieldCustom',
+          // redirect: '/setting/sampleFieldCustom',
         },
         {
           path: '/setting',
@@ -72,6 +72,16 @@ export default {
               path: '/setting/sampleFieldCustom',
               component: '@/pages/Setting/subPages/sampleFieldCustom',
               title: '标本字段设置',
+            },
+            {
+              path: '/setting/applicationFormModel',
+              component: '@/pages/Setting/subPages/applicationFormModel',
+              title: '组件模块设置',
+            },
+            {
+              path: '/setting/sampleFieldCustom/:id',
+              component: '@/pages/Setting/subPages/sampleFieldCustom',
+              title: '自定义组件',
             },
           ],
         },

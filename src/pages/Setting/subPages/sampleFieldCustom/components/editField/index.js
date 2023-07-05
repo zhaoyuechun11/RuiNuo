@@ -1,43 +1,49 @@
 import React, { Fragment, useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Row, Col, Input, message, Modal, Button, Checkbox, Card } from 'antd';
-import { ExclamationCircleOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { connect, history } from 'umi';
+import { Form, Row, Col, Input, message, Modal, Checkbox, Cascader, DatePicker } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import moment from 'moment';
 import { Dialog, Icon } from '@components';
 import style from '../addField/index.less';
-import { updateField } from '../../models/server';
+import { updateField, getArea } from '../../models/server';
 const { confirm } = Modal;
 
-const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id }) => {
+const Index = ({ editFieldRef, fieldInfo, refresh }) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [visibleText, setVisibleText] = useState('');
   const dialogRef = useRef();
   const [form] = Form.useForm();
-  const [filedChoose, setFiledChoose] = useState(false);
+  const [provinceList, setProvinceList] = useState([]);
   useImperativeHandle(editFieldRef, () => ({
     showModal: showModal,
   }));
   useEffect(() => {
     if (fieldInfo != null) {
+      console.log(fieldInfo);
+      debugger;
       form.setFieldsValue({
         name: fieldInfo.name,
         data_type:
-          (fieldInfo.data_type === 1 && '单行文本') ||
-          (fieldInfo.data_type === 2 && '多行文本') ||
-          (fieldInfo.data_type === 3 && '自定义选择器') ||
-          (fieldInfo.data_type === 4 && '时间选择器') ||
-          (fieldInfo.data_type === 5 && '民族选择器') ||
-          (fieldInfo.data_type === 6 && '区域选择器') ||
-          (fieldInfo.data_type === 7 && '系统选择器'),
-        is_display: fieldInfo.is_display === 1 ? true : false,
-        is_required: fieldInfo.is_required === 1 ? true : false,
-        data_json: fieldInfo.json,
+          (fieldInfo.dataType === 1 && '单行文本') ||
+          (fieldInfo.dataType === 2 && '多行文本') ||
+          (fieldInfo.dataType === 3 && '自定义选择器') ||
+          (fieldInfo.dataType === 4 && '时间选择器') ||
+          (fieldInfo.dataType === 5 && '民族选择器') ||
+          (fieldInfo.dataType === 6 && '区域选择器') ||
+          (fieldInfo.dataType === 7 && '系统选择器'),
+        is_display: fieldInfo.isDisplay,
+        is_required: fieldInfo.isRequired,
+        data_json: fieldInfo.dataJson,
         data_json1: [''],
+        key: fieldInfo.key,
+        defaultValue:
+          fieldInfo.dataType === 4 ? moment(fieldInfo.defaultValue) : fieldInfo.defaultValue,
       });
     }
   }, [fieldInfo]);
-  const onBeforeShow = () => {};
+  const onBeforeShow = () => {
+    getAreaList();
+  };
   const showModal = () => {
     dialogRef.current && dialogRef.current.show();
   };
@@ -45,24 +51,37 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
   const onFinish = (values) => {
     //return
     //setLoading(true);
+    console.log(values);
     let result = values.data_json1;
     let field = values.data_json;
     let concatResult = [];
-    if (field) {
+    if (field && result) {
       concatResult = field.concat(result);
     }
+    if (field && !result) {
+      concatResult = field;
+    }
+    if (result && !field) {
+      concatResult = result;
+    }
+    console.log(concatResult);
+    debugger;
     let params = {
-      enterprise_id: enterprise_id,
-      operator_id: operator_id,
       name: values.name,
       id: fieldInfo.id,
-      data_type: fieldInfo.data_type,
-      data_json: fieldInfo.data_type === 3 ? JSON.stringify(concatResult) : '',
-      is_display: values.is_display ? 1 : 2,
-      is_required: values.is_required ? 1 : 2,
+      dataType: fieldInfo.dataType,
+      dataJson: fieldInfo.dataType === 3 ? concatResult : [],
+      isDisplay: values.is_display,
+      isRequired: values.is_required,
+      defaultValue:
+        fieldInfo.dataType === 4
+          ? values.defaultValue.format('YYYY-MM-DD')
+          : fieldInfo.dataType === 6
+          ? values.defaultValue?.join(',')
+          : values.defaultValue,
     };
     updateField(params).then((res) => {
-      if (res.status_code === 200) {
+      if (res.code === 200) {
         refresh && refresh();
         dialogRef.current && dialogRef.current.hide();
         message.success('编辑成功!');
@@ -70,10 +89,13 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
     });
   };
 
-  const typeChoose = (e) => {
-    e.target.value === '3' ? setFiledChoose(true) : setFiledChoose(false);
+  const getAreaList = () => {
+    getArea().then((res) => {
+      if (res.code === 200) {
+        setProvinceList(res.data);
+      }
+    });
   };
-
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -121,14 +143,14 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
           style={{ margin: '40px 30px' }}
           onFinish={onFinish}
         >
-          <Row span={24}>
+          <Row>
             <Col span={24}>
               <Form.Item label="字段类型" name="data_type">
                 <Input placeholder="请输入字段类型" disabled />
               </Form.Item>
             </Col>
           </Row>
-          <Row span={24}>
+          <Row>
             <Col span={24}>
               <Form.Item label="字段名称" name="name" rules={[{ validator: interval }]}>
                 <Input
@@ -138,7 +160,29 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
               </Form.Item>
             </Col>
           </Row>
-          {fieldInfo && fieldInfo.data_type === 3 ? (
+          <Row>
+            <Col span={24}>
+              <Form.Item label="默认值" name="defaultValue">
+                {fieldInfo?.dataType === 6 ? (
+                  <Cascader
+                    options={provinceList}
+                    changeOnSelect
+                    fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+                    disabled={fieldInfo?.isAuth ? true : false}
+                  />
+                ) : fieldInfo?.dataType === 4 ? (
+                  <DatePicker disabled={fieldInfo?.isAuth ? true : false} />
+                ) : (
+                  <Input
+                    placeholder="请输入默认值"
+                    style={{ border: '1px solid #e7e9eb' }}
+                    disabled={fieldInfo?.isAuth ? true : false}
+                  />
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          {fieldInfo && fieldInfo.dataType === 3 ? (
             <Row>
               <Col span={24}>
                 <Form.List name="data_json">
@@ -201,6 +245,7 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
                             <Input
                               placeholder="请输入字段选项"
                               style={{ width: '91%', marginRight: '10px' }}
+                              disabled={fieldInfo?.isAuth ? true : false}
                             />
                           </Form.Item>
                           <PlusOutlined
@@ -229,7 +274,7 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
           ) : (
             ''
           )}
-          <Row span={24}>
+          <Row>
             <Col span={11}>
               <Form.Item
                 name="is_display"
@@ -256,10 +301,7 @@ const Index = ({ editFieldRef, fieldInfo, refresh, enterprise_id, operator_id })
   );
 };
 
-const mapStateToProps = ({ global: { enterprise_id, operator_id } }) => {
-  return {
-    enterprise_id,
-    operator_id,
-  };
+const mapStateToProps = ({ global: {} }) => {
+  return {};
 };
 export default connect(mapStateToProps)(Index);

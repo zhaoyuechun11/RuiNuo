@@ -45,8 +45,9 @@ const ImageGallery = ({
   };
 
   // 删除图片保存空值
-  const delImgSaveVal = () => {
-    const firstImg = imageList[0];
+  const delImgSaveVal = (index) => {
+    const firstImg = imageList.splice(index, 1);
+    debugger;
     saveMore({
       pcBannerImgURL: firstImg.full_url,
       pcBanner: {
@@ -56,12 +57,12 @@ const ImageGallery = ({
     });
 
     triggerChange(firstImg.url);
-    onDelete?.();
+    onDelete?.(index);
   };
   // 删除图片
-  const onDeleteImg = (e) => {
+  const onDeleteImg = (e, index) => {
     e.stopPropagation();
-    delImgSaveVal();
+    delImgSaveVal(index);
   };
 
   // 选择图片
@@ -156,47 +157,6 @@ const ImageGallery = ({
     renderCustomImg();
   }, [imageList]);
   const renderCustomImg = () => {
-    // if (imageList.length > 0) {
-    //   return imageList.map((item) => {
-    //     return (
-    //       <>
-    //         <div
-    //           className={styles.picList}
-    //           onClick={() => {
-    //             //   onChangeImg(customImg);
-    //           }}
-    //         >
-    //           <img className={styles.picImg} src={item.fileServerUrl} alt="" />
-    //           {item.fileServerUrl === selectedImgURL && (
-    //             <div className={styles.triangle}>
-    //               <CheckOutlined title="重新上传" className={styles.icon} />
-    //             </div>
-    //           )}
-    //           <div className={styles.mask}>
-    //             {uploadHTML(true)}
-    //             {/* <Icon
-    //           classStyle={styles.activeIcon}
-    //           onClick={() => {
-    //             onChangeImg(newImgId);
-    //           }}
-    //           name="iconanniu-qiyong"
-    //         /> */}
-    //             <Icon
-    //               title="删除"
-    //               classStyle={styles.delIcon}
-    //               onClick={(e) => onDeleteImg(e)}
-    //               name="iconanniu-shanchu"
-    //             />
-    //           </div>
-    //         </div>
-    //         <div>{uploadHTML()}</div>
-    //       </>
-    //     );
-    //   });
-    // } else {
-    //   return uploadHTML();
-    // }
-
     if (imageList.length > 0) {
       return imageList.map((item, index) => {
         return (
@@ -225,12 +185,12 @@ const ImageGallery = ({
                 <Icon
                   title="删除"
                   classStyle={styles.delIcon}
-                  onClick={(e) => onDeleteImg(e)}
+                  onClick={(e) => onDeleteImg(e, index)}
                   name="iconanniu-shanchu"
                 />
               </div>
             </div>
-            {index === imageList.length-1 && <div>{uploadHTML()}</div>}
+            {index === imageList.length - 1 && <div>{uploadHTML()}</div>}
           </>
         );
       });

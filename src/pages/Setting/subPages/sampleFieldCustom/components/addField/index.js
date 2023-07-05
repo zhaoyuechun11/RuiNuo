@@ -1,13 +1,25 @@
 import React, { Fragment, useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Row, Col, Input, Radio, message, Modal, Button, Checkbox } from 'antd';
-import { ExclamationCircleOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { connect, history } from 'umi';
+import {
+  Form,
+  Row,
+  Col,
+  Input,
+  Radio,
+  message,
+  Modal,
+  Button,
+  Checkbox,
+  Cascader,
+  DatePicker,
+} from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import moment from 'moment';
 import { Dialog, Icon } from '@components';
 import style from './index.less';
-import { addField } from '../../models/server';
+import { addField, getArea } from '../../models/server';
 const { confirm } = Modal;
-const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeList }) => {
+const Index = ({ addFieldRef, refresh, id, resumeList }) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isDisplay, setIsDisplay] = useState(2);
@@ -17,6 +29,7 @@ const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeLis
   const [form] = Form.useForm();
   const [filedChoose, setFiledChoose] = useState(false);
   const [fileType, setFileType] = useState(1);
+  const [provinceList, setProvinceList] = useState([]);
   useImperativeHandle(addFieldRef, () => ({
     showModal: showModal,
   }));
@@ -28,7 +41,10 @@ const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeLis
       is_display: false,
       is_required: false,
       names,
+      defaultValue: '',
+      key: '',
     });
+    getAreaList();
   };
   const showModal = () => {
     dialogRef.current && dialogRef.current.show();
@@ -36,17 +52,22 @@ const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeLis
 
   const onFinish = (values) => {
     let params = {
-      enterprise_id: enterprise_id,
-      operator_id: operator_id,
       name: values.name,
-      module_id: id,
-      data_type: fileType,
-      data_json: fileType === '3' ? JSON.stringify(values.names) : '',
-      is_display: values.is_display ? 1 : 2,
-      is_required: values.is_required ? 1 : 2,
+      moduleId: id,
+      dataType: Number(fileType),
+      dataJson: fileType === '3' ? values.names : [],
+      isDisplay: values.is_display,
+      isRequired: values.is_required,
+      key: values.key,
+      defaultValue:
+        Number(fileType) === 4
+          ? values.defaultValue.format('YYYY-MM-DD')
+          : Number(fileType) === 6
+          ? values.defaultValue?.join(',')
+          : values.defaultValue,
     };
     addField(params).then((res) => {
-      if (res.status_code === 200) {
+      if (res.code === 200) {
         refresh && refresh();
         dialogRef.current && dialogRef.current.hide();
         message.success('添加成功!');
@@ -59,21 +80,28 @@ const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeLis
     setFileType(e.target.value);
     e.target.value === '3' ? setFiledChoose(true) : setFiledChoose(false);
   };
-  const interval = (item, value) => {
-    if (value.length > 20) {
-      return Promise.reject(new Error('不能大于20个字符哦'));
-    }
-    let result = '';
-    resumeList.forEach((element) => {
-      element.structure.forEach((e) => {
-        if (value === e.name) {
-          result = value;
-        }
-      });
+  const getAreaList = () => {
+    getArea().then((res) => {
+      if (res.code === 200) {
+        setProvinceList(res.data);
+      }
     });
-    if (result !== '') {
-      return Promise.reject(new Error('字段名称不允许重复创建'));
-    }
+  };
+  const interval = (item, value) => {
+    // if (value.length > 20) {
+    //   return Promise.reject(new Error('不能大于20个字符哦'));
+    // }
+    // let result = '';
+    // resumeList.forEach((element) => {
+    //   element.structure.forEach((e) => {
+    //     if (value === e.name) {
+    //       result = value;
+    //     }
+    //   });
+    // });
+    // if (result !== '') {
+    //   return Promise.reject(new Error('字段名称不允许重复创建'));
+    // }
     return Promise.resolve();
   };
   const formItemLayout = {
@@ -148,13 +176,37 @@ const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeLis
               </Radio.Group>
             </Col>
           </Row>
-          <Row span={24}>
+          <Row>
             <Col span={24}>
               <Form.Item label="字段名称" name="name" rules={[{ validator: interval }]}>
                 <Input
                   placeholder="请输入字段名称，1-20个字符"
                   style={{ border: '1px solid #e7e9eb' }}
                 />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item label="key" name="key">
+                <Input placeholder="请输入key" style={{ border: '1px solid #e7e9eb' }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item label="默认值" name="defaultValue">
+                {fileType === '6' ? (
+                  <Cascader
+                    options={provinceList}
+                    changeOnSelect
+                    fieldNames={{ label: 'name', value: 'id', children: 'child' }}
+                  />
+                ) : fileType === '4' ? (
+                  <DatePicker />
+                ) : (
+                  <Input placeholder="请输入默认值" style={{ border: '1px solid #e7e9eb' }} />
+                )}
               </Form.Item>
             </Col>
           </Row>
@@ -242,6 +294,7 @@ const Index = ({ addFieldRef, refresh, enterprise_id, operator_id, id, resumeLis
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item></Form.Item>
         </Form>
       </Dialog>
     </Fragment>

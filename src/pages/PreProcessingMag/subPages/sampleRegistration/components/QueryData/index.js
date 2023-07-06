@@ -725,7 +725,7 @@ const QueryData = ({
             >
               <div className="flex_end" style={{ color: '#808695', cursor: 'pointer', width: 200 }}>
                 <img src={require('./img/filter_icon.png')} style={{ width: 15, marginRight: 8 }} />
-                更多筛选1
+                更多筛选
               </div>
             </Popover>
           )}

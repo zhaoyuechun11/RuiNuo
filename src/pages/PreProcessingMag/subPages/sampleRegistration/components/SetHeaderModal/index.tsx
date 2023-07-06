@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useImperativeHandle,
 } from 'react';
-import PropTypes from 'prop-types';
 import { Checkbox, Modal, Row, Col } from 'antd';
 import { Dialog } from '@components';
 import { CloseCircleOutlined, MenuOutlined } from '@ant-design/icons';
@@ -15,12 +14,12 @@ import style from './index.less';
 
 const CheckboxGroup = Checkbox.Group;
 
-const SetHeaderModal = ({refs,...props}) => {
+const SetHeaderModal = ({ refs, ...props }) => {
   const { columnOptions, columnChecked, defaultChecked, handleChangeColumn } = props;
   const [exportVisible, setExportVisible] = useState(false); //是否显示弹窗
   const [checkAll, setCheckAll] = useState(false); // 是否全选
-  const [optionsLength, setOptionsLength] = useState(0); // 所有选项的长度
   const [checkedList, setCheckedList] = useState([]);
+  const [rightCheckedList, setRightCheckedList] = useState([]);
   const [exportLoading, setExportLoading] = useState(false);
   const dialog = useRef();
   useImperativeHandle(refs, () => ({
@@ -32,17 +31,29 @@ const SetHeaderModal = ({refs,...props}) => {
     },
   }));
   useEffect(() => {
-    let optionsLength = 0;
-    for (let key in columnOptions) {
-      optionsLength += columnOptions[key].length;
-    }
-    setOptionsLength(optionsLength);
-    setCheckedList(JSON.parse(JSON.stringify(columnChecked)));
-    setCheckAll(columnChecked.length === optionsLength);
+    setCheckedList(columnChecked);
   }, []);
   useEffect(() => {
-    setCheckedList(JSON.parse(JSON.stringify(columnChecked)));
-    setCheckAll(columnChecked.length === optionsLength);
+    let ids = columnChecked.map((item) => {
+      return item.id;
+    });
+    setCheckedList(ids);
+    let listSeqs = columnChecked.map((item) => {
+      return item.listSeq;
+    });
+
+    let sortResult = listSeqs.sort(function (a, b) {
+      return a - b;
+    });
+    let rightResult = [];
+    sortResult.map((item) => {
+      columnChecked.map((checkItem) => {
+        if (checkItem.listSeq === item) {
+          rightResult.push(checkItem);
+        }
+      });
+    });
+    setRightCheckedList(rightResult);
   }, [columnChecked]);
   // 显示弹窗
   const onShowExportModal = () => {
@@ -53,7 +64,16 @@ const SetHeaderModal = ({refs,...props}) => {
   // 选中字段
   const onCheckboxChange = (list) => {
     setCheckedList(list);
-    setCheckAll(list.length === optionsLength);
+    let filterResult = [];
+    columnOptions.map((item) => {
+      list.map((element) => {
+        if (item.id === element) {
+          filterResult.push(item);
+        }
+      });
+    });
+
+    setRightCheckedList(filterResult);
   };
   // 全选
   const onCheckAllChange = (e) => {
@@ -67,20 +87,38 @@ const SetHeaderModal = ({refs,...props}) => {
     setCheckAll(e.target.checked);
   };
   // 删除一项
-  const deleteItem = (index) => {
-    let list = checkedList ? JSON.parse(JSON.stringify(checkedList)) : [];
-    list.splice(index, 1);
+  const deleteItem = (index, id) => {
+    let list = checkedList.filter((item) => item != id);
+    // let list = checkedList ? checkedList : [];
+    // list.splice(index, 1);
+    console.log('list', list);
     setCheckedList(list);
+    let filterResult = [];
+    columnOptions.map((item) => {
+      list.map((element) => {
+        if (item.id === element) {
+          filterResult.push(item);
+        }
+      });
+    });
+    setRightCheckedList(filterResult);
   };
   // 拖拽结束
   const onDragEnd = (result) => {
     if (!result.destination) {
       return;
     }
-
     const checkedListResult = reOrder(checkedList, result.source.index, result.destination.index);
-
     setCheckedList(checkedListResult);
+    let filterResult = [];
+    checkedListResult.map((item) => {
+      columnOptions.map((element) => {
+        if (element.id === item) {
+          filterResult.push(element);
+        }
+      });
+    });
+    setRightCheckedList(filterResult);
   };
   // 移动元素在数组中的位置
   const reOrder = (list, startIndex, endIndex) => {
@@ -94,7 +132,11 @@ const SetHeaderModal = ({refs,...props}) => {
   };
   // 导出弹窗点击确认
   const handleExportOk = () => {
-    handleChangeColumn(checkedList);
+    console.log(rightCheckedList);
+    let ids = rightCheckedList.map((item) => {
+      return item.id;
+    });
+    handleChangeColumn(ids);
     setExportVisible(false);
     dialog.current && dialog.current.hide();
   };
@@ -112,7 +154,7 @@ const SetHeaderModal = ({refs,...props}) => {
         confirmLoading={exportLoading}
         bodyStyle={{ padding: '0 0 0 30px' }}
         className={style.exportModal}
-        title="自定义表头字段4"
+        title="自定义表头字段"
         destroyOnClose={true}
         maskClosable={false}
         visible={exportVisible}
@@ -122,7 +164,6 @@ const SetHeaderModal = ({refs,...props}) => {
       >
         <div className={style.modalContent}>
           <div className={style.modalLeft}>
-            33
             {/*<div className={style.checkAll}>*/}
             {/*<Checkbox*/}
             {/*onChange={this.onCheckAllChange}*/}
@@ -131,45 +172,24 @@ const SetHeaderModal = ({refs,...props}) => {
             {/*<span className={style.title}>全选</span>*/}
             {/*</Checkbox>*/}
             {/*</div>*/}
-            {/* <CheckboxGroup value={checkedList} onChange={onCheckboxChange}>
-              {(() => {
-                let arr = [];
-                for (let key in columnOptions) {
-                  arr.push(
-                    <Fragment key={key}>
-                      <div className={style.title}>{key}</div>
-                      <Row>
-                        {columnOptions[key].map((item, index) => {
-                          if (item.label !== '评论') {
-                            return (
-                              <Col span={6} key={item.name}>
-                                <Checkbox
-                                  disabled={item.is_disabled == 1}
-                                  value={
-                                    item.key +
-                                    ',' +
-                                    item.name +
-                                    ',' +
-                                    item.module_id +
-                                    ',' +
-                                    item.structure_id
-                                  }
-                                >
-                                  {item.name}
-                                </Checkbox>
-                              </Col>
-                            );
-                          }
-                        })}
-                      </Row>
-                    </Fragment>,
-                  );
-                }
-                return arr;
-              })()}
-            </CheckboxGroup> */}
+            <CheckboxGroup value={checkedList} onChange={onCheckboxChange}>
+              <Fragment>
+                <Row>
+                  {columnOptions.map((item, index) => {
+                    return (
+                      <Col span={6} key={item.name}>
+                        <Checkbox disabled={item.is_disabled == 1} value={item.id}>
+                          {item.name}
+                        </Checkbox>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Fragment>
+              ,
+            </CheckboxGroup>
           </div>
-          {/* <div className={style.modalRight}>
+          <div className={style.modalRight}>
             <div className="flex_between" style={{ padding: '20px 30px 0' }}>
               <span className={style.tip1}>
                 至少选择2个，已选择
@@ -184,57 +204,51 @@ const SetHeaderModal = ({refs,...props}) => {
                 <Droppable droppableId="droppable">
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {checkedList.map((item, index) => {
-                        if (item.indexOf(',') > -1) {
-                          if (index === 0 || index === 1) {
-                            return (
-                              <div key={index}>
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className={`${style.dragItem} ${style.disabled}`}
-                                  key={item.id}
-                                >
-                                  <div className="flex_start">
-                                    <MenuOutlined className={style.icon} />
-                                    <div className={style.text}>{item.split(',')[1]}</div>
-                                  </div>
+                      {rightCheckedList.map((item, index) => {
+                        if (index === 0 || index === 1) {
+                          return (
+                            <div key={index}>
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={`${style.dragItem} ${style.disabled}`}
+                                key={item.id}
+                              >
+                                <div className="flex_start">
+                                  <MenuOutlined className={style.icon} />
+                                  <div className={style.text}>{item.name}</div>
                                 </div>
                               </div>
-                            );
-                          } else {
-                            return (
-                              <Draggable
-                                key={item.split(',')[0]}
-                                draggableId={item.split(',')[0]}
-                                index={index}
-                              >
-                                {(provided, snapshot) => {
-                                  return (
-                                    <div>
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        className={style.dragItem}
-                                        key={item.id}
-                                      >
-                                        <div className="flex_start">
-                                          <MenuOutlined className={style.icon} />
-                                          <div className={style.text}>{item.split(',')[1]}</div>
-                                        </div>
-                                        <CloseCircleOutlined
-                                          className={style.icon}
-                                          onClick={() => deleteItem(index)}
-                                        />
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <Draggable key={item.key} draggableId={item.key} index={index}>
+                              {(provided, snapshot) => {
+                                return (
+                                  <div>
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className={style.dragItem}
+                                      key={item.id}
+                                    >
+                                      <div className="flex_start">
+                                        <MenuOutlined className={style.icon} />
+                                        <div className={style.text}>{item.name}</div>
                                       </div>
+                                      <CloseCircleOutlined
+                                        className={style.icon}
+                                        onClick={() => deleteItem(index, item.id)}
+                                      />
                                     </div>
-                                  );
-                                }}
-                              </Draggable>
-                            );
-                          }
+                                  </div>
+                                );
+                              }}
+                            </Draggable>
+                          );
                         }
                       })}
                     </div>
@@ -242,7 +256,7 @@ const SetHeaderModal = ({refs,...props}) => {
                 </Droppable>
               </DragDropContext>
             </div>
-          </div> */}
+          </div>
         </div>
       </Dialog>
     </div>

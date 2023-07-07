@@ -15,3 +15,18 @@ export function mainEnterEnterList(params) {
 export function moduleList(params) {
   return axiosBase('sys/module/mainEnterList', 'get', params);
 }
+export function getArea(params) {
+  return axiosBase('/basic/area/getAll', 'get', params);
+}
+export function getMainOrder(params) {
+  return axiosBase('/lab/reqMainOrder', 'get', params);
+}
+export function getDictList(params) {
+  return axiosBase('/basic/dict/getList', 'get', params);
+}
+export function getHospitalList(params) {
+  return axiosBase('basic/hospital/getList', 'get', params);
+}
+export function getDoctorList(params) {
+  return axiosBase('basic/doctor/getList', 'get', params);
+}

@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Table, Alert } from 'antd';
 import styles from './index.less';
-import isEqual from 'lodash/isEqual';
+
 
 function initTotalList(columns) {
   const totalList = [];
@@ -47,8 +47,8 @@ export default  class StandardTable extends PureComponent {
   };
   render() {
     const { selectedRowKeys = [], classStyle } = this.props;
-    const { data = {}, rowKey, isRowSelection, unit = '', ...rest } = this.props;
-    const { list = [], pagination } = data;
+    const { data = [], rowKey, isRowSelection,pagination, unit = '', ...rest } = this.props;
+  
 
     const paginationProps = {
       showSizeChanger: true,
@@ -67,7 +67,7 @@ export default  class StandardTable extends PureComponent {
 
     return (
       <div className={styles.standardTable}>
-        {selectedRowKeys.length > 0 && (
+        {/* {selectedRowKeys.length > 0 && (
           <div className={`${styles.selectedHead} ${classStyle}`}>
             <div className={styles.selectedCount}>
               <span>
@@ -76,12 +76,12 @@ export default  class StandardTable extends PureComponent {
               {this.props.children}
             </div>
           </div>
-        )}
+        )} */}
         {isRowSelection ? (
           <Table
             rowKey={rowKey || 'key'}
             rowSelection={rowSelection}
-            dataSource={list}
+            dataSource={data}
             pagination={paginationProps}
             onChange={this.handleTableChange}
             locale={{
@@ -102,7 +102,7 @@ export default  class StandardTable extends PureComponent {
         ) : (
           <Table
             rowKey={rowKey || 'key'}
-            dataSource={list}
+            dataSource={data}
             pagination={paginationProps}
             onChange={this.handleTableChange}
             {...rest}

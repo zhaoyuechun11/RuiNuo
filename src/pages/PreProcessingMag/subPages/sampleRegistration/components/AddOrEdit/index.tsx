@@ -24,16 +24,19 @@ import {
   getDictList,
   getHospitalList,
   getDoctorList,
+  enterAdd,
 } from '../../../../models/server';
 import moment from 'moment';
 import Applying from './components/Applying';
 import styles from './index.less';
+import AddApply from './components/AddApply';
 const { TextArea } = Input;
 const { Option } = Select;
 const AddOrEdit = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const materialRef = useRef();
+  const addRef = useRef();
   const [enterType, setEnterType] = useState([]);
   const [fieldList, setFieldList] = useState([]);
   const [form] = Form.useForm();
@@ -44,6 +47,7 @@ const AddOrEdit = () => {
   const [department, setDepartment] = useState([]);
   const [sampleSource, setSampleSource] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
+  const [applyListData, setApplyListData] = useState([]);
   const [isMemory, setIsMemory] = useState(false);
   useEffect(() => {
     getModuleList();
@@ -71,6 +75,9 @@ const AddOrEdit = () => {
       });
     });
   }, [fieldList]);
+  useEffect(() => {
+    console.log(applyListData);
+  }, [applyListData]);
   const getFormField = (id) => {
     dispatch({
       type: 'preProcessingMag/getMainEnterEnterList',
@@ -103,6 +110,40 @@ const AddOrEdit = () => {
   };
   const onFinish = (value) => {
     console.log('value', value);
+    return
+    const reqItemPrices = applyListData.map((item) => {
+      return {
+        isOut: item.isOut,
+        itemId: item.id,
+        itemName: item.reqItemName,
+        outCompanyId: item.outCompanyId,
+        sampleTypeId: item.defaultSampleTypeId,
+        cnt: 1,
+      };
+    });
+
+    for (let i in value.system) {
+      if (value.system[i]?._isAMomentObject) {
+        value.system[i] = value.system[i].format('YYYY-MM-DD HH:mm:ss');
+      }
+    }
+    for (let i in value.extend) {
+      if (value.extend[i]?._isAMomentObject) {
+        value.extend[i] = value.extend[i].format('YYYY-MM-DD HH:mm:ss');
+      }
+    }
+    console.log('value', value);
+    let params = {
+      extend: { extendInfo: value.extend },
+      inputType: value.inputType,
+      ...value.system,
+      reqItemPrices,
+    };
+    enterAdd(params).then((res) => {
+      if (res.code === 200) {
+        history.push('/preProcessingMag/sampleRegistration');
+      }
+    });
   };
   const getMainOrderData = () => {
     getMainOrder({ id: 9 }).then((res) => {
@@ -143,12 +184,18 @@ const AddOrEdit = () => {
       }
     });
   };
+  const onChangeTypeThree = (val, key) => {
+    if (key === 'hospitalId') {
+      getDoctorListData(val);
+    }
+  };
   const dataType3Form = (stru) => {
     return (
       <Select
         showSearch
         placeholder={`请输入${stru.name}`}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        onChange={(val) => onChangeTypeThree(val, stru.key)}
       >
         {stru.key === 'sex'
           ? sex?.map((item, index) => (
@@ -180,6 +227,12 @@ const AddOrEdit = () => {
                 {item.dictValue}
               </Option>
             ))
+          : stru.key === 'sendDoctorId'
+          ? doctorList?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.name}
+              </Option>
+            ))
           : stru.dataJson?.map((item, index) => (
               <Option value={item} key={index}>
                 {item}
@@ -194,7 +247,7 @@ const AddOrEdit = () => {
         onClick={() => {
           // materialRef.current.show();
           // onFinish()
-          form.submit();
+          // form.submit();
         }}
       >
         添加
@@ -245,17 +298,15 @@ const AddOrEdit = () => {
                 <Form.Item
                   label={
                     <div
-                    className={isMemory?`${styles.ii}`:null}
+                      className={isMemory ? `${styles.ii}` : null}
                       onClick={() => {
-                        setIsMemory(true)
-                        
+                        setIsMemory(true);
                       }}
-                    
                     >
                       {stru.name}
                     </div>
                   }
-                  name={`${stru.key}`}
+                  name={[stru.isAuth ? 'system' : 'extend', `${stru.key}`]}
                   key={`${stru.key}`}
                   rules={[
                     {
@@ -312,6 +363,7 @@ const AddOrEdit = () => {
                         inputReadOnly
                         getPopupContainer={(triggerNode) => triggerNode.parentNode}
                         style={{ width: '100%' }}
+                        showTime
                       />
                     ))}
                 </Form.Item>
@@ -320,7 +372,7 @@ const AddOrEdit = () => {
               <Col span={8} key={index}>
                 <Form.Item
                   label={stru.name}
-                  name={`${stru.key}`}
+                  name={[stru.isAuth ? 'system' : 'extend', `${stru.key}`]}
                   key={`${stru.key}`}
                   rules={[
                     {
@@ -345,46 +397,47 @@ const AddOrEdit = () => {
             );
           })}
         </Row>
-        <div className={styles.title}>
-          申请项目列表{' '}
-          <Button
-            btnType="primary"
-            onClick={() => {
-              // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
-            }}
-          >
-            <PlusOutlined style={{ marginRight: 4 }} />
-            新增
-          </Button>
-        </div>
-        <Applying type={1} />
-        <div className={`${styles.title} ${styles.topVal}`}>
-          送检样本列表
-          <Button
-            btnType="primary"
-            onClick={() => {
-              // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
-            }}
-          >
-            <PlusOutlined style={{ marginRight: 4 }} />
-            新增
-          </Button>
-        </div>
-        <Applying type={2} />
-        <div className={`${styles.title} ${styles.topVal}`}>
-          资料列表
-          <Button
-            btnType="primary"
-            onClick={() => {
-              // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
-            }}
-          >
-            <PlusOutlined style={{ marginRight: 4 }} />
-            新增
-          </Button>
-        </div>
-        <Applying type={3} />
       </Form>
+      <div className={styles.title}>
+        申请项目列表{' '}
+        <Button
+          onClick={() => {
+            addRef.current.show(applyListData);
+          }}
+          btnType="primary"
+        >
+          <PlusOutlined style={{ marginRight: 4 }} />
+          新增
+        </Button>
+      </div>
+      <Applying type={1} applyListData={applyListData} setApplyList={setApplyListData}/>
+      <div className={`${styles.title} ${styles.topVal}`}>
+        送检样本列表
+        <Button
+          onClick={() => {
+            // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
+          }}
+          btnType="primary"
+        >
+          <PlusOutlined style={{ marginRight: 4 }} />
+          新增
+        </Button>
+      </div>
+      <Applying type={2} />
+      <div className={`${styles.title} ${styles.topVal}`}>
+        资料列表
+        <Button
+          btnType="primary"
+          onClick={() => {
+            // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
+          }}
+        >
+          <PlusOutlined style={{ marginRight: 4 }} />
+          新增
+        </Button>
+      </div>
+      <Applying type={3} />
+      <AddApply refs={addRef} applyListData={setApplyListData} />
       {/* <AddMaterial refs={materialRef} /> */}
     </div>
   );

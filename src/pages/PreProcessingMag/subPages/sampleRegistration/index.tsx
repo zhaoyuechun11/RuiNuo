@@ -17,6 +17,7 @@ const SampleRegistration = () => {
   const [page, setPage] = useState(1);
   useEffect(() => {
     getCustomHeader();
+    reqMainOrderList();
   }, []);
 
   useEffect(() => {
@@ -60,7 +61,6 @@ const SampleRegistration = () => {
           ),
         },
       ],
-      data,
       page,
       onChangePage,
     };
@@ -72,8 +72,6 @@ const SampleRegistration = () => {
       payload: {
         callback: (res: { code: number; data: any[] }) => {
           if (res.code === 200) {
-            // setList(res.data.records);
-            // setTotal(res.data.total);
             const selectedFields = res.data.filter(
               (item: Record<string, any>) => item?.isListDisplay == true,
             );
@@ -92,6 +90,16 @@ const SampleRegistration = () => {
         ids,
         callback: () => {
           getCustomHeader();
+        },
+      },
+    });
+  };
+  const reqMainOrderList = () => {
+    dispatch({
+      type: 'preProcessingMag/getReqMainOrder',
+      payload: {
+        callback: (res) => {
+          setData({ list: res.data.records, count: res.data.total });
         },
       },
     });
@@ -127,7 +135,7 @@ const SampleRegistration = () => {
           <Icon name="iconhouxuanren-shezhi" style={{ fontSize: 20 }} />
         </span>
       </Tooltip>
-      <SampleView {...passProps} />
+      <SampleView {...passProps} data={data} />
       <SetHeaderModal
         refs={setRef}
         columnOptions={columnOptionsList}

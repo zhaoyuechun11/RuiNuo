@@ -318,6 +318,7 @@ class RightContent extends Component {
   };
 
   handleSelectRows = (rows) => {
+    console.log('rows', rows)
     this.setState({
       selectedRows: rows,
     });

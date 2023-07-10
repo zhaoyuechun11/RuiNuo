@@ -30,3 +30,12 @@ export function getHospitalList(params) {
 export function getDoctorList(params) {
   return axiosBase('basic/doctor/getList', 'get', params);
 }
+export function enterAdd(params) {
+  return axiosBase('lab/reqMainOrder/add', 'post', params);
+}
+export function reqMainOrder(params) {
+  return axiosBase('lab/reqMainOrder/page', 'get', params);
+}
+export function majorGroup(params) {
+  return axiosBase('/basic/labClass/list', 'get', params);
+}

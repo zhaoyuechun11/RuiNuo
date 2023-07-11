@@ -1,11 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button } from 'antd';
+import { useSelector, useDispatch } from 'umi';
 
-const Applying = ({ type, applyListData, setApplyList }) => {
+const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => {
   const [list, setList] = useState([]);
+  const { sample, information, sampleList } = useSelector((state: any) => state.preProcessingMag);
+
+  const [sampleListData, setSampleListData] = useState([]);
+  const [informationList, setInformationList] = useState([]);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setList(applyListData);
   }, [applyListData]);
+  useEffect(() => {
+    if (type === 2 && sampleList.length === 0) {
+      setSampleListData([]);
+    } else {
+      setSampleListData(sampleList);
+    }
+  }, [sampleList]);
+  useEffect(() => {
+    if (type === 3) {
+      setInformationList(information);
+    }
+  }, [information]);
+
   const applyColumns = [
     {
       title: '序号',
@@ -36,10 +56,10 @@ const Applying = ({ type, applyListData, setApplyList }) => {
     {
       title: '操作',
       key: 'action',
-      render: (text, record) => (
+      render: (text, record, index) => (
         <Button
           onClick={() => {
-            deleteCurrentItem(record.id);
+            deleteCurrentItem(record.id, 1);
           }}
         >
           删除
@@ -50,101 +70,132 @@ const Applying = ({ type, applyListData, setApplyList }) => {
   const inspectionColumns = [
     {
       title: '序号',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => <span>{index + 1}</span>,
     },
     {
       title: '样本类型',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'sampleTypeId',
+      key: 'sampleTypeId',
     },
     {
       title: '样本性状',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'sampleStateId',
+      key: 'sampleStateId',
     },
     {
       title: '检验目的',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'labPurpose',
+      dataIndex: 'labPurpose',
     },
     {
       title: '原病理号',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'pathologyNo',
+      dataIndex: 'pathologyNo',
     },
     {
       title: '原蜡块序号',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'lkNo',
+      dataIndex: 'lkNo',
     },
     {
       title: '病理样本序号',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'pathologySampleSeqNo',
+      dataIndex: 'pathologySampleSeqNo',
     },
     {
       title: '样本描述',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'sampleDesc',
+      dataIndex: 'sampleDesc',
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
-      render: (text, record) => (
-        <span>
-          <a>Invite {record.name}</a>
-
-          <a>Delete</a>
-        </span>
+      render: (text, record, index) => (
+        <Button
+          onClick={() => {
+            deleteCurrentItem(index, 2);
+          }}
+        >
+          删除
+        </Button>
       ),
     },
   ];
   const informationColumns = [
     {
       title: '序号',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text) => <a>{text}</a>,
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record, index) => <a>{index}</a>,
     },
     {
       title: '图片名称',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'fileServerName',
+      key: 'fileServerName',
     },
-    {
-      title: '资料类型',
-      dataIndex: 'address',
-      key: 'address',
-    },
+
     {
       title: '图片地址',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'fileServerUrl',
+      dataIndex: 'fileServerUrl',
     },
 
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
-      render: (text, record) => (
-        <span>
-          <a>Invite {record.name}</a>
-
-          <a>Delete</a>
-        </span>
+      render: (text, record, index) => (
+        <Button
+          onClick={() => {
+            deleteCurrentItem(index, 3);
+          }}
+        >
+          删除
+        </Button>
       ),
     },
   ];
-  const deleteCurrentItem = (id) => {
-    let result = applyListData.filter((item) => item.id != id);
-    setList(result);
-    setApplyList(result);
+  const deleteCurrentItem = (index, type) => {
+    if (type === 1) {
+      let result = applyListData.filter((item) => item.id != index);
+      setList(result);
+      setApplyList(result);
+    }
+    if (type === 2) {
+      let result = sampleListData.filter((item, itemIndex) => itemIndex != index);
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'sampleList',
+          dataSource: result,
+        },
+      });
+      // dispatch({
+      //   type: 'preProcessingMag/save',
+      //   payload: {
+      //     type: 'sample',
+      //     dataSource: result,
+      //   },
+      // });
+      //setSampleListData(result);
+      //deleteSampleResult(result)
+    }
+    if (type === 3) {
+      let result = informationList.filter((item, infoIndex) => infoIndex != index);
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'information',
+          dataSource: result,
+        },
+      });
+    }
   };
   return (
     <Table
       columns={type === 1 ? applyColumns : type === 2 ? inspectionColumns : informationColumns}
-      dataSource={list}
+      dataSource={type === 1 ? list : type === 2 ? sampleListData : informationList}
     />
   );
 };

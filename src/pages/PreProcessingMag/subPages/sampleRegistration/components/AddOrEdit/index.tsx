@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { history, useDispatch, useParams } from 'umi';
+import { history, useDispatch, useParams, useSelector } from 'umi';
 import {
   Form,
   Input,
@@ -30,8 +30,10 @@ import moment from 'moment';
 import Applying from './components/Applying';
 import styles from './index.less';
 import AddApply from './components/AddApply';
+import AddSample from './components/AddSample';
 const { TextArea } = Input;
 const { Option } = Select;
+//let sampleList = [];
 const AddOrEdit = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -48,7 +50,12 @@ const AddOrEdit = () => {
   const [sampleSource, setSampleSource] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
   const [applyListData, setApplyListData] = useState([]);
+  const [addSample, setAddSample] = useState([]);
+  const [addSampleList, setAddSampleList] = useState([]);
+  const [deleteSampleResult, setDeleteSampleResult] = useState([]);
+  const addSampleRef = useRef();
   const [isMemory, setIsMemory] = useState(false);
+  const { sampleList } = useSelector((state: any) => state.preProcessingMag);
   useEffect(() => {
     getModuleList();
     getAreaList();
@@ -76,8 +83,22 @@ const AddOrEdit = () => {
     });
   }, [fieldList]);
   useEffect(() => {
-    console.log(applyListData);
-  }, [applyListData]);
+    console.log(sampleList);
+    // sampleList = [];
+    // sampleList.push(deleteSampleResult);
+  }, [deleteSampleResult]);
+  useEffect(() => {
+    console.log(sampleList);
+    sampleList.push(addSample);
+    console.log(sampleList);
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'sample',
+        dataSource: sampleList[0].length === 0 ? sampleList?.slice(1) : sampleList,
+      },
+    });
+  }, [addSample]);
   const getFormField = (id) => {
     dispatch({
       type: 'preProcessingMag/getMainEnterEnterList',
@@ -110,7 +131,7 @@ const AddOrEdit = () => {
   };
   const onFinish = (value) => {
     console.log('value', value);
-    return
+
     const reqItemPrices = applyListData.map((item) => {
       return {
         isOut: item.isOut,
@@ -243,14 +264,28 @@ const AddOrEdit = () => {
   };
   return (
     <div>
-      <div
+      {/* <div
         onClick={() => {
           // materialRef.current.show();
           // onFinish()
-          // form.submit();
+          form.submit();
         }}
       >
         添加
+      </div> */}
+      <div className={styles.title}>
+        基本信息管理
+        <Button btnType="primary" onClick={() => {}}>
+          读取身份证信息
+        </Button>
+        <Button
+          btnType="primary"
+          onClick={() => {
+            form.submit();
+          }}
+        >
+          确认提交基本信息
+        </Button>
       </div>
       <Form
         layout="vertical"
@@ -261,20 +296,6 @@ const AddOrEdit = () => {
         // onFinishFailed={onFinishFailed}
         // className={s.addSingle}
       >
-        <div className={styles.title}>
-          基本信息管理
-          <Button btnType="primary" onClick={() => {}}>
-            读取身份证信息
-          </Button>
-          <Button
-            btnType="primary"
-            onClick={() => {
-              form.submit();
-            }}
-          >
-            确认提交基本信息
-          </Button>
-        </div>
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item label="录入方式" name="inputType">
@@ -410,12 +431,12 @@ const AddOrEdit = () => {
           新增
         </Button>
       </div>
-      <Applying type={1} applyListData={applyListData} setApplyList={setApplyListData}/>
+      <Applying type={1} applyListData={applyListData} setApplyList={setApplyListData} />
       <div className={`${styles.title} ${styles.topVal}`}>
         送检样本列表
         <Button
           onClick={() => {
-            // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
+            addSampleRef.current.show();
           }}
           btnType="primary"
         >
@@ -423,13 +444,13 @@ const AddOrEdit = () => {
           新增
         </Button>
       </div>
-      <Applying type={2} />
+      <Applying type={2} deleteSampleResult={setDeleteSampleResult} />
       <div className={`${styles.title} ${styles.topVal}`}>
         资料列表
         <Button
           btnType="primary"
           onClick={() => {
-            // history.push('/preProcessingMag/sampleRegistration/addOrEdit');
+            materialRef.current.show();
           }}
         >
           <PlusOutlined style={{ marginRight: 4 }} />
@@ -438,7 +459,8 @@ const AddOrEdit = () => {
       </div>
       <Applying type={3} />
       <AddApply refs={addRef} applyListData={setApplyListData} />
-      {/* <AddMaterial refs={materialRef} /> */}
+      <AddSample refs={addSampleRef} getAddSample={setAddSample} />
+      <AddMaterial refs={materialRef} />
     </div>
   );
 };

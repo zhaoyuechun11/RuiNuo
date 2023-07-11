@@ -40,7 +40,8 @@ const SampleRegistration = () => {
     const newSelectedColumns = tableFieldResult.map((column) => {
       return {
         title: column.name,
-        dataIndex: column.key,
+        dataIndex: selectedField(column.key),
+
         responsive: ['xl', 'xxl'],
         render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
       };
@@ -109,6 +110,20 @@ const SampleRegistration = () => {
     // setParams({ ...params, page: pageNum });
   };
 
+  const selectedField = (val) => {
+    switch (val) {
+      case 'sex':
+        return 'sexName';
+      case 'sendDeptId':
+        return 'sendDeptName';
+      case 'sendDoctorId':
+        return 'sendDoctorName';
+      case 'hospitalId':
+        return 'hospitalName';
+      default:
+        return val;
+    }
+  };
   return (
     <div
     // onClick={() => {

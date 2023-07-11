@@ -4,13 +4,15 @@ import {
   showCustomHeader,
   mainEnterOperateList,
   mainEnterEnterList,
-  reqMainOrder
+  reqMainOrder,
 } from './server';
 
 const preProcessingMag = {
   namespace: 'preProcessingMag',
   state: {
     columnData: [], //表头数据
+    sampleList: [],
+    information: [],
   },
 
   effects: {

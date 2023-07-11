@@ -1,15 +1,17 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import ImageGallery from '../ImageGallery';
 import { Dialog } from '@components';
-import { useDispatch } from 'umi';
+import { useDispatch, useSelector } from 'umi';
 
 const AddMaterial = ({ refs }) => {
   const dispatch = useDispatch();
+  const { information } = useSelector((state: any) => state.preProcessingMag);
   const [imagesList, setImagesList] = useState([]);
   const dialog = useRef();
   useImperativeHandle(refs, () => ({
     show: () => {
       dialog.current && dialog.current.show();
+      setImagesList([]);
     },
     hide: () => {
       dialog.current && dialog.current.hide();
@@ -40,12 +42,11 @@ const AddMaterial = ({ refs }) => {
   const onUpload = (item) => {
     let newList = imagesList.concat([item]);
     // let newList = imagesList;
-    debugger
+
     setImagesList(newList);
   };
 
   const onDelete = (index) => {
-    debugger
     const newList = [
       ...imagesList.slice(index, 1),
       {
@@ -58,9 +59,23 @@ const AddMaterial = ({ refs }) => {
     newList[0].select = 1;
     setImagesList(newList);
   };
+  const onOk = () => {
+    if (information.length > 0) {
+      imagesList.push(...information);
+    }
+    console.log(imagesList);
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'information',
+        dataSource: imagesList,
+      },
+    });
+    dialog.current.hide();
+  };
   return (
     <div>
-      <Dialog ref={dialog}>
+      <Dialog ref={dialog} onOk={onOk}>
         <ImageGallery
           imageList={imagesList}
           selectedImgURL={''}

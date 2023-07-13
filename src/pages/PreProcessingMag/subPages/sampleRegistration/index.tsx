@@ -6,6 +6,9 @@ import { Tooltip, message, Spin } from 'antd';
 import SetHeaderModal from './components/SetHeaderModal';
 import QueryData from './components/QueryData';
 import SampleView from './sampleView';
+import { reqMainOrderDelete, reqMainOrderExport } from '../../models/server';
+import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
+import { downLoad } from '@/utils';
 let passProps = {};
 const SampleRegistration = () => {
   const setRef = useRef();
@@ -13,12 +16,17 @@ const SampleRegistration = () => {
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [columnOptionsList, setColumnOptionsList] = useState([]);
   const [tableColumns, setTableColumns] = useState();
-  const [data, setData] = useState({ count: 0, list: [] });
-  const [page, setPage] = useState(1);
+  const [data, setData] = useState({ count: 0, list: [], page: 1 });
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const importRef = useRef();
+  const searchVal = useRef();
   useEffect(() => {
     getCustomHeader();
-    reqMainOrderList();
   }, []);
+  useEffect(() => {
+    reqMainOrderList();
+  }, [pageNum]);
 
   useEffect(() => {
     let listSeqs = selectedColumns.map((item) => {
@@ -54,18 +62,41 @@ const SampleRegistration = () => {
           dataIndex: 'action',
           fixed: 'right',
           align: 'center',
-          width: 100,
+          width: 180,
           render: (text: string, record: Record<string, any>) => (
-            <span>
-              <Button>编辑</Button>
-            </span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Button
+                onClick={() => {
+                  history.push(
+                    '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+                  );
+                }}
+              >
+                编辑
+              </Button>
+              <Button
+                onClick={() => {
+                  deleteCurrentItem(record.id);
+                }}
+              >
+                删除
+              </Button>
+            </div>
           ),
         },
       ],
-      page,
+      // page,
       onChangePage,
     };
   }, [selectedColumns]);
+  const deleteCurrentItem = (ids) => {
+    reqMainOrderDelete({ ids: [ids] }).then((res) => {
+      if (res.code === 200) {
+        message.success('删除成功');
+        reqMainOrderList();
+      }
+    });
+  };
 
   const getCustomHeader = () => {
     dispatch({
@@ -99,15 +130,17 @@ const SampleRegistration = () => {
     dispatch({
       type: 'preProcessingMag/getReqMainOrder',
       payload: {
+        pageNum,
+        pageSize,
         callback: (res) => {
-          setData({ list: res.data.records, count: res.data.total });
+          setData({ list: res.data.records, count: res.data.total, page: pageNum });
         },
       },
     });
   };
-  const onChangePage = (pageNum: number) => {
-    setPage(pageNum);
-    // setParams({ ...params, page: pageNum });
+  const onChangePage = (pageNum: number, size: React.SetStateAction<number>) => {
+    setPageNum(pageNum);
+    setPageSize(size);
   };
 
   const selectedField = (val) => {
@@ -124,21 +157,35 @@ const SampleRegistration = () => {
         return val;
     }
   };
+  const importData = () => {
+    importRef.current.show();
+  };
+  const exportData = () => {
+    reqMainOrderExport({ ...searchVal.current }).then((res) => {
+      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
+      const href = URL.createObjectURL(blob);
+      downLoad(href, '仪器维护');
+    });
+  };
   return (
-    <div
-    // onClick={() => {
-    //   history.push('/preProcessingMag/sampleRegistration/addOrEdit');
-    // }}
-    >
-      <Button
-        btnType="primary"
-        onClick={() => {
-          history.push('/preProcessingMag/sampleRegistration/addOrEdit');
-        }}
-      >
-        <PlusOutlined style={{ marginRight: 4 }} />
-        新增
-      </Button>
+    <div>
+      <div style={{ display: 'flex', marginBottom: '10px' }}>
+        <Button
+          btnType="primary"
+          onClick={() => {
+            history.push('/preProcessingMag/sampleRegistration/addOrEdit/' + 0 + '/' + 'add');
+          }}
+        >
+          <PlusOutlined style={{ marginRight: 4 }} />
+          新增
+        </Button>
+        <Button btnType="primary" style={{ margin: '0 10px' }} onClick={importData}>
+          导入
+        </Button>
+        <Button btnType="primary" onClick={exportData}>
+          导出
+        </Button>
+      </div>
       <QueryData />
       <Tooltip placement="top" arrowPointAtCenter title="自定义表头">
         <span
@@ -157,6 +204,12 @@ const SampleRegistration = () => {
         columnChecked={selectedColumns}
         handleChangeColumn={changeColumn}
       />
+      <BatchImport
+        cRef={importRef}
+        actionUrl={`${process.env.baseURL}/lab/reqMainOrder/importReqMain`}
+        title={'导入申请单'}
+        refresh={() => reqMainOrderList()}
+      ></BatchImport>
     </div>
   );
 };

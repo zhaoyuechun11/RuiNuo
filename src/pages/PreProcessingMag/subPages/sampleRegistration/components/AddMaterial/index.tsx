@@ -40,6 +40,7 @@ const AddMaterial = ({ refs }) => {
     });
   };
   const onUpload = (item) => {
+   
     let newList = imagesList.concat([item]);
     // let newList = imagesList;
 
@@ -63,12 +64,17 @@ const AddMaterial = ({ refs }) => {
     if (information.length > 0) {
       imagesList.push(...information);
     }
-    console.log(imagesList);
+    const informationData = imagesList.map((item) => {
+      return {
+        filePath: item.fileServerUrl,
+        typeName: item.fileServerName,
+      };
+    });
     dispatch({
       type: 'preProcessingMag/save',
       payload: {
         type: 'information',
-        dataSource: imagesList,
+        dataSource: informationData,
       },
     });
     dialog.current.hide();

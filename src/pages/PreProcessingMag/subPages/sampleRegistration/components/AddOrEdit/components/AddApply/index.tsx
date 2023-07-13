@@ -3,7 +3,7 @@ import { Dialog } from '@components';
 import { Table } from '@common';
 import { Form, Input, Select, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { useDispatch } from 'umi';
+import { useDispatch, useSelector } from 'umi';
 import { Icon } from '@/components';
 import { majorGroup, getDictList } from '../../../../../../models/server';
 const { Option } = Select;
@@ -23,12 +23,14 @@ const AddApply = ({ applyListData, refs }) => {
   const dispatch = useDispatch();
   const dialog = useRef();
   const searchVal = useRef();
+  const { applyList } = useSelector((state: any) => state.preProcessingMag);
   useImperativeHandle(refs, () => ({
     show: (val) => {
       dialog.current && dialog.current.show();
       getList({ pageNum, pageSize });
       majorGroupList();
       dictList({ type: 'BT' });
+      console.log('val', val, list);
       setSelectedRows(val);
     },
     hide: () => {
@@ -47,6 +49,17 @@ const AddApply = ({ applyListData, refs }) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
+
+            let filterResult = selectedRows?.filter(
+              (item) => !res.data.records.some((data) => data.id === item.id),
+            );
+            dispatch({
+              type: 'preProcessingMag/save',
+              payload: {
+                type: 'applyList',
+                dataSource: filterResult,
+              },
+            });
           }
         },
       },
@@ -158,8 +171,21 @@ const AddApply = ({ applyListData, refs }) => {
       }
     });
   };
+
   const add = () => {
-    applyListData(selectedRows);
+    // applyListData(selectedRows);
+    console.log(applyList);
+    if (applyList?.length > 0) {
+      selectedRows.push(...applyList);
+    }
+
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'applyList',
+        dataSource: selectedRows,
+      },
+    });
     dialog.current && dialog.current.hide();
   };
   const defaultValChange = (e, record) => {
@@ -174,10 +200,19 @@ const AddApply = ({ applyListData, refs }) => {
     });
     setList(result);
   };
+  const onClose = () => {
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'applyList',
+        dataSource: selectedRows,
+      },
+    });
+  };
 
   return (
     <div>
-      <Dialog ref={dialog} footer={null} width={864}>
+      <Dialog ref={dialog} footer={null} width={864} onClose={onClose}>
         <div style={{ display: 'flex' }}>
           <Form onValuesChange={handleSearch} layout="inline">
             <div id="labClassId">

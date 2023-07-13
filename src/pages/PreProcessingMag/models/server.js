@@ -7,7 +7,7 @@ export function saveCustomHeader(params) {
   return axiosBase('sys/assembly/updateListSeq', 'post', params);
 }
 export function mainEnterOperateList(params) {
-  return axiosBase('sys/assembly/mainEnterOperateList', 'post', params);
+  return axiosBase('sys/assembly/mainEnterOperateList', 'get', params);
 }
 export function mainEnterEnterList(params) {
   return axiosBase('sys/assembly/mainEnterEnterList', 'get', params);
@@ -38,4 +38,13 @@ export function reqMainOrder(params) {
 }
 export function majorGroup(params) {
   return axiosBase('/basic/labClass/list', 'get', params);
+}
+export function reqMainOrderUpdate(params) {
+  return axiosBase('lab/reqMainOrder/update', 'post', params);
+}
+export function reqMainOrderDelete(params) {
+  return axiosBase('lab/reqMainOrder/delete', 'post', params);
+}
+export function reqMainOrderExport(params) {
+  return axiosBase('lab/reqMainOrder/export', 'post', params);
 }

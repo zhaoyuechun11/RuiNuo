@@ -151,7 +151,7 @@ export default {
               title: '样本登记列表',
             },
             {
-              path: '/preProcessingMag/sampleRegistration/addOrEdit',
+              path: '/preProcessingMag/sampleRegistration/addOrEdit/:id/:type',
               component: '@/pages/PreProcessingMag/subPages/sampleRegistration/components/AddOrEdit',
               title: '样本登新增',
             },

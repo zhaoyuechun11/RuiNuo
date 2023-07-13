@@ -5,6 +5,7 @@ import {
   mainEnterOperateList,
   mainEnterEnterList,
   reqMainOrder,
+  getMainOrder,
 } from './server';
 
 const preProcessingMag = {
@@ -53,6 +54,12 @@ const preProcessingMag = {
     },
     *getReqMainOrder({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(reqMainOrder, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *getMainOrder({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(getMainOrder, params);
       if (res.code * 1 === 200) {
         isFunction(callback) && callback(res);
       }

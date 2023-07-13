@@ -20,11 +20,11 @@ import AddMaterial from '../AddMaterial';
 import {
   moduleList,
   getArea,
-  getMainOrder,
   getDictList,
   getHospitalList,
   getDoctorList,
   enterAdd,
+  reqMainOrderUpdate,
 } from '../../../../models/server';
 import moment from 'moment';
 import Applying from './components/Applying';
@@ -33,7 +33,6 @@ import AddApply from './components/AddApply';
 import AddSample from './components/AddSample';
 const { TextArea } = Input;
 const { Option } = Select;
-//let sampleList = [];
 const AddOrEdit = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -51,15 +50,19 @@ const AddOrEdit = () => {
   const [doctorList, setDoctorList] = useState([]);
   const [applyListData, setApplyListData] = useState([]);
   const [addSample, setAddSample] = useState([]);
-  const [addSampleList, setAddSampleList] = useState([]);
   const [deleteSampleResult, setDeleteSampleResult] = useState([]);
   const addSampleRef = useRef();
   const [isMemory, setIsMemory] = useState(false);
-  const { sampleList } = useSelector((state: any) => state.preProcessingMag);
+  const { sampleList, information, applyList } = useSelector(
+    (state: any) => state.preProcessingMag,
+  );
+  const [enterDetail, setEnterDetail] = useState();
+  const [paramVal, setParamVal] = useState({});
+
   useEffect(() => {
     getModuleList();
     getAreaList();
-    getMainOrderData();
+    // getMainOrderData();
     getList({ type: 'SX' });
     getList({ type: 'AU' });
     getList({ type: 'DP' });
@@ -67,38 +70,113 @@ const AddOrEdit = () => {
 
     getHospitalListData();
   }, []);
+
   useEffect(() => {
-    fieldList.forEach((res, index) => {
-      for (const key in res) {
-        if (key === 'dataType' && res[key] === 4 && res['defaultValue']) {
-          res['defaultValue'] = moment(res['defaultValue']);
+    if (paramVal.type !== 'edit') {
+      fieldList.forEach((res, index) => {
+        for (const key in res) {
+          if (key === 'dataType' && res[key] === 4 && res['defaultValue']) {
+            res['defaultValue'] = moment(res['defaultValue']);
+          }
+          if (key === 'dataType' && res[key] === 6 && res['defaultValue']) {
+            res['defaultValue'] = res['defaultValue'].split(',').map(Number);
+          }
         }
-        if (key === 'dataType' && res[key] === 6 && res['defaultValue']) {
-          res['defaultValue'] = res['defaultValue'].split(',').map(Number);
-        }
-      }
-      form.setFieldsValue({
-        [res.key]: res.defaultValue,
+        form.setFieldsValue({
+          extend: {
+            [res.key]: res.defaultValue,
+          },
+        });
       });
-    });
+
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'sampleList',
+          dataSource: [],
+        },
+      });
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'information',
+          dataSource: [],
+        },
+      });
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'applyList',
+          dataSource: [],
+        },
+      });
+    }
   }, [fieldList]);
   useEffect(() => {
-    console.log(sampleList);
-    // sampleList = [];
-    // sampleList.push(deleteSampleResult);
-  }, [deleteSampleResult]);
+    setParamVal(params);
+  }, [params.id]);
   useEffect(() => {
-    console.log(sampleList);
-    sampleList.push(addSample);
-    console.log(sampleList);
-    dispatch({
-      type: 'preProcessingMag/save',
-      payload: {
-        type: 'sample',
-        dataSource: sampleList[0].length === 0 ? sampleList?.slice(1) : sampleList,
-      },
-    });
-  }, [addSample]);
+    if (enterDetail) {
+      for (const key in enterDetail) {
+        if (
+          key === 'birthdate' ||
+          key === 'applyDate' ||
+          key === 'collectDate' ||
+          key === 'receiveDate'
+        ) {
+          enterDetail[key] = moment(enterDetail[key]);
+          console.log(enterDetail[key]);
+        }
+        // if (key === 'dataType' && enterDetail[key] === 6 && enterDetail['defaultValue']) {
+        //   enterDetail['defaultValue'] = enterDetail['defaultValue'].split(',').map(Number);
+        // }
+
+        form.setFieldsValue({
+          system: {
+            [key]: enterDetail[key],
+          },
+        });
+      }
+      for (const key in enterDetail?.extend?.extendInfo) {
+        var reg = /^[0-9,/:-\s]+$/;
+        if (
+          isNaN(enterDetail.extend.extendInfo[key]) &&
+          reg.test(enterDetail.extend.extendInfo[key]) &&
+          !Array.isArray(enterDetail.extend.extendInfo[key])
+        ) {
+          enterDetail.extend.extendInfo[key] = moment(enterDetail.extend.extendInfo[key]);
+          console.log(enterDetail.extend.extendInfo[key]);
+        }
+        form.setFieldsValue({
+          extend: {
+            [key]: enterDetail.extend.extendInfo[key],
+          },
+        });
+      }
+
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'sampleList',
+          dataSource: enterDetail?.sendSamples,
+        },
+      });
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'information',
+          dataSource: enterDetail?.materials,
+        },
+      });
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'applyList',
+          dataSource: enterDetail?.reqItemPrices,
+        },
+      });
+    }
+  }, [enterDetail]);
   const getFormField = (id) => {
     dispatch({
       type: 'preProcessingMag/getMainEnterEnterList',
@@ -106,6 +184,18 @@ const AddOrEdit = () => {
         moduleId: id,
         callback: (res) => {
           setFieldList(res.data);
+          getMainOrderDetail(params?.id);
+        },
+      },
+    });
+  };
+  const getMainOrderDetail = (id) => {
+    dispatch({
+      type: 'preProcessingMag/getMainOrder',
+      payload: {
+        id,
+        callback: (res) => {
+          setEnterDetail(res.data);
         },
       },
     });
@@ -132,7 +222,9 @@ const AddOrEdit = () => {
   const onFinish = (value) => {
     console.log('value', value);
 
-    const reqItemPrices = applyListData.map((item) => {
+    console.log(sampleList);
+
+    const reqItemPrices = applyList.map((item) => {
       return {
         isOut: item.isOut,
         itemId: item.id,
@@ -142,6 +234,12 @@ const AddOrEdit = () => {
         cnt: 1,
       };
     });
+    // const informationData = information.map((item) => {
+    //   return {
+    //     filePath: item.fileServerUrl,
+    //     typeName: item.fileServerName,
+    //   };
+    // });
 
     for (let i in value.system) {
       if (value.system[i]?._isAMomentObject) {
@@ -156,22 +254,28 @@ const AddOrEdit = () => {
     console.log('value', value);
     let params = {
       extend: { extendInfo: value.extend },
+      sendSamples: sampleList,
+      materials: information,
       inputType: value.inputType,
       ...value.system,
       reqItemPrices,
     };
-    enterAdd(params).then((res) => {
-      if (res.code === 200) {
-        history.push('/preProcessingMag/sampleRegistration');
-      }
-    });
+    if (paramVal.type !== 'edit') {
+      enterAdd(params).then((res) => {
+        if (res.code === 200) {
+          history.push('/preProcessingMag/sampleRegistration');
+        }
+      });
+    } else {
+      reqMainOrderUpdate({ id: paramVal.id, ...params }).then((res) => {
+        if (res.code === 200) {
+          message.success('修改成功');
+          history.push('/preProcessingMag/sampleRegistration');
+        }
+      });
+    }
   };
-  const getMainOrderData = () => {
-    getMainOrder({ id: 9 }).then((res) => {
-      if (res.code === 200) {
-      }
-    });
-  };
+
   const getList = (type) => {
     getDictList(type).then((res: { code: number; data: React.SetStateAction<never[]> }) => {
       if (res.code === 200) {
@@ -328,7 +432,8 @@ const AddOrEdit = () => {
                     </div>
                   }
                   name={[stru.isAuth ? 'system' : 'extend', `${stru.key}`]}
-                  key={`${stru.key}`}
+                  // name={`${stru.key}`}
+                  // key={`${stru.key}`}
                   rules={[
                     {
                       required: stru.isRequired === true,
@@ -394,7 +499,8 @@ const AddOrEdit = () => {
                 <Form.Item
                   label={stru.name}
                   name={[stru.isAuth ? 'system' : 'extend', `${stru.key}`]}
-                  key={`${stru.key}`}
+                  // name={`${stru.key}`}
+                  // key={`${stru.key}`}
                   rules={[
                     {
                       required: stru.isRequired === 1,
@@ -423,7 +529,7 @@ const AddOrEdit = () => {
         申请项目列表{' '}
         <Button
           onClick={() => {
-            addRef.current.show(applyListData);
+            addRef.current.show(applyList);
           }}
           btnType="primary"
         >

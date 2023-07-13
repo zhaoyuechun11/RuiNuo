@@ -4,17 +4,24 @@ import { useSelector, useDispatch } from 'umi';
 
 const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => {
   const [list, setList] = useState([]);
-  const { sample, information, sampleList } = useSelector((state: any) => state.preProcessingMag);
+  const { information, sampleList, applyList } = useSelector(
+    (state: any) => state.preProcessingMag,
+  );
 
   const [sampleListData, setSampleListData] = useState([]);
   const [informationList, setInformationList] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setList(applyListData);
-  }, [applyListData]);
+    console.log(applyList);
+    const result = applyList?.map((item) => {
+      return { sampleTypeName: item.defaultSampleTypeName, itemName: item.reqItemName, ...item };
+    });
+    console.log('result', result);
+    setList(result);
+  }, [applyList]);
   useEffect(() => {
-    if (type === 2 && sampleList.length === 0) {
+    if (type === 2 && sampleList?.length === 0) {
       setSampleListData([]);
     } else {
       setSampleListData(sampleList);
@@ -39,13 +46,13 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
     },
     {
       title: '项目名称',
-      dataIndex: 'reqItemName',
-      key: 'reqItemName',
+      dataIndex: 'itemName',
+      key: 'itemName',
     },
     {
       title: '样本类型',
-      key: 'defaultSampleTypeName',
-      dataIndex: 'defaultSampleTypeName',
+      key: 'sampleTypeName',
+      dataIndex: 'sampleTypeName',
     },
     {
       title: '专业类别',
@@ -76,13 +83,13 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
     },
     {
       title: '样本类型',
-      dataIndex: 'sampleTypeId',
-      key: 'sampleTypeId',
+      dataIndex: 'sampleTypeName',
+      key: 'sampleTypeName',
     },
     {
       title: '样本性状',
-      dataIndex: 'sampleStateId',
-      key: 'sampleStateId',
+      dataIndex: 'sampleStateName',
+      key: 'sampleStateName',
     },
     {
       title: '检验目的',
@@ -132,14 +139,14 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
     },
     {
       title: '图片名称',
-      dataIndex: 'fileServerName',
-      key: 'fileServerName',
+      dataIndex: 'typeName',
+      key: 'typeName',
     },
 
     {
       title: '图片地址',
-      key: 'fileServerUrl',
-      dataIndex: 'fileServerUrl',
+      key: 'filePath',
+      dataIndex: 'filePath',
     },
 
     {

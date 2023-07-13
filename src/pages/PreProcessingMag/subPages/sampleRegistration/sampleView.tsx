@@ -19,7 +19,7 @@ const SampleView = ( data, props ) => {
           showQuickJumper: true,
           total: data.data.count,
           pageSize: 10,
-          current: data.page,
+          current: data.data.page,
           onChange: data.onChangePage,
         }}
       />

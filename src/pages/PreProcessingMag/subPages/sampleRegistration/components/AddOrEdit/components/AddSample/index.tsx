@@ -26,33 +26,57 @@ const AddSample = ({ getAddSample, refs }) => {
   const onOk = () => {
     form.validateFields().then((value) => {
       let list = [];
+      let result = [];
+      let endResult = [];
       list.push(value);
+
       if (sampleList.length === 1 && sampleList[0].length === 0) {
+        list.filter((item) =>
+          sampleTypeList.some((data) => {
+            if (data.id == item.sampleTypeId) {
+              result.push({ sampleTypeName: data.dictValue, ...item });
+            }
+          }),
+        );
+        result.filter((item) =>
+          sampleState.some((data) => {
+            if (data.id == item.sampleStateId) {
+              endResult.push({ sampleStateName: data.dictValue, ...item });
+            }
+          }),
+        );
         dispatch({
           type: 'preProcessingMag/save',
           payload: {
             type: 'sampleList',
-            dataSource: list,
+            dataSource: endResult,
           },
         });
       } else {
         list.push(...sampleList);
+        list.filter((item) =>
+          sampleTypeList.some((data) => {
+            if (data.id == item.sampleTypeId) {
+              result.push({ sampleTypeName: data.dictValue, ...item });
+            }
+          }),
+        );
+        result.filter((item) =>
+          sampleState.some((data) => {
+            if (data.id == item.sampleStateId) {
+              endResult.push({ sampleStateName: data.dictValue, ...item });
+            }
+          }),
+        );
         dispatch({
           type: 'preProcessingMag/save',
           payload: {
             type: 'sampleList',
-            dataSource: list,
+            dataSource: endResult,
           },
         });
       }
-      //sampleList.push(JSON.stringify(value));
 
-      //let result =sampleList.concat(localStorage.getItem('sampleData'));
-
-      console.log(list);
-
-      //getAddSample(value);
-      //localStorage.setItem('sampleData', JSON.stringify(sampleList));
       dialog.current && dialog.current.hide();
     });
   };
@@ -108,7 +132,11 @@ const AddSample = ({ getAddSample, refs }) => {
         <Row gutter={12}>
           <Col span={12}>
             <div id="sampleStateId">
-              <Form.Item name="sampleStateId" label="样本性状">
+              <Form.Item
+                name="sampleStateId"
+                label="样本性状"
+                rules={[{ required: true, message: '请输入样本性状' }]}
+              >
                 <Select
                   placeholder="请选择样本性状"
                   autoComplete="off"
@@ -134,7 +162,11 @@ const AddSample = ({ getAddSample, refs }) => {
         </Row>
         <Row gutter={12}>
           <Col span={12}>
-            <Form.Item name="labPurpose" label="检验目的">
+            <Form.Item
+              name="labPurpose"
+              label="检验目的"
+              rules={[{ required: true, message: '请输入检验目的' }]}
+            >
               <Input placeholder="请输入检验目的" />
             </Form.Item>
           </Col>

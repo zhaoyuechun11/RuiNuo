@@ -8,7 +8,7 @@ import { debounce } from 'lodash';
 // import {  CHECKED_LIST_FOR_SEARCH } from '@utils/constant';
 // import { PositionSelectMultiple } from '@common';
 // import styles from '../../../Recruitment/subPages/Addposition/components/PositionForm/index.less';
-// import { getProvince, getDriveType, getSourceData, getCustomSelect } from '../../models/server';
+import { mainEnterOperateList } from '../../../../models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
 
 const { TreeNode } = TreeSelect;
@@ -109,28 +109,25 @@ const QueryData = ({
   }, []);
 
   const getCustomSearch = () => {
-    // getCustomSelect({
-    //   type: 1, //1:候选人2:待入职3:已入职4:放弃入职5:人才库
-    //   candidate_type: 9,
-    // })
-    //   .then((res) => {
-    //     debugger
-    //     const list =
-    //       res.data && res.data.json ? JSON.parse(res.data.json) : CHECKED_LIST_FOR_SEARCH;
-    //     let list1 = [],
-    //       list2 = [];
-    //     if (list.length > 5) {
-    //       list1 = list.slice(0, 5);
-    //       list2 = list.slice(5);
-    //     } else {
-    //       list1 = list;
-    //     }
-    //     setSearchList(list);
-    //     setSearchList1(list1);
-    //     setSearchList2(list2);
-    //     queryData && form.setFieldsValue(queryData);
-    //   })
-    //   .catch(() => {});
+    mainEnterOperateList()
+      .then((res) => {
+        debugger;
+        const list =
+          res.data && res.data.json ? JSON.parse(res.data.json) : CHECKED_LIST_FOR_SEARCH;
+        let list1 = [],
+          list2 = [];
+        if (list.length > 5) {
+          list1 = list.slice(0, 5);
+          list2 = list.slice(5);
+        } else {
+          list1 = list;
+        }
+        setSearchList(list);
+        setSearchList1(list1);
+        setSearchList2(list2);
+        queryData && form.setFieldsValue(queryData);
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {

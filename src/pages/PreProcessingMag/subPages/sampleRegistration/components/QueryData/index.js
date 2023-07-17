@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Form, Select, Input, Cascader, TreeSelect, Tooltip, DatePicker, Popover } from 'antd';
 import { Card, Button } from '@/components';
-import { connect } from 'umi';
+import { useDispatch } from 'umi';
 import style from './index.less';
 import { debounce } from 'lodash';
 // import {  CHECKED_LIST_FOR_SEARCH } from '@utils/constant';
 // import { PositionSelectMultiple } from '@common';
 // import styles from '../../../Recruitment/subPages/Addposition/components/PositionForm/index.less';
-import { mainEnterOperateList } from '../../../../models/server';
+import { getQueryData, getHospitalList, getDoctorList } from '../../../../models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
 
 const { TreeNode } = TreeSelect;
@@ -24,7 +24,6 @@ const QueryData = ({
   tagList,
   operatorList,
   refresh,
-  dispatch,
   interviewerList,
 }) => {
   const defaultValues = {
@@ -53,6 +52,7 @@ const QueryData = ({
     create_time: undefined,
     access_status: undefined,
   };
+  const dispatch = useDispatch();
   const [ageNum, setAgeNum] = useState(['', '']);
   const [provinceList, setProvinceList] = useState([]);
   const [driveType, setDriveType] = useState([]);
@@ -67,9 +67,16 @@ const QueryData = ({
   const [searchList, setSearchList] = useState([]);
   const [searchList1, setSearchList1] = useState([]);
   const [searchList2, setSearchList2] = useState([]);
+  const [checkedList, setCheckedList] = useState([]);
+  const [leftCheckList, setLeftCheckList] = useState([]);
+  const [sex, setSex] = useState([]);
+  const [hospital, setHospital] = useState([]);
+  const [doctorList, setDoctorList] = useState([]);
 
   useEffect(() => {
     getCustomSearch();
+    dicVal({ type: 'SX' });
+    hospitalList();
     // getProvince().then((res) => {
     //   res.data.map((item) => {
     //     if (item.child && item.child.length > 0) {
@@ -108,12 +115,46 @@ const QueryData = ({
     // });
   }, []);
 
+  const dicVal = (params) => {
+    dispatch({
+      type: 'commonMaterials/fetchOneLevelTypeModalSel',
+      payload: {
+        ...params,
+        callback: (res) => {
+          if (res.code === 200) {
+            if (params.type === 'SX') {
+              setSex(res.data);
+            }
+          }
+        },
+      },
+    });
+  };
+  const hospitalList = () => {
+    getHospitalList().then((res) => {
+      if (res.code === 200) {
+        setHospital(res.data);
+        getDoctorListData(res.data[0].id);
+      }
+    });
+  };
+  const getDoctorListData = (id) => {
+    getDoctorList({ hospitalId: id }).then((res) => {
+      if (res.code === 200) {
+        setDoctorList(res.data);
+      }
+    });
+  };
+  const onChangeHospital = (e) => {
+    getDoctorListData(e);
+  };
   const getCustomSearch = () => {
-    mainEnterOperateList()
+    getQueryData()
       .then((res) => {
-        debugger;
         const list =
-          res.data && res.data.json ? JSON.parse(res.data.json) : CHECKED_LIST_FOR_SEARCH;
+          res.data && res.data.assemblyInfo.json
+            ? JSON.parse(res.data.assemblyInfo.json)
+            : CHECKED_LIST_FOR_SEARCH;
         let list1 = [],
           list2 = [];
         if (list.length > 5) {
@@ -122,6 +163,14 @@ const QueryData = ({
         } else {
           list1 = list;
         }
+        const result = list.map((item) => {
+          return { value: item.key, label: item.name };
+        });
+        const result2 = list.map((item) => {
+          return `${item.key},${item.name}`;
+        });
+        setLeftCheckList(result2);
+        setCheckedList(result);
         setSearchList(list);
         setSearchList1(list1);
         setSearchList2(list2);
@@ -139,7 +188,7 @@ const QueryData = ({
   const changeModelData = (type, value) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'Candidate/save',
+        type: 'preProcessingMag/save',
         payload: {
           type,
           dataSource: value,
@@ -174,14 +223,14 @@ const QueryData = ({
 
   const handleQuery = () => {
     const formValues = form.getFieldsValue();
-    changeModelData('page', 1);
+    // changeModelData('page', 1);
     const params = {
       ...formValues,
-      province:
-        formValues.work_address && formValues.work_address[0] ? formValues.work_address[0] : 0,
-      city: formValues.work_address && formValues.work_address[1] ? formValues.work_address[1] : 0,
-      area: formValues.work_address && formValues.work_address[2] ? formValues.work_address[2] : 0,
-      age_num: ageNum.join('-') !== '-' ? ageNum.join('-') : '',
+      // province:
+      //   formValues.work_address && formValues.work_address[0] ? formValues.work_address[0] : 0,
+      // city: formValues.work_address && formValues.work_address[1] ? formValues.work_address[1] : 0,
+      // area: formValues.work_address && formValues.work_address[2] ? formValues.work_address[2] : 0,
+      // age_num: ageNum.join('-') !== '-' ? ageNum.join('-') : '',
     };
     // console.log('queryParams', params);
     changeModelData('queryData', params);
@@ -211,115 +260,112 @@ const QueryData = ({
 
   const getSearchContent = (name, show) => {
     switch (name) {
-      case '候选人姓名或手机':
+      case 'patientName':
         return (
-          <Form.Item key={name} name="search_word">
+          <Form.Item key={name} name="patientName" label="姓名">
+            <Input placeholder="请输入姓名" style={{ width: 254 }} allowClear autoComplete="off" />
+          </Form.Item>
+        );
+      case 'age':
+        return (
+          <Form.Item key={name} name={name} label={'年龄'}>
             <Input
-              placeholder="候选人姓名或手机号"
+              placeholder="请输入年龄"
+              type="number"
+              style={{ width: 'auto' }}
+              min={0}
+              autoComplete="off"
+              allowClear
+            />
+          </Form.Item>
+        );
+      case 'receiveBarcode':
+        return (
+          <Form.Item key={name} name={name} label="收样条码">
+            <Input
+              placeholder="请输入收样条码"
               style={{ width: 254 }}
               allowClear
               autoComplete="off"
             />
           </Form.Item>
         );
-      case '招聘职位':
+      case 'createBy':
         return (
-          <Form.Item key={name} name="recruitment_position_id">
-            {/* <PositionSelectMultiple
-              showAdd={false}
+          <Form.Item key={name} name={name} label="创建人员">
+            <Input
+              placeholder="请输入创建人员"
               style={{ width: 254 }}
-              placeholder="请选择招聘职位"
-              showStop={true}
-            /> */}
-          </Form.Item>
-        );
-      case '招聘部门':
-        return (
-          <Form.Item key={name} name="recruitment_department_id" label={show ? '招聘部门' : ''}>
-            <TreeSelect
               allowClear
-              showSearch
-              multiple
-              showArrow
-              treeNodeFilterProp="title"
-              placeholder="请选择招聘部门"
-              style={{ width: 254 }}
-            >
-              {renderUserTreeNodes(departmentList)}
-            </TreeSelect>
+              autoComplete="off"
+            />
           </Form.Item>
         );
-      case '面试官':
+      case 'bedNo':
         return (
-          <Form.Item key={name} name="interviewer_id" label={show ? '面试官' : ''}>
+          <Form.Item key={name} name={name} label="床号">
+            <Input
+              placeholder="请输入创建人员"
+              style={{ width: 254 }}
+              allowClear
+              autoComplete="off"
+            />
+          </Form.Item>
+        );
+      case 'sex':
+        return (
+          <Form.Item key={name} name={name} label="性别">
             <Select
-              mode="multiple"
               style={{ width: 254 }}
               allowClear={true}
-              placeholder="请选择面试官"
+              placeholder="请选择性别"
               showSearch
               showArrow
-              optionFilterProp="children"
             >
-              {interviewerList.map((item) => {
+              {sex.map((item) => {
                 return (
-                  <Option key={item.interviewer_id} value={item.interviewer_id}>
-                    {item.interviewer_name}
+                  <Option key={item.id} value={item.id}>
+                    {item.dictValue}
                   </Option>
                 );
               })}
             </Select>
           </Form.Item>
         );
-      case '标签':
+      case 'hospitalId':
         return (
-          <Form.Item key={name} name="label_name" label={show ? '标签' : ''}>
+          <Form.Item key={name} name={name} label="送检单位">
             <Select
               style={{ width: 254 }}
               allowClear={true}
-              placeholder="请选择标签"
+              placeholder="请选择送检单位"
               showSearch
               showArrow
-              mode="multiple"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+              onChange={onChangeHospital}
             >
-              {tagList.map((item) => {
-                return (
-                  <Option key={item} value={item}>
-                    {item}
-                  </Option>
-                );
-              })}
+              {hospital?.map((item, index) => (
+                <Option value={item.id} key={index}>
+                  {item.hospitalName}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         );
-      case '招聘渠道':
+      case 'sendDoctorId':
         return (
-          <Form.Item key={name} name="recruitment_channels_id" label={show ? '招聘渠道' : ''}>
+          <Form.Item key={name} name={name} label="送检医生">
             <Select
               style={{ width: 254 }}
               allowClear={true}
-              placeholder="请选择招聘渠道"
+              placeholder="请选择送检医生"
               showSearch
               showArrow
-              mode="multiple"
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
             >
-              {channelsList.map((item) => {
-                return (
-                  <Option key={item.recruitment_channels_id} value={item.recruitment_channels_id}>
-                    <Tooltip placement="left" title={item.channels_name}>
-                      {item.channels_name}
-                    </Tooltip>
-                  </Option>
-                );
-              })}
+              {doctorList?.map((item, index) => (
+                <Option value={item.id} key={index}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         );
@@ -370,38 +416,7 @@ const QueryData = ({
             </Select>
           </Form.Item>
         );
-      case '年龄':
-        return (
-          <Form.Item key={name} label={show ? '年龄' : ''}>
-            <div className="flex_between" style={{ width: 254 }}>
-              <Input
-                placeholder="请输入年龄"
-                type="number"
-                style={{ width: 'auto' }}
-                min={0}
-                value={ageNum[0]}
-                onChange={(e) => {
-                  onChangeAge(e.target.value, 0);
-                }}
-                autoComplete="off"
-                allowClear
-              />
-              <span style={{ margin: '0 5px' }}>-</span>
-              <Input
-                placeholder="请输入年龄"
-                type="number"
-                allowClear
-                autoComplete="off"
-                style={{ width: 'auto' }}
-                min={ageNum[0] || 0}
-                value={ageNum[1]}
-                onChange={(e) => {
-                  onChangeAge(e.target.value, 1);
-                }}
-              />
-            </div>
-          </Form.Item>
-        );
+
       case '工作经验':
         return (
           <Form.Item key={name} name="work_num" label={show ? '工作经验' : ''}>
@@ -658,8 +673,7 @@ const QueryData = ({
       <div className={style.popover_content}>
         <div className={style.popover_form}>
           {searchList2.map((item) => {
-            const arr = item.indexOf(',') > -1 && item.split(',');
-            return getSearchContent(arr[1], true);
+            return getSearchContent(item.key, true);
           })}
         </div>
         <div className={style.footer}>
@@ -702,14 +716,14 @@ const QueryData = ({
         <Form
           form={form}
           labelAlign="right"
-          colon={false}
+          layout="vertical"
           values={queryData}
           onValuesChange={onValuesChangeHandler}
         >
           <div className={style.queryContainer}>
             {searchList1.map((item) => {
-              const arr = item.indexOf(',') > -1 && item.split(',');
-              return getSearchContent(arr[1]);
+              // const arr = item.indexOf(',') > -1 && item.split(',');
+              return getSearchContent(item.key);
             })}
           </div>
           {searchList2.length > 0 && (
@@ -736,7 +750,12 @@ const QueryData = ({
               设置筛选条件
             </div>
           )}
-          <CumtomSearchModal ref={cumtomRef} refresh={getCustomSearch} checkedList={searchList} />
+          <CumtomSearchModal
+            ref={cumtomRef}
+            refresh={getCustomSearch}
+            checkedList={checkedList}
+            leftCheckList={leftCheckList}
+          />
         </Form>
       </div>
     </Card>

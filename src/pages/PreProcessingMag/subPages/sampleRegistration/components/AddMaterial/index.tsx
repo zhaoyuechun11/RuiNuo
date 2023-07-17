@@ -1,10 +1,12 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
+import { Form, Input } from 'antd';
 import ImageGallery from '../ImageGallery';
 import { Dialog } from '@components';
 import { useDispatch, useSelector } from 'umi';
 
 const AddMaterial = ({ refs }) => {
   const dispatch = useDispatch();
+  const [form] = Form.useForm();
   const { information } = useSelector((state: any) => state.preProcessingMag);
   const [imagesList, setImagesList] = useState([]);
   const dialog = useRef();
@@ -40,7 +42,6 @@ const AddMaterial = ({ refs }) => {
     });
   };
   const onUpload = (item) => {
-   
     let newList = imagesList.concat([item]);
     // let newList = imagesList;
 
@@ -61,27 +62,36 @@ const AddMaterial = ({ refs }) => {
     setImagesList(newList);
   };
   const onOk = () => {
-    if (information.length > 0) {
-      imagesList.push(...information);
-    }
-    const informationData = imagesList.map((item) => {
-      return {
-        filePath: item.fileServerUrl,
-        typeName: item.fileServerName,
-      };
+    form.validateFields().then((value) => {
+      debugger;
+      if (information.length > 0) {
+        imagesList.push(...information);
+      }
+      const informationData = imagesList.map((item) => {
+        return {
+          filePath: item.fileServerUrl,
+          typeName: item.fileServerName,
+          ...value,
+        };
+      });
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'information',
+          dataSource: informationData,
+        },
+      });
+      dialog.current.hide();
     });
-    dispatch({
-      type: 'preProcessingMag/save',
-      payload: {
-        type: 'information',
-        dataSource: informationData,
-      },
-    });
-    dialog.current.hide();
   };
   return (
     <div>
       <Dialog ref={dialog} onOk={onOk}>
+        <Form form={form} layout="vertical" style={{ padding: '20px' }}>
+          <Form.Item label="备注" name="remark" rules={[{ required: true, message: '请输入备注' }]}>
+            <Input placeholder="请输入备注" />
+          </Form.Item>
+        </Form>
         <ImageGallery
           imageList={imagesList}
           selectedImgURL={''}

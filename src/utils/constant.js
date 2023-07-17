@@ -300,14 +300,14 @@ export const menu = [
             selIcon: 'T8-shezhi-xuanzhong',
             children: [],
           },
-          // {
-          //   key: 'setting',
-          //   url: '/setting/index',
-          //   name: '样本新增页面',
-          //   icon: 'T8-shezhi-weixuanzhong',
-          //   selIcon: 'T8-shezhi-xuanzhong',
-          //   children: [],
-          // },
+          {
+            key: 'setting',
+            url: '/preProcessingMag/applicationForm',
+            name: '申请单',
+            icon: 'T8-shezhi-weixuanzhong',
+            selIcon: 'T8-shezhi-xuanzhong',
+            children: [],
+          },
           // {
           //   key: 'setting',
           //   url: '/setting/index',
@@ -1377,4 +1377,47 @@ export const menu = [
       },
     ],
   },
+];
+const NAME = { label: '姓名', value: 'patientName', weight: 1 };
+const SEX = { label: '性别', value: 'sex', weight: 6 };
+const RECEIVE_BARCODE = { label: '收样条码', value: 'receiveBarcode', weight: 6 };
+const HOSPITAl_ID = { label: '送检单位', value: 'hospitalId', weight: 6 };
+const nation = { label: '民族', value: 'nation', weight: 6 };
+const age = { label: '年龄', value: 'age', weight: 6 };
+const ageUnit = { label: '年龄', value: 'ageUnit', weight: 6 };
+const idCardNo = { label: '身份证号', value: 'idCardNo', weight: 6 };
+const telphoneNo = { label: '电话号码', value: 'telphoneNo', weight: 6 };
+const sendDeptId = { label: '送检科室', value: 'sendDeptId', weight: 6 };
+const sendDoctorId = { label: '送检医生', value: 'sendDoctorId', weight: 6 };
+const source = { label: '样本来源', value: 'source', weight: 6 };
+const bedNo = { label: '床号', value: 'bedNo', weight: 6 };
+const diagnosis = { label: '临床诊断', value: 'diagnosis', weight: 6 };
+const createBy = { label: '创建人员', value: 'createBy', weight: 6 };
+const birthdate = { label: '出生日期', value: 'birthdate', weight: 6 };
+const collectDate = { label: '采样日期', value: 'collectDate', weight: 6 };
+const applyDate = { label: '申请日期', value: 'applyDate', weight: 6 };
+const receiveDate = { label: '接收日期', value: 'receiveDate', weight: 6 };
+const createDate = { label: '登记日期', value: 'createDate', weight: 6 };
+// 候选人-列表搜索自定义
+export const EXPORT_OPTIONS_FOR_SEARCH = [
+  NAME,
+  SEX,
+  RECEIVE_BARCODE,
+  HOSPITAl_ID,
+  nation,
+  age,
+  ageUnit,
+  idCardNo,
+  telphoneNo,
+  sendDeptId,
+  sendDoctorId,
+  source,
+  bedNo,
+  diagnosis,
+  createBy,
+  birthdate,
+  collectDate,
+  applyDate,
+  receiveDate,
+  createDate,
 ];

@@ -18,10 +18,9 @@ const ImageGallery = ({
 }) => {
   const dispatch = useDispatch();
   // const [checkedId, setCheckedId] = useState(selectedImgURL);
-  const enterPriseId = localStorage.getItem('enterprise_id');
-  const operatorId = localStorage.getItem('operator_id');
+ 
   // const companyInfo = JSON.parse(localStorage.getItem('companyDefaultInfo'));
-  const { plan_id } = history.location.query;
+
 
   const triggerChange = (changedValue) => {
     onChange?.(changedValue);

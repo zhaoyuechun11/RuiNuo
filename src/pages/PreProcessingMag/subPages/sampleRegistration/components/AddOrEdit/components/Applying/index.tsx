@@ -14,12 +14,26 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
 
   useEffect(() => {
     console.log(applyList);
-    const result = applyList?.map((item) => {
-      return { sampleTypeName: item.defaultSampleTypeName, itemName: item.reqItemName, ...item };
-    });
-    console.log('result', result);
-    setList(result);
+    //debugger
+    // const result = applyList?.map((item) => {
+    //   return { sampleTypeName: item.defaultSampleTypeName, itemName: item.reqItemName, ...item };
+    // });
+    //console.log('result', result);
+
+    setList(applyList);
   }, [applyList]);
+  useEffect(() => {
+    // const result = list?.map((item) => {
+    //   return { itemId: item.id, ...item };
+    // });
+    // dispatch({
+    //   type: 'preProcessingMag/save',
+    //   payload: {
+    //     type: 'applyList',
+    //     dataSource: result,
+    //   },
+    // });
+  }, [list]);
   useEffect(() => {
     if (type === 2 && sampleList?.length === 0) {
       setSampleListData([]);
@@ -46,13 +60,13 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
     },
     {
       title: '项目名称',
-      dataIndex: 'itemName',
-      key: 'itemName',
+      dataIndex: 'reqItemName',
+      key: 'reqItemName',
     },
     {
       title: '样本类型',
-      key: 'sampleTypeName',
-      dataIndex: 'sampleTypeName',
+      key: 'defaultSampleTypeName',
+      dataIndex: 'defaultSampleTypeName',
     },
     {
       title: '专业类别',
@@ -138,6 +152,11 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
       render: (text, record, index) => <a>{index}</a>,
     },
     {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+    },
+    {
       title: '图片名称',
       dataIndex: 'typeName',
       key: 'typeName',
@@ -165,9 +184,14 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
   ];
   const deleteCurrentItem = (index, type) => {
     if (type === 1) {
-      let result = applyListData.filter((item) => item.id != index);
-      setList(result);
-      setApplyList(result);
+      let result = list.filter((item) => item.id != index);
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'applyList',
+          dataSource: result,
+        },
+      });
     }
     if (type === 2) {
       let result = sampleListData.filter((item, itemIndex) => itemIndex != index);
@@ -178,15 +202,6 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
           dataSource: result,
         },
       });
-      // dispatch({
-      //   type: 'preProcessingMag/save',
-      //   payload: {
-      //     type: 'sample',
-      //     dataSource: result,
-      //   },
-      // });
-      //setSampleListData(result);
-      //deleteSampleResult(result)
     }
     if (type === 3) {
       let result = informationList.filter((item, infoIndex) => infoIndex != index);

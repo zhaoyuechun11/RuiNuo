@@ -400,7 +400,7 @@ const ApplyProjectGroup = () => {
       ></EditOrAddModal>
       <BatchImport
         cRef={importRef}
-        actionUrl={`${process.env.baseURL}/basic/labItem/importLabItem`}
+        actionUrl={`${process.env.baseURL}/basic/reqItem/importReqItem`}
         title={'申请'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>

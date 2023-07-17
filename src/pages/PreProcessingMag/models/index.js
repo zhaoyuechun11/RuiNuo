@@ -6,6 +6,9 @@ import {
   mainEnterEnterList,
   reqMainOrder,
   getMainOrder,
+  getApplicationForm,
+  pageForReqMainEnter,
+  reportItems
 } from './server';
 
 const preProcessingMag = {
@@ -60,6 +63,24 @@ const preProcessingMag = {
     },
     *getMainOrder({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(getMainOrder, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *feactApplicationForm({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(getApplicationForm, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchPageForReqMainEnter({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(pageForReqMainEnter, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchReportItems({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(reportItems, params);
       if (res.code * 1 === 200) {
         isFunction(callback) && callback(res);
       }

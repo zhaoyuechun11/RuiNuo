@@ -151,6 +151,11 @@ export default {
               title: '样本登记列表',
             },
             {
+              path: '/preProcessingMag/applicationForm',
+              component: '@/pages/PreProcessingMag/subPages/applicationForm',
+              title: '申请单',
+            },
+            {
               path: '/preProcessingMag/sampleRegistration/addOrEdit/:id/:type',
               component: '@/pages/PreProcessingMag/subPages/sampleRegistration/components/AddOrEdit',
               title: '样本登新增',

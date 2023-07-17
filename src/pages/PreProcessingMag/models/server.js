@@ -48,3 +48,18 @@ export function reqMainOrderDelete(params) {
 export function reqMainOrderExport(params) {
   return axiosBase('lab/reqMainOrder/export', 'post', params);
 }
+export function getQueryData(params) {
+  return axiosBase('sys/queryAssembly/reqMainEnterDetail', 'get', params);
+}
+export function saveCustomQuery(params) {
+  return axiosBase('sys/queryAssembly/updateReqMainEnter', 'post', params);
+}
+export function getApplicationForm(params) {
+  return axiosBase('lab/reqMainOrder/examinePage', 'get', params);
+}
+export function pageForReqMainEnter(params) {
+  return axiosBase('basic/reqItem/pageForReqMainEnter', 'get', params);
+}
+export function reportItems(params) {
+  return axiosBase('basic/reqItemLabItem/getListByReqItem', 'get', params);
+}

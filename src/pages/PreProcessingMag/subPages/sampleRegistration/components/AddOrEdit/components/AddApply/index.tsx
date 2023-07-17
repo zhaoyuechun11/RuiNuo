@@ -1,17 +1,19 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Table } from '@common';
-import { Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button, Tabs } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'umi';
 import { Icon } from '@/components';
-import { majorGroup, getDictList } from '../../../../../../models/server';
+import { majorGroup, getDictList, getHospitalList } from '../../../../../../models/server';
+import ReportItems from '../ReportItems';
 const { Option } = Select;
+const { TabPane } = Tabs;
 const getValue = (obj) =>
   Object.keys(obj)
     .map((key) => obj[key])
     .join(',');
-const AddApply = ({ applyListData, refs }) => {
+const AddApply = ({ refs }) => {
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -23,15 +25,19 @@ const AddApply = ({ applyListData, refs }) => {
   const dispatch = useDispatch();
   const dialog = useRef();
   const searchVal = useRef();
+  const [hospital, setHospital] = useState([]);
+  const [form] = Form.useForm();
+  const reportItemsRef = useRef();
   const { applyList } = useSelector((state: any) => state.preProcessingMag);
+
   useImperativeHandle(refs, () => ({
     show: (val) => {
       dialog.current && dialog.current.show();
       getList({ pageNum, pageSize });
       majorGroupList();
       dictList({ type: 'BT' });
-      console.log('val', val, list);
       setSelectedRows(val);
+      hospitalList();
     },
     hide: () => {
       dialog.current && dialog.current.hide();
@@ -39,7 +45,7 @@ const AddApply = ({ applyListData, refs }) => {
   }));
   const getList = (params: any) => {
     dispatch({
-      type: 'commonMaterials/fetchApplyProjectList',
+      type: 'preProcessingMag/fetchPageForReqMainEnter',
       payload: {
         ...params,
         callback: (res: {
@@ -49,8 +55,7 @@ const AddApply = ({ applyListData, refs }) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
-
-            let filterResult = selectedRows?.filter(
+            let filterResult = applyList?.filter(
               (item) => !res.data.records.some((data) => data.id === item.id),
             );
             dispatch({
@@ -126,6 +131,23 @@ const AddApply = ({ applyListData, refs }) => {
       align: 'center',
       width: 150,
     },
+    {
+      title: '操作',
+      align: 'center',
+      render: (record: { id: any }) => {
+        return (
+          <Button
+            style={{ margin: 'auto' }}
+            onClick={() => {
+              // deleteBind(record.id);
+              reportItemsRef.current.show(record.id);
+            }}
+          >
+            明细
+          </Button>
+        );
+      },
+    },
   ];
   const handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -141,11 +163,9 @@ const AddApply = ({ applyListData, refs }) => {
     };
 
     setSelectedRows([]);
-
     getList(params);
   };
   const handleSelectRows = (rows) => {
-    console.log('rows', rows);
     setSelectedRows(rows);
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
@@ -155,6 +175,7 @@ const AddApply = ({ applyListData, refs }) => {
       pageSize,
       ...allValues,
     };
+    // debugger;
     getList(values);
   };
   const majorGroupList = () => {
@@ -173,31 +194,75 @@ const AddApply = ({ applyListData, refs }) => {
   };
 
   const add = () => {
-    // applyListData(selectedRows);
-    console.log(applyList);
     if (applyList?.length > 0) {
       selectedRows.push(...applyList);
     }
+    const result = selectedRows.map((item) => {
+      return {
+        itemName: item.reqItemName,
+        sampleTypeId: item.defaultSampleTypeId,
+        itemId: item.id,
+        ...item,
+      };
+    });
+    const sampleResult = selectedRows.map((item) => {
+      return {
+        sampleTypeName: item.defaultSampleTypeName,
+        sampleTypeId: item.defaultSampleTypeId,
+        sampleStateName: '正常',
+        sampleStateId: 1130,
+      };
+    });
 
+    dialog.current && dialog.current.hide();
     dispatch({
       type: 'preProcessingMag/save',
       payload: {
         type: 'applyList',
-        dataSource: selectedRows,
+        dataSource: result,
       },
     });
-    dialog.current && dialog.current.hide();
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'sampleList',
+        dataSource: sampleResult,
+      },
+    });
   };
   const defaultValChange = (e, record) => {
+    console.log(e, record);
+    console.log(sample);
+    const sampleVal = sample.filter((item) => item.id == e);
+    console.log(sampleVal);
     let result = list.map((item) => {
       if (item.id === record.id) {
         return {
           ...item,
+          defaultSampleTypeName: sampleVal[0].dictValue,
           defaultSampleTypeId: e,
         };
       }
       return item;
     });
+    console.log(result);
+    if (selectedRows.length > 0) {
+      let selectedResult = selectedRows.map((item) => {
+        if (item.id === record.id) {
+          return {
+            ...item,
+            defaultSampleTypeName: sampleVal[0].dictValue,
+            defaultSampleTypeId: e,
+          };
+        }
+        {
+          return { ...item };
+        }
+      });
+      setSelectedRows(selectedResult);
+    }
+    //debugger
+    console.log(selectedRows);
     setList(result);
   };
   const onClose = () => {
@@ -209,38 +274,78 @@ const AddApply = ({ applyListData, refs }) => {
       },
     });
   };
-
+  const hospitalList = () => {
+    getHospitalList().then((res) => {
+      if (res.code === 200) {
+        setHospital(res.data);
+      }
+    });
+  };
+  const tabCallback = (e) => {};
   return (
     <div>
       <Dialog ref={dialog} footer={null} width={864} onClose={onClose}>
-        <div style={{ display: 'flex' }}>
-          <Form onValuesChange={handleSearch} layout="inline">
-            <div id="labClassId">
-              <Form.Item name="labClassId">
-                <Select
-                  placeholder="请选择项目类别"
-                  autoComplete="off"
-                  allowClear
-                  getPopupContainer={() => document.getElementById('labClassId')}
-                >
-                  {majorGroupData.length > 0 &&
-                    majorGroupData.map((item) => (
-                      <Option value={item.id} key={item.id}>
-                        {item.className}
-                      </Option>
-                    ))}
-                </Select>
-              </Form.Item>
-            </div>
-            <Form.Item name="name">
-              <Input
-                placeholder="请输入项目名称"
-                autoComplete="off"
-                suffix={<Icon name="icongongzuotai-sousuo" />}
-                allowClear
-              />
-            </Form.Item>
-          </Form>
+        <div style={{ display: 'flex', width: '100%', alignItems: 'center', padding: '10px' }}>
+          <Tabs defaultActiveKey="1" onChange={tabCallback} style={{ width: '80%' }}>
+            <TabPane tab="Tab 1" key="1">
+              <Form onValuesChange={handleSearch} layout="inline" form={form}>
+                <div id="labClassId">
+                  <Form.Item name="labClassId">
+                    <Select
+                      placeholder="请选择项目类别"
+                      autoComplete="off"
+                      allowClear
+                      getPopupContainer={() => document.getElementById('labClassId')}
+                    >
+                      {majorGroupData.length > 0 &&
+                        majorGroupData.map((item) => (
+                          <Option value={item.id} key={item.id}>
+                            {item.className}
+                          </Option>
+                        ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <Form.Item name="name">
+                  <Input
+                    placeholder="请输入项目名称"
+                    autoComplete="off"
+                    suffix={<Icon name="icongongzuotai-sousuo" />}
+                    allowClear
+                  />
+                </Form.Item>
+              </Form>
+            </TabPane>
+            <TabPane tab="Tab 2" key="2">
+              <Form onValuesChange={handleSearch} layout="inline" form={form}>
+                <div id="hospitalId">
+                  <Form.Item name="hospitalId">
+                    <Select
+                      placeholder="请选择送检单位"
+                      autoComplete="off"
+                      allowClear
+                      getPopupContainer={() => document.getElementById('hospitalId')}
+                    >
+                      {hospital?.map((item, index) => (
+                        <Option value={item.id} key={index}>
+                          {item.hospitalName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <Form.Item name="name">
+                  <Input
+                    placeholder="请输入医院套餐名称"
+                    autoComplete="off"
+                    suffix={<Icon name="icongongzuotai-sousuo" />}
+                    allowClear
+                  />
+                </Form.Item>
+              </Form>
+            </TabPane>
+          </Tabs>
+
           <Button btnType="primary" onClick={add}>
             <PlusOutlined style={{ marginRight: 4 }} />
             新增
@@ -249,7 +354,7 @@ const AddApply = ({ applyListData, refs }) => {
         <Table
           unit="个"
           columns={columns}
-          selectedRowKeys={selectedRows.map((i) => i.id)}
+          selectedRowKeys={selectedRows.map((i) => i?.id)}
           data={list}
           pagination={{ current: pageNum, total: total }}
           onChange={handleStandardTableChange}
@@ -271,6 +376,7 @@ const AddApply = ({ applyListData, refs }) => {
           }}
         />
       </Dialog>
+      <ReportItems refs={reportItemsRef} />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { history, useDispatch } from 'umi';
+import { history, useDispatch, useSelector } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon, Button } from '@/components';
 import { Tooltip, message, Spin } from 'antd';
@@ -11,6 +11,7 @@ import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 import { downLoad } from '@/utils';
 let passProps = {};
 const SampleRegistration = () => {
+  const { queryData } = useSelector((state: any) => state.preProcessingMag);
   const setRef = useRef();
   const dispatch = useDispatch();
   const [selectedColumns, setSelectedColumns] = useState([]);
@@ -26,7 +27,7 @@ const SampleRegistration = () => {
   }, []);
   useEffect(() => {
     reqMainOrderList();
-  }, [pageNum]);
+  }, [pageNum, queryData]);
 
   useEffect(() => {
     let listSeqs = selectedColumns.map((item) => {
@@ -132,6 +133,7 @@ const SampleRegistration = () => {
       payload: {
         pageNum,
         pageSize,
+        ...queryData,
         callback: (res) => {
           setData({ list: res.data.records, count: res.data.total, page: pageNum });
         },

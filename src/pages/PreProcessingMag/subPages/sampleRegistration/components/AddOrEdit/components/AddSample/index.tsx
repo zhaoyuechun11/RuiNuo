@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'umi';
 import { getDictList } from '../../../../../../models/server';
 const { Option } = Select;
 
-const AddSample = ({ getAddSample, refs }) => {
+const AddSample = ({ refs }) => {
   const [form] = Form.useForm();
   const dialog = useRef();
   const [sampleTypeList, setSampleTypeList] = useState([]);
@@ -53,6 +53,7 @@ const AddSample = ({ getAddSample, refs }) => {
           },
         });
       } else {
+
         list.push(...sampleList);
         list.filter((item) =>
           sampleTypeList.some((data) => {
@@ -68,6 +69,7 @@ const AddSample = ({ getAddSample, refs }) => {
             }
           }),
         );
+        debugger
         dispatch({
           type: 'preProcessingMag/save',
           payload: {

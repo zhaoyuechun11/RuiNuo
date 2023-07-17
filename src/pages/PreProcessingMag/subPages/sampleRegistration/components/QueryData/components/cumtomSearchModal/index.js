@@ -5,8 +5,8 @@ import { Dialog } from '@components';
 import { CloseCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import style from './index.less';
-// import { EXPORT_OPTIONS_FOR_SEARCH, CHECKED_LIST_FOR_SEARCH } from '@utils/constant';
-// import { setColumnsListOld } from '../../../../models/server';
+import { EXPORT_OPTIONS_FOR_SEARCH } from '@utils/constant';
+import { saveCustomQuery } from '../../../../../../models/server';
 const CheckboxGroup = Checkbox.Group;
 
 class CustomSearchModal extends Component {
@@ -17,11 +17,12 @@ class CustomSearchModal extends Component {
       exportVisible: false, // 是否显示弹窗
       checkAll: true, // 是否全选
       optionsLength: 0, // 所有选项的长度
-      // columnOptions: EXPORT_OPTIONS_FOR_SEARCH,
+      columnOptions: EXPORT_OPTIONS_FOR_SEARCH,
       // defaultChecked: CHECKED_LIST_FOR_SEARCH,
-      columnOptions: [],
+      // columnOptions: [],
       defaultChecked: [],
       checkedList: [],
+      leftCheckList: [],
     };
     this.dialog = React.createRef();
   }
@@ -34,6 +35,7 @@ class CustomSearchModal extends Component {
     this.setState(
       {
         exportVisible: true,
+        leftCheckList: this.props.leftCheckList,
         checkedList: this.props.checkedList,
         defaultChecked: this.props.checkedList,
       },
@@ -44,8 +46,14 @@ class CustomSearchModal extends Component {
   };
   // 选中字段
   onCheckboxChange = (list) => {
+    // debugger;
+
+    const mapResult = list.map((item) => {
+      return { value: item.split(',')[0], label: item.split(',')[1] };
+    });
     this.setState({
-      checkedList: list,
+      leftCheckList: list,
+      checkedList: mapResult,
       checkAll: list.length === this.state.optionsLength,
     });
   };
@@ -66,8 +74,13 @@ class CustomSearchModal extends Component {
   deleteItem(index) {
     let list = this.state.checkedList ? JSON.parse(JSON.stringify(this.state.checkedList)) : [];
     list.splice(index, 1);
+    const result2 = list.map((item) => {
+      return `${item.value},${item.label}`;
+    });
+
     this.setState({
       checkedList: list,
+      leftCheckList: result2,
     });
   }
   // 拖拽结束
@@ -99,12 +112,15 @@ class CustomSearchModal extends Component {
   };
   // 导出弹窗点击确认
   handleExportOk = () => {
-    setColumnsListOld({
-      type: 1,
-      candidate_type: 9,
-      json: JSON.stringify(this.state.checkedList),
+    const mapResult = this.state.checkedList.map((item) => {
+      return { key: item.value, name: item.label };
+    });
+
+    saveCustomQuery({
+      assemblyInfo: { json: JSON.stringify(mapResult) },
     }).then((res) => {
-      if (res.status_code == 200) {
+      debugger;
+      if (res.code == 200) {
         this.props.refresh();
         this.setState(
           {
@@ -150,32 +166,20 @@ class CustomSearchModal extends Component {
       >
         <div className={style.modalContent}>
           <div className={style.modalLeft}>
-            <CheckboxGroup value={this.state.checkedList} onChange={this.onCheckboxChange}>
-              {(() => {
-                let arr = [];
-                for (let key in this.state.columnOptions) {
-                  arr.push(
-                    <Fragment key={key}>
-                      <div className={style.title}>{key}</div>
-                      <Row>
-                        {this.state.columnOptions[key].map((item, index) => {
-                          return (
-                            <Col span={8} key={index}>
-                              <Checkbox
-                                disabled={item.disabled}
-                                value={item.value + ',' + item.label + ',' + item.weight}
-                              >
-                                {item.label}
-                              </Checkbox>
-                            </Col>
-                          );
-                        })}
-                      </Row>
-                    </Fragment>,
-                  );
-                }
-                return arr;
-              })()}
+            <CheckboxGroup value={this.state.leftCheckList} onChange={this.onCheckboxChange}>
+              <Fragment>
+                <Row>
+                  {this.state?.columnOptions.map((item, index) => {
+                    return (
+                      <Col span={8} key={index}>
+                        <Checkbox disabled={item.disabled} value={item.value + ',' + item.label}>
+                          {item.label}
+                        </Checkbox>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Fragment>
             </CheckboxGroup>
           </div>
           <div className={style.modalRight}>
@@ -194,56 +198,50 @@ class CustomSearchModal extends Component {
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} key={provided}>
                       {this.state.checkedList.map((item, index) => {
-                        if (item.indexOf(',') > -1) {
-                          if (index === 0 || index === 1) {
-                            return (
-                              <div key={index}>
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className={`${style.dragItem} ${style.disabled}`}
-                                  key={item.id}
-                                >
-                                  <div className="flex_start">
-                                    <MenuOutlined className={style.icon} />
-                                    <div className={style.text}>{item.split(',')[1]}</div>
-                                  </div>
+                        if (index === 0 || index === 1) {
+                          return (
+                            <div key={index}>
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={`${style.dragItem} ${style.disabled}`}
+                                key={item.value}
+                              >
+                                <div className="flex_start">
+                                  <MenuOutlined className={style.icon} />
+                                  <div className={style.text}>{item.label}</div>
                                 </div>
                               </div>
-                            );
-                          } else {
-                            return (
-                              <Draggable
-                                key={item.split(',')[0]}
-                                draggableId={item.split(',')[0]}
-                                index={index}
-                              >
-                                {(provided, snapshot) => {
-                                  return (
-                                    <div>
-                                      <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        className={style.dragItem}
-                                        key={item.id}
-                                      >
-                                        <div className="flex_start">
-                                          <MenuOutlined className={style.icon} />
-                                          <div className={style.text}>{item.split(',')[1]}</div>
-                                        </div>
-                                        <CloseCircleOutlined
-                                          className={style.icon}
-                                          onClick={() => this.deleteItem(index)}
-                                        />
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <Draggable key={item.value} draggableId={item.value} index={index}>
+                              {(provided, snapshot) => {
+                                return (
+                                  <div>
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className={style.dragItem}
+                                      key={item.value}
+                                    >
+                                      <div className="flex_start">
+                                        <MenuOutlined className={style.icon} />
+                                        <div className={style.text}>{item.label}</div>
                                       </div>
+                                      <CloseCircleOutlined
+                                        className={style.icon}
+                                        onClick={() => this.deleteItem(index)}
+                                      />
                                     </div>
-                                  );
-                                }}
-                              </Draggable>
-                            );
-                          }
+                                  </div>
+                                );
+                              }}
+                            </Draggable>
+                          );
                         }
                       })}
                     </div>

@@ -122,7 +122,9 @@ const AddOrEdit = () => {
           key === 'birthdate' ||
           key === 'applyDate' ||
           key === 'collectDate' ||
-          key === 'receiveDate'
+          key === 'receiveDate' ||
+          key === 'createDate' ||
+          key === 'preReceiveDate'
         ) {
           enterDetail[key] = moment(enterDetail[key]);
           console.log(enterDetail[key]);
@@ -168,11 +170,22 @@ const AddOrEdit = () => {
           dataSource: enterDetail?.materials,
         },
       });
+      let reqItemPricesResult = [];
+      if (enterDetail?.reqItemPrices.length > 0) {
+        reqItemPricesResult = enterDetail?.reqItemPrices.map((item) => {
+          return {
+            defaultSampleTypeName: item.sampleTypeName,
+            reqItemName: item.itemName,
+            ...item,
+          };
+        });
+      }
+
       dispatch({
         type: 'preProcessingMag/save',
         payload: {
           type: 'applyList',
-          dataSource: enterDetail?.reqItemPrices,
+          dataSource: reqItemPricesResult,
         },
       });
     }
@@ -222,15 +235,16 @@ const AddOrEdit = () => {
   const onFinish = (value) => {
     console.log('value', value);
 
-    console.log(sampleList);
-
+    console.log(applyList);
+    // debugger;
+    //return;
     const reqItemPrices = applyList.map((item) => {
       return {
         isOut: item.isOut,
-        itemId: item.id,
-        itemName: item.reqItemName,
+        itemId: item.itemId,
+        itemName: item.itemName,
         outCompanyId: item.outCompanyId,
-        sampleTypeId: item.defaultSampleTypeId,
+        sampleTypeId: item.sampleTypeId,
         cnt: 1,
       };
     });
@@ -267,7 +281,7 @@ const AddOrEdit = () => {
         }
       });
     } else {
-      reqMainOrderUpdate({ id: paramVal.id, ...params }).then((res) => {
+      reqMainOrderUpdate({ id: Number(paramVal.id), ...params }).then((res) => {
         if (res.code === 200) {
           message.success('修改成功');
           history.push('/preProcessingMag/sampleRegistration');
@@ -529,6 +543,7 @@ const AddOrEdit = () => {
         申请项目列表{' '}
         <Button
           onClick={() => {
+            console.log(applyList);
             addRef.current.show(applyList);
           }}
           btnType="primary"

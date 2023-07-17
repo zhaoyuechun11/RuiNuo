@@ -24,7 +24,8 @@ import {
   formulaList,
   commonResults,
   printOrder,
-  insUnitDiscountList
+  insUnitDiscountList,
+  oneLevelTypeModalSel
 } from './server';
 
 import isFunction from 'lodash/isFunction';
@@ -160,6 +161,11 @@ const commonMaterials = {
     *fetchInsUnitDiscountList({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(insUnitDiscountList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchOneLevelTypeModalSel({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(oneLevelTypeModalSel, { ...params });
       isFunction(callback) && callback(response);
     },
   },

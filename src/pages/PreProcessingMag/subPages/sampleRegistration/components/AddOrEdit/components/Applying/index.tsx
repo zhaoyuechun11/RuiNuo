@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Table, Button } from 'antd';
 import { useSelector, useDispatch } from 'umi';
+import ReportItems from '../ReportItems';
 
-const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => {
+const Applying = ({ type }) => {
   const [list, setList] = useState([]);
   const { information, sampleList, applyList } = useSelector(
     (state: any) => state.preProcessingMag,
@@ -10,6 +11,7 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
 
   const [sampleListData, setSampleListData] = useState([]);
   const [informationList, setInformationList] = useState([]);
+  const reportItemsRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,18 +24,6 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
 
     setList(applyList);
   }, [applyList]);
-  useEffect(() => {
-    // const result = list?.map((item) => {
-    //   return { itemId: item.id, ...item };
-    // });
-    // dispatch({
-    //   type: 'preProcessingMag/save',
-    //   payload: {
-    //     type: 'applyList',
-    //     dataSource: result,
-    //   },
-    // });
-  }, [list]);
   useEffect(() => {
     if (type === 2 && sampleList?.length === 0) {
       setSampleListData([]);
@@ -78,13 +68,22 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
       title: '操作',
       key: 'action',
       render: (text, record, index) => (
-        <Button
-          onClick={() => {
-            deleteCurrentItem(record.id, 1);
-          }}
-        >
-          删除
-        </Button>
+        <div>
+          <Button
+            onClick={() => {
+              deleteCurrentItem(record.id, 1);
+            }}
+          >
+            删除
+          </Button>
+          <Button
+            onClick={() => {
+              reportItemsRef.current.show(record.id);
+            }}
+          >
+            明细
+          </Button>
+        </div>
       ),
     },
   ];
@@ -185,11 +184,26 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
   const deleteCurrentItem = (index, type) => {
     if (type === 1) {
       let result = list.filter((item) => item.id != index);
+      const sampleResult = result.map((item) => {
+        return {
+          sampleTypeName: item.defaultSampleTypeName,
+          sampleTypeId: item.defaultSampleTypeId,
+          sampleStateName: '正常',
+          sampleStateId: 1130,
+        };
+      });
       dispatch({
         type: 'preProcessingMag/save',
         payload: {
           type: 'applyList',
           dataSource: result,
+        },
+      });
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'sampleList',
+          dataSource: sampleResult,
         },
       });
     }
@@ -215,10 +229,13 @@ const Applying = ({ type, applyListData, setApplyList, deleteSampleResult }) => 
     }
   };
   return (
-    <Table
-      columns={type === 1 ? applyColumns : type === 2 ? inspectionColumns : informationColumns}
-      dataSource={type === 1 ? list : type === 2 ? sampleListData : informationList}
-    />
+    <>
+      <Table
+        columns={type === 1 ? applyColumns : type === 2 ? inspectionColumns : informationColumns}
+        dataSource={type === 1 ? list : type === 2 ? sampleListData : informationList}
+      />
+      <ReportItems refs={reportItemsRef} />
+    </>
   );
 };
 export default Applying;

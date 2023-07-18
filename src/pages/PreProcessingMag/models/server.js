@@ -63,3 +63,9 @@ export function pageForReqMainEnter(params) {
 export function reportItems(params) {
   return axiosBase('basic/reqItemLabItem/getListByReqItem', 'get', params);
 }
+export function userList(params) {
+  return axiosBase('sys/user/list', 'get', params);
+}
+export function examineData(params) {
+  return axiosBase('lab/reqMainOrder/examine', 'post', params);
+}

@@ -113,13 +113,13 @@ class CustomSearchModal extends Component {
   // 导出弹窗点击确认
   handleExportOk = () => {
     const mapResult = this.state.checkedList.map((item) => {
+ 
       return { key: item.value, name: item.label };
     });
 
     saveCustomQuery({
       assemblyInfo: { json: JSON.stringify(mapResult) },
     }).then((res) => {
-      debugger;
       if (res.code == 200) {
         this.props.refresh();
         this.setState(

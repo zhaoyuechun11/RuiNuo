@@ -11,14 +11,14 @@ import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 import { downLoad } from '@/utils';
 let passProps = {};
 const SampleRegistration = () => {
-  const { queryData } = useSelector((state: any) => state.preProcessingMag);
+  const { queryData,pageNum } = useSelector((state: any) => state.preProcessingMag);
   const setRef = useRef();
   const dispatch = useDispatch();
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [columnOptionsList, setColumnOptionsList] = useState([]);
   const [tableColumns, setTableColumns] = useState();
   const [data, setData] = useState({ count: 0, list: [], page: 1 });
-  const [pageNum, setPageNum] = useState(1);
+  // const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const importRef = useRef();
   const searchVal = useRef();
@@ -141,7 +141,8 @@ const SampleRegistration = () => {
     });
   };
   const onChangePage = (pageNum: number, size: React.SetStateAction<number>) => {
-    setPageNum(pageNum);
+    // setPageNum(pageNum);
+    changeModelData('pageNum',pageNum)
     setPageSize(size);
   };
 
@@ -166,8 +167,17 @@ const SampleRegistration = () => {
     reqMainOrderExport({ ...searchVal.current }).then((res) => {
       const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
       const href = URL.createObjectURL(blob);
-      downLoad(href, '仪器维护');
+      downLoad(href, '样本登记');
     });
+  };
+  const changeModelData = (type, value) => {
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type,
+          dataSource: value,
+        },
+      });
   };
   return (
     <div>

@@ -1,13 +1,10 @@
 /* eslint-disable global-require */
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Select, Input, Cascader, TreeSelect, Tooltip, DatePicker, Popover } from 'antd';
+import { Form, Select, Input, Cascader, TreeSelect, DatePicker, Popover } from 'antd';
 import { Card, Button } from '@/components';
 import { useDispatch } from 'umi';
 import style from './index.less';
 import { debounce } from 'lodash';
-// import {  CHECKED_LIST_FOR_SEARCH } from '@utils/constant';
-// import { PositionSelectMultiple } from '@common';
-// import styles from '../../../Recruitment/subPages/Addposition/components/PositionForm/index.less';
 import { getQueryData, getHospitalList, getDoctorList } from '../../../../models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
 
@@ -15,51 +12,10 @@ const { TreeNode } = TreeSelect;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const QueryData = ({
-  queryData,
-  positionList,
-  departmentList,
-  channelsList,
-  educationList,
-  tagList,
-  operatorList,
-  refresh,
-  interviewerList,
-}) => {
-  const defaultValues = {
-    search_word: '',
-    recruitment_position_id: undefined,
-    recruitment_department_id: undefined,
-    label_name: undefined,
-    recruitment_channels_id: undefined,
-    recruitment_director_id: undefined,
-    sex: undefined,
-    age_num: '',
-    work_num: undefined,
-    education: undefined,
-    graduate: '',
-    major: '',
-    work_place: '',
-    is_investigation: undefined,
-    is_send_registration: undefined,
-    interview_mode: undefined,
-    interviewer_id: undefined,
-    work_address: [],
-    drive_type: undefined,
-    drive_num: undefined,
-    terminal: undefined,
-    current_status_time: undefined,
-    create_time: undefined,
-    access_status: undefined,
-  };
+const QueryData = ({ queryData }) => {
   const dispatch = useDispatch();
-  const [ageNum, setAgeNum] = useState(['', '']);
   const [provinceList, setProvinceList] = useState([]);
-  const [driveType, setDriveType] = useState([]);
-  const [driveNum, setDriveNum] = useState([]);
-  const [sourceInfo, setSourceInfo] = useState([]);
   const [visible, setVisible] = useState(false);
-
   const [form] = Form.useForm();
   const [expand, setExpand] = useState(false);
   const cumtomRef = useRef();
@@ -72,10 +28,14 @@ const QueryData = ({
   const [sex, setSex] = useState([]);
   const [hospital, setHospital] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
+  const [sampleSource, setSampleSource] = useState([]);
+  const [nation, setNation] = useState([]);
 
   useEffect(() => {
     getCustomSearch();
     dicVal({ type: 'SX' });
+    dicVal({ type: 'FT' });
+    dicVal({ type: 'NATION' });
     hospitalList();
     // getProvince().then((res) => {
     //   res.data.map((item) => {
@@ -125,6 +85,12 @@ const QueryData = ({
             if (params.type === 'SX') {
               setSex(res.data);
             }
+            if (params.type === 'FT') {
+              setSampleSource(res.data);
+            }
+            if (params.type === 'NATION') {
+              setNation(res.data);
+            }
           }
         },
       },
@@ -146,7 +112,9 @@ const QueryData = ({
     });
   };
   const onChangeHospital = (e) => {
-    getDoctorListData(e);
+    if (e) {
+      getDoctorListData(e);
+    }
   };
   const getCustomSearch = () => {
     getQueryData()
@@ -181,7 +149,7 @@ const QueryData = ({
 
   useEffect(() => {
     queryData && form.setFieldsValue(queryData);
-    !queryData && form.setFieldsValue(defaultValues);
+    !queryData && form.setFieldsValue({});
   }, [queryData]);
 
   // 改变保存在model里面的数据
@@ -200,22 +168,11 @@ const QueryData = ({
     });
   };
 
-  const onChangeAge = (val, index) => {
-    const age_num = JSON.parse(JSON.stringify(ageNum));
-    age_num[index] = val;
-    setAgeNum(age_num);
-  };
-
   // 点击清空
   const tapClear = () => {
-    changeModelData('page', 1);
-    changeModelData('queryData', {
-      ...defaultValues,
-      age_num: '',
-    });
-    setAgeNum(['', '']);
-    form.setFieldsValue(defaultValues);
-    // refresh(defaultValues)
+    changeModelData('pageNum', 1);
+    changeModelData('queryData', {});
+    form.resetFields();
   };
   const handleChange = (value) => {
     setExpand(value);
@@ -223,16 +180,65 @@ const QueryData = ({
 
   const handleQuery = () => {
     const formValues = form.getFieldsValue();
-    // changeModelData('page', 1);
+
+    changeModelData('pageNum', 1);
     const params = {
       ...formValues,
+      birthdateStart:
+        formValues.birthdateStart && formValues.birthdateStart[0]
+          ? formValues.birthdateStart[0].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      birthdateEnd:
+        formValues.birthdateStart && formValues.birthdateStart[1]
+          ? formValues.birthdateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      collectDateStart:
+        formValues.collectDateStart && formValues.collectDateStart[0]
+          ? formValues.collectDateStart[0].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      collectDateEnd:
+        formValues.collectDateStart && formValues.collectDateStart[1]
+          ? formValues.collectDateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      applyDateStart:
+        formValues.applyDateStart && formValues.applyDateStart[0]
+          ? formValues.applyDateStart[0].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      applyDateEnd:
+        formValues.applyDateStart && formValues.applyDateStart[1]
+          ? formValues.applyDateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      receiveDateStart:
+        formValues.receiveDateStart && formValues.receiveDateStart[0]
+          ? formValues.receiveDateStart[0].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      receiveDateEnd:
+        formValues.receiveDateStart && formValues.receiveDateStart[1]
+          ? formValues.receiveDateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      preReceiveDateStart:
+        formValues.preReceiveDateStart && formValues.preReceiveDateStart[0]
+          ? formValues.preReceiveDateStart[0].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      preReceiveDateEnd:
+        formValues.preReceiveDateStart && formValues.preReceiveDateStart[1]
+          ? formValues.preReceiveDateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      createDateStart:
+        formValues.createDateStart && formValues.createDateStart[1]
+          ? formValues.createDateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
+      createDateEnd:
+        formValues.createDateStart && formValues.createDateStart[1]
+          ? formValues.createDateStart[1].format('YYYY-MM-DD HH:mm:ss')
+          : '',
       // province:
       //   formValues.work_address && formValues.work_address[0] ? formValues.work_address[0] : 0,
       // city: formValues.work_address && formValues.work_address[1] ? formValues.work_address[1] : 0,
       // area: formValues.work_address && formValues.work_address[2] ? formValues.work_address[2] : 0,
       // age_num: ageNum.join('-') !== '-' ? ageNum.join('-') : '',
     };
-    // console.log('queryParams', params);
+
     changeModelData('queryData', params);
   };
 
@@ -369,57 +375,31 @@ const QueryData = ({
             </Select>
           </Form.Item>
         );
-      case '职位负责人':
+      case 'source':
         return (
-          <Form.Item key={name} name="recruitment_director_id" label={show ? '职位负责人' : ''}>
+          <Form.Item key={name} name={name} label="样本来源">
             <Select
               style={{ width: 254 }}
               allowClear={true}
-              placeholder="请选择职位负责人"
+              placeholder="请选择样本来源"
               showSearch
               showArrow
-              mode="multiple"
               optionFilterProp="children"
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {operatorList.map((item) => {
-                return (
-                  <Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Option>
-                );
-              })}
+              {sampleSource?.map((item, index) => (
+                <Option value={item.id} key={index}>
+                  {item.dictValue}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         );
-      case '性别':
+      case 'nation':
         return (
-          <Form.Item key={name} name="sex" label={show ? '性别' : ''}>
-            <Select
-              mode="multiple"
-              placeholder="请选择性别"
-              allowClear={true}
-              showArrow
-              style={{ width: 254 }}
-            >
-              <Option value={1} key={1}>
-                男
-              </Option>
-              <Option value={2} key={2}>
-                女
-              </Option>
-              <Option value={3} key={3}>
-                未知
-              </Option>
-            </Select>
-          </Form.Item>
-        );
-
-      case '工作经验':
-        return (
-          <Form.Item key={name} name="work_num" label={show ? '工作经验' : ''}>
+          <Form.Item key={name} name={name} label="民族">
             <Select
               style={{ width: 254 }}
               allowClear={true}
@@ -431,133 +411,76 @@ const QueryData = ({
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {/* {WORK_NUM_LIST.map((item, index) => {
+              {nation.map((item, index) => {
                 return (
-                  <Option key={item} value={index}>
-                    {item}
-                  </Option>
-                );
-              })} */}
-            </Select>
-          </Form.Item>
-        );
-      case '学历':
-        return (
-          <Form.Item key={name} name="education" label={show ? '学历' : ''}>
-            <Select
-              style={{ width: 254 }}
-              allowClear={true}
-              placeholder="请选择学历"
-              showSearch
-              showArrow
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              mode="multiple"
-              onDropdownVisibleChange={(e) => {
-                setExpand(e);
-              }}
-            >
-              {educationList.map((item) => {
-                return (
-                  <Option key={item} value={item}>
-                    {item}
+                  <Option key={item.id} value={index}>
+                    {item.dictValue}
                   </Option>
                 );
               })}
             </Select>
           </Form.Item>
         );
-      case '毕业院校':
+      case 'idCardNo':
         return (
-          <Form.Item key={name} name="graduate" label={show ? '毕业院校' : ''}>
+          <Form.Item key={name} name={name} label="身份证号">
             <Input
-              placeholder="请输入毕业院校"
+              placeholder="请输入收样条码"
               style={{ width: 254 }}
               allowClear
               autoComplete="off"
             />
           </Form.Item>
         );
-      case '毕业专业':
+      case 'diagnosis':
         return (
-          <Form.Item key={name} name="major" label={show ? '毕业专业' : ''}>
-            <Input placeholder="请输入专业" style={{ width: 254 }} allowClear autoComplete="off" />
-          </Form.Item>
-        );
-      case '工作单位':
-        return (
-          <Form.Item key={name} name="work_place" label={show ? '工作单位' : ''}>
+          <Form.Item key={name} name={name} label="临床诊断">
             <Input
-              placeholder="请输入工作单位"
+              placeholder="请输入临床诊断"
               style={{ width: 254 }}
               allowClear
               autoComplete="off"
             />
           </Form.Item>
         );
-      case '背景调查':
+      case 'birthdate':
         return (
-          <Form.Item key={name} name="is_investigation" label={show ? '背景调查' : ''}>
-            <Select
-              mode="multiple"
-              placeholder="请选择背景调查"
-              allowClear={true}
-              style={{ width: 254 }}
-              showArrow
-            >
-              <Option value={1} key={1}>
-                已背调
-              </Option>
-              <Option value={2} key={2}>
-                未背调
-              </Option>
-            </Select>
+          <Form.Item key={name} name={'birthdateStart'} label="出生日期">
+            <RangePicker showTime placeholder={['出生开始日期', '出生日期结束日期']} />
           </Form.Item>
         );
-      case '应聘登记表':
+      case 'collectDate':
         return (
-          <Form.Item key={name} name="is_send_registration" label={show ? '应聘登记表' : ''}>
-            <Select
-              mode="multiple"
-              placeholder="请选择应聘登记表"
-              allowClear={true}
-              showArrow
-              style={{ width: 254 }}
-            >
-              <Option value={1} key={1}>
-                已发送
-              </Option>
-              <Option value={2} key={2}>
-                未发送
-              </Option>
-              <Option value={3} key={3}>
-                已填写
-              </Option>
-            </Select>
+          <Form.Item key={name} name={'collectDateStart'} label="采样日期">
+            <RangePicker showTime placeholder={['采样开始日期', '采样结束日期']} />
           </Form.Item>
         );
-      case '面试方式':
+      case 'applyDate':
         return (
-          <Form.Item key={name} name="interview_mode" label={show ? '面试方式' : ''}>
-            <Select
-              mode="multiple"
-              placeholder="请选择面试方式"
-              allowClear={true}
-              showArrow
+          <Form.Item key={name} name={'applyDateStart'} label="申请日期">
+            <RangePicker showTime placeholder={['申请开始日期', '申请结束日期']} />
+          </Form.Item>
+        );
+      case 'receiveDate':
+        return (
+          <Form.Item key={name} name={'receiveDateStart'} label="物流接收日期">
+            <RangePicker showTime placeholder={['物流接收开始日期', '物流接收结束日期']} />
+          </Form.Item>
+        );
+      case 'preReceiveDate':
+        return (
+          <Form.Item key={name} name="preReceiveDateStart" label="前处理接收日期">
+            <RangePicker showTime placeholder={['前处理接收开始日期', '前处理接收结束日期']} />
+          </Form.Item>
+        );
+      case 'createDate':
+        return (
+          <Form.Item key={name} name="createDateStart" label="登记日期">
+            <RangePicker
+              showTime
+              placeholder={['登记开始日期', '登记结束日期']}
               style={{ width: 254 }}
-            >
-              <Option value={1} key={1}>
-                现场面试
-              </Option>
-              <Option value={2} key={2}>
-                电话面试
-              </Option>
-              <Option value={3} key={3}>
-                视频面试
-              </Option>
-            </Select>
+            />
           </Form.Item>
         );
       case '工作地点':
@@ -570,97 +493,6 @@ const QueryData = ({
               placeholder="请选择地址"
               fieldNames={{ label: 'name', value: 'id', children: 'child' }}
             />
-          </Form.Item>
-        );
-      case '驾照类型':
-        return (
-          <Form.Item key={name} name="drive_type" label={show ? '驾照类型' : ''}>
-            <Select placeholder="请选择驾照类型" allowClear={true} style={{ width: 254 }} showArrow>
-              {driveType.map((item) => {
-                return (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        );
-      case '驾龄':
-        return (
-          <Form.Item key={name} name="drive_num" label={show ? '驾龄' : ''}>
-            <Select placeholder="请选择驾龄" allowClear={true} showArrow style={{ width: 254 }}>
-              <option value={0} key={0}>
-                全部
-              </option>
-              {driveNum.map((item) => {
-                return (
-                  <option value={Object.keys(item)[0]} key={Object.keys(item)[0]}>
-                    {item[Object.keys(item)[0]]}
-                  </option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        );
-      case '变更时间':
-        return (
-          <Form.Item key={name} name="current_status_time" label={show ? '变更时间' : ''}>
-            <RangePicker style={{ width: 254 }} />
-          </Form.Item>
-        );
-      case '来源列表':
-        return (
-          <Form.Item key={name} name="terminal" label={show ? '来源列表' : ''}>
-            <Select
-              mode="multiple"
-              style={{ width: 254 }}
-              placeholder="请选择来源列表"
-              allowClear
-              showSearch
-              showArrow
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              onDropdownVisibleChange={handleChange}
-            >
-              {sourceInfo.map((item) => (
-                <option value={item.id} key={item.id}>
-                  {item.description}
-                </option>
-              ))}
-            </Select>
-          </Form.Item>
-        );
-      case '添加时间':
-        return (
-          <Form.Item key={name} name="create_time" label={show ? '添加时间' : ''}>
-            <RangePicker style={{ width: 254 }} />
-          </Form.Item>
-        );
-      case '测评':
-        return (
-          <Form.Item key={name} name="access_status" label={show ? '测评' : ''}>
-            <Select
-              mode="multiple"
-              placeholder="请选择测评"
-              allowClear={true}
-              showArrow
-              style={{ width: 254 }}
-            >
-              <Option value={1} key={1}>
-                未测评
-              </Option>
-              <Option value={2} key={2}>
-                待授权
-              </Option>
-              <Option value={3} key={3}>
-                测评中
-              </Option>
-              <Option value={4} key={4}>
-                已完成
-              </Option>
-            </Select>
           </Form.Item>
         );
       default:
@@ -722,7 +554,6 @@ const QueryData = ({
         >
           <div className={style.queryContainer}>
             {searchList1.map((item) => {
-              // const arr = item.indexOf(',') > -1 && item.split(',');
               return getSearchContent(item.key);
             })}
           </div>
@@ -761,29 +592,4 @@ const QueryData = ({
     </Card>
   );
 };
-
-// const mapStateToProps = ({
-//   Candidate: { queryData },
-//   global: {
-//     positionList,
-//     departmentList,
-//     channelsList,
-//     educationList,
-//     tagList,
-//     operatorList,
-//     interviewerList,
-//   },
-// }) => {
-//   return {
-//     queryData,
-//     positionList,
-//     departmentList,
-//     channelsList,
-//     educationList,
-//     tagList,
-//     operatorList,
-//     interviewerList,
-//   };
-// };
-
 export default QueryData;

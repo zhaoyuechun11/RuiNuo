@@ -17,6 +17,7 @@ const preProcessingMag = {
     columnData: [], //表头数据
     sampleList: [],
     information: [],
+    pageNum:1
   },
 
   effects: {

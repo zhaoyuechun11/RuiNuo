@@ -26,6 +26,7 @@ const AddApply = ({ refs }) => {
   const dialog = useRef();
   const searchVal = useRef();
   const [hospital, setHospital] = useState([]);
+  const [val, setVal] = useState([]);
   const [form] = Form.useForm();
   const reportItemsRef = useRef();
   const { applyList } = useSelector((state: any) => state.preProcessingMag);
@@ -36,7 +37,7 @@ const AddApply = ({ refs }) => {
       getList({ pageNum, pageSize });
       majorGroupList();
       dictList({ type: 'BT' });
-      setSelectedRows(val);
+      setVal(val);
       hospitalList();
     },
     hide: () => {
@@ -56,8 +57,12 @@ const AddApply = ({ refs }) => {
             setList(res.data.records);
             setTotal(res.data.total);
             let filterResult = applyList?.filter(
-              (item) => !res.data.records.some((data) => data.id === item.id),
+              (item) => !res.data.records.some((data) => data.id === item.itemId),
             );
+            let filterResult1 = applyList?.filter((item) =>
+              res.data.records.some((data) => data.id === item.itemId),
+            );
+            setSelectedRows(filterResult1);
             dispatch({
               type: 'preProcessingMag/save',
               payload: {
@@ -163,6 +168,7 @@ const AddApply = ({ refs }) => {
     };
 
     setSelectedRows([]);
+    setPageNum(pagination.current);
     getList(params);
   };
   const handleSelectRows = (rows) => {
@@ -194,9 +200,11 @@ const AddApply = ({ refs }) => {
   };
 
   const add = () => {
+    console.log(selectedRows);
     if (applyList?.length > 0) {
       selectedRows.push(...applyList);
     }
+
     const result = selectedRows.map((item) => {
       return {
         itemName: item.reqItemName,
@@ -231,7 +239,7 @@ const AddApply = ({ refs }) => {
     });
   };
   const defaultValChange = (e, record) => {
-    console.log(e, record);
+    console.log(e, record, applyList, val);
     console.log(sample);
     const sampleVal = sample.filter((item) => item.id == e);
     console.log(sampleVal);
@@ -270,7 +278,7 @@ const AddApply = ({ refs }) => {
       type: 'preProcessingMag/save',
       payload: {
         type: 'applyList',
-        dataSource: selectedRows,
+        dataSource: val,
       },
     });
   };

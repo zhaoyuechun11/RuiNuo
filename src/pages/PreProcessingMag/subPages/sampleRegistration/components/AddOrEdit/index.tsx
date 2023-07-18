@@ -56,6 +56,7 @@ const AddOrEdit = () => {
   const { sampleList, information, applyList } = useSelector(
     (state: any) => state.preProcessingMag,
   );
+  const { useDetail } = useSelector((state: any) => state.global);
   const [enterDetail, setEnterDetail] = useState();
   const [paramVal, setParamVal] = useState({});
 
@@ -69,6 +70,8 @@ const AddOrEdit = () => {
     getList({ type: 'FT' });
 
     getHospitalListData();
+
+    form.setFieldsValue({ system: { createBy: useDetail?.name } });
   }, []);
 
   useEffect(() => {
@@ -176,6 +179,7 @@ const AddOrEdit = () => {
           return {
             defaultSampleTypeName: item.sampleTypeName,
             reqItemName: item.itemName,
+            defaultSampleTypeId: item.sampleTypeId,
             ...item,
           };
         });
@@ -335,6 +339,10 @@ const AddOrEdit = () => {
         placeholder={`请输入${stru.name}`}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onChange={(val) => onChangeTypeThree(val, stru.key)}
+        optionFilterProp="children"
+        filterOption={(input, option) =>
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
       >
         {stru.key === 'sex'
           ? sex?.map((item, index) => (

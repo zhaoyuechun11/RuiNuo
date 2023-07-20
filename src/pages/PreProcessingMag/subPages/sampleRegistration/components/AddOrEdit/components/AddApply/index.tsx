@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Table } from '@common';
 import { Form, Input, Select, Button, Tabs } from 'antd';
@@ -14,11 +14,12 @@ const getValue = (obj) =>
     .map((key) => obj[key])
     .join(',');
 const AddApply = ({ refs }) => {
+  const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([29]);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [sample, setSample] = useState([]);
   const dispatch = useDispatch();
@@ -55,31 +56,136 @@ const AddApply = ({ refs }) => {
           data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
         }) => {
           if (res.code === 200) {
-            setList(res.data.records);
+            //setList(res.data.records);
             setTotal(res.data.total);
             console.log(applyList);
-            // if (typeVal.current === 'edit') {
-            //   let result = applyList.map((item) => {
-            //     return { ...item, id: item.itemId };
-            //   });
-            //   setSelectedRows(result);
-            //   return;
-            // }
-            let filterResult = applyList?.filter(
-              (item) => !res.data.records.some((data) => data.id === item.itemId),
-            );
-            let filterResult1 = applyList?.filter((item) =>
-              res.data.records.some((data) => data.id === item.itemId),
-            );
-            setSelectedRows(filterResult1);
+            if (typeVal.current === 'edit') {
+              // let result = applyList.map((item) => {
+              //   return { ...item, id: item.itemId };
+              // });
 
-            dispatch({
-              type: 'preProcessingMag/save',
-              payload: {
-                type: 'applyList',
-                dataSource: filterResult,
-              },
-            });
+              if (applyList.length > 0) {
+                let result = [];
+                for (let i = 0; i < res.data.records.length; i++) {
+                  let isExist = false;
+                  for (let j = 0; j < applyList.length; j++) {
+                    if (res.data.records[i].id === applyList[j].id) {
+                      isExist = true;
+                      result.push({
+                        ...res.data.records[i],
+                        defaultSampleTypeId: applyList[j].defaultSampleTypeId,
+                        defaultSampleTypeName: applyList[j].defaultSampleTypeName,
+                        key: res.data.records[i].id,
+                      });
+                      break;
+                    }
+                  }
+                  if (!isExist) {
+                    result.push({ ...res.data.records[i], key: res.data.records[i].id });
+                  }
+                }
+                let filterResult = applyList?.filter(
+                  (item) => !result.some((data) => data.id === item.itemId),
+                );
+
+                let filterResult1 = applyList?.filter((item) =>
+                  result.some((data) => data.id === item.itemId),
+                );
+                let keys = filterResult1.map((item) => item.itemId);
+
+                dispatch({
+                  type: 'preProcessingMag/save',
+                  payload: {
+                    type: 'applyList',
+                    dataSource: filterResult,
+                  },
+                });
+                setList(result);
+                setSelectedRowKeysVal(keys);
+              } else {
+                let resMap = res.data.records.map((item) => {
+                  return { key: item.id, ...item };
+                });
+                setList(resMap);
+                let filterResult = applyList?.filter(
+                  (item) => !res.data.records.some((data) => data.id === item.itemId),
+                );
+                let filterResult1 = applyList?.filter((item) =>
+                  res.data.records.some((data) => data.id === item.itemId),
+                );
+                //setSelectedRows(filterResult1);
+
+                dispatch({
+                  type: 'preProcessingMag/save',
+                  payload: {
+                    type: 'applyList',
+                    dataSource: filterResult,
+                  },
+                });
+              }
+
+              // setSelectedRows(result);
+              return;
+            }
+            if (applyList.length > 0) {
+              let result = [];
+              for (let i = 0; i < res.data.records.length; i++) {
+                let isExist = false;
+                for (let j = 0; j < applyList.length; j++) {
+                  if (res.data.records[i].id === applyList[j].id) {
+                    isExist = true;
+                    result.push({
+                      ...res.data.records[i],
+                      defaultSampleTypeId: applyList[j].defaultSampleTypeId,
+                      defaultSampleTypeName: applyList[j].defaultSampleTypeName,
+                      key: res.data.records[i].id,
+                    });
+                    break;
+                  }
+                }
+                if (!isExist) {
+                  result.push({ ...res.data.records[i], key: res.data.records[i].id });
+                }
+              }
+              let filterResult = applyList?.filter(
+                (item) => !result.some((data) => data.id === item.itemId),
+              );
+
+              let filterResult1 = applyList?.filter((item) =>
+                result.some((data) => data.id === item.itemId),
+              );
+              //debugger
+              //setSelectedRows(filterResult1);
+
+              dispatch({
+                type: 'preProcessingMag/save',
+                payload: {
+                  type: 'applyList',
+                  dataSource: filterResult,
+                },
+              });
+              setList(result);
+            } else {
+              let resMap = res.data.records.map((item) => {
+                return { key: item.id, ...item };
+              });
+              setList(resMap);
+              let filterResult = applyList?.filter(
+                (item) => !res.data.records.some((data) => data.id === item.itemId),
+              );
+              let filterResult1 = applyList?.filter((item) =>
+                res.data.records.some((data) => data.id === item.itemId),
+              );
+              //setSelectedRows(filterResult1);
+
+              dispatch({
+                type: 'preProcessingMag/save',
+                payload: {
+                  type: 'applyList',
+                  dataSource: filterResult,
+                },
+              });
+            }
           }
         },
       },
@@ -177,10 +283,14 @@ const AddApply = ({ refs }) => {
       ...filters,
     };
 
-    setSelectedRows([]);
+    //setSelectedRows([]);
+
     setPageNum(pagination.current);
     getList(params);
   };
+  useEffect(() => {
+    console.log('applyList', applyList);
+  }, [pageNum]);
   const handleSelectRows = (rows) => {
     setSelectedRows(rows);
   };
@@ -191,7 +301,7 @@ const AddApply = ({ refs }) => {
       pageSize,
       ...allValues,
     };
-    // debugger;
+
     getList(values);
   };
   const majorGroupList = () => {
@@ -210,12 +320,20 @@ const AddApply = ({ refs }) => {
   };
 
   const add = () => {
-    console.log(selectedRows);
+    console.log(selectedRowKeysVal);
+    let resVal = [];
+    list.map((item) => {
+      selectedRowKeysVal.map((key) => {
+        if (item.id === key) {
+          resVal.push(item);
+        }
+      });
+    });
     if (applyList?.length > 0) {
-      selectedRows.push(...applyList);
+      resVal.push(...applyList);
     }
 
-    const result = selectedRows.map((item) => {
+    const result = resVal.map((item) => {
       return {
         itemName: item.reqItemName,
         sampleTypeId: item.defaultSampleTypeId,
@@ -223,7 +341,7 @@ const AddApply = ({ refs }) => {
         ...item,
       };
     });
-    const sampleResult = selectedRows.map((item) => {
+    const sampleResult = resVal.map((item) => {
       return {
         sampleTypeName: item.defaultSampleTypeName,
         sampleTypeId: item.defaultSampleTypeId,
@@ -250,9 +368,9 @@ const AddApply = ({ refs }) => {
   };
   const defaultValChange = (e, record) => {
     console.log(e, record, applyList, val);
-    console.log(sample);
+
     const sampleVal = sample.filter((item) => item.id == e);
-    console.log(sampleVal);
+
     let result = list.map((item) => {
       if (item.id === record.id) {
         return {
@@ -263,7 +381,7 @@ const AddApply = ({ refs }) => {
       }
       return item;
     });
-    console.log(result);
+
     if (selectedRows.length > 0) {
       let selectedResult = selectedRows.map((item) => {
         if (item.id === record.id) {
@@ -280,7 +398,7 @@ const AddApply = ({ refs }) => {
       setSelectedRows(selectedResult);
     }
     //debugger
-    console.log(selectedRows);
+
     setList(result);
   };
   const onClose = () => {
@@ -299,12 +417,19 @@ const AddApply = ({ refs }) => {
       }
     });
   };
-  const tabCallback = (e) => {};
+  const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    setSelectedRowKeysVal(selectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys:selectedRowKeysVal,
+    onChange: onSelectChange,
+  };
   return (
     <div>
       <Dialog ref={dialog} footer={null} width={864} onClose={onClose}>
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', padding: '10px' }}>
-          <Tabs defaultActiveKey="1" onChange={tabCallback} style={{ width: '80%' }}>
+          <Tabs defaultActiveKey="1" style={{ width: '80%' }}>
             <TabPane tab="Tab 1" key="1">
               <Form onValuesChange={handleSearch} layout="inline" form={form}>
                 <div id="labClassId">
@@ -369,16 +494,16 @@ const AddApply = ({ refs }) => {
             新增
           </Button>
         </div>
-        <Table
+        {/* <Table
           unit="个"
           columns={columns}
-          selectedRowKeys={selectedRows.map((i) => i?.id)}
+          selectedRowKeys={selectedRows.map(item=>item.key)}
           data={list}
           pagination={{ current: pageNum, total: total }}
           onChange={handleStandardTableChange}
           onSelectRow={handleSelectRows}
           isRowSelection={true}
-          rowKey="id"
+          rowKey="key"
           locale={{
             emptyText: (
               <div>
@@ -392,7 +517,8 @@ const AddApply = ({ refs }) => {
               </div>
             ),
           }}
-        />
+        /> */}
+        <Table rowSelection={rowSelection} columns={columns} dataSource={list} />
       </Dialog>
       <ReportItems refs={reportItemsRef} />
     </div>

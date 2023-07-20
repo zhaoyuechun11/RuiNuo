@@ -153,7 +153,7 @@ export default {
             {
               path: '/preProcessingMag/applicationForm',
               component: '@/pages/PreProcessingMag/subPages/applicationForm',
-              title: '申请单',
+              title: '申请单核对',
             },
             {
               path: '/preProcessingMag/sampleRegistration/addOrEdit/:id/:type',
@@ -161,9 +161,9 @@ export default {
               title: '样本登新增',
             },
             {
-              path: '/preProcessingMag/sampleReceipt',
-              component: '@/pages/PreProcessingMag/subPages/sampleReceipt',
-              title: '单个签收',
+              path: '/preProcessingMag/sampleSortingt',
+              component: '@/pages/PreProcessingMag/subPages/sampleSorting',
+              title: '样本分检',
             },
             {
               path: '/preProcessingMag/bloodDistributionMag',

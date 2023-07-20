@@ -5,7 +5,7 @@ import { Form, Input, message, Select, DatePicker, Tooltip } from 'antd';
 import { useDispatch } from 'umi';
 import { getHospitalList, userList, examineData, getMainOrder } from '../../models/server';
 import SampleApplication from './components/SampleApplication';
-import SetHeaderModal from './components/SetHeaderModal';
+import SetHeaderModal from '../sampleRegistration/components/SetHeaderModal';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 let columns = [];

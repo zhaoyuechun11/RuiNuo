@@ -177,7 +177,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '',
+        url: '/preProcessingMag/sampleSortingt',
         name: '样本分检',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

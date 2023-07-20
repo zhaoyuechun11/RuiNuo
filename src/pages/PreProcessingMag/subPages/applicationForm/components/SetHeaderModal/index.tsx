@@ -31,9 +31,10 @@ const SetHeaderModal = ({ refs, ...props }) => {
     },
   }));
   useEffect(() => {
-    setCheckedList(columnChecked);
+    // setCheckedList(columnChecked);
   }, []);
   useEffect(() => {
+    console.log(columnChecked);
     let ids = columnChecked.map((item) => {
       return item.id;
     });
@@ -132,6 +133,7 @@ const SetHeaderModal = ({ refs, ...props }) => {
   };
   // 导出弹窗点击确认
   const handleExportOk = () => {
+    console.log(rightCheckedList);
     let ids = rightCheckedList.map((item) => {
       return item.id;
     });

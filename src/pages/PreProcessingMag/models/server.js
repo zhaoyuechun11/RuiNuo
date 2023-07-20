@@ -69,3 +69,6 @@ export function userList(params) {
 export function examineData(params) {
   return axiosBase('lab/reqMainOrder/examine', 'post', params);
 }
+export function examineDataCustomHeader(params) {
+  return axiosBase('sys/assembly/mainExamineDataList', 'get', params);
+}

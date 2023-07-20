@@ -252,12 +252,6 @@ const AddOrEdit = () => {
         cnt: 1,
       };
     });
-    // const informationData = information.map((item) => {
-    //   return {
-    //     filePath: item.fileServerUrl,
-    //     typeName: item.fileServerName,
-    //   };
-    // });
 
     for (let i in value.system) {
       if (value.system[i]?._isAMomentObject) {
@@ -390,15 +384,6 @@ const AddOrEdit = () => {
   };
   return (
     <div>
-      {/* <div
-        onClick={() => {
-          // materialRef.current.show();
-          // onFinish()
-          form.submit();
-        }}
-      >
-        添加
-      </div> */}
       <div className={styles.title}>
         基本信息管理
         <Button btnType="primary" onClick={() => {}}>
@@ -551,8 +536,7 @@ const AddOrEdit = () => {
         申请项目列表{' '}
         <Button
           onClick={() => {
-            console.log(applyList);
-            addRef.current.show(applyList);
+            addRef.current.show(applyList, paramVal.type);
           }}
           btnType="primary"
         >

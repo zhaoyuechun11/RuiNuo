@@ -21,24 +21,25 @@ const AddApply = ({ refs }) => {
   const [pageSize, setPageSize] = useState(10);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [sample, setSample] = useState([]);
-  const [sampleType, setSampleType] = useState();
   const dispatch = useDispatch();
   const dialog = useRef();
   const searchVal = useRef();
   const [hospital, setHospital] = useState([]);
   const [val, setVal] = useState([]);
+  const typeVal = useRef();
   const [form] = Form.useForm();
   const reportItemsRef = useRef();
   const { applyList } = useSelector((state: any) => state.preProcessingMag);
 
   useImperativeHandle(refs, () => ({
-    show: (val) => {
+    show: (val, type) => {
       dialog.current && dialog.current.show();
       getList({ pageNum, pageSize });
       majorGroupList();
       dictList({ type: 'BT' });
       setVal(val);
       hospitalList();
+      typeVal.current = type;
     },
     hide: () => {
       dialog.current && dialog.current.hide();
@@ -56,6 +57,14 @@ const AddApply = ({ refs }) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
+            console.log(applyList);
+            // if (typeVal.current === 'edit') {
+            //   let result = applyList.map((item) => {
+            //     return { ...item, id: item.itemId };
+            //   });
+            //   setSelectedRows(result);
+            //   return;
+            // }
             let filterResult = applyList?.filter(
               (item) => !res.data.records.some((data) => data.id === item.itemId),
             );
@@ -63,6 +72,7 @@ const AddApply = ({ refs }) => {
               res.data.records.some((data) => data.id === item.itemId),
             );
             setSelectedRows(filterResult1);
+
             dispatch({
               type: 'preProcessingMag/save',
               payload: {

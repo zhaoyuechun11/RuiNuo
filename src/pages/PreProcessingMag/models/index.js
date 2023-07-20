@@ -8,7 +8,8 @@ import {
   getMainOrder,
   getApplicationForm,
   pageForReqMainEnter,
-  reportItems
+  reportItems,
+  examineDataCustomHeader,
 } from './server';
 
 const preProcessingMag = {
@@ -17,7 +18,7 @@ const preProcessingMag = {
     columnData: [], //表头数据
     sampleList: [],
     information: [],
-    pageNum:1
+    pageNum: 1,
   },
 
   effects: {
@@ -43,6 +44,12 @@ const preProcessingMag = {
           dataSource: res.data,
         },
       });
+    },
+    *getExamineCustomHeader({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(examineDataCustomHeader, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
     },
     *getMainEnterOperateList({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(mainEnterOperateList, params);

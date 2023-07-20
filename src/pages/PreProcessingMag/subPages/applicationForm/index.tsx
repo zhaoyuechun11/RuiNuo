@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Table } from '@common';
 import { Button, Icon } from '@/components';
-import { Form, Input, message, Select, DatePicker } from 'antd';
+import { Form, Input, message, Select, DatePicker, Tooltip } from 'antd';
 import { useDispatch } from 'umi';
 import { getHospitalList, userList, examineData, getMainOrder } from '../../models/server';
 import SampleApplication from './components/SampleApplication';
+import SetHeaderModal from './components/SetHeaderModal';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+let columns = [];
 const applicationForm = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState();
@@ -17,130 +19,63 @@ const applicationForm = () => {
   const [hospital, setHospital] = useState([]);
   const [personList, setPersonList] = useState([]);
   const [detailData, setDetailData] = useState({});
+  const [selectedColumns, setSelectedColumns] = useState([]);
+  const [columnOptionsList, setColumnOptionsList] = useState([]);
+  const setRef = useRef();
+
   useEffect(() => {
     getApplicationForm({ pageNum, pageSize });
     hospitalList();
     getUserList();
+    getCustomHeader();
   }, []);
-  const columns = [
-    {
-      title: '送检样本码',
-      dataIndex: 'receiveBarcode',
-      align: 'center',
-      width: 150,
-      key: 'receiveBarcode',
-      fixed: 'left',
-    },
-    {
-      title: '送检单位',
-      dataIndex: 'hospitalName',
-      align: 'center',
-      width: 150,
-      key: 'hospitalName',
-    },
-    {
-      title: '姓名',
-      dataIndex: 'patientName',
-      align: 'center',
-      width: 150,
-      key: 'patientName',
-    },
-    {
-      title: '性别',
-      dataIndex: 'sexName',
-      align: 'center',
-      key: 'sexName',
-      width: 150,
-    },
-    {
-      title: '年龄',
-      dataIndex: 'age',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '年龄单位',
-      dataIndex: 'ageUnitName',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '样本类型',
-      dataIndex: 'sampleType',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '样本来源',
-      dataIndex: 'source',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '送检医生',
-      dataIndex: 'sendDoctorName',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '送检科室',
-      dataIndex: 'sendDeptName',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '业务员',
-      dataIndex: 'saleManName',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '申请项目',
-      dataIndex: 'reqItemName',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '申请时间',
-      dataIndex: 'applyDate',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '采样时间',
-      dataIndex: 'collectDate',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '物流收样时间',
-      dataIndex: 'receiveDate',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '登记日期',
-      dataIndex: 'createDate',
-      align: 'center',
-      width: 150,
-    },
-    {
-      title: '操作',
-      key: 'operation',
-      fixed: 'right',
-      width: 100,
-      render: (record) => (
-        <Button
-          style={{ margin: '0 8px' }}
-          onClick={() => {
-            detail(record.id);
-          }}
-        >
-          明细
-        </Button>
-      ),
-    },
-  ];
+  useEffect(() => {
+    let listSeqs = selectedColumns.map((item) => {
+      return item.listSeq;
+    });
+
+    let sortResult = listSeqs.sort(function (a, b) {
+      return a - b;
+    });
+    let tableFieldResult = [];
+    sortResult.map((item) => {
+      selectedColumns.map((checkItem) => {
+        if (checkItem.listSeq == item) {
+          tableFieldResult.push(checkItem);
+        }
+      });
+    });
+
+    const newSelectedColumns = tableFieldResult.map((column) => {
+      return {
+        title: column.name,
+        dataIndex: selectedField(column.key),
+        responsive: ['xl', 'xxl'],
+        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+      };
+    });
+
+    columns = [
+      ...newSelectedColumns,
+      {
+        title: '操作',
+        dataIndex: 'action',
+        fixed: 'right',
+        align: 'center',
+        width: 180,
+        render: (record) => (
+          <Button
+            style={{ margin: '0 8px' }}
+            onClick={() => {
+              detail(record.id);
+            }}
+          >
+            明细
+          </Button>
+        ),
+      },
+    ];
+  }, [selectedColumns]);
   const detail = (id) => {
     getMainOrder({ id }).then((res) => {
       if (res.code === 200) {
@@ -223,8 +158,51 @@ const applicationForm = () => {
     examineData({ ids: ids }).then((res) => {
       if (res.code === 200) {
         message.success('审核成功');
+        getApplicationForm({ pageNum, pageSize });
       }
     });
+  };
+  const getCustomHeader = () => {
+    dispatch({
+      type: 'preProcessingMag/getExamineCustomHeader',
+      payload: {
+        callback: (res: { code: number; data: any[] }) => {
+          if (res.code === 200) {
+            const selectedFields = res.data.filter(
+              (item: Record<string, any>) => item?.isListDisplay == true,
+            );
+            console.log(selectedFields);
+            setSelectedColumns(selectedFields);
+            setColumnOptionsList(res.data);
+          }
+        },
+      },
+    });
+  };
+  const changeColumn = (ids: any) => {
+    dispatch({
+      type: 'preProcessingMag/saveCustomHeader',
+      payload: {
+        ids,
+        callback: () => {
+          getCustomHeader();
+        },
+      },
+    });
+  };
+  const selectedField = (val) => {
+    switch (val) {
+      case 'sex':
+        return 'sexName';
+      case 'sendDeptId':
+        return 'sendDeptName';
+      case 'sendDoctorId':
+        return 'sendDoctorName';
+      case 'hospitalId':
+        return 'hospitalName';
+      default:
+        return val;
+    }
   };
   const renderForm = () => {
     return (
@@ -286,6 +264,16 @@ const applicationForm = () => {
         <Button btnType="primary" onClick={examine}>
           审核
         </Button>
+        <Tooltip placement="top" arrowPointAtCenter title="自定义表头">
+          <span
+            //   className={styles.settings}
+            onClick={() => {
+              setRef.current && setRef.current?.show();
+            }}
+          >
+            <Icon name="iconhouxuanren-shezhi" style={{ fontSize: 20 }} />
+          </span>
+        </Tooltip>
       </div>
       <Table
         scroll={{ x: 1300 }}
@@ -313,6 +301,12 @@ const applicationForm = () => {
         }}
       />
       <SampleApplication data={detailData} />
+      <SetHeaderModal
+        refs={setRef}
+        columnOptions={columnOptionsList}
+        columnChecked={selectedColumns}
+        handleChangeColumn={changeColumn}
+      />
     </>
   );
 };

@@ -86,7 +86,6 @@ const SampleRegistration = () => {
           ),
         },
       ],
-      // page,
       onChangePage,
     };
   }, [selectedColumns]);

@@ -63,7 +63,7 @@ const applicationForm = () => {
         fixed: 'right',
         align: 'center',
         width: 180,
-        render: (record) => (
+        render: (text, record) => (
           <Button
             style={{ margin: '0 8px' }}
             onClick={() => {

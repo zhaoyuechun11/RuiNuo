@@ -72,3 +72,25 @@ export function examineData(params) {
 export function examineDataCustomHeader(params) {
   return axiosBase('sys/assembly/mainExamineDataList', 'get', params);
 }
+export function scanSorting(params) {
+  return axiosBase('lab/reqMainSplit/preSortList', 'get', params);
+}
+export function scanSortingSave(params) {
+  return axiosBase('lab/reqMainSplit/preSort', 'post', params);
+}
+export function sortingList(params) {
+  return axiosBase('lab/reqMainSplit/preSortPage', 'get', params);
+}
+
+export function waitBlood(params) {
+  return axiosBase('lab/reqMainSplit/bloodPage', 'get', params);
+}
+export function finishBlood(params) {
+  return axiosBase('lab/reqMainSplit/bloodCompletePage', 'get', params);
+}
+export function scanBlood(params) {
+  return axiosBase('lab/reqMainSplit/bloodList', 'get', params);
+}
+export function bloodSave(params) {
+  return axiosBase('lab/reqMainSplit/blood', 'post', params);
+}

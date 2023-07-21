@@ -10,6 +10,11 @@ import {
   pageForReqMainEnter,
   reportItems,
   examineDataCustomHeader,
+  scanSorting,
+  sortingList,
+  waitBlood,
+  finishBlood,
+  scanBlood,
 } from './server';
 
 const preProcessingMag = {
@@ -19,6 +24,8 @@ const preProcessingMag = {
     sampleList: [],
     information: [],
     pageNum: 1,
+    scanSortData: [],
+    scanBloodData: [],
   },
 
   effects: {
@@ -89,6 +96,36 @@ const preProcessingMag = {
     },
     *fetchReportItems({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(reportItems, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchScanSorting({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(scanSorting, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchSortingList({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(sortingList, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchWaitBlood({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(waitBlood, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchFinishBlood({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(finishBlood, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchScanBlood({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(scanBlood, params);
       if (res.code * 1 === 200) {
         isFunction(callback) && callback(res);
       }

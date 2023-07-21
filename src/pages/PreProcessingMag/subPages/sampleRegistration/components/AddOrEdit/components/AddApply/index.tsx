@@ -1,7 +1,7 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Table } from '@common';
-import { Form, Input, Select, Button, Tabs } from 'antd';
+import { Form, Input, Select, Button, Tabs, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'umi';
 import { Icon } from '@/components';
@@ -14,7 +14,7 @@ const getValue = (obj) =>
     .map((key) => obj[key])
     .join(',');
 const AddApply = ({ refs }) => {
-  const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([29]);
+  const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
   const [list, setList] = useState([]);
   const [total, setTotal] = useState(0);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -30,7 +30,7 @@ const AddApply = ({ refs }) => {
   const typeVal = useRef();
   const [form] = Form.useForm();
   const reportItemsRef = useRef();
-  const { applyList } = useSelector((state: any) => state.preProcessingMag);
+  const { applyList, selectedRowKeys } = useSelector((state: any) => state.preProcessingMag);
 
   useImperativeHandle(refs, () => ({
     show: (val, type) => {
@@ -102,6 +102,13 @@ const AddApply = ({ refs }) => {
                 });
                 setList(result);
                 setSelectedRowKeysVal(keys);
+                dispatch({
+                  type: 'preProcessingMag/save',
+                  payload: {
+                    type: 'selectedRowKeys',
+                    dataSource: keys,
+                  },
+                });
               } else {
                 let resMap = res.data.records.map((item) => {
                   return { key: item.id, ...item };
@@ -367,7 +374,15 @@ const AddApply = ({ refs }) => {
     });
   };
   const defaultValChange = (e, record) => {
-    console.log(e, record, applyList, val);
+    console.log(e, record, applyList, val, selectedRowKeys);
+
+    let sampleTypeIds = list
+      ?.filter((item) => selectedRowKeys?.some((key) => key === item.id))
+      .map((item) => item.defaultSampleTypeId);
+    if (sampleTypeIds?.includes(e)) {
+      message.warn('已经有其他项目选择了,请选择其他的样本');
+      return;
+    }
 
     const sampleVal = sample.filter((item) => item.id == e);
 
@@ -375,28 +390,28 @@ const AddApply = ({ refs }) => {
       if (item.id === record.id) {
         return {
           ...item,
-          defaultSampleTypeName: sampleVal[0].dictValue,
+          defaultSampleTypeName: sampleVal[0]?.dictValue,
           defaultSampleTypeId: e,
         };
       }
       return item;
     });
 
-    if (selectedRows.length > 0) {
-      let selectedResult = selectedRows.map((item) => {
-        if (item.id === record.id) {
-          return {
-            ...item,
-            defaultSampleTypeName: sampleVal[0].dictValue,
-            defaultSampleTypeId: e,
-          };
-        }
-        {
-          return { ...item };
-        }
-      });
-      setSelectedRows(selectedResult);
-    }
+    // if (selectedRows.length > 0) {
+    //   let selectedResult = selectedRows.map((item) => {
+    //     if (item.id === record.id) {
+    //       return {
+    //         ...item,
+    //         defaultSampleTypeName: sampleVal[0].dictValue,
+    //         defaultSampleTypeId: e,
+    //       };
+    //     }
+    //     {
+    //       return { ...item };
+    //     }
+    //   });
+    //   setSelectedRows(selectedResult);
+    // }
     //debugger
 
     setList(result);
@@ -419,10 +434,30 @@ const AddApply = ({ refs }) => {
   };
   const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
+
+    let sampleTypeIds = list
+      ?.filter((item) => selectedRowKeys?.some((key) => key === item.id))
+      .map((item) => item.defaultSampleTypeId);
+    let sampleTypeId = list
+      ?.filter((item) => selectedRowKeys.slice(-1)?.some((key) => key === item.id))
+      .map((item) => item.defaultSampleTypeId);
+    console.log(sampleTypeIds?.slice(0, -1));
+    if (sampleTypeIds?.slice(0, -1).includes(sampleTypeId[0]) && sampleTypeIds.length > 1) {
+      message.warn('已经有其他项目选择了,请选择其他的样本');
+      return;
+    }
+
     setSelectedRowKeysVal(selectedRowKeys);
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'selectedRowKeys',
+        dataSource: selectedRowKeys,
+      },
+    });
   };
   const rowSelection = {
-    selectedRowKeys:selectedRowKeysVal,
+    selectedRowKeys: selectedRowKeysVal,
     onChange: onSelectChange,
   };
   return (

@@ -374,50 +374,51 @@ export const queryChildren = (parent, list) => {
 export function getArrDifference(arr1 = [], arr2 = []) {
   return arr1.concat(arr2).filter((v, i, arr) => {
     return arr.indexOf(v) === arr.lastIndexOf(v);
-  })
+  });
 }
- 
+
 /**
  * 根据id查找节点 输出节点
  * @param nodes 树
  * @param searchKey id
  */
- export function searchTreeNodes(nodes, searchKey) {
+export function searchTreeNodes(nodes, searchKey) {
   for (let _i = 0; _i < nodes.length; _i++) {
-    if (nodes[_i].value== searchKey) {
-      return nodes[_i]
+    if (nodes[_i].value == searchKey) {
+      return nodes[_i];
     } else {
       if (nodes[_i].children && nodes[_i].children.length > 0) {
         let res = searchTreeNodes(nodes[_i].children, searchKey);
         if (res) {
-          return res
+          return res;
         }
       }
     }
   }
-  return null
+  return null;
 }
- 
+
 /**
  * 获取该节点下子孙节点的id
  * @param data 节点
  * @param arr 返回数组
  */
- export function searchTreeNodesAllId(data = [], arr = []) {
+export function searchTreeNodesAllId(data = [], arr = []) {
   Object.keys(data).forEach((key) => {
-    arr.push(data[key].value)
-    if (data[key].children && data[key].children.length) searchTreeNodesAllId(data[key].children, arr)
-  })
-  return arr
+    arr.push(data[key].value);
+    if (data[key].children && data[key].children.length)
+      searchTreeNodesAllId(data[key].children, arr);
+  });
+  return arr;
 }
- 
+
 /**
  * 通过当前节点id，获取树状结构所有的祖先节点id，包含当前节点id
  * @param {String|Number} code 当前节点id
  * @param {Array} tree 树状数组
  * @returns {Array} 所有祖先id，包含当前code
  */
- export const getParentIdList = (code, tree) => {
+export const getParentIdList = (code, tree) => {
   let arr = []; //要返回的数组
   for (let i = 0; i < tree.length; i++) {
     let item = tree[i];
@@ -438,5 +439,21 @@ export function getArrDifference(arr1 = [], arr2 = []) {
       }
     }
   }
-}
+};
 
+export const getCurrentTime = () => {
+  const data = new Date();
+  return (
+    data.getFullYear() +
+    '-' +
+    data.getMonth() +
+    '-' +
+    data.getDay() +
+    ' ' +
+    data.getHours() +
+    ':' +
+    data.getMinutes() +
+    ':' +
+    data.getSeconds()
+  );
+};

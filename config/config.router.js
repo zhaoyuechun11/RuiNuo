@@ -157,7 +157,8 @@ export default {
             },
             {
               path: '/preProcessingMag/sampleRegistration/addOrEdit/:id/:type',
-              component: '@/pages/PreProcessingMag/subPages/sampleRegistration/components/AddOrEdit',
+              component:
+                '@/pages/PreProcessingMag/subPages/sampleRegistration/components/AddOrEdit',
               title: '样本登新增',
             },
             {
@@ -166,9 +167,9 @@ export default {
               title: '样本分检',
             },
             {
-              path: '/preProcessingMag/bloodDistributionMag',
-              component: '@/pages/PreProcessingMag/subPages/bloodDistributionMag',
-              title: '单个签收',
+              path: '/preProcessingMag/bloodSeparationMag',
+              component: '@/pages/PreProcessingMag/subPages/bloodSeparationMag',
+              title: '分血管理',
             },
           ],
         },

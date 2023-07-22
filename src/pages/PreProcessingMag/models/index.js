@@ -15,6 +15,8 @@ import {
   waitBlood,
   finishBlood,
   scanBlood,
+  scanSampleHandover,
+  sampleHandover
 } from './server';
 
 const preProcessingMag = {
@@ -26,6 +28,7 @@ const preProcessingMag = {
     pageNum: 1,
     scanSortData: [],
     scanBloodData: [],
+    scanSampleHandoverData:[]
   },
 
   effects: {
@@ -126,6 +129,18 @@ const preProcessingMag = {
     },
     *fetchScanBlood({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(scanBlood, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchScanSampleHandover({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(scanSampleHandover, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchSampleHandover({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(sampleHandover, params);
       if (res.code * 1 === 200) {
         isFunction(callback) && callback(res);
       }

@@ -171,6 +171,11 @@ export default {
               component: '@/pages/PreProcessingMag/subPages/bloodSeparationMag',
               title: '分血管理',
             },
+            {
+              path: '/preProcessingMag/sampleHandover',
+              component: '@/pages/PreProcessingMag/subPages/sampleHandover',
+              title: '分血管理',
+            },
           ],
         },
       ],

@@ -185,7 +185,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '',
+        url: '/preProcessingMag/sampleHandover',
         name: '样本交接',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

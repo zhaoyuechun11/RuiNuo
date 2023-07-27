@@ -60,36 +60,28 @@ const AddApply = ({ refs }) => {
             setTotal(res.data.total);
             console.log(applyList);
             if (typeVal.current === 'edit') {
-              // let result = applyList.map((item) => {
-              //   return { ...item, id: item.itemId };
-              // });
-
               if (applyList.length > 0) {
-                let result = [];
                 for (let i = 0; i < res.data.records.length; i++) {
-                  let isExist = false;
                   for (let j = 0; j < applyList.length; j++) {
-                    if (res.data.records[i].id === applyList[j].id) {
-                      isExist = true;
-                      result.push({
-                        ...res.data.records[i],
-                        defaultSampleTypeId: applyList[j].defaultSampleTypeId,
-                        defaultSampleTypeName: applyList[j].defaultSampleTypeName,
-                        key: res.data.records[i].id,
-                      });
-                      break;
+                    if (res.data.records[i].id === applyList[j].itemId) {
+                      res.data.records[i].id = applyList[j].itemId;
+                      res.data.records[i].defaultSampleTypeId = applyList[j].defaultSampleTypeId;
+                      res.data.records[i].defaultSampleTypeName =
+                        applyList[j].defaultSampleTypeName;
                     }
                   }
-                  if (!isExist) {
-                    result.push({ ...res.data.records[i], key: res.data.records[i].id });
-                  }
                 }
+
+                let newArr = res.data.records.map((item) => {
+                  return { key: item.id, ...item };
+                });
+
                 let filterResult = applyList?.filter(
-                  (item) => !result.some((data) => data.id === item.itemId),
+                  (item) => !newArr.some((data) => data.id === item.itemId),
                 );
 
                 let filterResult1 = applyList?.filter((item) =>
-                  result.some((data) => data.id === item.itemId),
+                  newArr.some((data) => data.id === item.itemId),
                 );
                 let keys = filterResult1.map((item) => item.itemId);
 
@@ -100,7 +92,7 @@ const AddApply = ({ refs }) => {
                     dataSource: filterResult,
                   },
                 });
-                setList(result);
+                setList(newArr);
                 setSelectedRowKeysVal(keys);
                 dispatch({
                   type: 'preProcessingMag/save',
@@ -150,10 +142,12 @@ const AddApply = ({ refs }) => {
                     break;
                   }
                 }
+
                 if (!isExist) {
                   result.push({ ...res.data.records[i], key: res.data.records[i].id });
                 }
               }
+
               let filterResult = applyList?.filter(
                 (item) => !result.some((data) => data.id === item.itemId),
               );
@@ -161,6 +155,7 @@ const AddApply = ({ refs }) => {
               let filterResult1 = applyList?.filter((item) =>
                 result.some((data) => data.id === item.itemId),
               );
+              let keys = filterResult1.map((item) => item.itemId);
               //debugger
               //setSelectedRows(filterResult1);
 
@@ -172,6 +167,14 @@ const AddApply = ({ refs }) => {
                 },
               });
               setList(result);
+              setSelectedRowKeysVal(keys);
+              dispatch({
+                type: 'preProcessingMag/save',
+                payload: {
+                  type: 'selectedRowKeys',
+                  dataSource: keys,
+                },
+              });
             } else {
               let resMap = res.data.records.map((item) => {
                 return { key: item.id, ...item };
@@ -424,6 +427,7 @@ const AddApply = ({ refs }) => {
         dataSource: val,
       },
     });
+    setSelectedRowKeysVal([]);
   };
   const hospitalList = () => {
     getHospitalList().then((res) => {
@@ -441,10 +445,14 @@ const AddApply = ({ refs }) => {
     let sampleTypeId = list
       ?.filter((item) => selectedRowKeys.slice(-1)?.some((key) => key === item.id))
       .map((item) => item.defaultSampleTypeId);
-    console.log(sampleTypeIds?.slice(0, -1));
-    if (sampleTypeIds?.slice(0, -1).includes(sampleTypeId[0]) && sampleTypeIds.length > 1) {
-      message.warn('已经有其他项目选择了,请选择其他的样本');
-      return;
+
+    var nary = sampleTypeIds.sort();
+
+    for (var i = 0; i < sampleTypeIds.length; i++) {
+      if (nary[i] == nary[i + 1]) {
+        message.warn('已经有其他项目选择了,请选择其他的样本');
+        return;
+      }
     }
 
     setSelectedRowKeysVal(selectedRowKeys);

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Popover } from 'antd';
 import style from './index.less';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { useDispatch } from 'umi';
+import { useDispatch, history } from 'umi';
 import UpdatePassword from './components/UpdatePassword';
 
 const HeaderContent = () => {
@@ -19,11 +19,14 @@ const HeaderContent = () => {
       payload: {
         callback: (res) => {
           setUserData(res);
-       
         },
       },
     });
   }, [dispatch]);
+  const logOut = () => {
+    localStorage.setItem('access_token', '');
+    history.push('/login');
+  };
   const infoMenu = (
     <div>
       <p className={style.showContent}>
@@ -38,9 +41,11 @@ const HeaderContent = () => {
         onClick={() => {
           updatePwd.current.show();
         }}
+        className={style.showContent}
       >
         修改密码
       </div>
+      <div onClick={logOut}>退出系统</div>
     </div>
   );
   return (

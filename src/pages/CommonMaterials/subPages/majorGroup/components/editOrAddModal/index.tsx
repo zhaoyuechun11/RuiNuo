@@ -14,6 +14,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const [form] = Form.useForm();
   const [list, setList] = useState([]);
   const [record, setRecord] = useState({});
+  const [sampleIdAsBarcode, setSampleIdAsBarcode] = useState(false);
 
   const [id, setId] = useState();
   useImperativeHandle(Ref, () => ({
@@ -111,7 +112,9 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       }
     });
   };
-
+  const sampleIdAsBarcodeChange = (e) => {
+    setSampleIdAsBarcode(e);
+  };
   return (
     <Dialog
       ref={dialogRef}
@@ -196,18 +199,33 @@ const EditOrAddModal = ({ Ref, refresh }) => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              label="样本号生成规则"
-              rules={[{ required: true, message: '请输入样本号生成规则' }]}
-            >
+            <Form.Item label="样本号生成规则">
               <Row>
                 <Col span={8}>
-                  <Form.Item name="sampleIdRule0" style={{ marginBottom: '0' }}>
+                  <Form.Item
+                    name="sampleIdRule0"
+                    style={{ marginBottom: '0' }}
+                    rules={[
+                      {
+                        required: sampleIdAsBarcode ? false : true,
+                        message: '请输入样本号生成规则',
+                      },
+                    ]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item name="sampleIdRule1" style={{ marginBottom: '0' }}>
+                  <Form.Item
+                    name="sampleIdRule1"
+                    style={{ marginBottom: '0' }}
+                    rules={[
+                      {
+                        required: sampleIdAsBarcode ? false : true,
+                        message: '请输入样本号生成规则',
+                      },
+                    ]}
+                  >
                     <Select allowClear>
                       {sampleRule.map((item) => {
                         return <Option value={item}>{item}</Option>;
@@ -216,7 +234,16 @@ const EditOrAddModal = ({ Ref, refresh }) => {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item name="sampleIdRule2" style={{ marginBottom: '0' }}>
+                  <Form.Item
+                    name="sampleIdRule2"
+                    style={{ marginBottom: '0' }}
+                    rules={[
+                      {
+                        required: sampleIdAsBarcode ? false : true,
+                        message: '请输入样本号生成规则',
+                      },
+                    ]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -234,7 +261,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item
               name="isAutoSampleId"
               label="是否自动生成预制样本号"
@@ -247,6 +274,19 @@ const EditOrAddModal = ({ Ref, refresh }) => {
                 <Option value={false} key={2}>
                   否
                 </Option>
+              </Select>
+            </Form.Item>
+          </Col> */}
+          <Col span={12}>
+            <Form.Item name="labClassManageId" label="管理分类">
+              <Select placeholder="请选择管理分类" autoComplete="off" allowClear>
+                {list.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  );
+                })}
               </Select>
             </Form.Item>
           </Col>
@@ -266,28 +306,18 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           </Col>
           <Col span={12}>
             <Form.Item name="isSampleIdAsBarcode" label="是否样本号用作样本条码号">
-              <Select placeholder="请选择是否样本号用作样本条码号" autoComplete="off" allowClear>
+              <Select
+                placeholder="请选择是否样本号用作样本条码号"
+                autoComplete="off"
+                allowClear
+                onChange={sampleIdAsBarcodeChange}
+              >
                 <Option value={true} key={1}>
                   是
                 </Option>
-                <Option value={false} key={2}>
+                <Option value={false} key={0}>
                   否
                 </Option>
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item name="labClassManageId" label="管理分类">
-              <Select placeholder="请选择管理分类" autoComplete="off" allowClear>
-                {list.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.name}
-                    </Option>
-                  );
-                })}
               </Select>
             </Form.Item>
           </Col>

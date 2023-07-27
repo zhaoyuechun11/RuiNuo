@@ -25,13 +25,18 @@ import {
   commonResults,
   printOrder,
   insUnitDiscountList,
-  oneLevelTypeModalSel
+  oneLevelTypeModalSel,
+  reportUnitList,
+  reportUnitInstrList,
+  reportItemBindsList
 } from './server';
 
 import isFunction from 'lodash/isFunction';
 const commonMaterials = {
   namespace: 'commonMaterials',
-  state: {},
+  state: {
+    labClass: [],
+  },
   effects: {
     *fetchSecondPage({ payload }, { call }) {
       const { callback, ...params } = payload;
@@ -167,6 +172,29 @@ const commonMaterials = {
       const { callback, ...params } = payload;
       const response = yield call(oneLevelTypeModalSel, { ...params });
       isFunction(callback) && callback(response);
+    },
+    *fetchReportUnitList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportUnitList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReportUnitInstrList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportUnitInstrList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReportItemBindsList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportItemBindsList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+  },
+  reducers: {
+    save(state, { payload: { type, dataSource } }) {
+      return {
+        ...state,
+        [type]: dataSource,
+      };
     },
   },
 };

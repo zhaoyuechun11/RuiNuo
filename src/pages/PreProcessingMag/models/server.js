@@ -95,11 +95,14 @@ export function bloodSave(params) {
   return axiosBase('lab/reqMainSplit/blood', 'post', params);
 }
 export function scanSampleHandover(params) {
-  return axiosBase('lab/reqMainSplit/preTransList', 'get', params);
+  return axiosBase('lab/reqMainSplit/preTransferList', 'get', params);
 }
 export function sampleHandover(params) {
-  return axiosBase('lab/reqMainSplit/preTransPage', 'get', params);
+  return axiosBase('lab/reqMainSplit/preTransferPage', 'get', params);
 }
 export function sampleHandoverSave(params) {
   return axiosBase('lab/reqMainSplit/preTransfer', 'get', params);
+}
+export function recipientList(params) {
+  return axiosBase('/sys/user/recipientList', 'get', params);
 }

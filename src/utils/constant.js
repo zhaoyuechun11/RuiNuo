@@ -286,20 +286,20 @@ export const menu = [
   {
     name: '普检管理',
     icon: null,
-    url: '/home',
+    url: '/generalInspectionMag',
     key: '2',
     children: [
       {
         name: '上机任务分配-单仪器',
         icon: null,
-        url: '/home',
+        url: '/generalInspectionMag/singleInstruments',
         children: [],
         key: '21',
       },
       {
         name: '上机任务分配-多仪器',
         icon: null,
-        url: '/home',
+        url: '/generalInspectionMag/multiInstrument',
         key: '3',
       },
       {
@@ -1534,6 +1534,14 @@ export const menu = [
         key: 'insUnitDiscount',
         url: '送检区域维护',
         name: '代理商与送检单位对照',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
+      {
+        key: 'reportingUnit',
+        name: '报告单元',
+        url: '/commonMaterials/reportingUnit',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],

@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import Dialog from '@components/Dialog';
-import { message, Form, Input, Tree, Icon } from 'antd';
+import { message, Form, Input, Tree, Icon, Tabs, Transfer, Checkbox, Row, Col } from 'antd';
 import isFunction from 'lodash/isFunction';
 import debounce from 'lodash/debounce';
 import { connect } from 'umi';
 import { getArrDifference, searchTreeNodes, searchTreeNodesAllId, getParentIdList } from '@/utils';
-import { permissList, listForRole } from '../../models/server';
+import {
+  permissList,
+  listForRole,
+  sysAuthorization,
+  sysAuthorizationAdd,
+  sysAuthorBinds,
+  reportUnitLists,
+  reportUnitBinds,
+} from '../../models/server';
 import styles from './index.less';
 
 const layout = {
@@ -13,9 +21,9 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 const FormItem = Form.Item;
-// const { SHOW_ALL } = TreeSelect;
+
 const { TreeNode } = Tree;
-//let checkedAuthKeys = [];
+const { TabPane } = Tabs;
 @connect(({ role, loading }) => ({
   role,
   addLoading: loading.effects['role/addRole'],
@@ -30,6 +38,11 @@ class NewaddRoleDialog extends Component {
       checkedKeys: [],
       beforeCheckedAuthKeys: [],
       checkedAuthKeys: [],
+      sysAuthorizationList: [],
+      sysAuthorIds: [],
+      sysAuthorBindsIds: [],
+      reportUnitList: [],
+      reportUnitBinds: [],
     };
     this.onOk = debounce(this.onOk.bind(this), 200);
     this.onBeforeShow = debounce(this.onBeforeShow.bind(this), 100);
@@ -37,11 +50,16 @@ class NewaddRoleDialog extends Component {
     this.dialogRef = React.createRef();
   }
 
-  onChange = (newValue, label, extra) => {
-    console.log('label', label, extra, newValue);
-    console.log('extra', extra);
-    console.log('newValue', newValue);
+  handleChange = (targetKeys) => {
+    debugger;
+    this.setState({ reportUnitBinds: targetKeys });
   };
+
+  handleSearch = (dir, value) => {
+    console.log('search:', dir, value);
+  };
+
+  filterOption = (inputValue, option) => option.reportUnitName.indexOf(inputValue) > -1;
   // onSelect = (value, node, extra) => {
   //   console.log('onSelect', value, node, extra);
   // };
@@ -50,7 +68,19 @@ class NewaddRoleDialog extends Component {
     let props = this.props;
     let parent = props.parent;
     parent.dialog = this.dialogRef.current;
+    this.getSysAuthorization();
+    this.getReportUnitList();
   }
+  getReportUnitList = () => {
+    reportUnitLists().then((res) => {
+      if (res.code === 200) {
+        const result = res.data.map((item) => {
+          return { key: item.id, ...item };
+        });
+        this.setState({ reportUnitList: result });
+      }
+    });
+  };
   getPermisList = () => {
     permissList().then((res) => {
       if (res.code === 200) {
@@ -71,6 +101,27 @@ class NewaddRoleDialog extends Component {
       }
     });
   };
+  getSysAuthorBinds = (id) => {
+    sysAuthorBinds({ roleId: id }).then((res) => {
+      if (res.code === 200) {
+        this.setState({ sysAuthorBindsIds: res.data });
+      }
+    });
+  };
+  getReportUnitBinds = (id) => {
+    reportUnitBinds({ roleId: id }).then((res) => {
+      if (res.code === 200) {
+        this.setState({ reportUnitBinds: res.data });
+      }
+    });
+  };
+  getSysAuthorization = () => {
+    sysAuthorization().then((res) => {
+      if (res.code === 200) {
+        this.setState({ sysAuthorizationList: res.data });
+      }
+    });
+  };
   onBeforeShow = () => {
     let { type = '', name = '', id } = this.props;
     this.setState({
@@ -83,6 +134,8 @@ class NewaddRoleDialog extends Component {
         name,
       });
       this.getListForRole(id);
+      this.getSysAuthorBinds(id);
+      this.getReportUnitBinds(id);
     }
   };
   onOk = () => {
@@ -100,6 +153,8 @@ class NewaddRoleDialog extends Component {
     let formData = {
       name: values.name,
       permissionIds: this.state.checkedKeys,
+      funcIds: this.state.sysAuthorBindsIds,
+      reportUnitIds: this.state.reportUnitBinds,
     };
     if (type === 'edit') {
       this.props.dispatch({
@@ -220,9 +275,13 @@ class NewaddRoleDialog extends Component {
     console.log('选中', this.state.checkedAuthKeys);
   };
 
+  onChangeSysAuthor = (e) => {
+    this.setState({ sysAuthorBindsIds: e });
+  };
+
   render() {
     let { addLoading = false, type = '' } = this.props;
-    let { loading } = this.state;
+    let { loading, sysAuthorBindsIds, reportUnitList, reportUnitBinds } = this.state;
     return (
       <Dialog
         title={`${type === 'edit' ? '编辑' : '添加'}角色`}
@@ -281,30 +340,7 @@ class NewaddRoleDialog extends Component {
           >
             <Input placeholder="请填写角色描述" autoComplete="off" allowClear />
           </FormItem>
-          {/* <div id="pid" className={styles.pid}>
-            <FormItem
-              name="pid"
-              label="角色权限"
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: '请选择上级角色',
-              //   },
-              // ]}
-            >
-              <TreeSelect
-                allowClear
-                style={{ width: '100%' }}
-                placeholder="请选择上级角色"
-                treeData={this.state.permissListTreeData}
-                treeCheckable
-                showCheckedStrategy={SHOW_ALL}
-                // onChange={this.onChange}
-                // onSelect={this.onSelect}
-                getPopupContainer={() => document.getElementById('pid')}
-              />
-            </FormItem>
-          </div> */}
+
           {/* <div id="pid" className={styles.pid}>
             <FormItem name="pid" label="角色权限">
               <TreeSelect
@@ -323,7 +359,11 @@ class NewaddRoleDialog extends Component {
               </TreeSelect>
             </FormItem>
           </div> */}
-          <FormItem name="pid" label="角色权限">
+          {/* <FormItem name="pid" label="角色权限"></FormItem> */}
+        </Form>
+        <div className={styles.title}>角色权限:</div>
+        <Tabs defaultActiveKey="1" className={styles.tabs_box}>
+          <TabPane tab="菜单及按钮授权" key="1">
             <Tree
               checkable
               onSelect={this.onSelect}
@@ -332,8 +372,40 @@ class NewaddRoleDialog extends Component {
               checkStrictly
               checkedKeys={this.state.checkedKeys}
             ></Tree>
-          </FormItem>
-        </Form>
+          </TabPane>
+          <TabPane tab="报告单元授权" key="2">
+            <Transfer
+              dataSource={reportUnitList}
+              titles={['未授权报告单元', '已授权报告单元']}
+              showSearch
+              filterOption={this.filterOption}
+              targetKeys={reportUnitBinds}
+              onChange={this.handleChange}
+              onSearch={this.handleSearch}
+              render={(item) => item.reportUnitName}
+              listStyle={{
+                width: 450,
+              }}
+            />
+          </TabPane>
+          <TabPane tab="系统功能授权" key="3">
+            <Checkbox.Group
+              style={{ width: '100%' }}
+              onChange={this.onChangeSysAuthor}
+              value={sysAuthorBindsIds}
+            >
+              {this.state.sysAuthorizationList.map((item) => {
+                return (
+                  <Row key={item.id}>
+                    <Col>
+                      <Checkbox value={item.id}>{item.funcName}</Checkbox>
+                    </Col>
+                  </Row>
+                );
+              })}
+            </Checkbox.Group>
+          </TabPane>
+        </Tabs>
       </Dialog>
     );
   }

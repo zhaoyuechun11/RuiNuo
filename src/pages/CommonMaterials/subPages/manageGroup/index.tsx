@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
-import { stringify } from 'qs';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message } from 'antd';
 import { downLoad, main ,transformTree} from '@/utils';
-import env from '@/utils/env';
 import EditOrAddModal from './components/editOrAddModal';
 import { deleteManageGroup, manageGroupExport } from '../../models/server';
 import styles from './index.less';

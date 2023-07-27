@@ -349,3 +349,46 @@ export function insUnitDiscountDele(params) {
 export function insUnitDiscountUpdate(params) {
   return axios('/basic/hospitalItemPrice/update', 'post', params);
 }
+export function reportUnitList(params) {
+  return axios('basic/reportUnit/page', 'get', params);
+}
+export function reportUnitAdd(params) {
+  return axios('basic/reportUnit/add', 'post', params);
+}
+export function reportUnitUpdate(params) {
+  return axios('basic/reportUnit/update', 'post', params);
+}
+export function reportUnitDelete(params) {
+  return axios('basic/reportUnit/delete', 'post', params);
+}
+export function reportUnitInstrList(params) {
+  return axios('basic/reportUnitInstr/instrPage', 'get', params);
+}
+
+export function reportUnitInstrBinds(params) {
+  return axios('basic/reportUnitInstr/getBinds', 'get', params);
+}
+export function reportUnitInstrAddBind(params) {
+  return axios('basic/reportUnitInstr/add', 'post', params);
+}
+export function reportUnitInstrDeleteBind(params) {
+  return axios('basic/reportUnitInstr/delete', 'post', params);
+}
+export function reportUnitInstrChange(params) {
+  return axios('basic/reportUnitInstr/change', 'post', params);
+}
+export function reportItemBindsList(params) {
+  return axios('basic/reportUnitReqItem/reqItemPage', 'get', params);
+}
+export function reportItemBindsRight(params) {
+  return axios('basic/reportUnitReqItem/getBinds', 'get', params);
+}
+export function reportItemBindAdd(params) {
+  return axios('basic/reportUnitReqItem/add', 'post', params);
+}
+export function reportItemBindsDelete(params) {
+  return axios('basic/reportUnitReqItem/delete', 'post', params);
+}
+export function reportUnitReqItemChange(params) {
+  return axios('basic/reportUnitReqItem/change', 'post', params);
+}

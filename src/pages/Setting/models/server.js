@@ -38,3 +38,4 @@ export function mainEnterPageUpdate(params) {
 export function mainEnterPageDele(params) {
   return axiosBase('sys/module/delete', 'post', params);
 }
+

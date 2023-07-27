@@ -236,7 +236,11 @@ const AddOrEdit = () => {
   const enterTypeChange = (e) => {
     getFormField(e);
   };
-  const onFinish = (value) => {
+  const onFinish = (value: {
+    system: { [x: string]: { format: (arg0: string) => any } };
+    extend: { [x: string]: { format: (arg0: string) => any } };
+    inputType: any;
+  }) => {
     console.log('value', value);
 
     console.log(applyList);

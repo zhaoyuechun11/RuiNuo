@@ -47,7 +47,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
       if (record) {
         form.setFieldsValue({
           ...record,
-          reportCycle: record?.reportCycle.split(','),
+          reportCycle: record?.reportCycle?.split(','),
         });
         setId(record.id);
         idRef.current = record.id;

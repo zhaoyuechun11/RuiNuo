@@ -1,4 +1,3 @@
-import { stringify } from 'qs';
 import axios from '@/utils/http';
 
 export async function getRoleIndex(params) {
@@ -41,4 +40,19 @@ export async function getRoleAssign(params) {
 export async function getParentIndex(params) {
   //可选择的父级角色列表
   return axios(`/apiweb/role/parentIndex`, 'get', params);
+}
+export function sysAuthorization(params) {
+  return axios('sys/funcAuthorization/list', 'get', params);
+}
+export function sysAuthorizationAdd(params) {
+  return axios('sys/roleFunc/add', 'post', params);
+}
+export function sysAuthorBinds(params) {
+  return axios('sys/roleFunc/getBinds', 'get', params);
+}
+export function reportUnitLists(params) {
+  return axios('basic/reportUnit/getList', 'get', params);
+}
+export function reportUnitBinds(params) {
+  return axios('sys/roleReportUnit/getBinds', 'get', params);
 }

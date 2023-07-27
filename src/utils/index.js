@@ -457,3 +457,21 @@ export const getCurrentTime = () => {
     data.getSeconds()
   );
 };
+export const duplicatesAndNum = (arr) => {
+  let newArr = [...new Set(arr)];
+  let lastArr = [];
+  newArr.forEach((item) => {
+    console.log(item);
+    let num = 0;
+    arr.forEach((i) => {
+      if (item == i) {
+        num++;
+      }
+    });
+    lastArr.push({
+      name: item,
+      num,
+    });
+  });
+  return lastArr;
+};

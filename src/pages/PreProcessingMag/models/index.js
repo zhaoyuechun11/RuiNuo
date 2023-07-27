@@ -16,7 +16,7 @@ import {
   finishBlood,
   scanBlood,
   scanSampleHandover,
-  sampleHandover
+  sampleHandover,
 } from './server';
 
 const preProcessingMag = {
@@ -28,7 +28,8 @@ const preProcessingMag = {
     pageNum: 1,
     scanSortData: [],
     scanBloodData: [],
-    scanSampleHandoverData:[]
+    scanSampleHandoverData: [],
+    duplicatesNameAndNum: [],
   },
 
   effects: {

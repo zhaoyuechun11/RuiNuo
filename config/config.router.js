@@ -139,6 +139,11 @@ export default {
               component: '@/pages/CommonMaterials/subPages/insUnitDiscount',
               title: '运检单位折扣维护',
             },
+            {
+              path: '/commonMaterials/reportingUnit',
+              component: '@/pages/CommonMaterials/subPages/reportingUnit',
+              title: '报告单元',
+            },
           ],
         },
         {
@@ -175,6 +180,22 @@ export default {
               path: '/preProcessingMag/sampleHandover',
               component: '@/pages/PreProcessingMag/subPages/sampleHandover',
               title: '分血管理',
+            },
+          ],
+        },
+        {
+          path: '/generalInspectionMag',
+          name: 'generalInspectionMag',
+          routes: [
+            {
+              path: '/generalInspectionMag/singleInstruments',
+              component: '@/pages/GeneralInspectionMag/subPages/singleInstruments',
+              title: '单仪器',
+            },
+            {
+              path: '/generalInspectionMag/multiInstrument',
+              component: '@/pages/GeneralInspectionMag/subPages/multiInstrument',
+              title: '单仪器',
             },
           ],
         },

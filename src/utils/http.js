@@ -45,10 +45,20 @@ axios.interceptors.request.use(
   (config) => {
     // 序列化
     if (config.headers['Content-Type'] != 'multipart/form-data') {
-      if (config.url === 'lab/reqMainSplit/preSort' || config.url === 'lab/reqMainSplit/blood') {
+      if (
+        config.url === 'lab/reqMainSplit/preSort' ||
+        config.url === 'lab/reqMainSplit/blood' ||
+        config.url === 'lab/reqMainSplit/preTransfer'
+      ) {
         config.data = config.data;
       } else {
         config.data = qs.parse(config.data);
+      }
+
+      if (config.method === 'get') {
+        config.paramsSerializer = function (params) {
+          return qs.stringify(params, { arrayFormat: 'comma' });
+        };
       }
     }
     // -----在一个ajax发送前执行一下取消操作-------------------------------------------------------

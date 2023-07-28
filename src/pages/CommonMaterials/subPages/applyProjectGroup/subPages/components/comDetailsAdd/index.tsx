@@ -98,7 +98,7 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
     GetBinds();
   };
   const DifProfessionList = () => {
-    getBindsList({ labClassId: parent?.labClassId }).then(
+    getBindsList().then(
       (res: { code: number; data: React.SetStateAction<never[]> }) => {
         if (res.code === 200) {
           let result = res.data

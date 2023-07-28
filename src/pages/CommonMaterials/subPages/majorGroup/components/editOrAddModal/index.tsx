@@ -1,13 +1,9 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select, Row, Col } from 'antd';
+import { Form, Input, message, Select, Row, Col, InputNumber } from 'antd';
 import { addMajorGroup, updateMajorGroup, manageListSelect } from '../../../../models/server';
 import ColorPicker from '@/pages/CommonMaterials/commones/colorPicker';
 const { Option } = Select;
-const layout = {
-  // labelCol: { span: 5 },
-  // wrapperCol: { span: 16 },
-};
 const sampleRule = ['yyyy', 'yyyymm', 'yyyymmdd', 'mm', 'mmdd', 'dd'];
 const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
@@ -319,6 +315,17 @@ const EditOrAddModal = ({ Ref, refresh }) => {
                   否
                 </Option>
               </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <Form.Item
+              name="serialNumberLength"
+              label="流水号长度"
+              rules={[{ required: true, message: '请输入流水号长度' }]}
+            >
+              <InputNumber min={1} style={{ width: '100%' }} />
             </Form.Item>
           </Col>
         </Row>

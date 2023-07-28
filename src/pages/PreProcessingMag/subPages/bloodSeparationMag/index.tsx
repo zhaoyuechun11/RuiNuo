@@ -58,7 +58,7 @@ const BloodSeparationMag = () => {
 
     {
       title: '申请号',
-      dataIndex: 'sampleBarcode',
+      dataIndex: 'subId',
       width: 100,
     },
     {

@@ -41,7 +41,7 @@ const SampleSorting = () => {
         };
       });
 
-      const mergedArray = [scanSortData, newData].reduce((acc, val) => acc.concat(val), []);
+      const mergedArray = [newData, scanSortData].reduce((acc, val) => acc.concat(val), []);
 
       dispatch({
         type: 'preProcessingMag/save',
@@ -110,7 +110,7 @@ const SampleSorting = () => {
     },
     {
       title: '申请号',
-      dataIndex: 'sampleBarcode',
+      dataIndex: 'subId',
       width: 100,
     },
     {
@@ -161,7 +161,8 @@ const SampleSorting = () => {
     {
       title: '是否含外送项',
       dataIndex: 'isOut',
-      width: 100,
+      width: 130,
+      align: 'center',
     },
     {
       title: '分血标记',
@@ -191,7 +192,8 @@ const SampleSorting = () => {
     {
       title: '前处理接收时间',
       dataIndex: 'preReceiveDate',
-      width: 100,
+      width: 200,
+      align: 'center',
     },
     {
       title: '操作',

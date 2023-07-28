@@ -112,7 +112,7 @@ const EditOrAddModal = ({ Ref, refresh, hospitalList }) => {
     });
   };
   const getBindsDataList = (val) => {
-    getBindsList({ labClassId: val }).then((res) => {
+    getBindsList().then((res) => {
       if (res.code === 200) {
         const result = res.data.map((item) => {
           return { ...item, key: item.id };

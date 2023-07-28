@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import { Form, Input, message } from 'antd';
-import { downLoad, main,transformTree } from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import { deleteMajorGroup, majorGroupExport } from '../../models/server';
 import styles from './index.less';
 import EditOrAddModal from './components/editOrAddModal';
@@ -124,6 +124,12 @@ const MajorGroup = () => {
     {
       title: '样本号生成规则',
       dataIndex: 'sampleIdRule',
+      align: 'center',
+      width: 150,
+    },
+    {
+      title: '流水号长度',
+      dataIndex: 'serialNumberLength',
       align: 'center',
       width: 150,
     },

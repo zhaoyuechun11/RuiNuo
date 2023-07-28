@@ -13,17 +13,19 @@ import {
   Popconfirm,
 } from 'antd';
 import { Button, Icon } from '@/components';
-import { useDispatch, useSelector, history } from 'umi';
+import { useDispatch, useSelector } from 'umi';
+
 import {
   scanSortingSave,
   getHospitalList,
   sampleHandoverSave,
   recipientList,
+  labClassByUser,
 } from '../../models/server';
-import { majorGroup, manageListSelect } from '@/models/server';
-import { getCurrentTime, duplicatesAndNum } from '@/utils';
+import { duplicatesAndNum } from '@/utils';
 import styles from './index.less';
 import Password from './components/Password';
+import moment from 'moment';
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -42,7 +44,6 @@ const SampleHandover = () => {
   const [sampleHandover, setSampleHandover] = useState([]);
   const [hospital, setHospital] = useState([]);
   const [majorGroupData, setMajorGroupData] = useState([]);
-  const [manageClass, setManageClass] = useState([]);
   const [batchForm] = Form.useForm();
   const [isAutoSelecte, setIsAutoSelecte] = useState(false);
   const [isAuthentication, setIsAuthentication] = useState(false);
@@ -51,11 +52,13 @@ const SampleHandover = () => {
   const [scanForm] = Form.useForm();
   const passwordRef = useRef();
   const [receiverList, setReceiverList] = useState([]);
+  const [isPreSortDateSort, setIsPreSortDateSort] = useState(true);
+  const [isReceiveBarcodeSort, setReceiveBarcodeSort] = useState(false);
+  const [receiverVal, setReceiverVal] = useState();
+  const [defaultLabClass, setDefaultLabClass] = useState([]);
 
   useEffect(() => {
     hospitalList();
-    majorGroupList();
-    getManageList();
     getReceiverList();
   }, []);
   useEffect(() => {
@@ -83,14 +86,13 @@ const SampleHandover = () => {
     return empty;
   };
   useEffect(() => {
-    console.log(getCurrentTime());
     if (scanSampleHandover.length > 0) {
       const newData = scanSampleHandover.map((item) => {
         return {
           ...item,
           key: item.id,
           preTransferBy: useDetail.name,
-          preTransferDate: getCurrentTime(),
+          preTransferDate: moment().format('YYYY-MM-DD HH:mm:ss'),
         };
       });
 
@@ -119,8 +121,14 @@ const SampleHandover = () => {
   }, [scanSampleHandover]);
 
   useEffect(() => {
-    getSampleHandover({ pageNum, pageSize });
-  }, [pageNum, pageSize]);
+    getSampleHandover({
+      pageNum,
+      pageSize,
+      preSortDateKey: isPreSortDateSort,
+      receiveBarcodeKey: isReceiveBarcodeSort,
+      labClassId: defaultLabClass,
+    });
+  }, [pageNum, pageSize, defaultLabClass, isReceiveBarcodeSort]);
   const getList = (params: any) => {
     dispatch({
       type: 'preProcessingMag/fetchScanSampleHandover',
@@ -173,7 +181,7 @@ const SampleHandover = () => {
 
       {
         title: '申请号',
-        dataIndex: 'sampleBarcode',
+        dataIndex: 'subId',
         width: 100,
         ellipsis: true,
       },
@@ -182,6 +190,7 @@ const SampleHandover = () => {
         dataIndex: 'patientName',
         width: 100,
         align: 'center',
+        ellipsis: true,
       },
       {
         title: '性别',
@@ -248,7 +257,7 @@ const SampleHandover = () => {
       {
         title: '移交时间',
         dataIndex: 'preTransferDate',
-        width: 100,
+        width: 200,
         align: 'center',
       },
       {
@@ -321,7 +330,7 @@ const SampleHandover = () => {
     onChange: onSelectChangeSort,
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
-    if (!form.getFieldsValue().receiver) {
+    if (!form.getFieldsValue().labReceiveBy) {
       message.warning('请先选择接收人');
       scanForm.resetFields();
       return;
@@ -329,6 +338,7 @@ const SampleHandover = () => {
 
     const values = {
       ...allValues,
+      labReceiveBy: form.getFieldsValue().labReceiveBy,
     };
     getList(values);
   };
@@ -339,29 +349,18 @@ const SampleHandover = () => {
       }
     });
   };
-  const majorGroupList = () => {
-    majorGroup().then((res: any) => {
-      if (res.code === 200) {
-        setMajorGroupData(res.data);
-      }
-    });
-  };
-  const getManageList = () => {
-    manageListSelect().then((res) => {
-      if (res.code === 200) {
-        setManageClass(res.data);
-      }
-    });
-  };
   const batchSortinSearch = (changedValues: any, allValues: undefined) => {
     if (!form.getFieldsValue().receiver) {
       message.warning('请先选择接收人');
       batchForm.resetFields();
+      batchForm.setFieldsValue({ labClassId: [] });
       return;
     }
     const values = {
       pageNum,
       pageSize,
+      preSortDateKey: isPreSortDateSort,
+      receiveBarcodeKey: isReceiveBarcodeSort,
       ...allValues,
       createDateStart:
         allValues.createDateStart && allValues.createDateStart[0]
@@ -375,10 +374,16 @@ const SampleHandover = () => {
     getSampleHandover(values);
     setParamsVal(allValues);
   };
+  const labClassChange = () => {
+    if (!form.getFieldsValue().receiver) {
+      message.warning('请先选择接收人');
+      return;
+    }
+  };
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" form={scanForm}>
-        <Form.Item name="receiveBarcode">
+        <Form.Item name="sampleBarcode">
           <Input
             placeholder="扫码分拣"
             autoComplete="off"
@@ -400,19 +405,6 @@ const SampleHandover = () => {
             style={{ width: 340 }}
           />
         </Form.Item>
-        {/* 
-        <Form.Item name="labClassManageId">
-          <Select placeholder="请选择管理分类" autoComplete="off" allowClear>
-            {manageClass.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item> */}
-
         <div id="hospitalId">
           <Form.Item name="hospitalId" label="送检单位">
             <Select
@@ -439,6 +431,7 @@ const SampleHandover = () => {
               getPopupContainer={() => document.getElementById('labClassId')}
               mode="multiple"
               defaultValue={() => majorGroupData.map((item) => item.id)}
+              onSearch={labClassChange}
             >
               {majorGroupData.length > 0 &&
                 majorGroupData.map((item) => (
@@ -454,7 +447,15 @@ const SampleHandover = () => {
   };
   const reset = () => {
     batchForm.resetFields();
-    getSampleHandover({ pageNum, pageSize });
+    batchForm.setFieldsValue({ labClassId: [] });
+    form.setFieldsValue({ receiver: '' });
+    setDefaultLabClass([]);
+    getSampleHandover({
+      pageNum,
+      pageSize,
+      preSortDateKey: isPreSortDateSort,
+      receiveBarcodeKey: isReceiveBarcodeSort,
+    });
   };
   const saveCurrent = () => {
     const result = selectedRowKeysValSort.map((item) => {
@@ -463,13 +464,23 @@ const SampleHandover = () => {
     sampleHandoverSave(result).then((res) => {
       if (res.code === 200) {
         message.success('保存成功');
-        getSampleHandover({ pageNum, pageSize });
+        getSampleHandover({
+          pageNum,
+          pageSize,
+          preSortDateKey: isPreSortDateSort,
+          receiveBarcodeKey: isReceiveBarcodeSort,
+        });
       }
     });
   };
   const save = () => {
     let result = scanSampleHandoverData.map((item) => {
-      return { id: item.id, preSortBy: useDetail.id, preSortDate: item.preSortDate };
+      return {
+        id: item.id,
+        preTransferBy: useDetail.id,
+        preTransferDate: item.preTransferDate,
+        labReceiveBy: form.getFieldsValue().labReceiveBy,
+      };
     });
 
     sampleHandoverSave(result).then((res) => {
@@ -488,8 +499,9 @@ const SampleHandover = () => {
   const sortSave = () => {
     console.log(selectedRowKeysValSort);
     const result = selectedRowKeysValSort.map((item) => {
-      return { id: item };
+      return { id: item, labReceiveBy: form.getFieldsValue().receiver };
     });
+
     sampleHandoverSave(result).then((res) => {
       if (res.code === 200) {
         message.success('保存成功');
@@ -502,20 +514,38 @@ const SampleHandover = () => {
   };
   const receiverChange = (e) => {
     if (isAuthentication) {
-      passwordRef.current.show();
+      passwordRef.current.show(e);
     }
   };
   const authenticationChange = (e) => {
     setIsAuthentication(e.target.checked);
   };
   const confirmCancel = (e) => {
-    debugger;
+    scanForm.resetFields();
+    form.resetFields();
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'scanSampleHandoverData',
+        dataSource: [],
+      },
+    });
   };
-  const receiverChangeBatch = () => {
-    if (sampleHandover.length > 0) {
-      message.warning('先清空查询列表后才能变更哦!');
+  const receiverChangeBatch = (e) => {
+    if (sampleHandover.length > 0 && defaultLabClass.length > 0) {
+      message.warning('先清空查询条件后才能变更哦!');
+      form.setFieldsValue({ receiver: receiverVal });
       return;
     }
+    setReceiverVal(e);
+    labClassByUser({ userId: e }).then((res) => {
+      if (res.code === 200) {
+        const result = res.data.map((item) => item.id);
+        setMajorGroupData(res.data);
+        batchForm.setFieldsValue({ labClassId: result });
+        setDefaultLabClass(result);
+      }
+    });
   };
   const getReceiverList = () => {
     recipientList().then((res) => {
@@ -524,8 +554,14 @@ const SampleHandover = () => {
       }
     });
   };
+  const sortingTimeChange = (e) => {
+    setIsPreSortDateSort(e.target.checked);
+  };
+  const receiveBarcodeChange = (e) => {
+    setReceiveBarcodeSort(e.target.checked);
+  };
   const menu = (
-    <Menu className={styles.operatorMenu}>
+    <Menu className={styles.operatorMenu} style={{ width: 300 }}>
       <Menu.Item>
         <Checkbox>移交样本列的排序方式</Checkbox>
       </Menu.Item>
@@ -538,10 +574,12 @@ const SampleHandover = () => {
         <Checkbox>移交保存时自动打印移交清单</Checkbox>
       </Menu.Item>
       <Menu.Item>
-        <Checkbox>按分拣时间排序</Checkbox>
+        <Checkbox onChange={sortingTimeChange} checked={isPreSortDateSort}>
+          按分拣时间排序
+        </Checkbox>
       </Menu.Item>
       <Menu.Item>
-        <Checkbox>按接收条码号排序</Checkbox>
+        <Checkbox onChange={receiveBarcodeChange}>按接收条码号排序</Checkbox>
       </Menu.Item>
     </Menu>
   );
@@ -565,7 +603,7 @@ const SampleHandover = () => {
           <div style={{ marginBottom: '10px' }} className={styles.common}>
             {renderForm()}
             <Form layout="inline" form={form} className={styles.receiver_form}>
-              <Form.Item name="receiver">
+              <Form.Item name="labReceiveBy">
                 <Select
                   placeholder="请选择接收人"
                   autoComplete="off"
@@ -625,6 +663,7 @@ const SampleHandover = () => {
                   autoComplete="off"
                   allowClear
                   onChange={receiverChangeBatch}
+                  value={receiverVal}
                 >
                   {receiverList.length > 0 &&
                     receiverList.map((item) => (

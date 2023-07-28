@@ -259,7 +259,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
     }
   }, [id, differentProfessionList, sameProfessionList]);
   const getDifferentProfessionListData = (val: any) => {
-    getBindsList({ labClassId: val }).then(
+    getBindsList().then(
       (res: { code: number; data: React.SetStateAction<never[]> }) => {
         if (res.code === 200) {
           let result = {};

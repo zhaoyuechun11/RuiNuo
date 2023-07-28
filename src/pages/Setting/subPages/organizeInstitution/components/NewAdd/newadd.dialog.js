@@ -68,8 +68,7 @@ class NewaddRoleDialog extends Component {
     let props = this.props;
     let parent = props.parent;
     parent.dialog = this.dialogRef.current;
-    this.getSysAuthorization();
-    this.getReportUnitList();
+   
   }
   getReportUnitList = () => {
     reportUnitLists().then((res) => {
@@ -128,6 +127,8 @@ class NewaddRoleDialog extends Component {
       loading: false,
     });
     this.getPermisList();
+    this.getSysAuthorization();
+    this.getReportUnitList();
     if (type === 'edit') {
       let form = this.formRef.current;
       form.setFieldsValue({

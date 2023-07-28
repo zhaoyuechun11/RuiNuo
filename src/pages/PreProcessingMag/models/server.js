@@ -101,8 +101,14 @@ export function sampleHandover(params) {
   return axiosBase('lab/reqMainSplit/preTransferPage', 'get', params);
 }
 export function sampleHandoverSave(params) {
-  return axiosBase('lab/reqMainSplit/preTransfer', 'get', params);
+  return axiosBase('lab/reqMainSplit/preTransfer', 'post', params);
 }
 export function recipientList(params) {
   return axiosBase('/sys/user/recipientList', 'get', params);
+}
+export function verifyPassword(params) {
+  return axiosBase('sys/user/verifyPassword', 'post', params);
+}
+export function labClassByUser(params) {
+  return axiosBase('basic/labClass/listByUser', 'get', params);
 }

@@ -4,7 +4,6 @@ import { login } from './models/server';
 import style from './index.less';
 import { history } from 'umi';
 const Index = ({}) => {
-  console.log(window.btoa('123456'));
   const onFinish = (values) => {
     let params = {
       ...values,

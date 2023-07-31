@@ -181,16 +181,16 @@ const SampleApplication = ({ data }) => {
           );
         })}
       </div>
-      <div>
-        {data.materials?.map((item) => {
-          return (
-            <Row gutter={16}>
-              <Col className="gutter-row" span={5}>
+      <div className={styles.picture}>
+        <Row gutter={16}>
+          {data.materials?.map((item) => {
+            return (
+              <Col className="gutter-row" span={8}>
                 <Image src={item.filePath} style={{ width: 20, height: 20 }} />
               </Col>
-            </Row>
-          );
-        })}
+            );
+          })}
+        </Row>
       </div>
     </div>
   );

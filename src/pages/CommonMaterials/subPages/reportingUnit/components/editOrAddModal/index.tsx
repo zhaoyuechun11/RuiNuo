@@ -66,6 +66,23 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       //   confirmLoading={submitLoading}
     >
       <Form form={form} {...layout}>
+        <Form.Item
+          label="报告单元代码"
+          name="reportUnitCode"
+          rules={[{ required: true, message: '请输入报告单元代码' }]}
+        >
+          <Input placeholder="请输入报告单元代码" />
+        </Form.Item>
+        <Form.Item
+          label="报告单元名称"
+          name="reportUnitName"
+          rules={[{ required: true, message: '请输入报告单元名称' }]}
+        >
+          <Input placeholder="请输入报告单元名称" />
+        </Form.Item>
+        <Form.Item label="序列号" name="sn" rules={[{ required: true, message: '请输入序列号' }]}>
+          <Input placeholder="请输入序列号" />
+        </Form.Item>
         <div id="labClassId">
           <Form.Item
             name="labClassId"
@@ -89,23 +106,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         </div>
         <Form.Item label="备注" name="remark">
           <Input placeholder="请输入备注" />
-        </Form.Item>
-        <Form.Item
-          label="报告单元代码"
-          name="reportUnitCode"
-          rules={[{ required: true, message: '请输入报告单元代码' }]}
-        >
-          <Input placeholder="请输入报告单元代码" />
-        </Form.Item>
-        <Form.Item
-          label="报告单元名称"
-          name="reportUnitName"
-          rules={[{ required: true, message: '请输入报告单元名称' }]}
-        >
-          <Input placeholder="请输入报告单元名称" />
-        </Form.Item>
-        <Form.Item label="序列号" name="sn" rules={[{ required: true, message: '请输入序列号' }]}>
-          <Input placeholder="请输入序列号" />
         </Form.Item>
       </Form>
     </Dialog>

@@ -298,9 +298,7 @@ const AddApply = ({ refs }) => {
     setPageNum(pagination.current);
     getList(params);
   };
-  useEffect(() => {
-    console.log('applyList', applyList);
-  }, [pageNum]);
+
   const handleSelectRows = (rows) => {
     setSelectedRows(rows);
   };
@@ -361,6 +359,7 @@ const AddApply = ({ refs }) => {
     });
 
     dialog.current && dialog.current.hide();
+    debugger;
     dispatch({
       type: 'preProcessingMag/save',
       payload: {
@@ -399,24 +398,6 @@ const AddApply = ({ refs }) => {
       }
       return item;
     });
-
-    // if (selectedRows.length > 0) {
-    //   let selectedResult = selectedRows.map((item) => {
-    //     if (item.id === record.id) {
-    //       return {
-    //         ...item,
-    //         defaultSampleTypeName: sampleVal[0].dictValue,
-    //         defaultSampleTypeId: e,
-    //       };
-    //     }
-    //     {
-    //       return { ...item };
-    //     }
-    //   });
-    //   setSelectedRows(selectedResult);
-    // }
-    //debugger
-
     setList(result);
   };
   const onClose = () => {

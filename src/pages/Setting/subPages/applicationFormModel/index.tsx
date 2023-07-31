@@ -1,21 +1,18 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Form, Input ,message} from 'antd';
+import { Form, Input, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import styles from './index.less';
-import { useDispatch, useSelector, history, useLocation } from 'umi';
+import { useDispatch, useSelector, history } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import {mainEnterPageDele} from '../../models/server'
+import { mainEnterPageDele, updateDefault } from '../../models/server';
 const FormItem = Form.Item;
 const ApplicationFormModel = () => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
-
   const [list, setList] = useState([]);
   const modalRef = useRef();
   const Columns = [
@@ -25,7 +22,14 @@ const ApplicationFormModel = () => {
       sorter: true,
       align: 'center',
     },
-
+    {
+      title: '是否是默认模块',
+      dataIndex: 'isDefault',
+      align: 'center',
+      render: (text, record) => {
+        return <Switch onChange={(e) => isDefaultChange(record.id)} checked={text} />;
+      },
+    },
     {
       title: '操作',
       align: 'center',
@@ -54,31 +58,35 @@ const ApplicationFormModel = () => {
                 deleteCurrentItem(record.id);
               }}
             >
-             删除
+              删除
             </Button>
           </div>
         );
       },
     },
   ];
-
-  const getList = useCallback(
-    (params) => {
-      dispatch({
-        type: 'Setting/fetchMainEnterPage',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const isDefaultChange = (id) => {
+    updateDefault({ id }).then((res) => {
+      if (res.code === 200) {
+        message.success('修改成功');
+        getList({ pageNum, pageSize });
+      }
+    });
+  };
+  const getList = (params) => {
+    dispatch({
+      type: 'Setting/fetchMainEnterPage',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);

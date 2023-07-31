@@ -7,73 +7,72 @@ import { useDispatch, useSelector } from 'umi';
 const AddMaterial = ({ refs }) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const { information } = useSelector((state: any) => state.preProcessingMag);
-  const [imagesList, setImagesList] = useState([]);
+  const { information, profilePicture } = useSelector((state: any) => state.preProcessingMag);
+
   const dialog = useRef();
   useImperativeHandle(refs, () => ({
     show: () => {
       dialog.current && dialog.current.show();
-      setImagesList([]);
+      form.resetFields();
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'profilePicture',
+          dataSource: [],
+        },
+      });
     },
     hide: () => {
       dialog.current && dialog.current.hide();
     },
   }));
-  const getNewImgListByURL = (list = [], selectedItem) => {
-    return list.map((item) => {
-      const newItem = { ...item };
-      newItem.select = 0;
-      if (item.url === selectedItem.url) {
-        newItem.select = 1;
-      }
-      return newItem;
-    });
-  };
-  const onImageSelect = (item) => {
-    const newList = getNewImgListByURL(imagesList, item);
-    setImagesList(newList);
+  const onUpload = (item, isICon, index) => {
+    if (isICon) {
+      profilePicture.splice(index, 1, item);
+    } else {
+      profilePicture.push(item);
+    }
     dispatch({
-      type: 'PreProcessingMag/saveMore',
+      type: 'preProcessingMag/save',
       payload: {
-        companyPic: {
-          ...newList.slice(-1)[0],
-        },
+        type: 'profilePicture',
+        dataSource: profilePicture,
       },
     });
-  };
-  const onUpload = (item) => {
-    let newList = imagesList.concat([item]);
-    // let newList = imagesList;
-
-    setImagesList(newList);
   };
 
   const onDelete = (index) => {
-    const newList = [
-      ...imagesList.slice(index, 1),
-      {
-        full_url: '',
-        url: '',
-        select: 0, // 1: 选中, 0: 未选中
-        type: 2, // 1: 默认图片, 2: 自定义图片
+    profilePicture.splice(index, 1);
+
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'profilePicture',
+        dataSource: profilePicture,
       },
-    ];
-    newList[0].select = 1;
-    setImagesList(newList);
+    });
   };
   const onOk = () => {
     form.validateFields().then((value) => {
-      debugger;
+      let informationData = [];
       if (information.length > 0) {
-        imagesList.push(...information);
+        informationData = profilePicture.map((item) => {
+          return {
+            filePath: item.fileServerUrl,
+            typeName: item.fileServerName,
+            ...value,
+          };
+        });
+        informationData.push(...information);
+      } else {
+        informationData = profilePicture.map((item) => {
+          return {
+            filePath: item.fileServerUrl,
+            typeName: item.fileServerName,
+            ...value,
+          };
+        });
       }
-      const informationData = imagesList.map((item) => {
-        return {
-          filePath: item.fileServerUrl,
-          typeName: item.fileServerName,
-          ...value,
-        };
-      });
       dispatch({
         type: 'preProcessingMag/save',
         payload: {
@@ -93,9 +92,8 @@ const AddMaterial = ({ refs }) => {
           </Form.Item>
         </Form>
         <ImageGallery
-          imageList={imagesList}
+          imageList={profilePicture}
           selectedImgURL={''}
-          onSelect={onImageSelect}
           onUpload={onUpload}
           onDelete={onDelete}
         />

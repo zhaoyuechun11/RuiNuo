@@ -101,6 +101,7 @@ const SampleSorting = () => {
       dataIndex: 'receiveBarcode',
       width: 100,
       fixed: 'left',
+      ellipsis: true,
     },
 
     {
@@ -112,6 +113,7 @@ const SampleSorting = () => {
       title: '申请号',
       dataIndex: 'subId',
       width: 100,
+      ellipsis: true,
     },
     {
       title: '姓名',
@@ -137,6 +139,7 @@ const SampleSorting = () => {
       title: '样本编号',
       dataIndex: 'sampleNo',
       width: 100,
+      ellipsis: true,
     },
     {
       title: '样本类型',
@@ -147,6 +150,7 @@ const SampleSorting = () => {
       title: '检测项目',
       dataIndex: 'reqItemName',
       width: 100,
+      ellipsis: true,
     },
     {
       title: '检测状态',
@@ -154,7 +158,7 @@ const SampleSorting = () => {
       width: 100,
     },
     {
-      title: '运检单位',
+      title: '送检单位',
       dataIndex: 'hospitalName',
       width: 100,
     },
@@ -168,15 +172,13 @@ const SampleSorting = () => {
       title: '分血标记',
       dataIndex: 'bloodFlag',
       width: 100,
+      render: (text) => {
+        <span className={styles.bloodFlag}>{text}</span>;
+      },
     },
     {
       title: '备注',
       dataIndex: 'remark',
-      width: 100,
-    },
-    {
-      title: '分拣时间',
-      dataIndex: 'preSortDate',
       width: 100,
     },
     {
@@ -185,9 +187,19 @@ const SampleSorting = () => {
       width: 100,
     },
     {
+      title: '分拣时间',
+      dataIndex: 'preSortDate',
+      width: 200,
+      ellipsis: true,
+      align: 'center',
+    },
+
+    {
       title: '采样时间',
       dataIndex: 'collectDate',
-      width: 100,
+      width: 200,
+      ellipsis: true,
+      align: 'center',
     },
     {
       title: '前处理接收时间',

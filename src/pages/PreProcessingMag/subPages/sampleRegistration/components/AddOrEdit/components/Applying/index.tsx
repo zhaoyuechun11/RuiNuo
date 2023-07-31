@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Button } from 'antd';
+import { Table } from 'antd';
+import { Button } from '@/components';
 import { useSelector, useDispatch } from 'umi';
 import ReportItems from '../ReportItems';
 
@@ -47,28 +48,32 @@ const Applying = ({ type }) => {
       title: '项目编号',
       dataIndex: 'reqItemCode',
       key: 'reqItemCode',
+      align: 'center',
     },
     {
       title: '项目名称',
       dataIndex: 'reqItemName',
       key: 'reqItemName',
+      align: 'center',
     },
     {
       title: '样本类型',
       key: 'defaultSampleTypeName',
       dataIndex: 'defaultSampleTypeName',
+      align: 'center',
     },
     {
       title: '专业类别',
       key: 'labClassName',
       dataIndex: 'labClassName',
+      align: 'center',
     },
-
     {
       title: '操作',
       key: 'action',
-      render: (text, record, index) => (
-        <div>
+      align:'center',
+      render: (text, record) => (
+        <div style={{display:'flex',justifyContent:'center'}}>
           <Button
             onClick={() => {
               deleteCurrentItem(record.id, 1);
@@ -98,36 +103,43 @@ const Applying = ({ type }) => {
       title: '样本类型',
       dataIndex: 'sampleTypeName',
       key: 'sampleTypeName',
+      align: 'center',
     },
     {
       title: '样本性状',
       dataIndex: 'sampleStateName',
       key: 'sampleStateName',
+      align: 'center',
     },
     {
       title: '检验目的',
       key: 'labPurpose',
       dataIndex: 'labPurpose',
+      align: 'center',
     },
     {
       title: '原病理号',
       key: 'pathologyNo',
       dataIndex: 'pathologyNo',
+      align: 'center',
     },
     {
       title: '原蜡块序号',
       key: 'lkNo',
       dataIndex: 'lkNo',
+      align: 'center',
     },
     {
       title: '病理样本序号',
       key: 'pathologySampleSeqNo',
       dataIndex: 'pathologySampleSeqNo',
+      align: 'center',
     },
     {
       title: '样本描述',
       key: 'sampleDesc',
       dataIndex: 'sampleDesc',
+      align: 'center',
     },
     {
       title: '操作',
@@ -159,12 +171,14 @@ const Applying = ({ type }) => {
       title: '图片名称',
       dataIndex: 'typeName',
       key: 'typeName',
+      align: 'center',
     },
 
     {
       title: '图片地址',
       key: 'filePath',
       dataIndex: 'filePath',
+      align: 'center',
     },
 
     {

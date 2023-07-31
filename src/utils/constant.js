@@ -193,7 +193,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/preProcessingMag/bloodDistributionMag',
+        url: '/preProcessingMag/bloodSeparationMag',
         name: '分血管理',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

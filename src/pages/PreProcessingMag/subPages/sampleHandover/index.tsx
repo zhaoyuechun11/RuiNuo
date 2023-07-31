@@ -385,7 +385,7 @@ const SampleHandover = () => {
       <Form onValuesChange={handleSearch} layout="inline" form={scanForm}>
         <Form.Item name="sampleBarcode">
           <Input
-            placeholder="扫码分拣"
+            placeholder="扫码移交"
             autoComplete="off"
             suffix={<Icon name="icongongzuotai-sousuo" />}
             allowClear
@@ -599,7 +599,7 @@ const SampleHandover = () => {
   return (
     <>
       <Tabs type="card">
-        <TabPane tab="扫码致交接列" key="1">
+        <TabPane tab="扫码至交接列" key="1">
           <div style={{ marginBottom: '10px' }} className={styles.common}>
             {renderForm()}
             <Form layout="inline" form={form} className={styles.receiver_form}>

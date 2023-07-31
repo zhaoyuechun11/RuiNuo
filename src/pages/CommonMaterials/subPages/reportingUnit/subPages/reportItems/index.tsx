@@ -33,7 +33,7 @@ const ReportItems = ({ parent }) => {
       dataIndex: 'isEnabled',
       align: 'center',
       render: (text, record) => {
-        return <Switch onChange={(e) => isEnabledChange(e, record.id)} checked={text} />;
+        return <Switch onChange={(e) => isEnabledChange(record.id)} checked={text} />;
       },
     },
     {
@@ -60,7 +60,7 @@ const ReportItems = ({ parent }) => {
       },
     },
   ];
-  const isEnabledChange = (e, id) => {
+  const isEnabledChange = (id) => {
     reportUnitReqItemChange({ id }).then((res) => {
       if (res.code === 200) {
         message.success('改变成功');

@@ -53,7 +53,6 @@ const AddSample = ({ refs }) => {
           },
         });
       } else {
-
         list.push(...sampleList);
         list.filter((item) =>
           sampleTypeList.some((data) => {
@@ -69,7 +68,7 @@ const AddSample = ({ refs }) => {
             }
           }),
         );
-        debugger
+        debugger;
         dispatch({
           type: 'preProcessingMag/save',
           payload: {
@@ -107,7 +106,11 @@ const AddSample = ({ refs }) => {
         <Row gutter={12}>
           <Col span={12}>
             <div id="sampleType">
-              <Form.Item name="sampleTypeId" label="样本类型">
+              <Form.Item
+                name="sampleTypeId"
+                label="样本类型"
+                rules={[{ required: true, message: '请输入样本类型' }]}
+              >
                 <Select
                   placeholder="请选择样本类型"
                   autoComplete="off"

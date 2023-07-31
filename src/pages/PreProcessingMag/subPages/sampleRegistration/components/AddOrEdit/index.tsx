@@ -59,19 +59,23 @@ const AddOrEdit = () => {
   const { useDetail } = useSelector((state: any) => state.global);
   const [enterDetail, setEnterDetail] = useState();
   const [paramVal, setParamVal] = useState({});
+  const [nationData, setNationData] = useState([]);
+  const [country, setCountry] = useState([]);
 
   useEffect(() => {
     getModuleList();
     getAreaList();
-    // getMainOrderData();
     getList({ type: 'SX' });
     getList({ type: 'AU' });
     getList({ type: 'DP' });
     getList({ type: 'FT' });
-
+    getList({ type: 'NATION' });
+    getList({ type: 'COUNTRY' });
     getHospitalListData();
-
-    form.setFieldsValue({ system: { createBy: useDetail?.name } });
+    var now1 = moment().format('YYYY-MM-DD HH:mm:ss');
+    form.setFieldsValue({
+      system: { createBy: useDetail?.name, createDate: moment(now1, 'YYYY-MM-DD HH:mm:ss') },
+    });
   }, []);
 
   useEffect(() => {
@@ -120,21 +124,15 @@ const AddOrEdit = () => {
   }, [params.id]);
   useEffect(() => {
     if (enterDetail) {
+      var reg = /^[0-9,/:-\s]+$/;
       for (const key in enterDetail) {
         if (
-          key === 'birthdate' ||
-          key === 'applyDate' ||
-          key === 'collectDate' ||
-          key === 'receiveDate' ||
-          key === 'createDate' ||
-          key === 'preReceiveDate'
+          isNaN(enterDetail[key]) &&
+          reg.test(enterDetail[key]) &&
+          !Array.isArray(enterDetail[key])
         ) {
           enterDetail[key] = moment(enterDetail[key]);
-          console.log(enterDetail[key]);
         }
-        // if (key === 'dataType' && enterDetail[key] === 6 && enterDetail['defaultValue']) {
-        //   enterDetail['defaultValue'] = enterDetail['defaultValue'].split(',').map(Number);
-        // }
 
         form.setFieldsValue({
           system: {
@@ -143,14 +141,12 @@ const AddOrEdit = () => {
         });
       }
       for (const key in enterDetail?.extend?.extendInfo) {
-        var reg = /^[0-9,/:-\s]+$/;
         if (
           isNaN(enterDetail.extend.extendInfo[key]) &&
           reg.test(enterDetail.extend.extendInfo[key]) &&
           !Array.isArray(enterDetail.extend.extendInfo[key])
         ) {
           enterDetail.extend.extendInfo[key] = moment(enterDetail.extend.extendInfo[key]);
-          console.log(enterDetail.extend.extendInfo[key]);
         }
         form.setFieldsValue({
           extend: {
@@ -307,6 +303,12 @@ const AddOrEdit = () => {
         if (type.type === 'FT') {
           setSampleSource(res.data);
         }
+        if (type.type === 'NATION') {
+          setNationData(res.data);
+        }
+        if (type.type === 'COUNTRY') {
+          setCountry(res.data);
+        }
       }
     });
   };
@@ -376,6 +378,18 @@ const AddOrEdit = () => {
           ? doctorList?.map((item, index) => (
               <Option value={item.id} key={index}>
                 {item.name}
+              </Option>
+            ))
+          : stru.key === 'nation'
+          ? nationData?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.dictValue}
+              </Option>
+            ))
+          : stru.key === 'nationality'
+          ? country?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.dictValue}
               </Option>
             ))
           : stru.dataJson?.map((item, index) => (

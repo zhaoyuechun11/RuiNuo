@@ -51,6 +51,7 @@ const applicationForm = () => {
         title: column.name,
         dataIndex: selectedField(column.key),
         responsive: ['xl', 'xxl'],
+        align:'center',
         render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
       };
     });
@@ -91,7 +92,11 @@ const applicationForm = () => {
         callback: (res) => {
           setList(res.data.records);
           setTotal(res.data.total);
-          detail(res.data.records[0].id);
+          if (res.data.records.length > 0) {
+            detail(res.data.records[0]?.id);
+          } else {
+            setDetailData({});
+          }
         },
       },
     });
@@ -300,7 +305,7 @@ const applicationForm = () => {
           ),
         }}
       />
-      <SampleApplication data={detailData} />
+      {!(JSON.stringify(detailData) == '{}') && <SampleApplication data={detailData} />}
       <SetHeaderModal
         refs={setRef}
         columnOptions={columnOptionsList}

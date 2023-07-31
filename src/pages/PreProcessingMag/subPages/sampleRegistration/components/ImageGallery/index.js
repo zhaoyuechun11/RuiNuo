@@ -8,24 +8,11 @@ import styles from './index.less';
 
 const ImageGallery = ({
   imageList,
-
   selectedImgURL,
-  // value,
-  onChange,
-  onSelect,
   onUpload,
   onDelete,
 }) => {
   const dispatch = useDispatch();
-  // const [checkedId, setCheckedId] = useState(selectedImgURL);
- 
-  // const companyInfo = JSON.parse(localStorage.getItem('companyDefaultInfo'));
-
-
-  const triggerChange = (changedValue) => {
-    onChange?.(changedValue);
-  };
-
   // 统一保存model的值
   const saveValue = (val) => {
     dispatch({
@@ -35,27 +22,10 @@ const ImageGallery = ({
       },
     });
   };
-  // 保存多个
-  const saveMore = (payload) => {
-    dispatch({
-      type: `PreProcessingMag/saveMore`,
-      payload,
-    });
-  };
+
 
   // 删除图片保存空值
   const delImgSaveVal = (index) => {
-    const firstImg = imageList.splice(index, 1);
-    debugger;
-    saveMore({
-      pcBannerImgURL: firstImg.full_url,
-      pcBanner: {
-        full_url: '',
-        url: '',
-      },
-    });
-
-    triggerChange(firstImg.url);
     onDelete?.(index);
   };
   // 删除图片
@@ -64,25 +34,10 @@ const ImageGallery = ({
     delImgSaveVal(index);
   };
 
-  // 选择图片
-  const onChangeImg = (item) => {
-    const { full_url, url } = item;
-    if (full_url) {
-      saveValue(full_url);
-      typeof onSelect === 'function' && onSelect(item);
-      triggerChange(url);
-    }
-  };
+ 
 
-  const uploadHTML = (isIcon = false) => {
+  const uploadHTML = (isIcon = false, index) => {
     const uploadURL = `${process.env.baseURL}/file/upload`;
-
-    const data = {
-      // scene: type, // 1=>PC,2=>mobile,3=>公司介绍图片
-      //   plan_id,
-      //   enterprise_id: enterPriseId,
-      //   operator_id: operatorId,
-    };
 
     const uploadProps = {
       name: 'file',
@@ -104,8 +59,8 @@ const ImageGallery = ({
             fileServerUrl,
           });
 
-          onChangeImg(response.data);
-          onUpload?.(response.data);
+          //onChangeImg(response.data);
+          onUpload?.(response.data, isIcon, index);
           // triggerChange(url);
         } else if (status === 'error') {
           message.error('图片上传失败');
@@ -173,7 +128,7 @@ const ImageGallery = ({
                 </div>
               )}
               <div className={styles.mask}>
-                {uploadHTML(true)}
+                {uploadHTML(true, index)}
                 {/* <Icon
                 classStyle={styles.activeIcon}
                 onClick={() => {
@@ -200,29 +155,6 @@ const ImageGallery = ({
   return (
     <div className={styles.uploadPic}>
       <div className={styles.picBox}>
-        {/* 默认图片列表 */}
-        {/* {imageList.map((item, index) => (
-          <div
-            className={styles.picList}
-            key={item.url}
-            onClick={() => {
-              onChangeImg(item);
-            }}
-          >
-            {index !== imageList.length - 1 ? (
-              <>
-                <img className={styles.picImg} src={item.fileServerUrl} alt="" />
-                {item.fileServerUrl === selectedImgURL && (
-                  <div className={styles.triangle}>
-                    <CheckOutlined className={styles.icon} />
-                  </div>
-                )}
-              </>
-            ) : (
-              renderCustomImg()
-            )}
-          </div>
-        ))} */}
         {renderCustomImg()}
       </div>
     </div>

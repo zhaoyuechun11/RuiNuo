@@ -12,6 +12,7 @@ const Password = ({ passwordRef }) => {
     show: (e) => {
       id.current = e;
       dialogRef.current.show();
+      form.resetFields();
     },
     hide: () => {
       dialogRef.current.hide();

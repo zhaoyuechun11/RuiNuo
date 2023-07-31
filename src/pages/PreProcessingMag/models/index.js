@@ -30,6 +30,7 @@ const preProcessingMag = {
     scanBloodData: [],
     scanSampleHandoverData: [],
     duplicatesNameAndNum: [],
+    profilePicture: [],
   },
 
   effects: {

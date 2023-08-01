@@ -11,7 +11,7 @@ import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 import { downLoad } from '@/utils';
 let passProps = {};
 const SampleRegistration = () => {
-  const { queryData,pageNum } = useSelector((state: any) => state.preProcessingMag);
+  const { queryData, pageNum } = useSelector((state: any) => state.preProcessingMag);
   const setRef = useRef();
   const dispatch = useDispatch();
   const [selectedColumns, setSelectedColumns] = useState([]);
@@ -50,11 +50,12 @@ const SampleRegistration = () => {
       return {
         title: column.name,
         dataIndex: selectedField(column.key),
-
         responsive: ['xl', 'xxl'],
+        align: 'center',
         render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
       };
     });
+
     passProps = {
       columns: [
         ...newSelectedColumns,
@@ -141,7 +142,7 @@ const SampleRegistration = () => {
   };
   const onChangePage = (pageNum: number, size: React.SetStateAction<number>) => {
     // setPageNum(pageNum);
-    changeModelData('pageNum',pageNum)
+    changeModelData('pageNum', pageNum);
     setPageSize(size);
   };
 
@@ -170,13 +171,13 @@ const SampleRegistration = () => {
     });
   };
   const changeModelData = (type, value) => {
-      dispatch({
-        type: 'preProcessingMag/save',
-        payload: {
-          type,
-          dataSource: value,
-        },
-      });
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type,
+        dataSource: value,
+      },
+    });
   };
   return (
     <div>

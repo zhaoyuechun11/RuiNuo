@@ -52,54 +52,65 @@ const BloodSeparationMag = () => {
     {
       title: '签收条码',
       dataIndex: 'receiveBarcode',
-      width: 100,
+      width: 150,
       fixed: 'left',
+      align:'center'
     },
 
     {
       title: '申请号',
       dataIndex: 'subId',
-      width: 100,
+      width: 150,
+      align:'center'
     },
     {
       title: '专业类别',
       dataIndex: 'labClassName',
       width: 100,
+      align:'center'
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
       width: 100,
+      align:'center',
+      ellipsis:true
     },
     {
       title: '性别',
       dataIndex: 'sexName',
       width: 100,
+      align:'center'
     },
     {
       title: '样本类型',
       dataIndex: 'sampleType',
       width: 100,
+      align:'center'
     },
     {
       title: '检测状态',
       dataIndex: 'detectionStatus',
       width: 100,
+      align:'center'
     },
     {
       title: '分拣时间',
       dataIndex: 'preSortDate',
-      width: 100,
+      width: 200,
+      align:'center'
     },
     {
       title: '分血人',
       dataIndex: 'bloodBy',
       width: 100,
+      align:'center'
     },
     {
       title: '分血时间',
       dataIndex: 'bloodDate',
-      width: 100,
+      width: 200,
+      align:'center'
     },
   ];
   const getWaitList = (params: any) => {

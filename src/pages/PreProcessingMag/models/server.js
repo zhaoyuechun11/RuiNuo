@@ -46,7 +46,7 @@ export function reqMainOrderDelete(params) {
   return axiosBase('lab/reqMainOrder/delete', 'post', params);
 }
 export function reqMainOrderExport(params) {
-  return axiosBase('lab/reqMainOrder/export', 'post', params);
+  return axiosBase('lab/reqMainOrder/export', 'get', params);
 }
 export function getQueryData(params) {
   return axiosBase('sys/queryAssembly/reqMainEnterDetail', 'get', params);
@@ -111,4 +111,10 @@ export function verifyPassword(params) {
 }
 export function labClassByUser(params) {
   return axiosBase('basic/labClass/listByUser', 'get', params);
+}
+export function preTransferNum(params) {
+  return axiosBase('lab/reqMainSplit/preTransferNum', 'get', params);
+}
+export function preSortNum(params) {
+  return axiosBase('lab/reqMainSplit/preSortNum', 'get', params);
 }

@@ -21,6 +21,7 @@ import {
   sampleHandoverSave,
   recipientList,
   labClassByUser,
+  preTransferNum,
 } from '../../models/server';
 import { duplicatesAndNum } from '@/utils';
 import styles from './index.less';
@@ -56,6 +57,7 @@ const SampleHandover = () => {
   const [isReceiveBarcodeSort, setReceiveBarcodeSort] = useState(false);
   const [receiverVal, setReceiverVal] = useState();
   const [defaultLabClass, setDefaultLabClass] = useState([]);
+  const [preTransferNumData, setPreTransferNumData] = useState([]);
 
   useEffect(() => {
     hospitalList();
@@ -128,6 +130,11 @@ const SampleHandover = () => {
       receiveBarcodeKey: isReceiveBarcodeSort,
       labClassId: defaultLabClass,
     });
+    getPreTransferNum({
+      preSortDateKey: isPreSortDateSort,
+      receiveBarcodeKey: isReceiveBarcodeSort,
+      labClassId: defaultLabClass,
+    });
   }, [pageNum, pageSize, defaultLabClass, isReceiveBarcodeSort]);
   const getList = (params: any) => {
     dispatch({
@@ -165,6 +172,13 @@ const SampleHandover = () => {
           }
         },
       },
+    });
+  };
+  const getPreTransferNum = (params) => {
+    preTransferNum(params).then((res) => {
+      if (res.code === 200) {
+        setPreTransferNumData(res.data);
+      }
     });
   };
 
@@ -213,7 +227,7 @@ const SampleHandover = () => {
       {
         title: '样本编号',
         dataIndex: 'sampleNo',
-        width: 100,
+        width: 150,
         align: 'center',
       },
       {
@@ -357,8 +371,6 @@ const SampleHandover = () => {
       return;
     }
     const values = {
-      pageNum,
-      pageSize,
       preSortDateKey: isPreSortDateSort,
       receiveBarcodeKey: isReceiveBarcodeSort,
       ...allValues,
@@ -371,7 +383,13 @@ const SampleHandover = () => {
           ? allValues.createDateStart[1].format('YYYY-MM-DD HH:mm:ss')
           : '',
     };
-    getSampleHandover(values);
+    let params = {
+      pageNum,
+      pageSize,
+      ...values,
+    };
+    getSampleHandover(params);
+    getPreTransferNum(values);
     setParamsVal(allValues);
   };
   const labClassChange = () => {
@@ -695,6 +713,16 @@ const SampleHandover = () => {
             columns={getColumns(2)}
             dataSource={sampleHandover}
             scroll={{ x: 'calc(700px + 50%)' }}
+            className={styles.scanTable}
+            footer={() =>
+              preTransferNumData?.map((item) => {
+                return (
+                  <div>
+                    <span>{item.labClassName}</span>:<span>{item.num}</span>
+                  </div>
+                );
+              })
+            }
           />
         </TabPane>
       </Tabs>

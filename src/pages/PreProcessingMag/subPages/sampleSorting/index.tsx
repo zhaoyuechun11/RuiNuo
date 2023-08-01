@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Table, Tabs, Form, Input, DatePicker, Select, message } from 'antd';
 import { Button, Icon } from '@/components';
 import { useDispatch, useSelector, history } from 'umi';
-import { scanSortingSave, getHospitalList } from '../../models/server';
+import { scanSortingSave, getHospitalList, preSortNum } from '../../models/server';
 import { majorGroup, manageListSelect } from '@/models/server';
 import { getCurrentTime } from '@/utils';
 import styles from './index.less';
@@ -24,6 +24,8 @@ const SampleSorting = () => {
   const [hospital, setHospital] = useState([]);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [manageClass, setManageClass] = useState([]);
+  const [preSortNumData, setPreSortNumData] = useState({});
+  const receiveNumScan = useRef();
 
   useEffect(() => {
     hospitalList();
@@ -55,6 +57,7 @@ const SampleSorting = () => {
 
   useEffect(() => {
     getSortList({ pageNum, pageSize });
+    getPreSortNum({ pageNum, pageSize });
   }, [pageNum, pageSize]);
   const getList = (params: any) => {
     dispatch({
@@ -92,6 +95,13 @@ const SampleSorting = () => {
           }
         },
       },
+    });
+  };
+  const getPreSortNum = (params) => {
+    preSortNum(params).then((res) => {
+      if (res.code === 200) {
+        setPreSortNumData(res.data);
+      }
     });
   };
 
@@ -293,6 +303,7 @@ const SampleSorting = () => {
           : '',
     };
     getSortList(values);
+    getPreSortNum(values);
   };
   const renderForm = () => {
     return (
@@ -429,8 +440,27 @@ const SampleSorting = () => {
           <Table
             rowSelection={rowSelection}
             columns={columns}
+            className={styles.table_box}
             dataSource={scanSortData}
             scroll={{ x: 'calc(700px + 50%)' }}
+            footer={() =>
+              scanSortData.length > 0 && (
+                <div>
+                  <span>
+                    收样条码数:
+                    {
+                      scanSortData.filter(
+                        (obj, index) =>
+                          scanSortData.findIndex(
+                            (item) => item.receiveBarcode === obj.receiveBarcode,
+                          ) === index,
+                      ).length
+                    }
+                  </span>
+                  <span> 分单后实际样本数:{scanSortData.length}</span>
+                </div>
+              )
+            }
           />
         </TabPane>
         <TabPane tab="批量查询分拣" key="2">
@@ -454,6 +484,13 @@ const SampleSorting = () => {
             columns={columns}
             dataSource={sortList}
             scroll={{ x: 'calc(700px + 50%)' }}
+            className={styles.table_box}
+            footer={() => (
+              <div>
+                <span>收样条码数:{preSortNumData.receiveNum}</span>
+                <span> 分单后实际样本数:{preSortNumData.splitNum}</span>
+              </div>
+            )}
           />
         </TabPane>
       </Tabs>

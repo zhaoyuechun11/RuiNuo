@@ -25,58 +25,47 @@ const AddSample = ({ refs }) => {
   }));
   const onOk = () => {
     form.validateFields().then((value) => {
+      let flag = false;
       let list = [];
       let result = [];
       let endResult = [];
       list.push(value);
 
-      if (sampleList.length === 1 && sampleList[0].length === 0) {
-        list.filter((item) =>
-          sampleTypeList.some((data) => {
-            if (data.id == item.sampleTypeId) {
-              result.push({ sampleTypeName: data.dictValue, ...item });
-            }
-          }),
-        );
-        result.filter((item) =>
-          sampleState.some((data) => {
-            if (data.id == item.sampleStateId) {
-              endResult.push({ sampleStateName: data.dictValue, ...item });
-            }
-          }),
-        );
-        dispatch({
-          type: 'preProcessingMag/save',
-          payload: {
-            type: 'sampleList',
-            dataSource: endResult,
-          },
-        });
-      } else {
-        list.push(...sampleList);
-        list.filter((item) =>
-          sampleTypeList.some((data) => {
-            if (data.id == item.sampleTypeId) {
-              result.push({ sampleTypeName: data.dictValue, ...item });
-            }
-          }),
-        );
-        result.filter((item) =>
-          sampleState.some((data) => {
-            if (data.id == item.sampleStateId) {
-              endResult.push({ sampleStateName: data.dictValue, ...item });
-            }
-          }),
-        );
-        debugger;
-        dispatch({
-          type: 'preProcessingMag/save',
-          payload: {
-            type: 'sampleList',
-            dataSource: endResult,
-          },
+      if (sampleList.length > 0) {
+        sampleList.forEach((item) => {
+          if (item.sampleTypeId == value.sampleTypeId) {
+            flag = true;
+          }
         });
       }
+      if (flag) {
+        message.warning('已添加过该样本不可重复添加!');
+        return;
+      }
+
+      list.push(...sampleList);
+      list.filter((item) =>
+        sampleTypeList.some((data) => {
+          if (data.id == item.sampleTypeId) {
+            result.push({ sampleTypeName: data.dictValue, ...item });
+          }
+        }),
+      );
+      result.filter((item) =>
+        sampleState.some((data) => {
+          if (data.id == item.sampleStateId) {
+            endResult.push({ sampleStateName: data.dictValue, ...item });
+          }
+        }),
+      );
+
+      dispatch({
+        type: 'preProcessingMag/save',
+        payload: {
+          type: 'sampleList',
+          dataSource: endResult,
+        },
+      });
 
       dialog.current && dialog.current.hide();
     });

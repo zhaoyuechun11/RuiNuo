@@ -30,7 +30,9 @@ const AddApply = ({ refs }) => {
   const typeVal = useRef();
   const [form] = Form.useForm();
   const reportItemsRef = useRef();
-  const { applyList, selectedRowKeys } = useSelector((state: any) => state.preProcessingMag);
+  const { applyList, selectedRowKeys, sampleList } = useSelector(
+    (state: any) => state.preProcessingMag,
+  );
 
   useImperativeHandle(refs, () => ({
     show: (val, type) => {
@@ -270,7 +272,6 @@ const AddApply = ({ refs }) => {
           <Button
             style={{ margin: 'auto' }}
             onClick={() => {
-              // deleteBind(record.id);
               reportItemsRef.current.show(record.id);
             }}
           >
@@ -329,6 +330,7 @@ const AddApply = ({ refs }) => {
 
   const add = () => {
     console.log(selectedRowKeysVal);
+    let sampleResult = [];
     let resVal = [];
     list.map((item) => {
       selectedRowKeysVal.map((key) => {
@@ -349,7 +351,7 @@ const AddApply = ({ refs }) => {
         ...item,
       };
     });
-    const sampleResult = resVal.map((item) => {
+    sampleResult = resVal.map((item) => {
       return {
         sampleTypeName: item.defaultSampleTypeName,
         sampleTypeId: item.defaultSampleTypeId,
@@ -357,9 +359,16 @@ const AddApply = ({ refs }) => {
         sampleStateId: 1130,
       };
     });
+    if (sampleList.length > 0) {
+      let newSampleList = [...sampleList, ...sampleResult];
+      sampleResult = newSampleList.filter(
+        (obj, index) =>
+          newSampleList.findIndex((item) => item.sampleTypeId === obj.sampleTypeId) === index,
+      );
+    }
 
     dialog.current && dialog.current.hide();
-    debugger;
+
     dispatch({
       type: 'preProcessingMag/save',
       payload: {

@@ -12,6 +12,7 @@ const SingleInstrument = () => {
   const [reportUnitList, setReportUnitList] = useState([]);
   const [reportUnitInstrList, setReportUnitInstrList] = useState([]);
   const [executorList, setExecutorList] = useState([]);
+  const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
   var now1 = moment().format('YYYY-MM-DD HH:mm:ss');
   useEffect(() => {
     form.setFieldsValue({ createDateStart: moment(now1, 'YYYY-MM-DD HH:mm:ss') });
@@ -55,6 +56,121 @@ const SingleInstrument = () => {
       getExecutorByReportUnit(e);
     }
   };
+  const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
+    setSelectedRowKeysVal(selectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeysVal,
+    onChange: onSelectChange,
+  };
+  const columns = [
+    {
+      title: '样本条码',
+      dataIndex: 'receiveBarcode',
+      width: 100,
+      fixed: 'left',
+      ellipsis: true,
+    },
+
+    {
+      title: '报告单元',
+      dataIndex: 'isEmer',
+      width: 100,
+    },
+    {
+      title: '专业',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '仪器',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '样本号',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '姓名',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '性别',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '年龄',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '申请项目代号',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '申请项目',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '分配人',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '执行人',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '分配时间',
+      dataIndex: 'subId',
+      width: 100,
+      ellipsis: true,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      align: 'center',
+      width: 180,
+      render: (text: string, record: Record<string, any>) => (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button
+            onClick={() => {
+              // history.push(
+              //   '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+              // );
+            }}
+          >
+            打印条码
+          </Button>
+          <Button
+            onClick={() => {
+              // deleteCurrentItem(record.id);
+            }}
+          >
+            删除
+          </Button>
+        </div>
+      ),
+    },
+  ];
   const renderForm = () => {
     return (
       <Form onValuesChange={search} layout="inline" form={form} className={styles.search_box}>
@@ -95,7 +211,7 @@ const SingleInstrument = () => {
           <DatePicker
             showTime={{ format: 'HH:mm:ss' }}
             format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择时间"
+            placeholder="请选择检验日期"
             style={{ width: 340 }}
           />
         </Form.Item>
@@ -129,7 +245,7 @@ const SingleInstrument = () => {
         <Form.Item name="no" label="样本编号">
           <Input placeholder="请输入样本编号" />
         </Form.Item>
-        <Button btnType="primary" onClick={add} >
+        <Button btnType="primary" onClick={add}>
           +
         </Button>
         <Button btnType="primary" onClick={minus} className={styles.minus}>
@@ -143,6 +259,13 @@ const SingleInstrument = () => {
     <>
       {renderForm()}
       {renderFormScan()}
+      <Table
+        rowSelection={rowSelection}
+        columns={columns}
+        className={styles.table_box}
+        dataSource={[]}
+        scroll={{ x: 'calc(700px + 50%)' }}
+      />
     </>
   );
 };

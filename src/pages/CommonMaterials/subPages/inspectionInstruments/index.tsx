@@ -34,45 +34,58 @@ const inspectionInstruments = () => {
       title: '资产编号',
       dataIndex: 'assetsNo',
       align: 'center',
+      fixed: 'left',
+      width: 100,
     },
     {
       title: '仪器型号',
       dataIndex: 'instType',
       align: 'center',
+      width: 100,
     },
     {
       title: '仪器代号',
       dataIndex: 'instrCode',
       align: 'center',
+      width: 100,
     },
     {
       title: '仪器名称',
       dataIndex: 'instrName',
       align: 'center',
+      width: 100,
+      ellipsis:true,
     },
     {
       title: '管理分类名称',
       dataIndex: 'labClassManageName',
       align: 'center',
+      width: 100,
+      ellipsis:true
     },
     {
       title: '实验室编码',
       dataIndex: 'labId',
       align: 'center',
+      width: 100,
     },
     {
       title: '仪器类型',
       dataIndex: 'pageTypeName',
       align: 'center',
+      width: 100,
     },
     {
       title: '注册码',
       dataIndex: 'regCode',
       align: 'center',
+      width: 100,
     },
     {
       title: '操作',
       align: 'center',
+      fixed: 'right',
+      width: 400,
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>

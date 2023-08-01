@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Table, Button, message } from 'antd';
+import { Table, message } from 'antd';
 import AliasEdit from './components/Edit/index';
 import { permission, deletePermission } from './models/server';
-import { Confirm } from '@/components';
+import { Confirm ,Button} from '@/components';
 
 const permissionMange = () => {
   const [page, setPage] = useState(1);

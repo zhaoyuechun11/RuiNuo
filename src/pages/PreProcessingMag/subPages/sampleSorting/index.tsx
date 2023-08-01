@@ -18,14 +18,16 @@ const SampleSorting = () => {
   const [selectedRowKeysValSort, setSelectedRowKeysValSort] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
+  const [scanTotal, setScanTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [scanPageNum, setScanPageNum] = useState(1);
+  const [scanPageSize, setScanPageSize] = useState(10);
   const [scanSortlist, setScanSortlist] = useState([]);
   const [sortList, setSortList] = useState([]);
   const [hospital, setHospital] = useState([]);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [manageClass, setManageClass] = useState([]);
   const [preSortNumData, setPreSortNumData] = useState({});
-  const receiveNumScan = useRef();
 
   useEffect(() => {
     hospitalList();
@@ -92,6 +94,7 @@ const SampleSorting = () => {
               };
             });
             setSortList(result);
+            setTotal(res.data.total);
           }
         },
       },
@@ -247,7 +250,6 @@ const SampleSorting = () => {
   ];
 
   const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     setSelectedRowKeysVal(selectedRowKeys);
   };
   const onSelectChangeSort = (keys: React.SetStateAction<never[]>) => {
@@ -415,6 +417,14 @@ const SampleSorting = () => {
       }
     });
   };
+  const pageChange = (num: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
+    setPageNum(num);
+    setPageSize(size);
+  };
+  const scanPageChange = (num, size) => {
+    setScanPageNum(num);
+    setScanPageSize(size);
+  };
   return (
     <>
       <Tabs type="card">
@@ -461,6 +471,16 @@ const SampleSorting = () => {
                 </div>
               )
             }
+            pagination={{
+              pageSize: scanPageSize,
+              current: scanPageNum,
+              total: scanTotal,
+              onChange: scanPageChange,
+              showTotal: (total, range) => `共 ${total} 条`,
+              showQuickJumper: true,
+              pageSizeOptions: ['10', '20', '30', '40'],
+              showSizeChanger: true,
+            }}
           />
         </TabPane>
         <TabPane tab="批量查询分拣" key="2">
@@ -491,6 +511,13 @@ const SampleSorting = () => {
                 <span> 分单后实际样本数:{preSortNumData.splitNum}</span>
               </div>
             )}
+            pagination={{
+              current: pageNum,
+              pageSize: pageSize,
+              total,
+              onChange: pageChange,
+              showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
+            }}
           />
         </TabPane>
       </Tabs>

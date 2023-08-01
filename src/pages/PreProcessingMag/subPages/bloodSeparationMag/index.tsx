@@ -54,63 +54,63 @@ const BloodSeparationMag = () => {
       dataIndex: 'receiveBarcode',
       width: 150,
       fixed: 'left',
-      align:'center'
+      align: 'center',
     },
 
     {
       title: '申请号',
       dataIndex: 'subId',
       width: 150,
-      align:'center'
+      align: 'center',
     },
     {
       title: '专业类别',
       dataIndex: 'labClassName',
       width: 100,
-      align:'center'
+      align: 'center',
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
       width: 100,
-      align:'center',
-      ellipsis:true
+      align: 'center',
+      ellipsis: true,
     },
     {
       title: '性别',
       dataIndex: 'sexName',
       width: 100,
-      align:'center'
+      align: 'center',
     },
     {
       title: '样本类型',
       dataIndex: 'sampleType',
       width: 100,
-      align:'center'
+      align: 'center',
     },
     {
       title: '检测状态',
       dataIndex: 'detectionStatus',
       width: 100,
-      align:'center'
+      align: 'center',
     },
     {
       title: '分拣时间',
       dataIndex: 'preSortDate',
       width: 200,
-      align:'center'
+      align: 'center',
     },
     {
       title: '分血人',
       dataIndex: 'bloodBy',
       width: 100,
-      align:'center'
+      align: 'center',
     },
     {
       title: '分血时间',
       dataIndex: 'bloodDate',
       width: 200,
-      align:'center'
+      align: 'center',
     },
   ];
   const getWaitList = (params: any) => {
@@ -299,8 +299,9 @@ const BloodSeparationMag = () => {
             打印分血标签
           </Button>
         </div>
-        <div>待分血列表</div>
+       
         <Table
+          title={() => '待分血列表'}
           rowSelection={rowSelectionWaitBlood}
           columns={columns}
           dataSource={waitBloodList}
@@ -313,8 +314,8 @@ const BloodSeparationMag = () => {
             showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
           }}
         />
-        <div>已分血列表</div>
         <Table
+         title={() => '已分血列表'}
           columns={columns}
           dataSource={finishBloodList}
           scroll={{ x: 'calc(700px + 50%)' }}

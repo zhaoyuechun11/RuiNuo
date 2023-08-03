@@ -195,7 +195,12 @@ export default {
             {
               path: '/generalInspectionMag/multiInstrument',
               component: '@/pages/GeneralInspectionMag/subPages/multiInstrument',
-              title: '单仪器',
+              title: '多仪器',
+            },
+            {
+              path: '/generalInspectionMag/manualExperiments',
+              component: '@/pages/GeneralInspectionMag/subPages/manualExperiments',
+              title: '多仪器',
             },
           ],
         },

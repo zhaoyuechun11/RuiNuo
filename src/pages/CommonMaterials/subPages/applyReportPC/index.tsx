@@ -343,12 +343,9 @@ const ApplyReportPC = () => {
       })}
       {renderForm()}
       <Table
+        size={'small'}
         columns={columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

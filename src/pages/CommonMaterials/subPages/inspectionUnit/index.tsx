@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
-import { Form, Input, message, Switch } from 'antd';
+import { Button, Icon } from '@/components';
+import { Form, Input, message, Switch,Table } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import { deleteHospital, hospitalExport } from '../../models/server';
 import styles from '../index.less';
@@ -35,7 +35,6 @@ const InspectionUnit = () => {
     {
       title: '联系地址',
       dataIndex: 'address',
-      fixed: 'left',
       width: 150,
       align: 'center',
     },
@@ -60,6 +59,7 @@ const InspectionUnit = () => {
     {
       title: '条形码长度',
       dataIndex: 'barcodeLen',
+      width: 150,
       align: 'center',
     },
     {
@@ -73,6 +73,7 @@ const InspectionUnit = () => {
       dataIndex: 'barcodePreCode',
       width: 150,
       align: 'center',
+      ellipsis:true
     },
     {
       title: '联系人',
@@ -91,6 +92,7 @@ const InspectionUnit = () => {
       dataIndex: 'financeCode',
       width: 150,
       align: 'center',
+      ellipsis:true
     },
     {
       title: '送检单位编码',
@@ -348,15 +350,11 @@ const InspectionUnit = () => {
       </div>
       {renderForm()}
       <Table
+        size={'small'}
         columns={columns}
-        rowKey="id"
         scroll={{
           x: 1500,
         }}
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

@@ -216,12 +216,9 @@ const ReportingUnit = () => {
         </Button>
       </div>
       <Table
+        size={'small'}
         columns={manageGroupColumns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

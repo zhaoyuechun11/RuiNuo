@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
-import { Button, Icon, Table } from '@/components';
-import { Form, Input } from 'antd';
+import { Button, Icon } from '@/components';
+import { Form, Input ,Table} from 'antd';
 import { main ,transformTree} from '@/utils';
 import BindModal from './components/bindModal';
 const TaskGroup = () => {
@@ -173,12 +173,8 @@ const TaskGroup = () => {
     <>
       {renderForm()}
       <Table
+        size={'small'}
         columns={statisticsColumns}
-        rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

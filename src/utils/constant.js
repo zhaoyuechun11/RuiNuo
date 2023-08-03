@@ -303,6 +303,12 @@ export const menu = [
         key: '3',
       },
       {
+        name: '上机任务分配-手工实验',
+        icon: null,
+        url: '/generalInspectionMag/manualExperiments',
+        key: '3',
+      },
+      {
         name: '报告数据管理',
         icon: null,
         url: '/home',

@@ -176,6 +176,7 @@ const BasicData = () => {
     <>
       {renderForm()}
       <Table
+        size={'small'}
         columns={Columns}
         rowKey="id"
         // onSelectCount={(count, keys) => {

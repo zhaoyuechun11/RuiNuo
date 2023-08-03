@@ -669,6 +669,7 @@ const SampleHandover = () => {
             columns={getColumns(1)}
             dataSource={scanSampleHandoverData}
             scroll={{ x: 'calc(700px + 50%)' }}
+            size={'small'}
           />
         </TabPane>
         <TabPane tab="批量查询至交接列" key="2">
@@ -709,6 +710,7 @@ const SampleHandover = () => {
             </div>
           </div>
           <Table
+            size={'small'}
             rowSelection={rowSelectionSort}
             columns={getColumns(2)}
             dataSource={sampleHandover}

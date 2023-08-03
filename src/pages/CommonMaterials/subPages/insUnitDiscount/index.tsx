@@ -357,12 +357,9 @@ const insUnitDiscount = () => {
       </div>
       {renderForm()}
       <Table
+        size={'small'}
         columns={Columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

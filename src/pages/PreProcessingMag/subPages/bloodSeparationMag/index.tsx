@@ -286,6 +286,7 @@ const BloodSeparationMag = () => {
           </Button>
         </div>
         <Table
+          size={'small'}
           rowSelection={rowSelection}
           columns={columns}
           dataSource={scanBloodData}
@@ -299,8 +300,9 @@ const BloodSeparationMag = () => {
             打印分血标签
           </Button>
         </div>
-       
+
         <Table
+          size={'small'}
           title={() => '待分血列表'}
           rowSelection={rowSelectionWaitBlood}
           columns={columns}
@@ -315,7 +317,8 @@ const BloodSeparationMag = () => {
           }}
         />
         <Table
-         title={() => '已分血列表'}
+          size={'small'}
+          title={() => '已分血列表'}
           columns={columns}
           dataSource={finishBloodList}
           scroll={{ x: 'calc(700px + 50%)' }}

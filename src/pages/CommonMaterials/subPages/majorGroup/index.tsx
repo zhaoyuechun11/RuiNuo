@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
-import { Form, Input, message } from 'antd';
+import { Button, Icon } from '@/components';
+import { Form, Input, message ,Table} from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import { deleteMajorGroup, majorGroupExport } from '../../models/server';
 import styles from './index.less';
@@ -30,6 +30,7 @@ const MajorGroup = () => {
       fixed: 'left',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '分类编码',
@@ -78,6 +79,7 @@ const MajorGroup = () => {
       dataIndex: 'isAutoSampleId',
       align: 'center',
       width: 180,
+      ellipsis:true
     },
     {
       title: '创建者id',
@@ -90,24 +92,28 @@ const MajorGroup = () => {
       dataIndex: 'isPrintBarcode',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '样本号用作样本条码号',
       dataIndex: 'isSampleIdAsBarcode',
       align: 'center',
       width: 180,
+      ellipsis:true
     },
     {
       title: '管理分类id',
       dataIndex: 'labClassManageId',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '管理分类名称',
       dataIndex: 'labClassManageName',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '实验室编码',
@@ -120,18 +126,21 @@ const MajorGroup = () => {
       dataIndex: 'sampleIdResetRule',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '样本号生成规则',
       dataIndex: 'sampleIdRule',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '流水号长度',
       dataIndex: 'serialNumberLength',
       align: 'center',
       width: 150,
+      ellipsis:true
     },
     {
       title: '顺序',
@@ -144,6 +153,7 @@ const MajorGroup = () => {
       fixed: 'right',
       align: 'center',
       width: 250,
+      
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -305,12 +315,8 @@ const MajorGroup = () => {
       </div>
       {renderForm()}
       <Table
+        size={'small'}
         columns={columns}
-        rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{
@@ -321,6 +327,7 @@ const MajorGroup = () => {
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
         dataSource={list}
+        scroll={{ x: 1300 }}
       />
       <EditOrAddModal
         Ref={modalRef}

@@ -3,33 +3,143 @@ import moment from 'moment';
 import { Button, Icon } from '@components';
 import { Table, Form, Input, DatePicker, Select, message } from 'antd';
 import { reportUnitSelect } from '@/models/server';
-import { reportUnitInstr, executorByReportUnit } from '../../models/server';
+import {
+  reportUnitInstr,
+  executorByReportUnit,
+  getSampleNo,
+  manyInstrAllocationScan,
+} from '../../models/server';
+import { createStr, containsNumbers, minusCreateStr } from '@/utils';
 import styles from './index.less';
+import { useSelector, useDispatch } from 'umi';
+const { Option } = Select;
 const MultiInstrument = () => {
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
   const [scanForm] = Form.useForm();
   const [reportUnitList, setReportUnitList] = useState([]);
   const [reportUnitInstrList, setReportUnitInstrList] = useState([]);
   const [executorList, setExecutorList] = useState([]);
   const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
-  var now1 = moment().format('YYYY-MM-DD HH:mm:ss');
+  const { useDetail } = useSelector((state: any) => state.global);
+  const { multiInstrument, sampleNo } = useSelector((state: any) => state.generalInspectionMag);
+  const [multiInstrumentList, setMultiInstrumentList] = useState([]);
+  const [reportUnitCodeVal, setReportUnitCodeVal] = useState();
+  const [execByName, setExecByName] = useState();
+  const [instrNum, setInstrNum] = useState();
+  var now1 = moment().format('YYYY-MM-DD');
   useEffect(() => {
-    form.setFieldsValue({ createDateStart: moment(now1, 'YYYY-MM-DD HH:mm:ss') });
+    form.setFieldsValue({ labDate: moment(now1, 'YYYY-MM-DD') });
     getReportUnitSelect();
   }, []);
+  useEffect(() => {
+    if (instrNum?.length > 0) {
+      test(instrNum);
+    }
+  }, [instrNum]);
+  useEffect(() => {
+    if (multiInstrumentList.length > 0) {
+      const newData = multiInstrumentList.map((item) => {
+        let fieldName = 'no' + item.instrId;
+        const executorFieldName = 'executor' + item.instrId;
+        const no = form.getFieldValue(fieldName);
+        const executorId = form.getFieldValue(executorFieldName);
+        const executorName = executorList.filter((item) => item.id == executorId);
+        console.log(executorName);
 
+        return {
+          ...item,
+          key: item.id,
+          reportUnitCode: reportUnitCodeVal,
+          sampleNo: no,
+          createBy: useDetail.name,
+          taskTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+          execBy: executorName.length > 0 ? executorName[0]?.name : useDetail.name,
+        };
+      });
+
+      const mergedArray = [newData, multiInstrument].reduce((acc, val) => acc.concat(val), []);
+      const ids = mergedArray.map((item) => item.id);
+      setSelectedRowKeysVal(ids);
+
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'multiInstrument',
+          dataSource: mergedArray,
+        },
+      });
+    }
+  }, [multiInstrumentList]);
   const search = () => {};
-  const add = () => {
-    console.log(isNaN(scanForm.getFieldsValue().no));
-    if (!isNaN(scanForm.getFieldsValue().no)) {
+  const add = (index) => {
+    let fieldName = 'no' + index;
+
+    console.log(form.getFieldValue(fieldName));
+    debugger;
+    if (!isNaN(form.getFieldValue(fieldName))) {
+      const strData = form.getFieldValue(fieldName);
+      let specifyValue = strData.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
+      console.log('最后的结果 :>> ', createStr(strData, specifyValue)); //abc1235ee1235d00020hhh
+      form.setFieldsValue({ [fieldName]: createStr(strData, specifyValue) });
     } else {
-      var lastChar = scanForm.getFieldsValue().no.charAt(scanForm.getFieldsValue().no.length - 1);
-      console.log(isNaN(lastChar));
+      var lastChar = form.getFieldValue(fieldName).charAt(form.getFieldValue(fieldName).length - 1);
+      if (!isNaN(lastChar)) {
+        const strData = form.getFieldValue(fieldName);
+        if (containsNumbers(strData)) {
+          let specifyValue = strData.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
+          //let specifyValue2 = strData2.match(/\d+(\.\d+)?/g).pop()  //获取字符串中最后出现的数值
+          console.log('最后的结果 :>> ', createStr(strData, specifyValue)); //abc1235ee1235d00020hhh
+          //console.log('最后的结果 :>> ', createStr(strData2, specifyValue));  //value-0100
+          form.setFieldsValue({ [fieldName]: createStr(strData, specifyValue) });
+        }
+      } else {
+        message.warning('末位非数字，无法增加！');
+      }
     }
   };
-  const minus = () => {};
+  const minus = (index) => {
+    let fieldName = 'no' + index;
+    const no = form.getFieldValue(fieldName);
+    if (!no && no !== 0) {
+      message.warning('请先输入样本号!');
+      return;
+    }
+
+    if (!isNaN(Number(no))) {
+      form.setFieldsValue({ [fieldName]: Number(no) - 1 });
+      return;
+    }
+    let specifyValue = no.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
+    console.log('最后的结果 :>> ', minusCreateStr(no, specifyValue)); //abc1235ee1235d00020hhh
+    if (parseInt(specifyValue) === 0) {
+      message.warning('不可再减了哦!');
+    }
+    if (minusCreateStr(no, specifyValue)) {
+      form.setFieldsValue({ [fieldName]: minusCreateStr(no, specifyValue) });
+    }
+    // const num = no.replace(/^.*?(\d*)$/, (str, match, index) => match || '');
+    // const nonzeroStart = num.match(/[^0][1-9]\d*/g); //匹配以非0数字开头
+    // //const nonzeroStart = num.match(/^[1-9]\d*$/);
+    // debugger;
+
+    // if (!num) {
+    //   message.warning('末位非数字,无法递减!');
+    //   return;
+    // } else {
+    //   const indexVal = num.match(/[^0][1-9]\d*/g)[0].length; //匹配以非0数字开头
+
+    //   if (indexVal > 0) {
+    //     spelicVal = num.slice(0, -indexVal);
+    //   }
+    //   const str = no.replace(/^(.*?)\d*$/, (str, match, index) => match || '0');
+    //   console.log(str + spelicVal + (Number(nonzeroStart) - 1));
+    //   const result = str + spelicVal + (Number(nonzeroStart) - 1);
+    //   scanForm.setFieldsValue({ no: result });
+    // }
+  };
   const getReportUnitSelect = () => {
-    reportUnitSelect().then((res) => {
+    reportUnitSelect({ userId: useDetail.id }).then((res) => {
       if (res.code === 200) {
         setReportUnitList(res.data);
       }
@@ -39,20 +149,70 @@ const MultiInstrument = () => {
     reportUnitInstr({ reportUnitId }).then((res) => {
       if (res.code === 200) {
         setReportUnitInstrList(res.data);
+        setInstrNum(res.data.map((item) => item.id));
       }
     });
   };
+  const getSampleNoData = (params) => {
+    getSampleNo(params).then((res) => {
+      if (res.code === 200) {
+        res.data = '1234567';
+        if (res.data !== '') {
+          sampleNo.push(res.data);
+          dispatch({
+            type: 'generalInspectionMag/save',
+            payload: {
+              type: 'sampleNo',
+              dataSource: sampleNo,
+            },
+          });
+          for (let i in sampleNo) {
+            let fieldName = 'no' + params.instrId;
+            form.setFieldsValue({ [fieldName]: sampleNo[i] });
+          }
+        }
+      }
+    });
+  };
+  const test = async (arr) => {
+    for (let i in arr) {
+      await getSampleNoData({
+        instrId: arr[i],
+        labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+      });
+    }
+  };
+
   const getExecutorByReportUnit = (reportUnitId) => {
     executorByReportUnit({ reportUnitId }).then((res) => {
       if (res.code === 200) {
         setExecutorList(res.data);
+        form.setFieldsValue({ executor: useDetail.id });
+        setExecByName(useDetail.name);
       }
     });
   };
   const reportUnitChange = (e) => {
     if (e) {
+      const result = reportUnitList.filter((item) => item.id == e);
+      setReportUnitCodeVal(result[0].reportUnitCode);
       getReportUnitInstr(e);
       getExecutorByReportUnit(e);
+    }
+  };
+  const executorChange = (e) => {
+    if (e) {
+      const result = executorList.filter((item) => item.id == e);
+      setExecByName(result[0].name);
+    }
+  };
+
+  const labDateChange = (e) => {
+    if (e) {
+      getSampleNoData({
+        instrId: form.getFieldValue('instrId'),
+        labDate: e?.format('YYYY-MM-DD HH:mm:ss'),
+      });
     }
   };
   const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
@@ -65,7 +225,7 @@ const MultiInstrument = () => {
   const columns = [
     {
       title: '样本条码',
-      dataIndex: 'receiveBarcode',
+      dataIndex: 'sampleBarcode',
       width: 100,
       fixed: 'left',
       ellipsis: true,
@@ -73,72 +233,72 @@ const MultiInstrument = () => {
 
     {
       title: '报告单元',
-      dataIndex: 'isEmer',
+      dataIndex: 'reportUnitCode',
       width: 100,
     },
     {
       title: '专业',
-      dataIndex: 'subId',
+      dataIndex: 'labClassName',
       width: 100,
       ellipsis: true,
     },
     {
       title: '仪器',
-      dataIndex: 'subId',
+      dataIndex: 'instrName',
       width: 100,
       ellipsis: true,
     },
     {
       title: '样本号',
-      dataIndex: 'subId',
+      dataIndex: 'sampleNo',
       width: 100,
       ellipsis: true,
     },
     {
       title: '姓名',
-      dataIndex: 'subId',
+      dataIndex: 'patientName',
       width: 100,
       ellipsis: true,
     },
     {
       title: '性别',
-      dataIndex: 'subId',
+      dataIndex: 'sexName',
       width: 100,
       ellipsis: true,
     },
     {
       title: '年龄',
-      dataIndex: 'subId',
+      dataIndex: 'age',
       width: 100,
       ellipsis: true,
     },
     {
       title: '申请项目代号',
-      dataIndex: 'subId',
+      dataIndex: 'reqItemCode',
       width: 100,
       ellipsis: true,
     },
     {
       title: '申请项目',
-      dataIndex: 'subId',
+      dataIndex: 'reqItemName',
       width: 100,
       ellipsis: true,
     },
     {
       title: '分配人',
-      dataIndex: 'subId',
+      dataIndex: 'createBy',
       width: 100,
       ellipsis: true,
     },
     {
       title: '执行人',
-      dataIndex: 'subId',
+      dataIndex: 'execBy',
       width: 100,
       ellipsis: true,
     },
     {
       title: '分配时间',
-      dataIndex: 'subId',
+      dataIndex: 'taskTime',
       width: 100,
       ellipsis: true,
     },
@@ -161,7 +321,7 @@ const MultiInstrument = () => {
           </Button>
           <Button
             onClick={() => {
-              // deleteCurrentItem(record.id);
+              deleteCurrentItem(record.id);
             }}
           >
             删除
@@ -170,10 +330,39 @@ const MultiInstrument = () => {
       ),
     },
   ];
+  const deleteCurrentItem = (id) => {
+    const result = multiInstrument.filter((item) => item.id !== id);
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'multiInstrument',
+        dataSource: result,
+      },
+    });
+  };
+  const getManyInstrAllocationScan = (params) => {
+    manyInstrAllocationScan(params).then((res) => {
+      if (res.code === 200) {
+        setMultiInstrumentList(res.data);
+      }
+    });
+  };
+  const searchHandle = (changedValues: any, allValues: undefined) => {
+    if (!allValues?.sampleBarcode) {
+      return;
+    }
+    const params = {
+      sampleBarcode: allValues?.sampleBarcode,
+      instrIds: instrNum,
+      reportUnitId: form.getFieldValue('reportUnitId'),
+    };
+    getManyInstrAllocationScan(params);
+  };
+
   const renderForm = () => {
     return (
       <Form onValuesChange={search} layout="inline" form={form} className={styles.search_box}>
-        <Form.Item name="labClassManageId" label="报告单元">
+        <Form.Item name="reportUnitId" label="报告单元">
           <Select
             placeholder="请选择报告单元"
             autoComplete="off"
@@ -190,66 +379,94 @@ const MultiInstrument = () => {
           </Select>
         </Form.Item>
 
-        <div id="hospitalId">
-          <Form.Item name="hospitalId" label="检测仪器">
-            <Select
-              placeholder="请选择检测仪器"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('hospitalId')}
-            >
-              {reportUnitInstrList?.map((item, index) => (
-                <Option value={item.id} key={index}>
-                  {item.instrName}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </div>
-        <Form.Item name="createDateStart">
+        {instrNum?.map((item, index) => {
+          return (
+            <div id="instrId">
+              <Form.Item name={`${`instrId` + index}`} label={`${`检测仪器`}`}>
+                <Select
+                  placeholder="请选择检测仪器"
+                  autoComplete="off"
+                  allowClear
+                  getPopupContainer={() => document.getElementById('instrId')}
+                  defaultValue={item}
+                  disabled
+                >
+                  {reportUnitInstrList?.map((item, index) => (
+                    <Option value={item.id} key={index}>
+                      {item.instrName}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </div>
+          );
+        })}
+        {instrNum?.map((item, index) => {
+          return (
+            <>
+              <Form.Item name={`${`no` + item}`} label="样本编号">
+                <Input placeholder="请输入样本编号" />
+              </Form.Item>
+              <Button btnType="primary" onClick={() => add(item)}>
+                +
+              </Button>
+              <Button
+                btnType="primary"
+                onClick={() => minus(item)}
+                className={styles.minus}
+                style={{ margin: '0 15px' }}
+              >
+                -
+              </Button>
+            </>
+          );
+        })}
+        <Form.Item name="labDate" rules={[{ required: true, message: '请选择检验日期' }]}>
           <DatePicker
-            showTime={{ format: 'HH:mm:ss' }}
-            format="YYYY-MM-DD HH:mm:ss"
+            format="YYYY-MM-DD"
             placeholder="请选择检验日期"
             style={{ width: 340 }}
+            onChange={labDateChange}
           />
         </Form.Item>
-        <div id="labClassId">
-          <Form.Item name="labClassId" label="执行人">
-            <Select
-              placeholder="请选择执行人"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
-            >
-              {executorList.length > 0 &&
-                executorList.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+        {instrNum?.map((item, index) => {
+          return (
+            <div id="executor">
+              <Form.Item name={`${`executor` + item}`} label="执行人">
+                <Select
+                  placeholder="请选择执行人"
+                  autoComplete="off"
+                  allowClear
+                  getPopupContainer={() => document.getElementById('executor')}
+                  onChange={executorChange}
+                  defaultValue={useDetail.id}
+                >
+                  {executorList.length > 0 &&
+                    executorList.map((item) => (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    ))}
+                </Select>
+              </Form.Item>
+            </div>
+          );
+        })}
       </Form>
     );
   };
   const renderFormScan = () => {
     return (
-      <Form onValuesChange={search} layout="inline" form={scanForm} className={styles.scanForm_box}>
-        <Form.Item name="hospitalId" label="样本条码">
+      <Form
+        onValuesChange={searchHandle}
+        layout="inline"
+        form={scanForm}
+        className={styles.scanForm_box}
+      >
+        <Form.Item name="sampleBarcode" label="样本条码">
           <Input placeholder="请输入样本条码" />
         </Form.Item>
 
-        <Form.Item name="no" label="样本编号">
-          <Input placeholder="请输入样本编号" />
-        </Form.Item>
-        <Button btnType="primary" onClick={add}>
-          +
-        </Button>
-        <Button btnType="primary" onClick={minus} className={styles.minus}>
-          -
-        </Button>
         <Button btnType="primary">分配任务到仪器</Button>
       </Form>
     );
@@ -262,7 +479,7 @@ const MultiInstrument = () => {
         rowSelection={rowSelection}
         columns={columns}
         className={styles.table_box}
-        dataSource={[]}
+        dataSource={multiInstrument}
         scroll={{ x: 'calc(700px + 50%)' }}
       />
     </>

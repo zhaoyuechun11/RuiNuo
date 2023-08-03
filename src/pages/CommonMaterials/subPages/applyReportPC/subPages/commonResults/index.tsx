@@ -187,10 +187,7 @@ const CommonResults = ({ parent, btnPermissions }) => {
       <Table
         columns={Columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
+        size={'small'}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

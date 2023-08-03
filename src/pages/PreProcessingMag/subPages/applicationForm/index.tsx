@@ -281,6 +281,7 @@ const applicationForm = () => {
         </Tooltip>
       </div>
       <Table
+     
         scroll={{ x: 1300 }}
         unit="个"
         columns={columns}

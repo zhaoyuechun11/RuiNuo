@@ -258,6 +258,7 @@ const inspectionInstruments = () => {
       </div>
       {renderForm()}
       <Table
+        size={'small'}
         columns={columns}
         rowKey="id"
         // onSelectCount={(count, keys) => {

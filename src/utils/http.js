@@ -27,7 +27,8 @@ let removePending = (ever) => {
       // ever.url.indexOf('/apiweb/position/invitePostList') > -1 ||
       // ever.url.indexOf('/apiweb/interview/config/index') > -1 ||
       // ever.url.indexOf('/apiweb/user/getUserDetail') > -1
-      ever.url.indexOf('/basic/dict/getList') > -1
+      ever.url.indexOf('/basic/dict/getList') > -1 ||
+      ever.url.indexOf('lab/reportResultCommon/getSampleNo') > -1
     ) {
       return;
     }

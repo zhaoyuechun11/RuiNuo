@@ -1,3 +1,4 @@
+
 import moment from 'moment';
 import URL from './env';
 import 'moment/locale/zh-cn';
@@ -474,4 +475,81 @@ export const duplicatesAndNum = (arr) => {
     });
   });
   return lastArr;
+};
+export const createStr = (str, i) => {
+  // rearSection 截取指定数值后面的字符冲
+  let frontSection, rearSection, value;
+  let backOf0;
+  rearSection = str.substring(str.lastIndexOf(i.substr(i.length - 1, 1)), str.length); //截取以最后一个指定数值分割的后面部分
+  //如果指定数值中包含0，并且数值的最后一位不为0
+  if (i.indexOf('0') !== -1 && i.slice(i.length - 1) !== '0') {
+    frontSection = str.substring(0, str.lastIndexOf('0')); // frontSection截取整个字符中以最后一位0前面的字符串
+    backOf0 = i.substring(i.lastIndexOf('0')); // backOf0 截取指定字符以最后一个0 分割的后面的数值
+    if (
+      i.slice(-1) == '9' &&
+      (Number(backOf0) + 1).toString().length > Number(backOf0).toString().length
+    ) {
+      //如果数值的最后一位是9，并且数值以最后一个0分割后加1后的长度比原来长度大（数值后为09,099,0999,0999，...)
+      value = frontSection + (Number(backOf0) + 1) + rearSection.slice(1); //然后拼接
+    } else {
+      //如果数值加1后的长度没有变化拼接上前面的0（数值后为019,029,039，049，...)
+      value = frontSection + '0' + (Number(backOf0) + 1) + rearSection.slice(1); //然后拼接
+    }
+  } else if (i.indexOf('0') !== -1 && i.slice(i.length - 1) == '0') {
+    //如果指定数值中包含0，并且数值的最后一位为0
+    frontSection = str.substring(0, str.lastIndexOf('0')); // frontSection截取整个字符中以最后一位0前面的字符串
+    backOf0 = i.substring(i.lastIndexOf('0')); // backOf0 截取指定字符以最后一个0 分割的后面的数值
+    value = frontSection + (Number(backOf0) + 1) + rearSection.slice(1); //拼接
+  } else {
+    //正常状态下
+    frontSection = str.substring(0, str.lastIndexOf(i)); // frontSection截取整个字符中以指定数值前面的字符串
+    value = frontSection + (Number(i) + 1) + rearSection.slice(1); //拼接
+  }
+  console.log('value :>> ', value);
+  return value;
+};
+export const minusCreateStr = (str, i) => {
+  // rearSection 截取指定数值后面的字符冲
+  let frontSection, rearSection, value;
+  let backOf0;
+  rearSection = str.substring(str.lastIndexOf(i.substr(i.length - 1, 1)), str.length); //截取以最后一个指定数值分割的后面部分
+  //如果指定数值中包含0，并且数值的最后一位不为0
+  if (i.indexOf('0') !== -1 && i.slice(i.length - 1) !== '0') {
+    frontSection = str.substring(0, str.lastIndexOf('0')); // frontSection截取整个字符中以最后一位0前面的字符串
+    backOf0 = i.substring(i.lastIndexOf('0')); // backOf0 截取指定字符以最后一个0 分割的后面的数值
+    if (
+      i.slice(-1) == '9' &&
+      (Number(backOf0) - 1).toString().length > Number(backOf0).toString().length
+    ) {
+      //如果数值的最后一位是9，并且数值以最后一个0分割后加1后的长度比原来长度大（数值后为09,099,0999,0999，...)
+      value = frontSection + (Number(backOf0) - 1) + rearSection.slice(1); //然后拼接
+    } else {
+      //如果数值加1后的长度没有变化拼接上前面的0（数值后为019,029,039，049，...)
+      value = frontSection + '0' + (Number(backOf0) - 1) + rearSection.slice(1); //然后拼接
+    }
+  } else if (i.indexOf('0') !== -1 && i.slice(i.length - 1) == '0') {
+    //如果指定数值中包含0，并且数值的最后一位为0
+    //frontSection = str.substring(0, str.lastIndexOf('0')); // frontSection截取整个字符中以最后一位0前面的字符串
+    //backOf0 = i.substring(i.lastIndexOf('0')); // backOf0 截取指定字符以最后一个0 分割的后面的数值
+
+    if (parseInt(i) !== 0) {
+      //message.warning('不可再减了哦!');
+      let strval = str.slice(0, -i.length);
+      let middmalVal = i.slice(0, -parseInt(i).toString().length);
+      value = strval + middmalVal + (parseInt(i) - 1);
+    }
+
+    //debugger;
+    //value = frontSection + (Number(backOf0) - 1) + rearSection.slice(1); //拼接
+  } else {
+    //正常状态下
+    frontSection = str.substring(0, str.lastIndexOf(i)); // frontSection截取整个字符中以指定数值前面的字符串
+    value = frontSection + (Number(i) - 1) + rearSection.slice(1); //拼接
+  }
+  console.log('value :>> ', value);
+  return value;
+};
+export const containsNumbers = (str) => {
+  // 判断字符串中是否包含数字
+  return /\d/.test(str);
 };

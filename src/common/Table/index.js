@@ -79,6 +79,7 @@ export default class StandardTable extends PureComponent {
         )} */}
         {isRowSelection ? (
           <Table
+            size={'small'}
             rowKey={rowKey || 'key'}
             rowSelection={rowSelection}
             dataSource={data}
@@ -101,6 +102,7 @@ export default class StandardTable extends PureComponent {
           />
         ) : (
           <Table
+            size={'small'}
             rowKey={rowKey || 'key'}
             dataSource={data}
             pagination={paginationProps}

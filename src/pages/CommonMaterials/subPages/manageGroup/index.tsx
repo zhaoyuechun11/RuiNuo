@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
+import { Button, Icon,Table } from '@/components';
 import { Form, Input, message } from 'antd';
 import { downLoad, main ,transformTree} from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
@@ -21,6 +21,7 @@ const ManageGroup = () => {
   const searchVal = useRef();
   const [list, setList] = useState([]);
   const [btnPermissions, setBtnPermissions] = useState([]);
+ 
   const manageGroupColumns = [
     {
       title: 'code值',
@@ -207,10 +208,6 @@ const ManageGroup = () => {
       <Table
         columns={manageGroupColumns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

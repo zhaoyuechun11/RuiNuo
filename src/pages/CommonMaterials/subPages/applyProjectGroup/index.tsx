@@ -3,7 +3,7 @@ import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select, Switch } from 'antd';
-import { downLoad, main,transformTree } from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import { applyProjectDelete, applyProjectExport, majorGroup } from '../../models/server';
 import styles from '../index.less';
 import UseHospital from './subPages/useHospital';
@@ -363,11 +363,11 @@ const ApplyProjectGroup = () => {
                 新增
               </Button>
             ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }} >
+              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }}>
                 导入
               </Button>
             ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }} >
+              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }}>
                 导出
               </Button>
             ) : null}
@@ -376,12 +376,9 @@ const ApplyProjectGroup = () => {
       })}
       {renderForm()}
       <Table
+        size={'small'}
         columns={columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

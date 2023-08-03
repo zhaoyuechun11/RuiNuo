@@ -115,65 +115,77 @@ const SampleSorting = () => {
       width: 100,
       fixed: 'left',
       ellipsis: true,
+      align: 'center',
     },
 
     {
       title: '急诊',
       dataIndex: 'isEmer',
       width: 100,
+      align: 'center',
     },
     {
       title: '申请号',
       dataIndex: 'subId',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
       width: 100,
+      align: 'center',
     },
     {
       title: '性别',
       dataIndex: 'sexName',
       width: 100,
+      align: 'center',
     },
     {
       title: '年龄',
       dataIndex: 'age',
       width: 100,
+      align: 'center',
     },
     {
       title: '专业类别',
       dataIndex: 'labClassName',
       width: 100,
+      align: 'center',
     },
     {
       title: '样本编号',
       dataIndex: 'sampleNo',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '样本类型',
       dataIndex: 'sampleType',
       width: 100,
+      align: 'center',
     },
     {
       title: '检测项目',
       dataIndex: 'reqItemName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '检测状态',
       dataIndex: 'detectionStatus',
       width: 100,
+      align: 'center',
     },
     {
       title: '送检单位',
       dataIndex: 'hospitalName',
       width: 100,
+      align: 'center',
     },
     {
       title: '是否含外送项',
@@ -185,6 +197,7 @@ const SampleSorting = () => {
       title: '分血标记',
       dataIndex: 'bloodFlag',
       width: 100,
+      align: 'center',
       render: (text) => {
         <span className={styles.bloodFlag}>{text}</span>;
       },
@@ -193,11 +206,13 @@ const SampleSorting = () => {
       title: '备注',
       dataIndex: 'remark',
       width: 100,
+      align: 'center',
     },
     {
       title: '分拣人',
       dataIndex: 'preSortBy',
       width: 100,
+      align: 'center',
     },
     {
       title: '分拣时间',
@@ -448,6 +463,7 @@ const SampleSorting = () => {
             </div>
           </div>
           <Table
+            size={'small'}
             rowSelection={rowSelection}
             columns={columns}
             className={styles.table_box}
@@ -500,6 +516,7 @@ const SampleSorting = () => {
             </div>
           </div>
           <Table
+            size={'small'}
             rowSelection={rowSelectionSort}
             columns={columns}
             dataSource={sortList}

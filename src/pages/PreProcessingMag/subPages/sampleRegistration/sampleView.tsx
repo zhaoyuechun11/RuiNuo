@@ -11,6 +11,7 @@ const SampleView = ( data, props ) => {
   return (
     <div>
       <Table
+       size={'small'}
         scroll={{ x: 'max-content' }}
         rowKey={'id'}
         columns={data.columns}

@@ -18,3 +18,12 @@ export function manyInstrAllocationScan(params) {
 export function manualAllocationScan(params) {
   return axios('lab/reqMainSplit/manualAllocationScan', 'get', params);
 }
+export function instrMachineAllocation(params) {
+  return axios('lab/reqMainSplit/instrMachineAllocation', 'post', params);
+}
+export function getListByInstr(params) {
+  return axios('basic/reqItem/getListByInstr', 'get', params);
+}
+export function manualMachineAllocation(params) {
+  return axios('lab/reqMainSplit/manualMachineAllocation', 'post', params);
+}

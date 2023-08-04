@@ -71,6 +71,16 @@ const SampleSorting = () => {
           data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
         }) => {
           if (res.code === 200) {
+            let flag = false;
+            for (let i = 0; i < scanSortData.length; i++) {
+              if (scanSortData[i].id === res.data[0]?.id) {
+                flag = true;
+              }
+            }
+            if (flag) {
+              message.warning('该条数据已扫过,不可重复再扫!');
+              return;
+            }
             setScanSortlist(res.data);
           }
         },

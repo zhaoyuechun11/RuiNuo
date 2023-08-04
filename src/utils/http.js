@@ -49,7 +49,9 @@ axios.interceptors.request.use(
       if (
         config.url === 'lab/reqMainSplit/preSort' ||
         config.url === 'lab/reqMainSplit/blood' ||
-        config.url === 'lab/reqMainSplit/preTransfer'
+        config.url === 'lab/reqMainSplit/preTransfer' ||
+        config.url === 'lab/reqMainSplit/instrMachineAllocation' ||
+        config.url === 'lab/reqMainSplit/manualMachineAllocation'
       ) {
         config.data = config.data;
       } else {

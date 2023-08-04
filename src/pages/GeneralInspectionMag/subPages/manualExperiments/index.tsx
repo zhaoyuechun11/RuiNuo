@@ -3,50 +3,178 @@ import moment from 'moment';
 import { Button, Icon } from '@components';
 import { Table, Form, Input, DatePicker, Select, message } from 'antd';
 import { reportUnitSelect } from '@/models/server';
-import {  executorByReportUnit,manualAllocationScan } from '../../models/server';
-import styles from './index.less';
-const { Option } = Select;
+import {
+  executorByReportUnit,
+  getSampleNo,
+  manualAllocationScan,
+  manualMachineAllocation,
+} from '../../models/server';
+import { createStr, containsNumbers, minusCreateStr } from '@/utils';
+import styles from '../index.less';
+import { useSelector, useDispatch, useLocation } from 'umi';
 const ManualExperiments = () => {
+  const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const [form] = Form.useForm();
   const [scanForm] = Form.useForm();
   const [reportUnitList, setReportUnitList] = useState([]);
-
   const [executorList, setExecutorList] = useState([]);
   const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
-  var now1 = moment().format('YYYY-MM-DD HH:mm:ss');
+  const { useDetail } = useSelector((state: any) => state.global);
+  const { manualAllocation } = useSelector((state: any) => state.generalInspectionMag);
+  const [manualAllocationList, setManualAllocationList] = useState([]);
+  const [reportUnitCodeVal, setReportUnitCodeVal] = useState();
+  const [execByName, setExecByName] = useState();
+  var now1 = moment().format('YYYY-MM-DD');
   useEffect(() => {
-    form.setFieldsValue({ createDateStart: moment(now1, 'YYYY-MM-DD HH:mm:ss') });
+    form.setFieldsValue({ labDate: moment(now1, 'YYYY-MM-DD') });
     getReportUnitSelect();
+    getSampleNoData({ instrId: 0, labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD') });
   }, []);
+  useEffect(() => {
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'manualAllocation',
+        dataSource: [],
+      },
+    });
+  }, [pathname]);
+  useEffect(() => {
+    if (manualAllocationList.length > 0) {
+      const newData = manualAllocationList.map((item) => {
+        return {
+          ...item,
+          key: item.id,
+          reportUnitCode: reportUnitCodeVal,
+          sampleNo: scanForm.getFieldsValue().no,
+          createBy: useDetail.name,
+          taskTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+          execBy: execByName,
+        };
+      });
 
+      const mergedArray = [newData, manualAllocation].reduce((acc, val) => acc.concat(val), []);
+      const ids = mergedArray.map((item) => item.id);
+      setSelectedRowKeysVal(ids);
+      add();
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'manualAllocation',
+          dataSource: mergedArray,
+        },
+      });
+    }
+  }, [manualAllocationList]);
   const search = () => {};
   const add = () => {
-    console.log(isNaN(scanForm.getFieldsValue().no));
     if (!isNaN(scanForm.getFieldsValue().no)) {
+      const strData = scanForm.getFieldsValue().no;
+      let specifyValue = strData.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
+      console.log('最后的结果 :>> ', createStr(strData, specifyValue)); //abc1235ee1235d00020hhh
+      scanForm.setFieldsValue({ no: createStr(strData, specifyValue) });
     } else {
       var lastChar = scanForm.getFieldsValue().no.charAt(scanForm.getFieldsValue().no.length - 1);
-      console.log(isNaN(lastChar));
+      if (!isNaN(lastChar)) {
+        const strData = scanForm.getFieldsValue().no;
+        if (containsNumbers(strData)) {
+          let specifyValue = strData.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
+          //let specifyValue2 = strData2.match(/\d+(\.\d+)?/g).pop()  //获取字符串中最后出现的数值
+          console.log('最后的结果 :>> ', createStr(strData, specifyValue)); //abc1235ee1235d00020hhh
+          //console.log('最后的结果 :>> ', createStr(strData2, specifyValue));  //value-0100
+          scanForm.setFieldsValue({ no: createStr(strData, specifyValue) });
+        }
+      } else {
+        message.warning('末位非数字，无法增加！');
+      }
     }
   };
-  const minus = () => {};
+  const minus = () => {
+    const no = scanForm.getFieldsValue().no;
+    if (!no && no !== 0) {
+      message.warning('请先输入样本号!');
+      return;
+    }
+
+    if (!isNaN(Number(no))) {
+      scanForm.setFieldsValue({ no: Number(no) - 1 });
+      return;
+    }
+    let specifyValue = no.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
+    console.log('最后的结果 :>> ', minusCreateStr(no, specifyValue)); //abc1235ee1235d00020hhh
+    if (parseInt(specifyValue) === 0) {
+      message.warning('不可再减了哦!');
+    }
+    if (minusCreateStr(no, specifyValue)) {
+      scanForm.setFieldsValue({ no: minusCreateStr(no, specifyValue) });
+    }
+    // const num = no.replace(/^.*?(\d*)$/, (str, match, index) => match || '');
+    // const nonzeroStart = num.match(/[^0][1-9]\d*/g); //匹配以非0数字开头
+    // //const nonzeroStart = num.match(/^[1-9]\d*$/);
+    // debugger;
+
+    // if (!num) {
+    //   message.warning('末位非数字,无法递减!');
+    //   return;
+    // } else {
+    //   const indexVal = num.match(/[^0][1-9]\d*/g)[0].length; //匹配以非0数字开头
+
+    //   if (indexVal > 0) {
+    //     spelicVal = num.slice(0, -indexVal);
+    //   }
+    //   const str = no.replace(/^(.*?)\d*$/, (str, match, index) => match || '0');
+    //   console.log(str + spelicVal + (Number(nonzeroStart) - 1));
+    //   const result = str + spelicVal + (Number(nonzeroStart) - 1);
+    //   scanForm.setFieldsValue({ no: result });
+    // }
+  };
   const getReportUnitSelect = () => {
-    reportUnitSelect().then((res) => {
+    reportUnitSelect({ userId: useDetail.id }).then((res) => {
       if (res.code === 200) {
         setReportUnitList(res.data);
       }
     });
   };
 
+  const getSampleNoData = (params) => {
+    getSampleNo(params).then((res) => {
+      if (res.code === 200) {
+        if (res.data !== '') {
+          form.setFieldsValue({ no: res.data });
+        }
+      }
+    });
+  };
   const getExecutorByReportUnit = (reportUnitId) => {
     executorByReportUnit({ reportUnitId }).then((res) => {
       if (res.code === 200) {
         setExecutorList(res.data);
+        form.setFieldsValue({ executor: useDetail.id });
+        setExecByName(useDetail.name);
       }
     });
   };
   const reportUnitChange = (e) => {
     if (e) {
+      const result = reportUnitList.filter((item) => item.id == e);
+      setReportUnitCodeVal(result[0].reportUnitCode);
       getExecutorByReportUnit(e);
+    }
+  };
+  const executorChange = (e) => {
+    if (e) {
+      const result = executorList.filter((item) => item.id == e);
+      setExecByName(result[0].name);
+    }
+  };
+
+  const labDateChange = (e) => {
+    if (e) {
+      getSampleNoData({
+        instrId: form.getFieldValue('instrId'),
+        labDate: e?.format('YYYY-MM-DD HH:mm:ss'),
+      });
     }
   };
   const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
@@ -59,89 +187,95 @@ const ManualExperiments = () => {
   const columns = [
     {
       title: '样本条码',
-      dataIndex: 'receiveBarcode',
+      dataIndex: 'sampleBarcode',
       width: 100,
       fixed: 'left',
       ellipsis: true,
+      align: 'center',
     },
 
     {
       title: '报告单元',
-      dataIndex: 'isEmer',
+      dataIndex: 'reportUnitCode',
       width: 100,
+      align: 'center',
     },
     {
       title: '专业',
-      dataIndex: 'subId',
+      dataIndex: 'labClassName',
       width: 100,
       ellipsis: true,
-    },
-    {
-      title: '仪器',
-      dataIndex: 'subId',
-      width: 100,
-      ellipsis: true,
+      align: 'center',
     },
     {
       title: '样本号',
-      dataIndex: 'subId',
+      dataIndex: 'sampleNo',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '姓名',
-      dataIndex: 'subId',
+      dataIndex: 'patientName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '性别',
-      dataIndex: 'subId',
+      dataIndex: 'sexName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '年龄',
-      dataIndex: 'subId',
+      dataIndex: 'age',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '申请项目代号',
-      dataIndex: 'subId',
+      dataIndex: 'reqItemCode',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '申请项目',
-      dataIndex: 'subId',
+      dataIndex: 'reqItemName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '分配人',
-      dataIndex: 'subId',
+      dataIndex: 'createBy',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '执行人',
-      dataIndex: 'subId',
+      dataIndex: 'execBy',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '分配时间',
-      dataIndex: 'subId',
+      dataIndex: 'taskTime',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
       align: 'center',
-      width: 180,
+      width: 200,
       render: (text: string, record: Record<string, any>) => (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
@@ -155,7 +289,7 @@ const ManualExperiments = () => {
           </Button>
           <Button
             onClick={() => {
-              // deleteCurrentItem(record.id);
+              deleteCurrentItem(record.id);
             }}
           >
             删除
@@ -164,10 +298,79 @@ const ManualExperiments = () => {
       ),
     },
   ];
+  const deleteCurrentItem = (id) => {
+    const result = manualAllocation.filter((item) => item.id !== id);
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'manualAllocation',
+        dataSource: result,
+      },
+    });
+  };
+  const getManualAllocationScan = (params) => {
+    manualAllocationScan(params).then((res) => {
+      if (res.code === 200) {
+        let flag = false;
+        for (let i = 0; i < manualAllocation.length; i++) {
+          if (manualAllocation[i].id === res.data[0].id) {
+            flag = true;
+          }
+        }
+        if (flag) {
+          message.warning('该条数据已扫过,不可重复再扫!');
+          return;
+        }
+        setManualAllocationList(res.data);
+      }
+    });
+  };
+  const searchHandle = (changedValues: any, allValues: undefined) => {
+    if (!allValues?.sampleBarcode) {
+      return;
+    }
+    const params = {
+      sampleBarcode: allValues?.sampleBarcode,
+      reportUnitId: form.getFieldValue('reportUnitId'),
+    };
+    getManualAllocationScan(params);
+  };
+  const AssignTasksToInstr = () => {
+    let result = manualAllocation
+      ?.filter((item) => selectedRowKeysVal.some((key) => key === item.id))
+      .map((item) => {
+        return {
+          id: item.id,
+          createBy: useDetail.id,
+          taskTime: item.taskTime,
+          execBy: form.getFieldValue('executor'),
+          instrId: item.instrId,
+          labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+          reportUnitCode: item.reportUnitCode,
+          reqItemCode: item.reqItemCode,
+          sampleNo: item.sampleNo,
+        };
+      });
+    let residueResult = manualAllocation?.filter(
+      (item) => !selectedRowKeysVal.some((key) => key === item.id),
+    );
+    manualMachineAllocation(result).then((res) => {
+      if (res.code === 200) {
+        message.success('分配成功');
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'manualAllocation',
+            dataSource: residueResult,
+          },
+        });
+      }
+    });
+  };
   const renderForm = () => {
     return (
       <Form onValuesChange={search} layout="inline" form={form} className={styles.search_box}>
-        <Form.Item name="labClassManageId" label="报告单元">
+        <Form.Item name="reportUnitId" label="报告单元">
           <Select
             placeholder="请选择报告单元"
             autoComplete="off"
@@ -183,22 +386,22 @@ const ManualExperiments = () => {
             })}
           </Select>
         </Form.Item>
-
-        <Form.Item name="createDateStart">
+        <Form.Item name="labDate" rules={[{ required: true, message: '请选择检验日期' }]}>
           <DatePicker
-            showTime={{ format: 'HH:mm:ss' }}
-            format="YYYY-MM-DD HH:mm:ss"
+            format="YYYY-MM-DD"
             placeholder="请选择检验日期"
-            style={{ width: 340 }}
+            style={{ width: 200 }}
+            onChange={labDateChange}
           />
         </Form.Item>
-        <div id="labClassId">
-          <Form.Item name="labClassId" label="执行人">
+        <div id="executor">
+          <Form.Item name="executor" label="执行人">
             <Select
               placeholder="请选择执行人"
               autoComplete="off"
               allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
+              getPopupContainer={() => document.getElementById('executor')}
+              onChange={executorChange}
             >
               {executorList.length > 0 &&
                 executorList.map((item) => (
@@ -214,8 +417,13 @@ const ManualExperiments = () => {
   };
   const renderFormScan = () => {
     return (
-      <Form onValuesChange={search} layout="inline" form={scanForm} className={styles.scanForm_box}>
-        <Form.Item name="hospitalId" label="样本条码">
+      <Form
+        onValuesChange={searchHandle}
+        layout="inline"
+        form={scanForm}
+        className={styles.scanForm_box}
+      >
+        <Form.Item name="sampleBarcode" label="样本条码">
           <Input placeholder="请输入样本条码" />
         </Form.Item>
 
@@ -233,20 +441,42 @@ const ManualExperiments = () => {
         >
           -
         </Button>
-        <Button btnType="primary">分配任务到仪器</Button>
       </Form>
     );
   };
   return (
     <>
       {renderForm()}
-      {renderFormScan()}
+      <div className={styles.scan_box}>
+        {renderFormScan()}
+        <Button btnType="primary" onClick={AssignTasksToInstr}>
+          分配任务到仪器
+        </Button>
+      </div>
       <Table
+        size={'middle'}
         rowSelection={rowSelection}
         columns={columns}
         className={styles.table_box}
-        dataSource={[]}
+        dataSource={manualAllocation}
         scroll={{ x: 'calc(700px + 50%)' }}
+        footer={() =>
+          manualAllocation.length > 0 && (
+            <div>
+              <span>
+                当前待分配样本数:
+                {
+                  manualAllocation.filter(
+                    (obj, index) =>
+                      manualAllocation.findIndex(
+                        (item) => item.sampleBarcode === obj.sampleBarcode,
+                      ) === index,
+                  ).length
+                }
+              </span>
+            </div>
+          )
+        }
       />
     </>
   );

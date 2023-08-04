@@ -8,13 +8,15 @@ import {
   executorByReportUnit,
   getSampleNo,
   oneInstrAllocationScan,
+  instrMachineAllocation,
 } from '../../models/server';
 import { createStr, containsNumbers, minusCreateStr } from '@/utils';
-import styles from './index.less';
-import { useSelector, useDispatch } from 'umi';
+import styles from '../index.less';
+import { useSelector, useDispatch, useLocation } from 'umi';
 const { Option } = Select;
 const SingleInstrument = () => {
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const [form] = Form.useForm();
   const [scanForm] = Form.useForm();
   const [reportUnitList, setReportUnitList] = useState([]);
@@ -22,7 +24,9 @@ const SingleInstrument = () => {
   const [executorList, setExecutorList] = useState([]);
   const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
   const { useDetail } = useSelector((state: any) => state.global);
-  const { singleInstrument } = useSelector((state: any) => state.generalInspectionMag);
+  const { singleInstrument, singleInstrSeletedKeys } = useSelector(
+    (state: any) => state.generalInspectionMag,
+  );
   const [singleInstrumentList, setSingleInstrumentList] = useState([]);
   const [reportUnitCodeVal, setReportUnitCodeVal] = useState();
   const [execByName, setExecByName] = useState();
@@ -31,6 +35,15 @@ const SingleInstrument = () => {
     form.setFieldsValue({ labDate: moment(now1, 'YYYY-MM-DD') });
     getReportUnitSelect();
   }, []);
+  useEffect(() => {
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'singleInstrument',
+        dataSource: [],
+      },
+    });
+  }, [pathname]);
   useEffect(() => {
     if (singleInstrumentList.length > 0) {
       const newData = singleInstrumentList.map((item) => {
@@ -47,13 +60,20 @@ const SingleInstrument = () => {
 
       const mergedArray = [newData, singleInstrument].reduce((acc, val) => acc.concat(val), []);
       const ids = mergedArray.map((item) => item.id);
-      setSelectedRowKeysVal(ids);
-
+      //setSelectedRowKeysVal(ids);
+      add();
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
           type: 'singleInstrument',
           dataSource: mergedArray,
+        },
+      });
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'singleInstrSeletedKeys',
+          dataSource: ids,
         },
       });
     }
@@ -146,7 +166,7 @@ const SingleInstrument = () => {
     getSampleNo(params).then((res) => {
       if (res.code === 200) {
         if (res.data !== '') {
-          form.setFieldsValue({ no: res.data });
+          scanForm.setFieldsValue({ no: res.data });
         }
       }
     });
@@ -179,7 +199,7 @@ const SingleInstrument = () => {
     if (e) {
       getSampleNoData({
         instrId: e,
-        labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD HH:mm:ss'),
+        labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
       });
     }
   };
@@ -192,10 +212,17 @@ const SingleInstrument = () => {
     }
   };
   const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
-    setSelectedRowKeysVal(selectedRowKeys);
+    // setSelectedRowKeysVal(selectedRowKeys);
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'singleInstrSeletedKeys',
+        dataSource: selectedRowKeys,
+      },
+    });
   };
   const rowSelection = {
-    selectedRowKeys: selectedRowKeysVal,
+    selectedRowKeys: singleInstrSeletedKeys,
     onChange: onSelectChange,
   };
   const columns = [
@@ -205,85 +232,98 @@ const SingleInstrument = () => {
       width: 100,
       fixed: 'left',
       ellipsis: true,
+      align: 'center',
     },
 
     {
       title: '报告单元',
       dataIndex: 'reportUnitCode',
       width: 100,
+      align: 'center',
     },
     {
       title: '专业',
       dataIndex: 'labClassName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '仪器',
       dataIndex: 'instrName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '样本号',
       dataIndex: 'sampleNo',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '性别',
       dataIndex: 'sexName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '年龄',
       dataIndex: 'age',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '申请项目代号',
       dataIndex: 'reqItemCode',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '申请项目',
       dataIndex: 'reqItemName',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '分配人',
       dataIndex: 'createBy',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '执行人',
       dataIndex: 'execBy',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '分配时间',
-      dataIndex: 'taskDate',
+      dataIndex: 'taskTime',
       width: 100,
       ellipsis: true,
+      align: 'center',
     },
     {
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
       align: 'center',
-      width: 180,
+      width: 200,
       render: (text: string, record: Record<string, any>) => (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button
@@ -319,12 +359,26 @@ const SingleInstrument = () => {
   const getOneInstrAllocationScan = (params) => {
     oneInstrAllocationScan(params).then((res) => {
       if (res.code === 200) {
-        setSingleInstrumentList([res.data]);
+        let flag = false;
+
+        for (let i = 0; i < singleInstrument.length; i++) {
+          if (singleInstrument[i].id === res.data[0].id) {
+            flag = true;
+          }
+        }
+        if (flag) {
+          message.warning('该条数据已扫过,不可重复再扫!');
+          return;
+        }
+        setSingleInstrumentList(res.data);
       }
     });
   };
   const searchHandle = (changedValues: any, allValues: undefined) => {
     if (!allValues?.sampleBarcode) {
+      return;
+    }
+    if ('no' in changedValues) {
       return;
     }
     const params = {
@@ -333,6 +387,38 @@ const SingleInstrument = () => {
       reportUnitId: form.getFieldValue('reportUnitId'),
     };
     getOneInstrAllocationScan(params);
+  };
+  const AssignTasksToInstr = () => {
+    let result = singleInstrument
+      ?.filter((item) => singleInstrSeletedKeys.some((key) => key === item.id))
+      .map((item) => {
+        return {
+          id: item.id,
+          createBy: useDetail.id,
+          taskTime: item.taskTime,
+          execBy: form.getFieldValue('executor'),
+          instrId: item.instrId,
+          labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+          reportUnitCode: item.reportUnitCode,
+          reqItemCode: item.reqItemCode,
+          sampleNo: item.sampleNo,
+        };
+      });
+    let residueResult = singleInstrument?.filter(
+      (item) => !singleInstrSeletedKeys.some((key) => key === item.id),
+    );
+    instrMachineAllocation(result).then((res) => {
+      if (res.code === 200) {
+        message.success('分配成功');
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'singleInstrument',
+            dataSource: residueResult,
+          },
+        });
+      }
+    });
   };
 
   const renderForm = () => {
@@ -427,20 +513,42 @@ const SingleInstrument = () => {
         >
           -
         </Button>
-        <Button btnType="primary">分配任务到仪器</Button>
       </Form>
     );
   };
   return (
     <>
       {renderForm()}
-      {renderFormScan()}
+      <div className={styles.scan_box}>
+        {renderFormScan()}
+        <Button btnType="primary" onClick={AssignTasksToInstr}>
+          分配任务到仪器
+        </Button>
+      </div>
       <Table
+        size={'middle'}
         rowSelection={rowSelection}
         columns={columns}
         className={styles.table_box}
         dataSource={singleInstrument}
         scroll={{ x: 'calc(700px + 50%)' }}
+        footer={() =>
+          singleInstrument.length > 0 && (
+            <div>
+              <span>
+                当前待分配样本数:
+                {
+                  singleInstrument.filter(
+                    (obj, index) =>
+                      singleInstrument.findIndex(
+                        (item) => item.sampleBarcode === obj.sampleBarcode,
+                      ) === index,
+                  ).length
+                }
+              </span>
+            </div>
+          )
+        }
       />
     </>
   );

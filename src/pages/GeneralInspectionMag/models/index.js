@@ -2,8 +2,10 @@ const generalInspectionMag = {
   namespace: 'generalInspectionMag',
   state: {
     singleInstrument: [],
-    multiInstrument:[],
-    sampleNo:[]
+    multiInstrument: [],
+    sampleNo: [],
+    manualAllocation: [],
+    singleInstrSeletedKeys: [],
   },
   reducers: {
     save(state, { payload: { type, dataSource } }) {

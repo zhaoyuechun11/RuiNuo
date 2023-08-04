@@ -146,6 +146,16 @@ const SampleHandover = () => {
           data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
         }) => {
           if (res.code === 200) {
+            let flag = false;
+            for (let i = 0; i < scanSampleHandoverData.length; i++) {
+              if (scanSampleHandoverData[i].id === res.data[0]?.id) {
+                flag = true;
+              }
+            }
+            if (flag) {
+              message.warning('该条数据已扫过,不可重复再扫!');
+              return;
+            }
             setScanSampleHandover(res.data);
           }
         },

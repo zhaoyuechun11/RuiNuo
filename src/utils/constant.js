@@ -1092,7 +1092,7 @@ export const menu = [
       {
         key: 'applyProjectGroup',
         url: '/commonMaterials/applyProjectGroup',
-        name: '申请项目分类',
+        name: '申请项目维护',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],

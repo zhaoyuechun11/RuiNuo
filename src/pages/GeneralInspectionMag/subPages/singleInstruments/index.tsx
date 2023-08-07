@@ -86,9 +86,13 @@ const SingleInstrument = () => {
       console.log('最后的结果 :>> ', createStr(strData, specifyValue)); //abc1235ee1235d00020hhh
       scanForm.setFieldsValue({ no: createStr(strData, specifyValue) });
     } else {
-      var lastChar = scanForm.getFieldsValue().no.charAt(scanForm.getFieldsValue().no.length - 1);
+      var lastChar = scanForm.getFieldsValue().no?.charAt(scanForm.getFieldsValue().no.length - 1);
+      const strData = scanForm.getFieldsValue().no;
+      if (!strData) {
+        message.warning('请先输入编号再增加!');
+        return;
+      }
       if (!isNaN(lastChar)) {
-        const strData = scanForm.getFieldsValue().no;
         if (containsNumbers(strData)) {
           let specifyValue = strData.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
           //let specifyValue2 = strData2.match(/\d+(\.\d+)?/g).pop()  //获取字符串中最后出现的数值
@@ -103,8 +107,13 @@ const SingleInstrument = () => {
   };
   const minus = () => {
     const no = scanForm.getFieldsValue().no;
+    var lastChar = scanForm.getFieldsValue().no?.charAt(scanForm.getFieldsValue().no.length - 1);
     if (!no && no !== 0) {
       message.warning('请先输入样本号!');
+      return;
+    }
+    if (Number(no) === 0) {
+      message.warning('不可再减了哦!');
       return;
     }
 
@@ -112,33 +121,19 @@ const SingleInstrument = () => {
       scanForm.setFieldsValue({ no: Number(no) - 1 });
       return;
     }
+    if (isNaN(lastChar)) {
+      message.warning('末位非数字无法减!');
+      return
+    }
     let specifyValue = no.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
     console.log('最后的结果 :>> ', minusCreateStr(no, specifyValue)); //abc1235ee1235d00020hhh
     if (parseInt(specifyValue) === 0) {
       message.warning('不可再减了哦!');
+      return
     }
     if (minusCreateStr(no, specifyValue)) {
       scanForm.setFieldsValue({ no: minusCreateStr(no, specifyValue) });
     }
-    // const num = no.replace(/^.*?(\d*)$/, (str, match, index) => match || '');
-    // const nonzeroStart = num.match(/[^0][1-9]\d*/g); //匹配以非0数字开头
-    // //const nonzeroStart = num.match(/^[1-9]\d*$/);
-    // debugger;
-
-    // if (!num) {
-    //   message.warning('末位非数字,无法递减!');
-    //   return;
-    // } else {
-    //   const indexVal = num.match(/[^0][1-9]\d*/g)[0].length; //匹配以非0数字开头
-
-    //   if (indexVal > 0) {
-    //     spelicVal = num.slice(0, -indexVal);
-    //   }
-    //   const str = no.replace(/^(.*?)\d*$/, (str, match, index) => match || '0');
-    //   console.log(str + spelicVal + (Number(nonzeroStart) - 1));
-    //   const result = str + spelicVal + (Number(nonzeroStart) - 1);
-    //   scanForm.setFieldsValue({ no: result });
-    // }
   };
   const getReportUnitSelect = () => {
     reportUnitSelect({ userId: useDetail.id }).then((res) => {
@@ -379,6 +374,11 @@ const SingleInstrument = () => {
       return;
     }
     if ('no' in changedValues) {
+      return;
+    }
+    if (!scanForm.getFieldValue('no')) {
+      message.warning('请先输入样本号!');
+      scanForm.resetFields();
       return;
     }
     const params = {

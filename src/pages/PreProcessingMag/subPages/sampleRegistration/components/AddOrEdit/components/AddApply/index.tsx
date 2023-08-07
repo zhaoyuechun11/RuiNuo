@@ -380,7 +380,10 @@ const AddApply = ({ refs }) => {
       type: 'preProcessingMag/save',
       payload: {
         type: 'sampleList',
-        dataSource: sampleResult,
+        dataSource: sampleResult.filter(
+          (obj, index) =>
+            sampleResult.findIndex((item) => item.sampleTypeId === obj.sampleTypeId) === index,
+        ),
       },
     });
   };
@@ -390,10 +393,10 @@ const AddApply = ({ refs }) => {
     let sampleTypeIds = list
       ?.filter((item) => selectedRowKeys?.some((key) => key === item.id))
       .map((item) => item.defaultSampleTypeId);
-    if (sampleTypeIds?.includes(e)) {
-      message.warn('已经有其他项目选择了,请选择其他的样本');
-      return;
-    }
+    // if (sampleTypeIds?.includes(e)) {
+    //   message.warn('已经有其他项目选择了,请选择其他的样本');
+    //   return;
+    // }
 
     const sampleVal = sample.filter((item) => item.id == e);
 
@@ -438,12 +441,12 @@ const AddApply = ({ refs }) => {
 
     var nary = sampleTypeIds.sort();
 
-    for (var i = 0; i < sampleTypeIds.length; i++) {
-      if (nary[i] == nary[i + 1]) {
-        message.warn('已经有其他项目选择了,请选择其他的样本');
-        return;
-      }
-    }
+    // for (var i = 0; i < sampleTypeIds.length; i++) {
+    //   if (nary[i] == nary[i + 1]) {
+    //     message.warn('已经有其他项目选择了,请选择其他的样本');
+    //     return;
+    //   }
+    // }
 
     setSelectedRowKeysVal(selectedRowKeys);
     dispatch({

@@ -12,6 +12,7 @@ import {
 import { createStr, containsNumbers, minusCreateStr } from '@/utils';
 import styles from '../index.less';
 import { useSelector, useDispatch, useLocation } from 'umi';
+const { Option } = Select;
 const ManualExperiments = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -107,7 +108,7 @@ const ManualExperiments = () => {
     }
     if (isNaN(lastChar)) {
       message.warning('末位非数字无法减!');
-      return
+      return;
     }
     let specifyValue = no.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
     if (parseInt(specifyValue) === 0) {

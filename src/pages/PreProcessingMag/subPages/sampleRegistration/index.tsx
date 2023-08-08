@@ -26,7 +26,8 @@ const SampleRegistration = () => {
     getCustomHeader();
   }, []);
   useEffect(() => {
-    reqMainOrderList();
+    console.log(queryData);
+    reqMainOrderList(queryData);
   }, [pageNum, queryData]);
 
   useEffect(() => {
@@ -94,7 +95,7 @@ const SampleRegistration = () => {
     reqMainOrderDelete({ ids: [ids] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
-        reqMainOrderList();
+        reqMainOrderList({ pageNum, pageSize, ...queryData });
       }
     });
   };
@@ -127,13 +128,13 @@ const SampleRegistration = () => {
       },
     });
   };
-  const reqMainOrderList = () => {
+  const reqMainOrderList = (params) => {
     dispatch({
       type: 'preProcessingMag/getReqMainOrder',
       payload: {
         pageNum,
         pageSize,
-        ...queryData,
+        ...params,
         callback: (res) => {
           setData({ list: res.data.records, count: res.data.total, page: pageNum });
         },
@@ -156,6 +157,10 @@ const SampleRegistration = () => {
         return 'sendDoctorName';
       case 'hospitalId':
         return 'hospitalName';
+      case 'nation':
+        return 'nationName';
+      case 'nationality':
+        return 'nationalityName';
       default:
         return val;
     }
@@ -220,7 +225,7 @@ const SampleRegistration = () => {
         cRef={importRef}
         actionUrl={`${process.env.baseURL}/lab/reqMainOrder/importReqMain`}
         title={'导入申请单'}
-        refresh={() => reqMainOrderList()}
+        refresh={() => reqMainOrderList({ pageNum, pageSize, ...queryData })}
       ></BatchImport>
     </div>
   );

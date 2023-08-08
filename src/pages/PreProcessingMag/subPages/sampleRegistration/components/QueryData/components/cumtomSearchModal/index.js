@@ -32,6 +32,7 @@ class CustomSearchModal extends Component {
   componentWillReceiveProps(nextProps) {}
   // 显示弹窗
   onShowExportModal = () => {
+    console.log(this.props.checkedList, this.props.leftCheckList);
     this.setState(
       {
         exportVisible: true,
@@ -46,10 +47,8 @@ class CustomSearchModal extends Component {
   };
   // 选中字段
   onCheckboxChange = (list) => {
-    // debugger;
-
     const mapResult = list.map((item) => {
-      return { value: item.split(',')[0], label: item.split(',')[1] };
+      return { value: item.split(',')[0], label: item.split(',')[1], type: item.split(',')[2] };
     });
     this.setState({
       leftCheckList: list,
@@ -75,7 +74,7 @@ class CustomSearchModal extends Component {
     let list = this.state.checkedList ? JSON.parse(JSON.stringify(this.state.checkedList)) : [];
     list.splice(index, 1);
     const result2 = list.map((item) => {
-      return `${item.value},${item.label}`;
+      return `${item.value},${item.label},${item.type}`;
     });
 
     this.setState({
@@ -113,8 +112,7 @@ class CustomSearchModal extends Component {
   // 导出弹窗点击确认
   handleExportOk = () => {
     const mapResult = this.state.checkedList.map((item) => {
- 
-      return { key: item.value, name: item.label };
+      return { key: item.value, name: item.label, type: item.type };
     });
 
     saveCustomQuery({
@@ -172,7 +170,10 @@ class CustomSearchModal extends Component {
                   {this.state?.columnOptions.map((item, index) => {
                     return (
                       <Col span={8} key={index}>
-                        <Checkbox disabled={item.disabled} value={item.value + ',' + item.label}>
+                        <Checkbox
+                          disabled={item.disabled}
+                          value={item.value + ',' + item.label + ',' + item.type}
+                        >
                           {item.label}
                         </Checkbox>
                       </Col>

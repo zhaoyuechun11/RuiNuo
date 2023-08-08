@@ -1865,7 +1865,15 @@ export const menu = [
       {
         key: 'roleMange',
         url: '/setting/applicationFormModel',
-        name: '组件模块设置',
+        name: '申请单录入组件模块设置',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
+      {
+        key: 'roleMange',
+        url: '/setting/applicationFormModel',
+        name: '普检报告组件模块设置',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],
@@ -2103,12 +2111,12 @@ export const menu = [
   },
 ];
 const NAME = { label: '姓名', value: 'patientName', weight: 1, type: 1 };
-const SEX = { label: '性别', value: 'sex', weight: 6, type: 1 };
+const SEX = { label: '性别', value: 'sex', weight: 6, type: 3 };
 const RECEIVE_BARCODE = { label: '收样条码', value: 'receiveBarcode', weight: 6, type: 1 };
 const HOSPITAl_ID = { label: '送检单位', value: 'hospitalId', weight: 6, type: 3 };
 const nation = { label: '民族', value: 'nation', weight: 6, type: 3 };
 const age = { label: '年龄', value: 'age', weight: 6, type: 1 };
-const ageUnit = { label: '年龄', value: 'ageUnit', weight: 6, type: 1 };
+const ageUnit = { label: '年龄单位', value: 'ageUnit', weight: 6, type: 3 };
 const idCardNo = { label: '身份证号', value: 'idCardNo', weight: 6, type: 1 };
 const telphoneNo = { label: '电话号码', value: 'telphoneNo', weight: 6, type: 1 };
 const sendDeptId = { label: '送检科室', value: 'sendDeptId', weight: 6, type: 3 };
@@ -2117,12 +2125,12 @@ const source = { label: '样本来源', value: 'source', weight: 6, type: 3 };
 const bedNo = { label: '床号', value: 'bedNo', weight: 6, type: 1 };
 const diagnosis = { label: '临床诊断', value: 'diagnosis', weight: 6, type: 1 };
 const createBy = { label: '创建人员', value: 'createBy', weight: 6, type: 1 };
-const birthdate = { label: '出生日期', value: 'birthdate', weight: 6, type: 3 };
-const collectDate = { label: '采样日期', value: 'collectDate', weight: 6, type: 3 };
-const applyDate = { label: '申请日期', value: 'applyDate', weight: 6, type: 3 };
-const receiveDate = { label: '物流接收日期', value: 'receiveDate', weight: 6, type: 3 };
-const preReceiveDate = { label: '前处理接收时间', value: 'preReceiveDate', weight: 6, type: 3 };
-const createDate = { label: '登记日期', value: 'createDate', weight: 6, type: 3 };
+const birthdate = { label: '出生日期', value: 'birthdate', weight: 6, type: 4 };
+const collectDate = { label: '采样日期', value: 'collectDate', weight: 6, type: 4 };
+const applyDate = { label: '申请日期', value: 'applyDate', weight: 6, type: 4 };
+const receiveDate = { label: '物流接收日期', value: 'receiveDate', weight: 6, type: 4 };
+const preReceiveDate = { label: '前处理接收时间', value: 'preReceiveDate', weight: 6, type: 4 };
+const createDate = { label: '登记日期', value: 'createDate', weight: 6, type: 4 };
 // 候选人-列表搜索自定义
 export const EXPORT_OPTIONS_FOR_SEARCH = [
   NAME,

@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Form, Input, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
 import styles from './index.less';
 import { useDispatch, useSelector, history } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import { mainEnterPageDele, updateDefault } from '../../models/server';
+import { updateDefault } from '../../models/server';
 const FormItem = Form.Item;
-const ApplicationFormModel = () => {
+const ApplicationFormModel = ({ type = 1 }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -17,7 +17,7 @@ const ApplicationFormModel = () => {
   const modalRef = useRef();
   const Columns = [
     {
-      title: '模块名',
+      title: type === 2 ? '单元名' : '模块名',
       dataIndex: 'name',
       sorter: true,
       align: 'center',
@@ -26,8 +26,8 @@ const ApplicationFormModel = () => {
       title: '是否是默认模块',
       dataIndex: 'isDefault',
       align: 'center',
-      render: (text, record) => {
-        return <Switch onChange={(e) => isDefaultChange(record.id)} checked={text} />;
+      render: (text: boolean | undefined, record: { id: any }) => {
+        return <Switch onChange={() => isDefaultChange(record.id)} checked={text} />;
       },
     },
     {
@@ -39,7 +39,7 @@ const ApplicationFormModel = () => {
             <Button
               style={{ margin: '0 8px' }}
               onClick={() => {
-                history.push(`/setting/sampleFieldCustom/${record.id}`);
+                history.push(`/setting/sampleFieldCustom/${record.id}/${type}`);
               }}
             >
               明细
@@ -73,12 +73,15 @@ const ApplicationFormModel = () => {
       }
     });
   };
-  const getList = (params) => {
+  const getList = (params: { pageNum: number; pageSize: number }) => {
     dispatch({
-      type: 'Setting/fetchMainEnterPage',
+      type: type === 1 ? 'Setting/fetchMainEnterPage' : '',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -90,12 +93,18 @@ const ApplicationFormModel = () => {
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
-  const deleteCurrentItem = (id) => {
-    mainEnterPageDele({ ids: [id] }).then((res: { code: number }) => {
-      if (res.code === 200) {
-        getList({ pageNum, pageSize });
-        message.success('删除成功');
-      }
+  const deleteCurrentItem = (id: any) => {
+    dispatch({
+      type: type === 1 ? 'Setting/fetchMainEnterPageDele' : null,
+      payload: {
+        ids: [id],
+        callback: (res: { code: number }) => {
+          if (res.code === 200) {
+            getList({ pageNum, pageSize });
+            message.success('删除成功');
+          }
+        },
+      },
     });
   };
   const onTableChange = (

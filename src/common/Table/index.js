@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import styles from './index.less';
 
-
 function initTotalList(columns) {
   const totalList = [];
   columns.forEach((column) => {
@@ -46,7 +45,6 @@ export default class StandardTable extends PureComponent {
     }
   };
   render() {
- 
     const { selectedRowKeys = [], classStyle } = this.props;
     const { data = [], rowKey, isRowSelection, pagination, unit = '', ...rest } = this.props;
 
@@ -79,7 +77,7 @@ export default class StandardTable extends PureComponent {
         )} */}
         {isRowSelection ? (
           <Table
-            size={'small'}
+            size='middle'
             rowKey={rowKey || 'key'}
             rowSelection={rowSelection}
             dataSource={data}
@@ -102,7 +100,7 @@ export default class StandardTable extends PureComponent {
           />
         ) : (
           <Table
-            size={'small'}
+            size="middle"
             rowKey={rowKey || 'key'}
             dataSource={data}
             pagination={paginationProps}

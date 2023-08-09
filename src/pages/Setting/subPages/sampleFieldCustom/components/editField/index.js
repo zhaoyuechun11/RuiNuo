@@ -1,26 +1,24 @@
+// @ts-nocheck
 import React, { Fragment, useState, useRef, useImperativeHandle, useEffect } from 'react';
 import { Form, Row, Col, Input, message, Modal, Checkbox, Cascader, DatePicker } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
+import { useDispatch } from 'umi';
 import moment from 'moment';
-import { Dialog, Icon } from '@components';
+import { Dialog } from '@components';
 import style from '../addField/index.less';
 import { updateField, getArea } from '../../models/server';
-const { confirm } = Modal;
 
-const Index = ({ editFieldRef, fieldInfo, refresh }) => {
-  const [visible, setVisible] = useState(false);
+const Index = ({ editFieldRef, refresh, from }) => {
   const [loading, setLoading] = useState(false);
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [provinceList, setProvinceList] = useState([]);
+  const info = useRef();
+  const dispatch = useDispatch();
   useImperativeHandle(editFieldRef, () => ({
-    showModal: showModal,
-  }));
-  useEffect(() => {
-    if (fieldInfo != null) {
-      console.log(fieldInfo);
-      debugger;
+    showModal: (fieldInfo) => {
+      dialogRef.current.show();
+      info.current = fieldInfo;
       form.setFieldsValue({
         name: fieldInfo.name,
         data_type:
@@ -37,15 +35,16 @@ const Index = ({ editFieldRef, fieldInfo, refresh }) => {
         data_json1: [''],
         key: fieldInfo.key,
         defaultValue:
-          fieldInfo.dataType === 4 ? moment(fieldInfo.defaultValue) : fieldInfo.defaultValue,
+          fieldInfo.dataType === 4
+            ? moment(fieldInfo.defaultValue)
+            : fieldInfo.dataType === 6
+            ? fieldInfo.defaultValue?.split(',').map((item) => Number(item))
+            : fieldInfo.defaultValue,
       });
-    }
-  }, [fieldInfo]);
+    },
+  }));
   const onBeforeShow = () => {
     getAreaList();
-  };
-  const showModal = () => {
-    dialogRef.current && dialogRef.current.show();
   };
 
   const onFinish = (values) => {
@@ -65,27 +64,34 @@ const Index = ({ editFieldRef, fieldInfo, refresh }) => {
       concatResult = result;
     }
     console.log(concatResult);
-    debugger;
+
     let params = {
       name: values.name,
-      id: fieldInfo.id,
-      dataType: fieldInfo.dataType,
-      dataJson: fieldInfo.dataType === 3 ? concatResult : [],
+      id: info.current.id,
+      dataType: info.current.dataType,
+      dataJson: info.current.dataType === 3 ? concatResult : [],
       isDisplay: values.is_display,
       isRequired: values.is_required,
       defaultValue:
-        fieldInfo.dataType === 4
+        info.current.dataType === 4
           ? values.defaultValue.format('YYYY-MM-DD')
-          : fieldInfo.dataType === 6
+          : info.current.dataType === 6
           ? values.defaultValue?.join(',')
           : values.defaultValue,
     };
-    updateField(params).then((res) => {
-      if (res.code === 200) {
-        refresh && refresh();
-        dialogRef.current && dialogRef.current.hide();
-        message.success('编辑成功!');
-      }
+
+    dispatch({
+      type: from === '1' ? 'sampleFieldCustom/fetchUpdateField' : '',
+      payload: {
+        ...params,
+        callback: (res) => {
+          if (res.code === 200) {
+            refresh && refresh();
+            dialogRef.current && dialogRef.current.hide();
+            message.success('编辑成功!');
+          }
+        },
+      },
     });
   };
 
@@ -127,7 +133,6 @@ const Index = ({ editFieldRef, fieldInfo, refresh }) => {
         title="编辑字段"
         destroyOnClose={true}
         confirmLoading={loading}
-        visible={visible}
         onBeforeShow={onBeforeShow}
         onCancel={() => {
           dialogRef.current && dialogRef.current.hide();
@@ -163,26 +168,26 @@ const Index = ({ editFieldRef, fieldInfo, refresh }) => {
           <Row>
             <Col span={24}>
               <Form.Item label="默认值" name="defaultValue">
-                {fieldInfo?.dataType === 6 ? (
+                {info.current?.dataType === 6 ? (
                   <Cascader
                     options={provinceList}
                     changeOnSelect
                     fieldNames={{ label: 'name', value: 'id', children: 'child' }}
-                    disabled={fieldInfo?.isAuth ? true : false}
+                    disabled={info.current?.isAuth ? true : false}
                   />
-                ) : fieldInfo?.dataType === 4 ? (
-                  <DatePicker disabled={fieldInfo?.isAuth ? true : false} />
+                ) : info.current?.dataType === 4 ? (
+                  <DatePicker disabled={info?.isAuth ? true : false} />
                 ) : (
                   <Input
                     placeholder="请输入默认值"
                     style={{ border: '1px solid #e7e9eb' }}
-                    disabled={fieldInfo?.isAuth ? true : false}
+                    disabled={info.current?.isAuth ? true : false}
                   />
                 )}
               </Form.Item>
             </Col>
           </Row>
-          {fieldInfo && fieldInfo.dataType === 3 ? (
+          {info.current && info.current.dataType === 3 ? (
             <Row>
               <Col span={24}>
                 <Form.List name="data_json">
@@ -301,7 +306,4 @@ const Index = ({ editFieldRef, fieldInfo, refresh }) => {
   );
 };
 
-const mapStateToProps = ({ global: {} }) => {
-  return {};
-};
-export default connect(mapStateToProps)(Index);
+export default Index;

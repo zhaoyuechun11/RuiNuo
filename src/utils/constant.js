@@ -311,7 +311,7 @@ export const menu = [
       {
         name: '报告数据管理',
         icon: null,
-        url: '/home',
+        url: '/generalInspectionMag/reportDataMag',
         key: '3',
       },
       {
@@ -1872,7 +1872,7 @@ export const menu = [
       },
       {
         key: 'roleMange',
-        url: '/setting/applicationFormModel',
+        url: '/setting/geneInsRepModel',
         name: '普检报告组件模块设置',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

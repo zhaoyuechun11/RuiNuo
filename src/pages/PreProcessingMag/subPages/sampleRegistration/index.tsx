@@ -16,9 +16,7 @@ const SampleRegistration = () => {
   const dispatch = useDispatch();
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [columnOptionsList, setColumnOptionsList] = useState([]);
-  const [tableColumns, setTableColumns] = useState();
   const [data, setData] = useState({ count: 0, list: [], page: 1 });
-  // const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const importRef = useRef();
   const searchVal = useRef();
@@ -26,8 +24,7 @@ const SampleRegistration = () => {
     getCustomHeader();
   }, []);
   useEffect(() => {
-    console.log(queryData);
-    reqMainOrderList(queryData);
+    reqMainOrderList();
   }, [pageNum, queryData]);
 
   useEffect(() => {
@@ -46,6 +43,16 @@ const SampleRegistration = () => {
         }
       });
     });
+    const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
+      return {
+        title: column.name,
+        dataIndex: selectedField(column.key),
+        responsive: ['xl', 'xxl'],
+        align: 'center',
+        fixed: 'left',
+        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+      };
+    });
 
     const newSelectedColumns = tableFieldResult.map((column) => {
       return {
@@ -59,6 +66,7 @@ const SampleRegistration = () => {
 
     passProps = {
       columns: [
+        ...firstColumm,
         ...newSelectedColumns,
         {
           title: '操作',
@@ -95,7 +103,7 @@ const SampleRegistration = () => {
     reqMainOrderDelete({ ids: [ids] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功');
-        reqMainOrderList({ pageNum, pageSize, ...queryData });
+        reqMainOrderList();
       }
     });
   };
@@ -128,13 +136,13 @@ const SampleRegistration = () => {
       },
     });
   };
-  const reqMainOrderList = (params) => {
+  const reqMainOrderList = () => {
     dispatch({
       type: 'preProcessingMag/getReqMainOrder',
       payload: {
         pageNum,
         pageSize,
-        ...params,
+        ...queryData,
         callback: (res) => {
           setData({ list: res.data.records, count: res.data.total, page: pageNum });
         },
@@ -142,7 +150,6 @@ const SampleRegistration = () => {
     });
   };
   const onChangePage = (pageNum: number, size: React.SetStateAction<number>) => {
-    // setPageNum(pageNum);
     changeModelData('pageNum', pageNum);
     setPageSize(size);
   };
@@ -225,7 +232,7 @@ const SampleRegistration = () => {
         cRef={importRef}
         actionUrl={`${process.env.baseURL}/lab/reqMainOrder/importReqMain`}
         title={'导入申请单'}
-        refresh={() => reqMainOrderList({ pageNum, pageSize, ...queryData })}
+        refresh={() => reqMainOrderList()}
       ></BatchImport>
     </div>
   );

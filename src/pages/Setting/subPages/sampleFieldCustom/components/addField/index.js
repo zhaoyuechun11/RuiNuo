@@ -1,26 +1,14 @@
+// @ts-nocheck
 import React, { Fragment, useState, useRef, useImperativeHandle, useEffect } from 'react';
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  Radio,
-  message,
-  Modal,
-  Button,
-  Checkbox,
-  Cascader,
-  DatePicker,
-} from 'antd';
+import { Form, Row, Col, Input, Radio, message, Modal, Checkbox, Cascader, DatePicker } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
-import moment from 'moment';
-import { Dialog, Icon } from '@components';
+
+import { useDispatch } from 'umi';
+
+import { Dialog } from '@components';
 import style from './index.less';
-import { addField, getArea } from '../../models/server';
-const { confirm } = Modal;
-const Index = ({ addFieldRef, refresh, id, resumeList }) => {
-  const [visible, setVisible] = useState(false);
+import {  getArea } from '../../models/server';
+const Index = ({ addFieldRef, refresh, id, from }) => {
   const [loading, setLoading] = useState(false);
   const [isDisplay, setIsDisplay] = useState(2);
   const [isRequired, setIsRequired] = useState(2);
@@ -30,6 +18,7 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
   const [filedChoose, setFiledChoose] = useState(false);
   const [fileType, setFileType] = useState(1);
   const [provinceList, setProvinceList] = useState([]);
+  const dispatch = useDispatch();
   useImperativeHandle(addFieldRef, () => ({
     showModal: showModal,
   }));
@@ -55,7 +44,7 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
       name: values.name,
       moduleId: id,
       dataType: Number(fileType),
-      dataJson: fileType === '3' ? values.names : [],
+      dataJson: Number(fileType) === 3 ? values.names : [],
       isDisplay: values.is_display,
       isRequired: values.is_required,
       key: values.key,
@@ -66,13 +55,19 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
           ? values.defaultValue?.join(',')
           : values.defaultValue,
     };
-    addField(params).then((res) => {
-      if (res.code === 200) {
-        refresh && refresh();
-        dialogRef.current && dialogRef.current.hide();
-        message.success('添加成功!');
-        setFileType(1);
-      }
+    dispatch({
+      type: from === '1' ? 'sampleFieldCustom/fetchAddField' : '',
+      payload: {
+        ...params,
+        callback: (res) => {
+          if (res.code === 200) {
+            refresh && refresh();
+            dialogRef.current && dialogRef.current.hide();
+            message.success('添加成功!');
+            setFileType(1);
+          }
+        },
+      },
     });
   };
 
@@ -130,7 +125,6 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
         title="新增字段"
         destroyOnClose={true}
         confirmLoading={loading}
-        visible={visible}
         onBeforeShow={onBeforeShow}
         onCancel={() => {
           dialogRef.current && dialogRef.current.hide();
@@ -147,7 +141,7 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
           onFinish={onFinish}
         >
           <div style={{ fontWeight: '500' }}>字段类型</div>
-          <Row span={24}>
+          <Row>
             <Col span={24}>
               <Radio.Group
                 defaultValue="1"
@@ -257,7 +251,7 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
           ) : (
             ''
           )}
-          <Row span={24}>
+          <Row>
             <Col span={11}>
               <Form.Item
                 name="is_display"
@@ -301,10 +295,4 @@ const Index = ({ addFieldRef, refresh, id, resumeList }) => {
   );
 };
 
-const mapStateToProps = ({ global: { enterprise_id, operator_id } }) => {
-  return {
-    enterprise_id,
-    operator_id,
-  };
-};
-export default connect(mapStateToProps)(Index);
+export default Index;

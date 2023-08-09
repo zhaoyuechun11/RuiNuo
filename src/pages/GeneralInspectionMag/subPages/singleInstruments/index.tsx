@@ -22,7 +22,6 @@ const SingleInstrument = () => {
   const [reportUnitList, setReportUnitList] = useState([]);
   const [reportUnitInstrList, setReportUnitInstrList] = useState([]);
   const [executorList, setExecutorList] = useState([]);
-  const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
   const { useDetail } = useSelector((state: any) => state.global);
   const { singleInstrument, singleInstrSeletedKeys } = useSelector(
     (state: any) => state.generalInspectionMag,
@@ -123,13 +122,13 @@ const SingleInstrument = () => {
     }
     if (isNaN(lastChar)) {
       message.warning('末位非数字无法减!');
-      return
+      return;
     }
     let specifyValue = no.match(/\d+(\.\d+)?/g).pop(); //获取字符串中最后出现的数值
     console.log('最后的结果 :>> ', minusCreateStr(no, specifyValue)); //abc1235ee1235d00020hhh
     if (parseInt(specifyValue) === 0) {
       message.warning('不可再减了哦!');
-      return
+      return;
     }
     if (minusCreateStr(no, specifyValue)) {
       scanForm.setFieldsValue({ no: minusCreateStr(no, specifyValue) });
@@ -462,7 +461,7 @@ const SingleInstrument = () => {
           <DatePicker
             format="YYYY-MM-DD"
             placeholder="请选择检验日期"
-            style={{ width: 340 }}
+            style={{ width: 200 }}
             onChange={labDateChange}
           />
         </Form.Item>

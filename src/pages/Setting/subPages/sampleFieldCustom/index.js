@@ -1,22 +1,15 @@
-import React, { Fragment, useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Checkbox, Table, Row, Col, Input, message, Spin, Tooltip } from 'antd';
-import DragTable from './components/DragTable/index.jsx'; // 引入拖拽组件
-import { BackButton, Card, Icon, Button, Dialog } from '@/components';
+import React, { useState, useRef, useEffect } from 'react';
+
+import { Checkbox, Table, Spin, Tooltip } from 'antd';
+// @ts-ignore
+import { BackButton, Card, Icon, Button } from '@/components';
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import update from 'immutability-helper';
 
 import { AddField, EditField, DeleteModel } from './components';
-import { connect, useParams } from 'umi';
 
-import {
-  mainEnterOperateList,
-  updateField,
-  patchStructureMove,
-  moveField,
-  updateFieldDisplay,
-  displayOrRequired,
-} from './models/server';
+import { useParams, useDispatch } from 'umi';
 import s from './index.less';
 
 const Index = () => {
@@ -24,9 +17,8 @@ const Index = () => {
   const editFieldRef = useRef();
   const [isLoading, setIsLoading] = useState(false); // 页面loading
   const [resumeList, setResumeList] = useState([]);
-  const [fieldEditId, setFieldEditId] = useState();
-  const [fieldInfo, setFieldInfo] = useState(null);
-  const params = useParams();
+  const paramsUrl = useParams();
+  const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState();
@@ -36,7 +28,7 @@ const Index = () => {
       dataIndex: 'name',
       width: '200px',
       ellipsis: true,
-      render: (text, record, index) => {
+      render: (text, record) => {
         return record.is_can_sort === 2 ? (
           <span style={{ marginLeft: '26px' }}> {text}</span>
         ) : (
@@ -53,7 +45,7 @@ const Index = () => {
     {
       title: '字段类型',
       dataIndex: 'dataType',
-      render: (text, record, index) => {
+      render: (text) => {
         return (
           (text === 1 && '单行文本') ||
           (text === 2 && '多行文本') ||
@@ -68,26 +60,26 @@ const Index = () => {
     {
       title: '显示',
       dataIndex: 'isDisplay',
-      render: (text, record, index) => {
+      render: (text, record) => {
         return text === 1 && record.name === '姓名' ? (
           <Checkbox value={record} checked disabled></Checkbox>
         ) : text ? (
-          <Checkbox value={record} onChange={fieldDisplayOnchange} checked></Checkbox>
+          <Checkbox value={record} onChange={(e) => onChange(e, 1)} checked></Checkbox>
         ) : (
-          <Checkbox value={record} onChange={fieldDisplayOnchange}></Checkbox>
+          <Checkbox value={record} onChange={(e) => onChange(e, 1)}></Checkbox>
         );
       },
     },
     {
       title: '必填',
       dataIndex: 'isRequired',
-      render: (text, record, index) => {
+      render: (text, record) => {
         return text && record.name === '姓名' ? (
           <Checkbox value={record} checked disabled></Checkbox>
         ) : text ? (
-          <Checkbox value={record} onChange={fieldRequiredOnchange} checked></Checkbox>
+          <Checkbox value={record} onChange={(e) => onChange(e, 2)} checked></Checkbox>
         ) : (
-          <Checkbox value={record} onChange={fieldRequiredOnchange}></Checkbox>
+          <Checkbox value={record} onChange={(e) => onChange(e, 2)}></Checkbox>
         );
       },
     },
@@ -99,7 +91,7 @@ const Index = () => {
       title: '操作',
       dataIndex: 'isAuth',
       align: 'center',
-      render: (text, record, index) => {
+      render: (text, record) => {
         return !text ? (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <DeleteModel
@@ -108,6 +100,7 @@ const Index = () => {
               id={record.id}
               title="删除字段"
               refresh={() => getResumeList()}
+              from={paramsUrl.type}
             >
               <Button className={s.delete}>删除</Button>
             </DeleteModel>{' '}
@@ -140,36 +133,60 @@ const Index = () => {
 
   const getResumeList = () => {
     setIsLoading(true);
-    mainEnterOperateList({ moduleId: params.id }).then((res) => {
-      if (res.code === 200) {
-        setIsLoading(false);
-        setResumeList(res.data);
-      }
+    dispatch({
+      type: paramsUrl.type === '1' ? 'sampleFieldCustom/fetchMainEnterOperateList' : '',
+      payload: {
+        moduleId: paramsUrl.id,
+        callback: (res) => {
+          if (res.code === 200) {
+            setIsLoading(false);
+            setResumeList(res.data);
+          }
+        },
+      },
     });
   };
-  const fieldRequiredOnchange = (e) => {
-    let params = {
-      isRequired: e.target.checked,
+  const onChange = (e, type) => {
+    let params = {};
+    if (type === 1) {
+      params = {
+        isDisplay: e.target.checked,
+      };
+    } else {
+      params = {
+        isRequired: e.target.checked,
+      };
+    }
+    const mergeParams = {
+      ...params,
       id: e.target.value.id,
     };
-    displayOrRequired(params).then((res) => {
-      getResumeList();
+    dispatch({
+      type: paramsUrl.type === '1' ? 'sampleFieldCustom/fetchDisplayOrRequired' : '',
+      payload: {
+        ...mergeParams,
+        callback: (res) => {
+          if (res.code === 200) {
+            getResumeList();
+          }
+        },
+      },
     });
   };
-  const fieldDisplayOnchange = (e) => {
-    let params = {
-      isDisplay: e.target.checked,
-      id: e.target.value.id,
-    };
-    displayOrRequired(params).then((res) => {
-      getResumeList();
-    });
-  };
+
   const moveFieldFun = (params) => {
     setIsLoading(true);
-    moveField(params).then((res) => {
-      setIsLoading(false);
-      getResumeList();
+    dispatch({
+      type: paramsUrl.type === '1' ? 'sampleFieldCustom/fetchMoveField' : '',
+      payload: {
+        ...params,
+        callback: (res) => {
+          if (res.code === 200) {
+            setIsLoading(false);
+            getResumeList();
+          }
+        },
+      },
     });
   };
   // 添加按钮
@@ -178,11 +195,10 @@ const Index = () => {
   };
   // 编辑按钮
   const editField = (item) => {
-    setFieldEditId(item.id);
-    setFieldInfo(item);
-    editFieldRef.current && editFieldRef.current.showModal();
+    editFieldRef.current && editFieldRef.current.showModal(item);
   };
 
+  // @ts-ignore
   const interval = (item, value) => {
     if (value === undefined) {
       return Promise.reject(new Error('不能为空哦'));
@@ -229,16 +245,23 @@ const Index = () => {
       if (monitor.getItem().index === undefined) {
         return;
       }
+      // @ts-ignore
+      // @ts-ignore
       const id = props.id;
       console.log(props, monitor.getItem().index);
       const dragIndex = monitor.getItem().index;
+      // @ts-ignore
+      // @ts-ignore
       const dragId = resumeList[dragIndex].id;
 
       const hoverIndex = props.index;
+      // @ts-ignore
+      // @ts-ignore
       const hoverId = props.record.id;
       const structureItem = resumeList[dragIndex];
 
       const newList = update(resumeList, {
+        // @ts-ignore
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, structureItem],
@@ -299,6 +322,7 @@ const Index = () => {
         </div>
         <DndProvider backend={HTML5Backend}>
           <Table
+            size="middle"
             components={components}
             dataSource={resumeList}
             columns={columns}
@@ -307,7 +331,7 @@ const Index = () => {
               current: pageNum,
               total,
               onChange: pageChange,
-              showTotal: (total, range) => `共 ${total} 条`,
+              showTotal: (total) => `共 ${total} 条`,
               showQuickJumper: true,
               pageSizeOptions: ['10', '20', '30', '40'],
               showSizeChanger: true,
@@ -322,8 +346,7 @@ const Index = () => {
         </DndProvider>
         <EditField
           editFieldRef={editFieldRef}
-          id={fieldEditId}
-          fieldInfo={fieldInfo}
+          from={paramsUrl.type}
           refresh={() => {
             getResumeList();
           }}
@@ -331,20 +354,15 @@ const Index = () => {
 
         <AddField
           addFieldRef={addFieldRef}
-          resumeList={resumeList}
-          type="add"
+          from={paramsUrl.type}
           refresh={() => {
             getResumeList();
           }}
-          id={Number(params.id)}
+          id={Number(paramsUrl.id)}
         />
       </Spin>
     </Card>
   );
 };
 
-const mapStateToProps = ({ global: {} }) => {
-  return {};
-};
-
-export default connect(mapStateToProps)(Index);
+export default Index;

@@ -69,19 +69,19 @@ export default {
               title: '系统全局选项设置',
             },
             {
-              path: '/setting/sampleFieldCustom',
-              component: '@/pages/Setting/subPages/sampleFieldCustom',
-              title: '标本字段设置',
-            },
-            {
               path: '/setting/applicationFormModel',
               component: '@/pages/Setting/subPages/applicationFormModel',
-              title: '组件模块设置',
+              title: '申请单模块管理',
             },
             {
-              path: '/setting/sampleFieldCustom/:id',
+              path: '/setting/sampleFieldCustom/:id/:type',
               component: '@/pages/Setting/subPages/sampleFieldCustom',
-              title: '自定义组件',
+              title: '自定义申请单字段',
+            },
+            {
+              path: '/setting/geneInsRepModel',
+              component: '@/pages/Setting/subPages/geneInsRepModel',
+              title: '普检报告单元名管理',
             },
           ],
         },
@@ -200,7 +200,12 @@ export default {
             {
               path: '/generalInspectionMag/manualExperiments',
               component: '@/pages/GeneralInspectionMag/subPages/manualExperiments',
-              title: '多仪器',
+              title: '手工分配',
+            },
+            {
+              path: '/generalInspectionMag/reportDataMag',
+              component: '@/pages/GeneralInspectionMag/subPages/reportDataMag',
+              title: '普检数据报告管理',
             },
           ],
         },

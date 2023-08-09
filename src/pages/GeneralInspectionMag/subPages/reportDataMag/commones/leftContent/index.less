@@ -1,0 +1,29 @@
+.wrap {
+  display: flex;
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid #cecece;
+  .editIcon {
+    flex: 1;
+    margin-left: 12px;
+    color: #0c7bd7;
+    font-size: 16px;
+    // visibility: hidden;
+  }
+  &:hover {
+    .editIcon {
+      //   visibility: visible;
+    }
+  }
+  .title {
+    width: 35%;
+    height: 29px;
+    padding-left: 10px;
+    font-weight: bold;
+    background-color: #cecece;
+    border-right: 1px solid #cecece;
+  }
+  div:last-child {
+    margin-left: 10px;
+  }
+}

@@ -8,7 +8,23 @@ import SampleApplication from './components/SampleApplication';
 import SetHeaderModal from '../sampleRegistration/components/SetHeaderModal';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-let columns = [];
+let columns: (
+  | {
+      title: any;
+      dataIndex: any;
+      responsive: string[];
+      align: string;
+      render: (text: string | number) => React.JSX.Element;
+    }
+  | {
+      title: string;
+      dataIndex: string;
+      fixed: string;
+      align: string;
+      width: number;
+      render: (text: any, record: any) => React.JSX.Element;
+    }
+)[] = [];
 const applicationForm = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState();
@@ -45,18 +61,28 @@ const applicationForm = () => {
         }
       });
     });
-
+    const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
+      return {
+        title: column.name,
+        dataIndex: selectedField(column.key),
+        responsive: ['xl', 'xxl'],
+        align: 'center',
+        fixed: 'left',
+        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+      };
+    });
     const newSelectedColumns = tableFieldResult.map((column) => {
       return {
         title: column.name,
         dataIndex: selectedField(column.key),
         responsive: ['xl', 'xxl'],
-        align:'center',
+        align: 'center',
         render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
       };
     });
 
     columns = [
+      ...firstColumm,
       ...newSelectedColumns,
       {
         title: '操作',
@@ -84,7 +110,7 @@ const applicationForm = () => {
       }
     });
   };
-  const getApplicationForm = (params) => {
+  const getApplicationForm = (params: { pageNum: any; pageSize: any }) => {
     dispatch({
       type: 'preProcessingMag/feactApplicationForm',
       payload: {
@@ -176,7 +202,6 @@ const applicationForm = () => {
             const selectedFields = res.data.filter(
               (item: Record<string, any>) => item?.isListDisplay == true,
             );
-            console.log(selectedFields);
             setSelectedColumns(selectedFields);
             setColumnOptionsList(res.data);
           }
@@ -195,7 +220,7 @@ const applicationForm = () => {
       },
     });
   };
-  const selectedField = (val) => {
+  const selectedField = (val: any) => {
     switch (val) {
       case 'sex':
         return 'sexName';
@@ -281,7 +306,6 @@ const applicationForm = () => {
         </Tooltip>
       </div>
       <Table
-     
         scroll={{ x: 1300 }}
         unit="个"
         columns={columns}

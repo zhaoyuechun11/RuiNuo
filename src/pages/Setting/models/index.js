@@ -1,4 +1,4 @@
-import { paramsSetList, mainEnterPage } from './server';
+import { paramsSetList, mainEnterPage,mainEnterPageDele } from './server';
 import isFunction from 'lodash/isFunction';
 const IndexModel = {
   namespace: 'Setting',
@@ -12,6 +12,11 @@ const IndexModel = {
     *fetchMainEnterPage({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(mainEnterPage, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchMainEnterPageDele({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(mainEnterPageDele, { ...params });
       isFunction(callback) && callback(response);
     },
   },

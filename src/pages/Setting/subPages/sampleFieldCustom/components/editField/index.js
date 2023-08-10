@@ -81,7 +81,7 @@ const Index = ({ editFieldRef, refresh, from }) => {
     };
 
     dispatch({
-      type: from === '1' ? 'sampleFieldCustom/fetchUpdateField' : '',
+      type: 'sampleFieldCustom/fetchUpdateField',
       payload: {
         ...params,
         callback: (res) => {
@@ -250,7 +250,7 @@ const Index = ({ editFieldRef, refresh, from }) => {
                             <Input
                               placeholder="请输入字段选项"
                               style={{ width: '91%', marginRight: '10px' }}
-                              disabled={fieldInfo?.isAuth ? true : false}
+                              disabled={info.current?.isAuth ? true : false}
                             />
                           </Form.Item>
                           <PlusOutlined

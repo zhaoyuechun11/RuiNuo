@@ -1,6 +1,8 @@
 import React from 'react';
 import { Row, Col, Tabs } from 'antd';
 import LeftContent from './commones/leftContent';
+import MiddleContent from './commones/middleContent';
+import RightContent from './commones/rightContent';
 const { TabPane } = Tabs;
 const ReportDataMag = () => {
   return (
@@ -36,12 +38,16 @@ const ReportDataMag = () => {
               <Col span={12}>
                 <LeftContent />
               </Col>
-              <Col span={12}>456</Col>
+              <Col span={12}>
+                <MiddleContent />
+              </Col>
             </Row>
           </TabPane>
         </Tabs>
       </Col>
-      <Col span={12}>col-8</Col>
+      <Col span={12}>
+        <RightContent />
+      </Col>
     </Row>
   );
 };

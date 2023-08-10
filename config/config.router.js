@@ -83,6 +83,16 @@ export default {
               component: '@/pages/Setting/subPages/geneInsRepModel',
               title: '普检报告单元名管理',
             },
+            {
+              path: '/setting/geneInsRepDetailModel',
+              component: '@/pages/Setting/subPages/geneInsRepDetailModel',
+              title: '普检报告数据项目详情模块管理',
+            },
+            {
+              path: '/setting/geneInsRepListModel',
+              component: '@/pages/Setting/subPages/geneInsRepListModel',
+              title: '普检报告数据列表模块管理',
+            },
           ],
         },
         {

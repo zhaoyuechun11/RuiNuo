@@ -1,7 +1,4 @@
 import axiosBase from '@utils/http';
-
-
-
 export function dictList(params) {
   return axiosBase('/basic/dict/getList', 'get', params);
 }
@@ -36,3 +33,33 @@ export function updateDefault(params) {
   return axiosBase('sys/module/updateMainEnterDefault', 'post', params);
 }
 
+export function reportMainDataPage(params) {
+  return axiosBase('sys/module/reportMainDataPage', 'get', params);
+}
+export function addReportMainData(params) {
+  return axiosBase('sys/module/addReportMainData', 'post', params);
+}
+export function updateReportDataDefault(params) {
+  return axiosBase('sys/module/updateReportMainDataDefault', 'post', params);
+}
+export function reportMainDataDetailPage(params) {
+  return axiosBase('sys/module/reportMainDataDetailPage', 'get', params);
+}
+export function addReportMainDataDetail(params) {
+  return axiosBase('sys/module/addReportMainDataDetail', 'post', params);
+}
+export function updateReportDataDetailDefault(params) {
+  return axiosBase('sys/module/updateReportMainDataDetailDefault', 'post', params);
+}
+export function reportMainDataOperateList(params) {
+  return axiosBase('sys/assembly/reportMainDataOperateList', 'get', params);
+}
+export function reportMainDataListPage(params) {
+  return axiosBase('sys/module/reportMainDataListPage', 'get', params);
+}
+export function reportListDefaultUpdate(params) {
+  return axiosBase('sys/module/updateReportMainDataListDefault', 'post', params);
+}
+export function reportListModalAdd(params) {
+  return axiosBase('sys/module/addReportMainDataList', 'post', params);
+}

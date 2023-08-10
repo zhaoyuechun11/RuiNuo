@@ -1,16 +1,17 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select } from 'antd';
-import { mainEnterPageAdd, mainEnterPageUpdate } from '../../../../models/server';
+import { Form, Input, message } from 'antd';
+import { useDispatch } from 'umi';
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 },
 };
-const { Option } = Select;
-const EditOrAddModal = ({ Ref, refresh }) => {
+
+const EditOrAddModal = ({ Ref, refresh, type }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
+  const dispatch = useDispatch();
   useImperativeHandle(Ref, () => ({
     show: (record: { id: React.SetStateAction<undefined> }) => {
       dialogRef.current && dialogRef.current.show();
@@ -29,20 +30,46 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const onOk = () => {
     form.validateFields().then((value) => {
       if (id) {
-        mainEnterPageUpdate({ id: id, ...value }).then((res: { code: number }) => {
-          if (res.code === 200) {
-            message.success('修改成功');
-            dialogRef.current && dialogRef.current.hide();
-            refresh();
-          }
+        dispatch({
+          type: 'Setting/mainEnterPageUpdate',
+          payload: {
+            ...value,
+            id,
+            callback: (res: {
+              code: number;
+              data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+            }) => {
+              if (res.code === 200) {
+                message.success('修改成功');
+                dialogRef.current && dialogRef.current.hide();
+                refresh();
+              }
+            },
+          },
         });
       } else {
-        mainEnterPageAdd({ ...value }).then((res: { code: number }) => {
-          if (res.code === 200) {
-            message.success('添加成功');
-            dialogRef.current && dialogRef.current.hide();
-            refresh();
-          }
+        dispatch({
+          type:
+            type === 1
+              ? 'Setting/mainEnterPageAdd'
+              : type === 2
+              ? 'Setting/addReportMainData'
+              : type === 3
+              ? 'Setting/addReportMainDataDetail'
+              : 'Setting/reportListModalAdd',
+          payload: {
+            ...value,
+            callback: (res: {
+              code: number;
+              data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+            }) => {
+              if (res.code === 200) {
+                message.success('添加成功');
+                dialogRef.current && dialogRef.current.hide();
+                refresh();
+              }
+            },
+          },
         });
       }
     });

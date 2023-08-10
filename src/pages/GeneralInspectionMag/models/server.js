@@ -27,3 +27,12 @@ export function getListByInstr(params) {
 export function manualMachineAllocation(params) {
   return axios('lab/reqMainSplit/manualMachineAllocation', 'post', params);
 }
+export function reportMainDataList(params) {
+  return axios('sys/assembly/reportMainDataList', 'get', params);
+}
+export function reportDataDetaiTableHeader(params) {
+  return axios('sys/assembly/reportMainDataDetailList', 'get', params);
+}
+export function reportListTableHeader(params) {
+  return axios('sys/assembly/reportMainDataListList', 'get', params);
+}

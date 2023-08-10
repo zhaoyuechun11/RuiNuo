@@ -19,8 +19,8 @@ const Index = () => {
   const [resumeList, setResumeList] = useState([]);
   const paramsUrl = useParams();
   const dispatch = useDispatch();
-  const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // const [pageNum, setPageNum] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState();
   const columns = [
     {
@@ -29,7 +29,10 @@ const Index = () => {
       width: '200px',
       ellipsis: true,
       render: (text, record) => {
-        return record.is_can_sort === 2 ? (
+        return record.key === 'reportUnitName' ||
+          record.key === 'labDate' ||
+          record.key === 'sampleNo' ||
+          record.key === 'sampleBarcode' ? (
           <span style={{ marginLeft: '26px' }}> {text}</span>
         ) : (
           <Tooltip title={text} style={{ marginLeft: '26px' }}>
@@ -61,7 +64,11 @@ const Index = () => {
       title: '显示',
       dataIndex: 'isDisplay',
       render: (text, record) => {
-        return text === 1 && record.name === '姓名' ? (
+        return record.key === 'reportUnitName' ||
+          record.key === 'labDate' ||
+          record.key === 'labDate' ||
+          record.key === 'sampleNo' ||
+          record.key === 'sampleBarcode' ? (
           <Checkbox value={record} checked disabled></Checkbox>
         ) : text ? (
           <Checkbox value={record} onChange={(e) => onChange(e, 1)} checked></Checkbox>
@@ -129,12 +136,19 @@ const Index = () => {
   ];
   useEffect(() => {
     getResumeList();
-  }, [pageNum, pageSize]);
+  }, []);
 
   const getResumeList = () => {
     setIsLoading(true);
     dispatch({
-      type: paramsUrl.type === '1' ? 'sampleFieldCustom/fetchMainEnterOperateList' : '',
+      type:
+        paramsUrl.type === '1'
+          ? 'sampleFieldCustom/fetchMainEnterOperateList'
+          : paramsUrl.type === '2'
+          ? 'Setting/reportMainDataOperateList'
+          : paramsUrl.type === '3'
+          ? 'sampleFieldCustom/reportDataDetailOperateList'
+          : 'sampleFieldCustom/fetchReportLis',
       payload: {
         moduleId: paramsUrl.id,
         callback: (res) => {
@@ -162,7 +176,7 @@ const Index = () => {
       id: e.target.value.id,
     };
     dispatch({
-      type: paramsUrl.type === '1' ? 'sampleFieldCustom/fetchDisplayOrRequired' : '',
+      type: 'sampleFieldCustom/fetchDisplayOrRequired',
       payload: {
         ...mergeParams,
         callback: (res) => {
@@ -177,7 +191,7 @@ const Index = () => {
   const moveFieldFun = (params) => {
     setIsLoading(true);
     dispatch({
-      type: paramsUrl.type === '1' ? 'sampleFieldCustom/fetchMoveField' : '',
+      type: 'sampleFieldCustom/fetchMoveField',
       payload: {
         ...params,
         callback: (res) => {
@@ -255,6 +269,7 @@ const Index = () => {
       const dragId = resumeList[dragIndex].id;
 
       const hoverIndex = props.index;
+      debugger;
       // @ts-ignore
       // @ts-ignore
       const hoverId = props.record.id;
@@ -267,6 +282,23 @@ const Index = () => {
           [hoverIndex, 0, structureItem],
         ],
       });
+      if (
+        resumeList[dragIndex].key === 'reportUnitName' ||
+        resumeList[dragIndex].key === 'labDate' ||
+        resumeList[dragIndex].key === 'sampleNo' ||
+        resumeList[dragIndex].key === 'sampleBarcode'
+      ) {
+        //return message.warn('当前字段无法移动');
+        return;
+      }
+      if (
+        resumeList[hoverIndex].key === 'reportUnitName' ||
+        resumeList[hoverIndex].key === 'labDate' ||
+        resumeList[hoverIndex].key === 'sampleNo' ||
+        resumeList[hoverIndex].key === 'sampleBarcode'
+      ) {
+        return;
+      }
 
       if (dragIndex === hoverIndex) {
         return;
@@ -309,33 +341,36 @@ const Index = () => {
           isShowTooltip="true"
           tooltipTitle="系统配置的字段不可删除，不可修改字段类型"
         />
-        <div className={s.operator}>
-          <span
-            className={s.icon}
-            onClick={() => {
-              addField();
-            }}
-          >
-            <Icon name="iconanniu-jixushangchuan" style={{ marginRight: 8 }} />
-            新增字段
-          </span>
-        </div>
+        {paramsUrl.type === '1' && (
+          <div className={s.operator}>
+            <span
+              className={s.icon}
+              onClick={() => {
+                addField();
+              }}
+            >
+              <Icon name="iconanniu-jixushangchuan" style={{ marginRight: 8 }} />
+              新增字段
+            </span>
+          </div>
+        )}
         <DndProvider backend={HTML5Backend}>
           <Table
             size="middle"
             components={components}
             dataSource={resumeList}
             columns={columns}
-            pagination={{
-              pageSize,
-              current: pageNum,
-              total,
-              onChange: pageChange,
-              showTotal: (total) => `共 ${total} 条`,
-              showQuickJumper: true,
-              pageSizeOptions: ['10', '20', '30', '40'],
-              showSizeChanger: true,
-            }}
+            // pagination={{
+            //   pageSize,
+            //   current: pageNum,
+            //   total,
+            //   onChange: pageChange,
+            //   showTotal: (total) => `共 ${total} 条`,
+            //   showQuickJumper: true,
+            //   pageSizeOptions: ['10', '20', '30', '40'],
+            //   showSizeChanger: true,
+            // }}
+            pagination={false}
             onRow={(record, index) => {
               return {
                 record: record,

@@ -5,7 +5,6 @@ import { Button, Icon, Table } from '@/components';
 import styles from './index.less';
 import { useDispatch, useSelector, history } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import { updateDefault } from '../../models/server';
 const FormItem = Form.Item;
 const ApplicationFormModel = ({ type = 1 }) => {
   const dispatch = useDispatch();
@@ -17,7 +16,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
   const modalRef = useRef();
   const Columns = [
     {
-      title: type === 2 ? '单元名' : '模块名',
+      title: '模块名',
       dataIndex: 'name',
       sorter: true,
       align: 'center',
@@ -65,17 +64,40 @@ const ApplicationFormModel = ({ type = 1 }) => {
       },
     },
   ];
-  const isDefaultChange = (id) => {
-    updateDefault({ id }).then((res) => {
-      if (res.code === 200) {
-        message.success('修改成功');
-        getList({ pageNum, pageSize });
-      }
+  const isDefaultChange = (id: any) => {
+    dispatch({
+      type:
+        type === 1
+          ? 'Setting/fetchMainEnterDefault'
+          : type === 2
+          ? 'Setting/updateReportDataDefault'
+          : type === 3
+          ? 'Setting/updateReportDataDetailDefault'
+          : 'Setting/reportListDefaultUpdate',
+      payload: {
+        id,
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
+          if (res.code === 200) {
+            message.success('修改成功');
+            getList({ pageNum, pageSize });
+          }
+        },
+      },
     });
   };
   const getList = (params: { pageNum: number; pageSize: number }) => {
     dispatch({
-      type: type === 1 ? 'Setting/fetchMainEnterPage' : '',
+      type:
+        type === 1
+          ? 'Setting/fetchMainEnterPage'
+          : type === 2
+          ? 'Setting/reportMainDataPage'
+          : type === 3
+          ? 'Setting/reportMainDataDetailPage'
+          : 'Setting/reportMainDataListPage',
       payload: {
         ...params,
         callback: (res: {
@@ -95,7 +117,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
   }, [pageNum, pageSize]);
   const deleteCurrentItem = (id: any) => {
     dispatch({
-      type: type === 1 ? 'Setting/fetchMainEnterPageDele' : null,
+      type: 'Setting/fetchMainEnterPageDele',
       payload: {
         ids: [id],
         callback: (res: { code: number }) => {
@@ -135,7 +157,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
       <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
         <FormItem name="name">
           <Input
-            placeholder="请输入字典编码"
+            placeholder="请输入模块名"
             autoComplete="off"
             suffix={<Icon name="icongongzuotai-sousuo" />}
             allowClear
@@ -179,6 +201,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
       <EditOrAddModal
         Ref={modalRef}
         refresh={() => getList({ pageNum, pageSize })}
+        type={type}
       ></EditOrAddModal>
     </>
   );

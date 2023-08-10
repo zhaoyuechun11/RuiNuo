@@ -1878,6 +1878,22 @@ export const menu = [
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],
       },
+      {
+        key: 'roleMange',
+        url: '/setting/geneInsRepDetailModel',
+        name: '普检报告项目详情模块设置',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
+      {
+        key: 'roleMange',
+        url: '/setting/geneInsRepListModel',
+        name: '普检报告列表模块设置',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
     ],
   },
   {

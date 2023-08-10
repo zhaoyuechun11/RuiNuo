@@ -30,3 +30,9 @@ export function moveField(params) {
 export function displayOrRequired(params) {
   return axiosBase('sys/assembly/updateDisplay', 'post', params);
 }
+export function reportDataDetailOperateList(params) {
+  return axiosBase('sys/assembly/reportMainDataDetailOperateList', 'get', params);
+}
+export function reportLis(params) {
+  return axiosBase('sys/assembly/reportMainDataListOperateList', 'get', params);
+}

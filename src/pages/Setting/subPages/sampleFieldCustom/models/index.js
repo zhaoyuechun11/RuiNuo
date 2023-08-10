@@ -6,46 +6,14 @@ import {
   updateField,
   fieldDelete,
   displayOrRequired,
+  reportDataDetailOperateList,
+  reportLis
 } from './server';
 const IndexModel = {
   namespace: 'sampleFieldCustom',
   state: {},
 
   effects: {
-    // *showCodeStatus({ payload }, { call, put }) {
-    //   const res = yield call(showCodeStatusApi, { ...payload });
-    //   if (res.status_code == 200) {
-    //     const checked = res.data.is_fill_registration == 1 ? true : false;
-    //     const response = yield call(signCodeApi, {
-    //       type: res.data.is_fill_registration,
-    //     });
-    //     if (response.status_code == 200) {
-    //       yield put({
-    //         type: 'changeData',
-    //         payload: {
-    //           checked: checked,
-    //           codeInfo: response.data,
-    //         },
-    //       });
-    //     } else {
-    //       message.error(res.message);
-    //     }
-    //   }
-    // },
-    // *signCode({ payload }, { call, put }) {
-    //   const response = yield call(signCodeApi, { ...payload });
-    //   if (response.status_code == 200) {
-    //     yield put({
-    //       type: 'changeData',
-    //       payload: {
-    //         checked: payload.type == 2 ? false : true,
-    //         codeInfo: response.data,
-    //       },
-    //     });
-    //   } else {
-    //     message.error(res.message);
-    //   }
-    // },
     *fetchMainEnterOperateList({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(mainEnterOperateList, { ...params });
@@ -74,6 +42,16 @@ const IndexModel = {
     *fetchDisplayOrRequired({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(displayOrRequired, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *reportDataDetailOperateList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportDataDetailOperateList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReportLis({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportLis, { ...params });
       isFunction(callback) && callback(response);
     },
   },

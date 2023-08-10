@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components';
 import { Table } from 'antd';
 import { useDispatch } from 'umi';
-const MiddleContent = () => {
+const RightContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
   const [tableHeaderCoumn, setTableHeaderCoumn] = useState([]);
@@ -67,7 +67,7 @@ const MiddleContent = () => {
 
   const getList = (params) => {
     dispatch({
-      type: 'generalInspectionMag/fetchReportDetaiTableHeader',
+      type: 'generalInspectionMag/fetchReportListTableHeader',
       payload: {
         ...params,
         callback: (res: { code: number; data: React.SetStateAction<never[]> }) => {
@@ -79,6 +79,8 @@ const MiddleContent = () => {
     });
   };
 
-  return <Table dataSource={[]} columns={tableHeaderCoumn} scroll={{ x: 500, y: 300 }} size='middle' />;
+  return (
+    <Table dataSource={[]} columns={tableHeaderCoumn} scroll={{ x: 1500, y: 300 }} size="middle" />
+  );
 };
-export default MiddleContent;
+export default RightContent;

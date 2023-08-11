@@ -7,7 +7,7 @@ const { TabPane } = Tabs;
 const ReportDataMag = () => {
   return (
     <Row>
-      <Col span={12}>
+      <Col span={15} style={{ borderRight: '6px solid #fafafa' }}>
         <Tabs defaultActiveKey="10" size="small">
           <TabPane tab="原始申请单" key="1">
             原始申请单
@@ -35,17 +35,17 @@ const ReportDataMag = () => {
           </TabPane>
           <TabPane tab="当前报告数据" key="10">
             <Row>
-              <Col span={12}>
+              <Col span={7} style={{ borderBottom: '1px solid #cecece' }}>
                 <LeftContent />
               </Col>
-              <Col span={12}>
+              <Col span={17}>
                 <MiddleContent />
               </Col>
             </Row>
           </TabPane>
         </Tabs>
       </Col>
-      <Col span={12}>
+      <Col span={9}>
         <RightContent />
       </Col>
     </Row>

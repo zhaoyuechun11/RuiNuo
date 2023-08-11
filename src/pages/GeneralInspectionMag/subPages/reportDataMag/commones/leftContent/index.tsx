@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'umi';
 import Icon from '@components/Icon';
 import style from './index.less';
+import EditModal from '../editModal';
 
 const LeftContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
+  const editModalRef = useRef();
   useEffect(() => {
     getList({ reportUnitName: 'gg' });
   }, []);
@@ -24,19 +26,22 @@ const LeftContent = () => {
   };
   return list.map((item) => {
     return (
-      <div className={style.wrap}>
-        <div className={style.title}>{item.name}</div>
-        <div>
-          血常规
-          <Icon
-            name="iconanniu-bianji"
-            classStyle={style.editIcon}
-            // onClick={(e) => {
-            //   //target.changePosition && target.changePosition(e, record, 1);
-            // }}
-          />
+      <>
+        <div className={style.wrap}>
+          <div className={style.title}>{item.name}</div>
+          <div>
+            血常规
+            <Icon
+              name="iconanniu-bianji"
+              classStyle={style.editIcon}
+              onClick={(e) => {
+                editModalRef.current.showModal();
+              }}
+            />
+          </div>
         </div>
-      </div>
+        <EditModal Ref={editModalRef} />
+      </>
     );
   });
 };

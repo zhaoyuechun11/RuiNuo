@@ -29,12 +29,7 @@ const Index = () => {
       width: '200px',
       ellipsis: true,
       render: (text, record) => {
-        return record.key === 'reportUnitName' ||
-          record.key === 'labDate' ||
-          record.key === 'sampleNo' ||
-          record.key === 'sampleBarcode' ? (
-          <span style={{ marginLeft: '26px' }}> {text}</span>
-        ) : (
+        return (
           <Tooltip title={text} style={{ marginLeft: '26px' }}>
             {' '}
             <span>
@@ -282,23 +277,23 @@ const Index = () => {
           [hoverIndex, 0, structureItem],
         ],
       });
-      if (
-        resumeList[dragIndex].key === 'reportUnitName' ||
-        resumeList[dragIndex].key === 'labDate' ||
-        resumeList[dragIndex].key === 'sampleNo' ||
-        resumeList[dragIndex].key === 'sampleBarcode'
-      ) {
-        //return message.warn('当前字段无法移动');
-        return;
-      }
-      if (
-        resumeList[hoverIndex].key === 'reportUnitName' ||
-        resumeList[hoverIndex].key === 'labDate' ||
-        resumeList[hoverIndex].key === 'sampleNo' ||
-        resumeList[hoverIndex].key === 'sampleBarcode'
-      ) {
-        return;
-      }
+      // if (
+      //   resumeList[dragIndex].key === 'reportUnitName' ||
+      //   resumeList[dragIndex].key === 'labDate' ||
+      //   resumeList[dragIndex].key === 'sampleNo' ||
+      //   resumeList[dragIndex].key === 'sampleBarcode'
+      // ) {
+      //   //return message.warn('当前字段无法移动');
+      //   return;
+      // }
+      // if (
+      //   resumeList[hoverIndex].key === 'reportUnitName' ||
+      //   resumeList[hoverIndex].key === 'labDate' ||
+      //   resumeList[hoverIndex].key === 'sampleNo' ||
+      //   resumeList[hoverIndex].key === 'sampleBarcode'
+      // ) {
+      //   return;
+      // }
 
       if (dragIndex === hoverIndex) {
         return;

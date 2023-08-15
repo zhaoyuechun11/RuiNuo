@@ -7,11 +7,15 @@ import style from './index.less';
 const { Option } = Select;
 
 const EditModal = ({ Ref }) => {
+  const [record, setRecord] = useState();
+  const [fieldName, setFieldName] = useState();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const dialogRef = useRef();
   useImperativeHandle(Ref, () => ({
-    showModal: () => {
+    showModal: (record, fieldName) => {
+      record[fieldName] = 'uuu';
+      record;
       dialogRef.current && dialogRef.current.show();
     },
   }));
@@ -38,7 +42,7 @@ const EditModal = ({ Ref }) => {
     <Dialog ref={dialogRef} confirmLoading={loading} title={'修改'} onOk={onOk}>
       <Form layout="inline" form={form} className={style.form_box}>
         <Form.Item name="sampleBarcode" label="临床诊断">
-          <Input placeholder="请输入项目编号名称" />
+          <Input placeholder="请输入项目编号名称" type="number" />
         </Form.Item>
       </Form>
     </Dialog>

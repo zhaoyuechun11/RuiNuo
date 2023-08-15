@@ -1,24 +1,97 @@
 import React, { useState, useEffect } from 'react';
 // import { Button } from '@/components';
-import { Table, Form, DatePicker, Select, Input, Row, Col, Tabs, Button } from 'antd';
+import { Table, Form, DatePicker, Select, Input, Row, Col, Tabs, Button, Popover } from 'antd';
 import { useDispatch, useSelector } from 'umi';
 import moment from 'moment';
+import {
+  getHospitalList,
+  dictList,
+  getDoctorList,
+  reportUnitReqItem,
+  reportUnitList,
+  reportUnitInstr,
+  listByReportUnit,
+} from '@/models/server';
 import styles from '../index.less';
+import style from './index.less';
 const { Option } = Select;
 const { TabPane } = Tabs;
+const data = [
+  {
+    key: 1,
+    sampleBarcode: 'John Brown',
+    reportUnitName: 32,
+    labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
+    instrName: ['nice'],
+    sampleNo: 'lll',
+  },
+  {
+    key: 2,
+    sampleBarcode: 'John Brown',
+    reportUnitName: 33,
+    labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
+    instrName: ['nice'],
+    sampleNo: 'lll',
+  },
+  {
+    key: 3,
+    sampleBarcode: 'John Brown',
+    reportUnitName: 34,
+    labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
+    instrName: ['nice'],
+    sampleNo: 'lll',
+  },
+];
 const RightContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
+  const [reportList, setReportList] = useState(data);
   const [tableHeaderCoumn, setTableHeaderCoumn] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [form] = Form.useForm();
+  const [extendForm] = Form.useForm();
+  const [hospitalList, setHospitalList] = useState([]);
+  const [sampleSource, setSampleSource] = useState([]);
+  const [sex, setSex] = useState([]);
+  const [department, setDepartment] = useState([]);
+  const [doctorList, setDoctorList] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [total, setTotal] = useState();
+  const [popoverVisible, setPopoverVisible] = useState(false);
+  const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
+  const [reportUnit, setReportUnit] = useState([]);
+  const [reportUnitInstrList, setReportUnitInstr] = useState([]);
+  const [executorByReportUnit, setExecutorByReportUnit] = useState([]);
+  const [creenReportList, setCreenReportList] = useState([]);
   const { useDetail } = useSelector((state: any) => state.global);
+  const [activeKey, setActiveKey] = useState('10');
+  const { reportUnitId } = useSelector((state: any) => state.generalInspectionMag);
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
 
   useEffect(() => {
     form.setFieldsValue({ labDate: moment(now1, 'YYYY-MM-DD') });
-    getList({ reportUnitName: 'gg' });
+    hospital();
+    getDictList({ type: 'SX' });
+    getDictList({ type: 'DP' });
+    getDictList({ type: 'FT' });
+    getReportUnitList();
+    const reportUnit = sessionStorage.getItem('reportUnit');
+    if (reportUnit) {
+      const newReportUnit = JSON.parse(reportUnit);
+      form.setFieldsValue({ reportUnitCode: newReportUnit.value });
+      getReportUnitReqItem(newReportUnit.key);
+      getReportUnitInstr(newReportUnit.key);
+      getListByReportUnit(newReportUnit.key);
+      getList({ reportUnitName: newReportUnit.children });
+    } else {
+      getList({ reportUnitName: '' });
+    }
+    getCreenReportList({
+      ...form.getFieldsValue(),
+      labDate: form.getFieldValue('labDate').format('YYYY-MM-DD HH:mm:ss'),
+    });
   }, []);
   useEffect(() => {
     if (list.length > 0) {
@@ -43,7 +116,19 @@ const RightContent = () => {
           align: 'center',
           width: 60,
           ellipsis: true,
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+          render: (text: string | number) => {
+            return (
+              <span>
+                {typeof text === 'boolean'
+                  ? text && column.key === 'overdueFlag'
+                    ? '✓'
+                    : text && column.key !== 'overdueFlag'
+                    ? '是'
+                    : '否'
+                  : text || '-'}
+              </span>
+            );
+          },
         };
       });
       const lastColumns = {
@@ -77,6 +162,13 @@ const RightContent = () => {
       setTableHeaderCoumn(coumns);
     }
   }, [list]);
+  useEffect(() => {
+    getCreenReportList({
+      ...form.getFieldsValue(),
+      labDate: form.getFieldValue('labDate').format('YYYY-MM-DD HH:mm:ss'),
+      ...extendForm.getFieldsValue(),
+    });
+  }, [pageNum, pageSize]);
 
   const getList = (params) => {
     dispatch({
@@ -92,10 +184,22 @@ const RightContent = () => {
     });
   };
   const checkChange = (e) => {};
+  const searchHandle = (changedValues: any, allValues: undefined) => {
+    if (activeKey !== '10') {
+      setActiveKey('10');
+    }
+    getCreenReportList({
+      ...allValues,
+      pageNum,
+      pageSize,
+      ...extendForm.getFieldsValue(),
+      labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+    });
+  };
   const renderForm = () => {
     return (
-      <Form form={form} layout="inline">
-        <Form.Item name="labDate" rules={[{ required: true, message: '请选择检验日期' }]}>
+      <Form form={form} layout="inline" onValuesChange={searchHandle}>
+        <Form.Item name="labDate">
           <DatePicker
             format="YYYY-MM-DD"
             placeholder="请选择检验日期"
@@ -103,77 +207,66 @@ const RightContent = () => {
             // onChange={labDateChange}
           />
         </Form.Item>
-        <Form.Item name="reportUnitId">
-          <Select allowClear onChange={checkChange} placeholder="请选择检验技师">
-            {/* {reportUnitList.map((item) => {
+        <Form.Item name="execBy">
+          <Select allowClear placeholder="请选择检验技师">
+            {executorByReportUnit.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item name="reqItemIds">
+          <Select allowClear onChange={checkChange} placeholder="请选择检验目的" mode="multiple">
+            {reportUnitReqItemList?.map((item) => {
+              return (
+                <Option value={item.id} key={item.id}>
+                  {item.reqItemName}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item name="reportUnitCode">
+          <Select allowClear onChange={reportUnitChange} placeholder="请选择报告单元">
+            {reportUnit?.map((item) => {
+              return (
+                <Option value={item.reportUnitCode} key={item.id}>
                   {item.reportUnitName}
                 </Option>
               );
-            })} */}
+            })}
           </Select>
         </Form.Item>
-        <Form.Item name="reportUnitId">
-          <Select allowClear onChange={checkChange} placeholder="请选择检验目的">
-            {/* {reportUnitList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.reportUnitName}
-                </Option>
-              );
-            })} */}
-          </Select>
-        </Form.Item>
-        <Form.Item name="reportUnitId">
-          <Select allowClear onChange={checkChange} placeholder="请选择报告单元">
-            {/* {reportUnitList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.reportUnitName}
-                </Option>
-              );
-            })} */}
-          </Select>
-        </Form.Item>
-        <Form.Item name="reportUnitId">
+        <Form.Item name="instrId">
           <Select allowClear onChange={checkChange} placeholder="请选择检验仪器">
-            {/* {reportUnitList.map((item) => {
+            {reportUnitInstrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
-                  {item.reportUnitName}
+                  {item.instrName}
                 </Option>
               );
-            })} */}
+            })}
           </Select>
         </Form.Item>
-        <Form.Item name="sampleBarcode">
-          <Input placeholder="请输入项目编号名称" style={{ width: 140 }} />
+        <Form.Item name="sampleNoStart">
+          <Input placeholder="请输入样本编号" style={{ width: 140 }} />
+        </Form.Item>
+        <span>至</span>
+        <Form.Item name="sampleNoEnd">
+          <Input placeholder="请输入样本编号" style={{ width: 140 }} />
         </Form.Item>
       </Form>
     );
   };
-  const seach = () => {};
-  const reset = () => {};
+
+  const reset = () => {
+    form.setFieldsValue({ instrId: '', reqItemIds: [], sampleNoStart: '', sampleNoEnd: '' });
+  };
   const extend = () => {};
-  const data = [
-    {
-      key: 1,
-      sampleBarcode: 'John Brown',
-      reportUnitName: 32,
-      labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-      instrName: ['nice'],
-      sampleNo: 'lll',
-    },
-    {
-      key: 2,
-      sampleBarcode: 'John Brown',
-      reportUnitName: 32,
-      labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-      instrName: ['nice'],
-      sampleNo: 'lll',
-    },
-  ];
+
   const onChangeSelected = (selectedRowKeys, selectedRows) => {
     setSelectedKeys(selectedRowKeys);
   };
@@ -182,39 +275,381 @@ const RightContent = () => {
     onChange: onChangeSelected,
   };
   const getRowClassName = (record, index) => {
-    //const clickRow = this.state.clickRow;
     let className = 'normal';
     if (index === clickRow) {
       className = styles.blue;
+      return className;
     }
-    return className;
+    // if (
+    //   record?.id == creenReportList[creenReportList.length - 1]?.id &&
+    //   Math.ceil(total / 50) == pageNum
+    // ) {
+    //   let paramsVal = {
+    //     id: creenReportList[creenReportList.length - 1]?.id,
+    //     instrId: form.getFieldValue('instrId'),
+    //   };
+    //   dispatch({
+    //     type: 'generalInspectionMag/save',
+    //     payload: {
+    //       type: 'instrAndRecordId',
+    //       dataSource: paramsVal,
+    //     },
+    //   });
+
+    //   className = styles.blue;
+    //   return className;
+    // }
   };
-  // const onRow = (record, index) => {
-  //   debugger;
-  //   setClickRow(index);
-  // };
+  const hospital = () => {
+    getHospitalList().then((res) => {
+      if (res.code === 200) {
+        setHospitalList(res.data);
+        getDoctorListData(res.data[0].id);
+      }
+    });
+  };
+  const getDictList = (type) => {
+    dictList(type).then((res: { code: number; data: React.SetStateAction<never[]> }) => {
+      if (res.code === 200) {
+        if (type.type === 'SX') {
+          setSex(res.data);
+        }
+        if (type.type === 'DP') {
+          setDepartment(res.data);
+        }
+        if (type.type === 'FT') {
+          setSampleSource(res.data);
+        }
+      }
+    });
+  };
+  const getDoctorListData = (id) => {
+    getDoctorList({ hospitalId: id }).then(
+      (res: { code: number; data: React.SetStateAction<never[]> }) => {
+        if (res.code === 200) {
+          setDoctorList(res.data);
+        }
+      },
+    );
+  };
+  const getReportUnitList = () => {
+    reportUnitList({ userId: useDetail }).then((res) => {
+      if (res.code === 200) {
+        setReportUnit(res.data);
+        if (res.data.length > 0) {
+          getReportUnitReqItem(res.data[0].id);
+        }
+      }
+    });
+  };
+  const getReportUnitReqItem = (reportUnitId: any) => {
+    reportUnitReqItem({ reportUnitId }).then((res) => {
+      if (res.code === 200) {
+        setReportUnitReqItemList(res.data);
+      }
+    });
+  };
+  const reportUnitChange = (e: any, option: any) => {
+    sessionStorage.setItem('reportUnit', JSON.stringify(option));
+    if (e) {
+      getReportUnitReqItem(option.key);
+      getReportUnitInstr(option.key);
+      getListByReportUnit(option.key);
+    }
+  };
+  const getReportUnitInstr = (reportUnitId: any) => {
+    reportUnitInstr({ reportUnitId }).then((res: any) => {
+      if (res.code === 200) {
+        setReportUnitInstr(res.data);
+      }
+    });
+  };
+  const getListByReportUnit = (reportUnitId: any) => {
+    listByReportUnit({ reportUnitId }).then((res) => {
+      if (res.code === 200) {
+        setExecutorByReportUnit(res.data);
+        if (res.data.length > 0) {
+          form.setFieldsValue({ execBy: useDetail.id });
+        } else {
+          form.setFieldsValue({ execBy: '' });
+        }
+      }
+    });
+  };
+  const hospitalChange = (e: any) => {
+    if (e) {
+      getDoctorListData(e);
+    }
+  };
+  const tapClear = () => {
+    extendForm.resetFields();
+    form.setFieldsValue({ instrId: '', reqItemIds: [], sampleNoStart: '', sampleNoEnd: '' });
+    setPopoverVisible(false);
+  };
+  const pageChange = (num, size) => {
+    setPageNum(num);
+    setPageSize(size);
+  };
+  const getCreenReportList = (params: any) => {
+    dispatch({
+      type: 'generalInspectionMag/fetchCreenReportList',
+      payload: {
+        ...params,
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
+          if (res.code === 200) {
+            setCreenReportList(res.data.records);
+            setTotal(res.data.total);
+            console.log(Math.ceil(res.data.total / 50) == pageNum);
+            if (Math.ceil(res.data.total / 50) == pageNum) {
+              debugger
+              let paramsVal = {
+                id: res.data.records[res.data.records.length - 1]?.id,
+                instrId: form.getFieldValue('instrId'),
+              };
+              dispatch({
+                type: 'generalInspectionMag/save',
+                payload: {
+                  type: 'instrAndRecordId',
+                  dataSource: paramsVal,
+                },
+              });
+            }
+          }
+        },
+      },
+    });
+  };
+  const handleQuery = () => {
+    if (activeKey !== '10') {
+      setActiveKey('10');
+    }
+    getCreenReportList({
+      ...extendForm.getFieldsValue(),
+      pageNum,
+      pageSize,
+      ...form.getFieldsValue(),
+      labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+    });
+  };
+  const tabChange = (e) => {
+    let params = {};
+    setActiveKey(e);
+    switch (Number(e)) {
+      case 1:
+        params = { auditStatus: Number(e) };
+        break;
+      case 0:
+        params = { auditStatus: Number(e) };
+        break;
+      case 2:
+        params = { auditStatus: Number(e) };
+        break;
+      case 5:
+        params = {
+          retestFlag: 1,
+        };
+        break;
+      case 6:
+        params = {
+          overdueFlag: 1,
+        };
+        break;
+      case 7:
+        params = {
+          printFlag: 1,
+        };
+        break;
+      case 8:
+        params = {
+          printFlag: 0,
+        };
+        break;
+      case 9:
+        params = {
+          isEmer: 1,
+        };
+        break;
+      default:
+        params = {};
+    }
+    console.log(params);
+    getCreenReportList({
+      ...params,
+      ...extendForm.getFieldsValue(),
+      pageNum,
+      pageSize,
+      ...form.getFieldsValue(),
+      labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+    });
+  };
+
+  const popover_content = () => {
+    return (
+      <div className={style.popover_content}>
+        <div className={style.popover_form}>
+          <Form form={extendForm} layout="vertical">
+            <Row>
+              <Col span={8}>
+                <div id="hospitalId">
+                  <Form.Item name="hospitalId" label="送检单位">
+                    <Select
+                      placeholder="请选择送检单位"
+                      autoComplete="off"
+                      allowClear
+                      getPopupContainer={() => document.getElementById('hospitalId')}
+                      onChange={hospitalChange}
+                    >
+                      {hospitalList?.map((item, index) => (
+                        <Option value={item.id} key={index}>
+                          {item.hospitalName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </Col>
+              <Col span={8}>
+                <div id="source">
+                  <Form.Item name="source" label="病人类型">
+                    <Select
+                      placeholder="请选择病人类型"
+                      autoComplete="off"
+                      allowClear
+                      getPopupContainer={() => document.getElementById('source')}
+                    >
+                      {sampleSource?.map((item, index) => (
+                        <Option value={item.id} key={index}>
+                          {item.dictValue}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="sampleBarcode" label="样本条码号">
+                  <Input placeholder="请输入样本条码号" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={8}>
+                <Form.Item name="patientName" label="病人姓名">
+                  <Input placeholder="请输入病人姓名" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="sex" label="性别">
+                  <Select placeholder="请选择性别" allowClear>
+                    {sex.map((item) => {
+                      return (
+                        <Option value={item.id} key={item.id}>
+                          {item.dictValue}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="sendDeptId" label="送检科室">
+                  <Select placeholder="请选择送检科室" allowClear>
+                    {department.map((item) => {
+                      return (
+                        <Option value={item.id} key={item.id}>
+                          {item.dictValue}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={8}>
+                <Form.Item name="sendDoctorId" label="送检医生">
+                  <Select placeholder="请选择送检医生" allowClear>
+                    {doctorList?.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="patientNo" label="门诊/住院号">
+                  <Input placeholder="请输入门诊/住院号" />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item name="bedNo" label="床号">
+                  <Input placeholder="请输入床号" />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </div>
+        <div>
+          <div style={{ display: 'flex' }}>
+            <Button
+              type="primary"
+              style={{ marginRight: 12 }}
+              onClick={() => {
+                tapClear();
+              }}
+            >
+              清空
+            </Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                setPopoverVisible(false);
+                handleQuery();
+              }}
+            >
+              查询
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className={styles.right_content}>
       <Row>
         <Col span={18}>{renderForm()}</Col>
         <Col span={6}>
           {' '}
-          <Button type="primary" onClick={seach}>
+          {/* <Button type="primary" onClick={seach}>
             查询
-          </Button>
+          </Button> */}
           <Button type="primary" onClick={reset}>
             重置
           </Button>
-          <Button type="primary" onClick={extend}>
-            扩展
-          </Button>
+          <Popover
+            content={popover_content}
+            placement="bottomRight"
+            trigger="click"
+            // visible={visible}
+            // onVisibleChange={(visible) => setVisible(visible)}
+            open={popoverVisible}
+            onOpenChange={(val) => setPopoverVisible(val)}
+          >
+            <Button type="primary" onClick={extend}>
+              扩展
+            </Button>
+          </Popover>
         </Col>
       </Row>
-      <Tabs defaultActiveKey="10" size="small">
-        <TabPane tab="全部" key="1"></TabPane>
-        <TabPane tab="已初审" key="2"></TabPane>
-        <TabPane tab="已终审" key="3"></TabPane>
-        <TabPane tab="未审核" key="4"></TabPane>
+      <Tabs defaultActiveKey="10" size="small" onChange={tabChange} activeKey={activeKey}>
+        <TabPane tab="全部" key="10"></TabPane>
+        <TabPane tab="已初审" key="1"></TabPane>
+        <TabPane tab="已终审" key="2"></TabPane>
+        <TabPane tab="未审核" key="0"></TabPane>
         <TabPane tab="复查" key="5"></TabPane>
         <TabPane tab="超期" key="6"></TabPane>
         <TabPane tab="已打印" key="7"></TabPane>
@@ -256,17 +691,33 @@ const RightContent = () => {
         拒检
       </Button>
       <Table
-        dataSource={data}
+        dataSource={creenReportList}
         columns={tableHeaderCoumn}
         scroll={{ x: 500 }}
         size="small"
         rowSelection={rowSelection}
         rowClassName={getRowClassName}
         rowKey={(record) => record.key}
+        pagination={{
+          current: pageNum,
+          pageSize: pageSize,
+          total,
+          onChange: pageChange,
+          showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
+        }}
         onRow={(record, index) => {
           return {
             onClick: (event) => {
               setClickRow(index);
+              let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
+
+              dispatch({
+                type: 'generalInspectionMag/save',
+                payload: {
+                  type: 'instrAndRecordId',
+                  dataSource: idParams,
+                },
+              });
             },
           };
         }}

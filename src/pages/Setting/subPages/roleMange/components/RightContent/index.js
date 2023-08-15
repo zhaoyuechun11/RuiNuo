@@ -428,8 +428,6 @@ class RightContent extends Component {
 
         <Confirm
           confirmRef={this.modalRef}
-          // title="删除应聘登记表"
-          // content="确认要删除应聘登记表吗?"
           onOk={this.confirmDelete}
         />
       </div>

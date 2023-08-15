@@ -25,71 +25,88 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
       title: '顺序',
       dataIndex: 'id',
       align: 'center',
+      fixed: 'left',
+      width: 100,
     },
     {
       title: '仪器',
       dataIndex: 'instrName',
       align: 'center',
+      width: 100,
+      ellipsis: true,
     },
     {
       title: '样本类型',
       dataIndex: 'sampleTypeName',
       align: 'center',
+      width: 100,
     },
     {
       title: '年龄从',
       dataIndex: 'ageFrom',
       align: 'center',
+      width: 100,
     },
     {
       title: '年龄单位从值',
       dataIndex: 'ageFromUnitValue',
       align: 'center',
+      width: 100,
     },
     {
       title: '年龄到',
       dataIndex: 'ageTo',
       align: 'center',
+      width: 100,
     },
     {
       title: '年龄单位到值',
       dataIndex: 'ageToUnitValue',
       align: 'center',
+      width: 100,
     },
     {
       title: '性别',
       dataIndex: 'sexValue',
       align: 'center',
+      width: 100,
     },
     {
       title: '下限',
       dataIndex: 'lowValue',
       align: 'center',
+      width: 100,
     },
     {
       title: '下限提示字符',
       dataIndex: 'lowChar',
       align: 'center',
+      width: 100,
     },
     {
       title: '上限值',
       dataIndex: 'highValue',
       align: 'center',
+      width: 100,
     },
     {
       title: '上限字符',
       dataIndex: 'highChar',
       align: 'center',
+      width: 100,
     },
     {
       title: '显示参考范围',
       dataIndex: 'displayRef',
       align: 'center',
+      width: 100,
     },
 
     {
       title: '操作',
       align: 'center',
+      fixed: 'right',
+      width: 200,
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>

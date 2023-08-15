@@ -13,18 +13,20 @@ interface IMenu {
   key: string;
 }
 
-
 const MenuComps: React.FC = (props) => {
   const { renderSuccess } = props;
   const { useDetail } = useSelector((state: any) => state.global);
   const [menuData, setMenuData] = useState<Array<IMenu>>();
+  const [collapsed, setCollapsed] = useState(false);
   const handleClick = (e: any) => {};
   useEffect(() => {
     renderSuccess(false);
     setMenuData(menu);
     //setMenuData(transformTree(useDetail.permissions));
   }, [useDetail]);
-
+  const onCollapse = (val) => {
+    setCollapsed(val);
+  };
   // 渲染不含children的目录
   const renderNoChildMenu = (item: IMenu) => {
     return (
@@ -51,7 +53,7 @@ const MenuComps: React.FC = (props) => {
     return item.children?.length ? renderChildMenu(item) : renderNoChildMenu(item);
   };
   return (
-    <Sider collapsible trigger={null}>
+    <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
       <Menu
         onClick={handleClick}
         style={{ width: '100%', marginTop: '2px' }}

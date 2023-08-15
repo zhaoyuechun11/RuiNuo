@@ -36,3 +36,9 @@ export function reportDataDetaiTableHeader(params) {
 export function reportListTableHeader(params) {
   return axios('sys/assembly/reportMainDataListList', 'get', params);
 }
+export function screenReportList(params) {
+  return axios('lab/reportMain/page', 'get', params);
+}
+export function reportMain(params) {
+  return axios('lab/reportMain', 'get', params);
+}

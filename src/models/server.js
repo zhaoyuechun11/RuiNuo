@@ -11,3 +11,24 @@ export function manageListSelect(params) {
 export function reportUnitSelect(params) {
   return axiosBase('basic/reportUnit/getList', 'get', params);
 }
+export function getHospitalList(params) {
+  return axiosBase('basic/hospital/getList', 'get', params);
+}
+export function dictList(params) {
+  return axiosBase('/basic/dict/getList', 'get', params);
+}
+export function getDoctorList(params) {
+  return axiosBase('basic/doctor/getList', 'get', params);
+}
+export function reportUnitList(params) {
+  return axiosBase('basic/reportUnit/getList', 'get', params);
+}
+export function reportUnitReqItem(params) {
+  return axiosBase('basic/reportUnitReqItem/getList', 'get', params);
+}
+export function reportUnitInstr(params) {
+  return axiosBase('basic/reportUnitInstr/getList', 'get', params);
+}
+export function listByReportUnit(params) {
+  return axiosBase('/sys/user/listByReportUnit', 'get', params);
+}

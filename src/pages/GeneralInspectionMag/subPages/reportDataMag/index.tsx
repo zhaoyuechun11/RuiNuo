@@ -3,6 +3,7 @@ import { Row, Col, Tabs } from 'antd';
 import LeftContent from './commones/leftContent';
 import MiddleContent from './commones/middleContent';
 import RightContent from './commones/rightContent';
+import MiddleBottom from './commones/middleBottom';
 const { TabPane } = Tabs;
 const ReportDataMag = () => {
   return (
@@ -40,6 +41,7 @@ const ReportDataMag = () => {
               </Col>
               <Col span={17}>
                 <MiddleContent />
+                <MiddleBottom />
               </Col>
             </Row>
           </TabPane>

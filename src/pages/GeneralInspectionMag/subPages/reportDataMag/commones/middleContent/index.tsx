@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Form, Input, Select, Button, Dropdown, Menu } from 'antd';
+import { Table, Form, Input, Select, Button, Dropdown, Menu, Popconfirm } from 'antd';
 import { useDispatch } from 'umi';
 import Icon from '@components/Icon';
 import styles from '../index.less';
 import CheckItem from './commones/checkItem';
 import EditModal from '../editModal';
 import DetailsModal from './commones/detailsModal';
+import BatchAdd from './commones/batchAdd';
 const { Option } = Select;
 const MiddleContent = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const MiddleContent = () => {
   const checkItemRef = useRef();
   const editModalRef = useRef();
   const detailRef = useRef();
+  const batchAddRef = useRef();
   useEffect(() => {
     var str = 'Result11';
     var reg = /result/;
@@ -55,7 +57,11 @@ const MiddleContent = () => {
               <span>
                 {' '}
                 {text}{' '}
-                {result ? <Icon name="iconanniu-bianji" onClick={() => resultEdit(record)} /> : ''}
+                {result ? (
+                  <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key)} />
+                ) : (
+                  ''
+                )}
               </span>
             );
           },
@@ -123,7 +129,17 @@ const MiddleContent = () => {
   const menu = (item) => {
     return (
       <Menu>
-        <Menu.Item onClick={() => delCurrentItem(item)}>删除</Menu.Item>
+        <Menu.Item>
+          <Popconfirm
+            title="确定要删除么?"
+            onConfirm={() => delCurrentItem(item)}
+            okText="确定"
+            cancelText="取消"
+          >
+            {' '}
+            删除
+          </Popconfirm>
+        </Menu.Item>
         <Menu.Item>趋势图</Menu.Item>
         <Menu.Item onClick={() => detail(item)}>详情</Menu.Item>
       </Menu>
@@ -201,11 +217,14 @@ const MiddleContent = () => {
   const add = () => {
     checkItemRef.current.show();
   };
+  const batchAdd = () => {
+    batchAddRef.current.show();
+  };
   const reset = () => {
     form.resetFields();
   };
-  const resultEdit = (record: any) => {
-    editModalRef.current.showModal(record);
+  const resultEdit = (record: any, fieldName:any) => {
+    editModalRef.current.showModal(record, fieldName);
   };
   return (
     <>
@@ -218,7 +237,7 @@ const MiddleContent = () => {
         <Button type="primary" size="small" onClick={reset}>
           重置
         </Button>
-        <Button type="primary" size="small" onClick={add}>
+        <Button type="primary" size="small" onClick={batchAdd}>
           批量录入
         </Button>
         <Button type="primary" size="small" onClick={add}>
@@ -235,6 +254,7 @@ const MiddleContent = () => {
       <CheckItem Ref={checkItemRef} />
       <EditModal Ref={editModalRef} />
       <DetailsModal Ref={detailRef} />
+      <BatchAdd Ref={batchAddRef} />
     </>
   );
 };

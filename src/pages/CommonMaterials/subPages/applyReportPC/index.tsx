@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useDispatch, useSelector,useLocation } from 'umi';
+import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select } from 'antd';
-import { downLoad, main,transformTree } from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import { reportProjectExport, majorGroup, reportProjectDelete } from '../../models/server';
 import styles from '../index.less';
 import EditOrAddModal from './components/editOrAddModal';
@@ -136,6 +136,13 @@ const ApplyReportPC = () => {
       align: 'center',
       width: 150,
     },
+    {
+      title: '报告单元',
+      dataIndex: 'reportUnitName',
+      align: 'center',
+      width: 150,
+    },
+
     {
       title: '其他编码2',
       dataIndex: 'extCode2',
@@ -325,16 +332,16 @@ const ApplyReportPC = () => {
         return (
           <div className={styles.operateBtns}>
             {item.mark === 'add' ? (
-              <Button btnType="primary" onClick={add} >
+              <Button btnType="primary" onClick={add}>
                 <PlusOutlined style={{ marginRight: 4 }} />
                 新增
               </Button>
             ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }} >
+              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }}>
                 导入
               </Button>
             ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }} >
+              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }}>
                 导出
               </Button>
             ) : null}
@@ -382,13 +389,13 @@ const ApplyReportPC = () => {
           <ReferenceValue parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="危机值" key="2">
-          <CriticalValue parent={currentItem || list[0]}  btnPermissions={btnPermissions} />
+          <CriticalValue parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="计算公式" key="3">
-          <Formula parent={currentItem || list[0]}  btnPermissions={btnPermissions}  />
+          <Formula parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="常用结果" key="4">
-          <CommonResults parent={currentItem || list[0]}  btnPermissions={btnPermissions} />
+          <CommonResults parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
       </Tabs>
       <Confirm

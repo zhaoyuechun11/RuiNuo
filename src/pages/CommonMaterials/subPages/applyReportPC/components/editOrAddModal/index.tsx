@@ -3,11 +3,8 @@ import { Dialog } from '@components';
 import { Form, Input, message, Select, Row, Col } from 'antd';
 import Edit from 'wangeditor';
 import { wangEditorUploadImage } from '@/utils';
-import {
-  reportProjectUpdate,
-  oneLevelTypeModalSel,
-  reportProjectAdd,
-} from '../../../../models/server';
+import { reportProjectUpdate, reportProjectAdd } from '../../../../models/server';
+import { reportUnitList, dictList } from '@/models/server';
 const layout = {
   wrapperCol: { span: 24 },
 };
@@ -31,10 +28,12 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
   const [form] = Form.useForm();
   const [testMethod, setTestMethod] = useState([]);
   const [id, setId] = useState();
+  const [reportUnit, setReportUnit] = useState([]);
   const editorRef = useRef();
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
       getList({ type: 'FF' });
+      getReportUnitList();
       dialogRef.current && dialogRef.current.show();
       form && form.resetFields();
       initEditor(record);
@@ -77,14 +76,19 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
     });
   };
 
-  const getList = (type: string) => {
-    oneLevelTypeModalSel(type).then(
-      (res: { code: number; data: React.SetStateAction<never[]> }) => {
-        if (res.code === 200) {
-          setTestMethod(res.data);
-        }
-      },
-    );
+  const getList = (type: { type: string }) => {
+    dictList(type).then((res: { code: number; data: React.SetStateAction<never[]> }) => {
+      if (res.code === 200) {
+        setTestMethod(res.data);
+      }
+    });
+  };
+  const getReportUnitList = () => {
+    reportUnitList().then((res: { code: number; data: React.SetStateAction<never[]> }) => {
+      if (res.code === 200) {
+        setReportUnit(res.data);
+      }
+    });
   };
 
   const onInputKeyDownPosition = (e) => {
@@ -332,6 +336,19 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
                   return (
                     <Option value={item.dictValue} key={item.id}>
                       {item.dictValue}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="reportUnitId" label="报告单元">
+              <Select placeholder="请选择报告单元" showSearch allowClear>
+                {reportUnit.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.reportUnitName}
                     </Option>
                   );
                 })}

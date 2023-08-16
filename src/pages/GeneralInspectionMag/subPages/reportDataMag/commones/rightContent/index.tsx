@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 // import { Button } from '@/components';
-import { Table, Form, DatePicker, Select, Input, Row, Col, Tabs, Button, Popover } from 'antd';
+import {
+  Table,
+  Form,
+  DatePicker,
+  Select,
+  Input,
+  Row,
+  Col,
+  Tabs,
+  Button,
+  Popover,
+  message,
+  Popconfirm,
+} from 'antd';
 import { useDispatch, useSelector } from 'umi';
 import moment from 'moment';
 import {
@@ -12,6 +25,7 @@ import {
   reportUnitInstr,
   listByReportUnit,
 } from '@/models/server';
+import { reportMainUpdate, updateRefuse } from '../../../../models/server';
 import styles from '../index.less';
 import style from './index.less';
 const { Option } = Select;
@@ -64,9 +78,13 @@ const RightContent = () => {
   const [reportUnitInstrList, setReportUnitInstr] = useState([]);
   const [executorByReportUnit, setExecutorByReportUnit] = useState([]);
   const [creenReportList, setCreenReportList] = useState([]);
+  const [sort, setSort] = useState('');
+  const [order, setOrder] = useState('');
   const { useDetail } = useSelector((state: any) => state.global);
   const [activeKey, setActiveKey] = useState('10');
-  const { reportUnitId } = useSelector((state: any) => state.generalInspectionMag);
+  const { reportLefUpdate, instrAndRecordId } = useSelector(
+    (state: any) => state.generalInspectionMag,
+  );
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
 
@@ -89,6 +107,8 @@ const RightContent = () => {
       getList({ reportUnitName: '' });
     }
     getCreenReportList({
+      pageNum,
+      pageSize,
       ...form.getFieldsValue(),
       labDate: form.getFieldValue('labDate').format('YYYY-MM-DD HH:mm:ss'),
     });
@@ -112,6 +132,17 @@ const RightContent = () => {
         return {
           title: column.name,
           dataIndex: column.key,
+          sorter:
+            column.key === 'sampleBarcode' ||
+            column.key === 'labDate' ||
+            column.key === 'sampleNo' ||
+            column.key === 'patientName' ||
+            column.key === 'age' ||
+            column.key === 'sendDept' ||
+            column.key === 'sendDept' ||
+            column.key === 'sendDoctor'
+              ? true
+              : false,
           responsive: ['xl', 'xxl'],
           align: 'center',
           width: 60,
@@ -165,10 +196,11 @@ const RightContent = () => {
   useEffect(() => {
     getCreenReportList({
       ...form.getFieldsValue(),
-      labDate: form.getFieldValue('labDate').format('YYYY-MM-DD HH:mm:ss'),
+      labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD HH:mm:ss'),
       ...extendForm.getFieldsValue(),
+      [sort]: order,
     });
-  }, [pageNum, pageSize]);
+  }, [pageNum, pageSize, sort, order, reportLefUpdate]);
 
   const getList = (params) => {
     dispatch({
@@ -360,6 +392,7 @@ const RightContent = () => {
   const getReportUnitInstr = (reportUnitId: any) => {
     reportUnitInstr({ reportUnitId }).then((res: any) => {
       if (res.code === 200) {
+        res.data.unshift({ id: 0, instrName: '手工' });
         setReportUnitInstr(res.data);
       }
     });
@@ -390,6 +423,17 @@ const RightContent = () => {
     setPageNum(num);
     setPageSize(size);
   };
+  const onTableChange = (
+    pagination: Record<string, unknown>,
+    filters: Record<string, unknown>,
+    sorter: Record<string, string>,
+  ) => {
+    console.log('pagination', pagination);
+    console.log('filters', filters);
+    console.log('sorter', sorter);
+    setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
+    setSort(sorter.field + 'Desc');
+  };
   const getCreenReportList = (params: any) => {
     dispatch({
       type: 'generalInspectionMag/fetchCreenReportList',
@@ -404,11 +448,11 @@ const RightContent = () => {
             setTotal(res.data.total);
             console.log(Math.ceil(res.data.total / 50) == pageNum);
             if (Math.ceil(res.data.total / 50) == pageNum) {
-              debugger
               let paramsVal = {
                 id: res.data.records[res.data.records.length - 1]?.id,
                 instrId: form.getFieldValue('instrId'),
               };
+              console.log(paramsVal);
               dispatch({
                 type: 'generalInspectionMag/save',
                 payload: {
@@ -475,7 +519,6 @@ const RightContent = () => {
       default:
         params = {};
     }
-    console.log(params);
     getCreenReportList({
       ...params,
       ...extendForm.getFieldsValue(),
@@ -483,6 +526,49 @@ const RightContent = () => {
       pageSize,
       ...form.getFieldsValue(),
       labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+    });
+  };
+  const reviewOrpositive = (val) => {
+    let params = { id: instrAndRecordId.id };
+    let newParams = {};
+    if (val === 1) {
+      newParams = {
+        ...params,
+        retestFlag: true,
+      };
+    } else {
+      newParams = {
+        ...params,
+        isPositive: true,
+      };
+    }
+    reportMainUpdate(newParams).then((res) => {
+      if (res.code === 200) {
+        message.success('修改成功');
+        getCreenReportList({
+          ...form.getFieldsValue(),
+          labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD HH:mm:ss'),
+          ...extendForm.getFieldsValue(),
+          [sort]: order,
+          pageNum,
+          pageSize,
+        });
+      }
+    });
+  };
+  const confirmRefuse = () => {
+    updateRefuse({ id: instrAndRecordId.id }).then((res) => {
+      if (res.code === 200) {
+        message.success('拒检成功！');
+        getCreenReportList({
+          ...form.getFieldsValue(),
+          labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD HH:mm:ss'),
+          ...extendForm.getFieldsValue(),
+          [sort]: order,
+          pageNum,
+          pageSize,
+        });
+      }
     });
   };
 
@@ -681,15 +767,22 @@ const RightContent = () => {
       <Button type="primary" size="small">
         报告打印
       </Button>
-      <Button type="primary" size="small">
+      <Button type="primary" size="small" onClick={() => reviewOrpositive(1)}>
         复查
       </Button>
-      <Button type="primary" size="small">
+      <Button type="primary" size="small" onClick={() => reviewOrpositive(2)}>
         阳性
       </Button>
-      <Button type="primary" size="small">
-        拒检
-      </Button>
+      <Popconfirm
+        title="是否确认要取消本次检验?"
+        onConfirm={confirmRefuse}
+        okText="确定"
+        cancelText="取消"
+      >
+        <Button type="primary" size="small">
+          拒检
+        </Button>
+      </Popconfirm>
       <Table
         dataSource={creenReportList}
         columns={tableHeaderCoumn}
@@ -698,6 +791,7 @@ const RightContent = () => {
         rowSelection={rowSelection}
         rowClassName={getRowClassName}
         rowKey={(record) => record.key}
+        onChange={onTableChange}
         pagination={{
           current: pageNum,
           pageSize: pageSize,
@@ -710,7 +804,6 @@ const RightContent = () => {
             onClick: (event) => {
               setClickRow(index);
               let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
-
               dispatch({
                 type: 'generalInspectionMag/save',
                 payload: {

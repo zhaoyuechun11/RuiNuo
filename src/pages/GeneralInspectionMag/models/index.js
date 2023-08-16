@@ -14,6 +14,10 @@ const generalInspectionMag = {
     manualAllocation: [],
     singleInstrSeletedKeys: [],
     instrAndRecordId: { id: '', instrId: '' },
+    reportLeftData: [],
+    reportLefUpdate: false,
+    reportResultList: [],
+    isChangeReportResult: false,
   },
   effects: {
     *fetchReportMainDataList({ payload }, { call }) {

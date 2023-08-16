@@ -36,10 +36,10 @@ const ReportDataMag = () => {
           </TabPane>
           <TabPane tab="当前报告数据" key="10">
             <Row>
-              <Col span={7} style={{ borderBottom: '1px solid #cecece' }}>
+              <Col span={8} style={{ borderBottom: '1px solid #cecece' }}>
                 <LeftContent />
               </Col>
-              <Col span={17}>
+              <Col span={16}>
                 <MiddleContent />
                 <MiddleBottom />
               </Col>

@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Form, Input, Select, Button, Dropdown, Menu, Popconfirm } from 'antd';
-import { useDispatch } from 'umi';
+import { Table, Form, Input, Select, Button, Dropdown, Menu, Popconfirm, message } from 'antd';
+import { useDispatch, useSelector } from 'umi';
 import Icon from '@components/Icon';
 import styles from '../index.less';
 import CheckItem from './commones/checkItem';
-import EditModal from '../editModal';
 import DetailsModal from './commones/detailsModal';
 import BatchAdd from './commones/batchAdd';
+
+import { reportResult } from '../../../../models/server';
+import FlagModal from './commones/flagModal';
 const { Option } = Select;
 const MiddleContent = () => {
   const dispatch = useDispatch();
@@ -17,18 +19,49 @@ const MiddleContent = () => {
   const editModalRef = useRef();
   const detailRef = useRef();
   const batchAddRef = useRef();
+  const [resultList, setResultList] = useState([]);
+  const { instrAndRecordId, reportResultList, isChangeReportResult } = useSelector(
+    (state: any) => state.generalInspectionMag,
+  );
+  const reportUnit = sessionStorage.getItem('reportUnit');
   useEffect(() => {
     var str = 'Result11';
     var reg = /result/;
     //var reg = /^abc\d$/; //只能匹配abc
-
     var result = reg.test(str);
-
     console.log(result);
-    getList({ reportUnitName: 'gg' });
+
+    if (reportUnit) {
+      const newReportUnit = JSON.parse(reportUnit);
+
+      getList({ reportUnitName: newReportUnit.children });
+    } else {
+      getList({ reportUnitName: '' });
+    }
   }, []);
   useEffect(() => {
+    if (!instrAndRecordId.instrId) {
+      message.warning('请先选择仪器!');
+      return;
+    }
+    if (instrAndRecordId.id || instrAndRecordId.instrId) {
+      getReportResult(instrAndRecordId);
+    }
+  }, [instrAndRecordId]);
+  useEffect(() => {
+    if (reportUnit) {
+      const newReportUnit = JSON.parse(reportUnit);
+
+      getList({ reportUnitName: newReportUnit.children });
+    } else {
+      getList({ reportUnitName: '' });
+    }
+    //setResultList(reportResultList);
+  }, [isChangeReportResult]);
+
+  useEffect(() => {
     if (list.length > 0) {
+      console.log('list', list);
       var reg = /result/;
       const firstColumm = list.splice(0, 1).map((column) => {
         return {
@@ -44,24 +77,36 @@ const MiddleContent = () => {
       });
 
       const middleColumns = list.map((column) => {
+        let result = reg.test(column.key);
         return {
           title: column.name,
           dataIndex: column.key,
           responsive: ['xl', 'xxl'],
           align: 'center',
-          width: 70,
+          width: result ? 100 : 70,
           ellipsis: true,
           render: (text: string | number, record: any) => {
-            let result = reg.test(column.key);
+            console.log(text, record);
             return (
               <span>
-                {' '}
-                {text}{' '}
-                {result ? (
-                  <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key)} />
-                ) : (
-                  ''
-                )}
+                {column.key === 'displayRef' ? record.ref.displayRef : text}
+                {result && record.dataType === 1 ? (
+                  <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />
+                ) : record.dataType === 3 && result ? (
+                  <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
+                    选择
+                  </Button>
+                ) : result && record.dataType === 2 ? (
+                  <>
+                    <Icon
+                      name="iconanniu-bianji"
+                      onClick={() => resultEdit(record, column.key, 1)}
+                    />{' '}
+                    <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
+                      选择
+                    </Button>
+                  </>
+                ) : null}
               </span>
             );
           },
@@ -116,16 +161,16 @@ const MiddleContent = () => {
       setTableHeaderCoumn(coumns);
     }
   }, [list]);
-  const data = [
-    {
-      key: 1,
-      itemCode: 'John Brown',
-      itemName: 32,
-      originalResult: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-      result: ['nice'],
-      result2: 'lll',
-    },
-  ];
+  // const data = [
+  //   {
+  //     key: 1,
+  //     itemCode: 'John Brown',
+  //     itemName: 32,
+  //     originalResult: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
+  //     result: ['nice'],
+  //     result2: 'lll',
+  //   },
+  // ];
   const menu = (item) => {
     return (
       <Menu>
@@ -183,7 +228,7 @@ const MiddleContent = () => {
     return (
       <Form onValuesChange={searchHandle} layout="inline" form={form}>
         <Form.Item name="sampleBarcode">
-          <Input placeholder="请输入项目编号名称" />
+          <Input placeholder="请输入项目编号名称" style={{ width: 130 }} />
         </Form.Item>
         <div id="flag" className={styles.flag}>
           <Form.Item name="instrId">
@@ -223,8 +268,22 @@ const MiddleContent = () => {
   const reset = () => {
     form.resetFields();
   };
-  const resultEdit = (record: any, fieldName:any) => {
-    editModalRef.current.showModal(record, fieldName);
+  const resultEdit = (record: any, fieldName: any, type: any) => {
+    editModalRef.current.showModal(record, fieldName, type);
+  };
+  const getReportResult = (params: any) => {
+    reportResult({ reportId: params.id, instrId: params.instrId }).then((res: any) => {
+      if (res.code === 200) {
+        setResultList(res.data);
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'reportResultList',
+            dataSource: res.data,
+          },
+        });
+      }
+    });
   };
   return (
     <>
@@ -245,14 +304,14 @@ const MiddleContent = () => {
         </Button>
       </div>
       <Table
-        dataSource={data}
+        dataSource={reportResultList}
         columns={tableHeaderCoumn}
         scroll={{ x: 500 }}
         size="small"
         bordered
       />
       <CheckItem Ref={checkItemRef} />
-      <EditModal Ref={editModalRef} />
+      <FlagModal Ref={editModalRef} />
       <DetailsModal Ref={detailRef} />
       <BatchAdd Ref={batchAddRef} />
     </>

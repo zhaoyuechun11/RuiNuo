@@ -14,8 +14,8 @@ const EditModal = ({ Ref }) => {
   const dialogRef = useRef();
   useImperativeHandle(Ref, () => ({
     showModal: (record, fieldName) => {
-      record[fieldName] = 'uuu';
-      record;
+      // record[fieldName] = 'uuu';
+      // record;
       dialogRef.current && dialogRef.current.show();
     },
   }));

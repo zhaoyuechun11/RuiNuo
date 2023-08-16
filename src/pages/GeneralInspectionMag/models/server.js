@@ -42,3 +42,15 @@ export function screenReportList(params) {
 export function reportMain(params) {
   return axios('lab/reportMain', 'get', params);
 }
+export function reportMainUpdate(params) {
+  return axios('lab/reportMain/update', 'post', params);
+}
+export function updateRefuse(params) {
+  return axios('lab/reportMain/updateRefuse', 'post', params);
+}
+export function reportResult(params) {
+  return axios('lab/reportResultCommon/getList', 'get', params);
+}
+export function getListForInput(params) {
+  return axios('basic/labItemResults/getListForInput', 'get', params);
+}

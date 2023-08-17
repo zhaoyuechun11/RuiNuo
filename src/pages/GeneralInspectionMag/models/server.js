@@ -54,3 +54,12 @@ export function reportResult(params) {
 export function getListForInput(params) {
   return axios('basic/labItemResults/getListForInput', 'get', params);
 }
+export function reportResultUpdate(params) {
+  return axios('lab/reportResultCommon/update', 'post', params);
+}
+export function getReportByReportUnit(params) {
+  return axios('basic/labItem/getListForReportUnit', 'get', params);
+}
+export function reportResultSave(params) {
+  return axios('lab/reportResultCommon/save', 'post', params);
+}

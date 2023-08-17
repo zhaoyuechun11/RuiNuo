@@ -14,7 +14,7 @@ import {
   message,
   Popconfirm,
 } from 'antd';
-import { useDispatch, useSelector } from 'umi';
+import { useDispatch, useLocation, useSelector } from 'umi';
 import moment from 'moment';
 import {
   getHospitalList,
@@ -25,41 +25,17 @@ import {
   reportUnitInstr,
   listByReportUnit,
 } from '@/models/server';
-import { reportMainUpdate, updateRefuse } from '../../../../models/server';
+import { reportMainUpdate, updateRefuse, reportResultSave ,reportResultUpdate} from '../../../../models/server';
 import styles from '../index.less';
 import style from './index.less';
 const { Option } = Select;
 const { TabPane } = Tabs;
-const data = [
-  {
-    key: 1,
-    sampleBarcode: 'John Brown',
-    reportUnitName: 32,
-    labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-    instrName: ['nice'],
-    sampleNo: 'lll',
-  },
-  {
-    key: 2,
-    sampleBarcode: 'John Brown',
-    reportUnitName: 33,
-    labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-    instrName: ['nice'],
-    sampleNo: 'lll',
-  },
-  {
-    key: 3,
-    sampleBarcode: 'John Brown',
-    reportUnitName: 34,
-    labDate: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-    instrName: ['nice'],
-    sampleNo: 'lll',
-  },
-];
+
 const RightContent = () => {
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const [list, setList] = useState([]);
-  const [reportList, setReportList] = useState(data);
+  const [reportList, setReportList] = useState([]);
   const [tableHeaderCoumn, setTableHeaderCoumn] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [form] = Form.useForm();
@@ -82,9 +58,13 @@ const RightContent = () => {
   const [order, setOrder] = useState('');
   const { useDetail } = useSelector((state: any) => state.global);
   const [activeKey, setActiveKey] = useState('10');
-  const { reportLefUpdate, instrAndRecordId } = useSelector(
-    (state: any) => state.generalInspectionMag,
-  );
+  const {
+    reportLefUpdate,
+    instrAndRecordId,
+    isChangeReportResult,
+    reportResultList,
+    reportMiddleUpdate,
+  } = useSelector((state: any) => state.generalInspectionMag);
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
 
@@ -196,11 +176,13 @@ const RightContent = () => {
   useEffect(() => {
     getCreenReportList({
       ...form.getFieldsValue(),
-      labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD HH:mm:ss'),
+      labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
       ...extendForm.getFieldsValue(),
       [sort]: order,
+      pageNum,
+      pageSize,
     });
-  }, [pageNum, pageSize, sort, order, reportLefUpdate]);
+  }, [pageNum, pageSize, sort, order, reportLefUpdate, reportMiddleUpdate]);
 
   const getList = (params) => {
     dispatch({
@@ -216,6 +198,7 @@ const RightContent = () => {
     });
   };
   const checkChange = (e) => {};
+  const instrChange = (e) => {};
   const searchHandle = (changedValues: any, allValues: undefined) => {
     if (activeKey !== '10') {
       setActiveKey('10');
@@ -273,7 +256,7 @@ const RightContent = () => {
           </Select>
         </Form.Item>
         <Form.Item name="instrId">
-          <Select allowClear onChange={checkChange} placeholder="请选择检验仪器">
+          <Select allowClear onChange={instrChange} placeholder="请选择检验仪器">
             {reportUnitInstrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -447,6 +430,7 @@ const RightContent = () => {
             setCreenReportList(res.data.records);
             setTotal(res.data.total);
             console.log(Math.ceil(res.data.total / 50) == pageNum);
+
             if (Math.ceil(res.data.total / 50) == pageNum) {
               let paramsVal = {
                 id: res.data.records[res.data.records.length - 1]?.id,
@@ -458,6 +442,22 @@ const RightContent = () => {
                 payload: {
                   type: 'instrAndRecordId',
                   dataSource: paramsVal,
+                },
+              });
+            }
+            if (res.data.total === 0) {
+              dispatch({
+                type: 'generalInspectionMag/save',
+                payload: {
+                  type: 'instrAndRecordId',
+                  dataSource: {},
+                },
+              });
+              dispatch({
+                type: 'generalInspectionMag/save',
+                payload: {
+                  type: 'reportResultList',
+                  dataSource: [],
                 },
               });
             }
@@ -571,7 +571,57 @@ const RightContent = () => {
       }
     });
   };
-
+  const onRowClick = (record: any, index: any) => {
+    if (isChangeReportResult) {
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'isChangeReportResult',
+          dataSource: false,
+        },
+      });
+      let params = reportResultList.map((item) => {
+        return {
+          id: item.id,
+          colonyCount: item?.colonyCount,
+          ct: item.ct,
+          cutoff: item.cutoff,
+          germId: item.germId,
+          hasGerm: item.hasGerm,
+          od: item.od,
+          referenceRange: item.ref.displayRef,
+          result: item.result,
+          result1: item.result1,
+          result2: item.result2,
+          result3: item.result3,
+          result4: item.result4,
+          resultFlag: item.resultFlag,
+        };
+      });
+      reportResultUpdate(params).then((res) => {
+        if (res.code === 200) {
+          message.success('编辑成功');
+          getCreenReportList({
+            ...form.getFieldsValue(),
+            labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+            ...extendForm.getFieldsValue(),
+            [sort]: order,
+            pageNum,
+            pageSize,
+          });
+        }
+      });
+    }
+    setClickRow(index);
+    let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'instrAndRecordId',
+        dataSource: idParams,
+      },
+    });
+  };
   const popover_content = () => {
     return (
       <div className={style.popover_content}>
@@ -802,15 +852,7 @@ const RightContent = () => {
         onRow={(record, index) => {
           return {
             onClick: (event) => {
-              setClickRow(index);
-              let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
-              dispatch({
-                type: 'generalInspectionMag/save',
-                payload: {
-                  type: 'instrAndRecordId',
-                  dataSource: idParams,
-                },
-              });
+              onRowClick(record, index);
             },
           };
         }}

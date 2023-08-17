@@ -7,7 +7,7 @@ import CheckItem from './commones/checkItem';
 import DetailsModal from './commones/detailsModal';
 import BatchAdd from './commones/batchAdd';
 
-import { reportResult } from '../../../../models/server';
+import { reportResult, reportResultSave, reportResultUpdate } from '../../../../models/server';
 import FlagModal from './commones/flagModal';
 const { Option } = Select;
 const MiddleContent = () => {
@@ -20,7 +20,7 @@ const MiddleContent = () => {
   const detailRef = useRef();
   const batchAddRef = useRef();
   const [resultList, setResultList] = useState([]);
-  const { instrAndRecordId, reportResultList, isChangeReportResult } = useSelector(
+  const { instrAndRecordId, reportResultList, isChangeReportResult, isAdd } = useSelector(
     (state: any) => state.generalInspectionMag,
   );
   const reportUnit = sessionStorage.getItem('reportUnit');
@@ -40,8 +40,15 @@ const MiddleContent = () => {
     }
   }, []);
   useEffect(() => {
-    if (!instrAndRecordId.instrId) {
+    if (instrAndRecordId.id && !instrAndRecordId.instrId) {
       message.warning('请先选择仪器!');
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'reportResultList',
+          dataSource: [],
+        },
+      });
       return;
     }
     if (instrAndRecordId.id || instrAndRecordId.instrId) {
@@ -56,12 +63,10 @@ const MiddleContent = () => {
     } else {
       getList({ reportUnitName: '' });
     }
-    //setResultList(reportResultList);
   }, [isChangeReportResult]);
 
   useEffect(() => {
     if (list.length > 0) {
-      console.log('list', list);
       var reg = /result/;
       const firstColumm = list.splice(0, 1).map((column) => {
         return {
@@ -86,10 +91,9 @@ const MiddleContent = () => {
           width: result ? 100 : 70,
           ellipsis: true,
           render: (text: string | number, record: any) => {
-            console.log(text, record);
             return (
               <span>
-                {column.key === 'displayRef' ? record.ref.displayRef : text}
+                {column.key === 'displayRef' ? record.ref?.displayRef : text}
                 {result && record.dataType === 1 ? (
                   <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />
                 ) : record.dataType === 3 && result ? (
@@ -161,16 +165,6 @@ const MiddleContent = () => {
       setTableHeaderCoumn(coumns);
     }
   }, [list]);
-  // const data = [
-  //   {
-  //     key: 1,
-  //     itemCode: 'John Brown',
-  //     itemName: 32,
-  //     originalResult: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-  //     result: ['nice'],
-  //     result2: 'lll',
-  //   },
-  // ];
   const menu = (item) => {
     return (
       <Menu>
@@ -204,25 +198,7 @@ const MiddleContent = () => {
       },
     });
   };
-  const searchHandle = (changedValues: any, allValues: undefined) => {
-    // if (!allValues?.sampleBarcode) {
-    //   return;
-    // }
-    // if ('no' in changedValues) {
-    //   return;
-    // }
-    // if (!scanForm.getFieldValue('no')) {
-    //   message.warning('请先输入样本号!');
-    //   scanForm.resetFields();
-    //   return;
-    // }
-    // const params = {
-    //   sampleBarcode: allValues?.sampleBarcode,
-    //   instrId: form.getFieldValue('instrId'),
-    //   reportUnitId: form.getFieldValue('reportUnitId'),
-    // };
-    // getOneInstrAllocationScan(params);
-  };
+  const searchHandle = (changedValues: any, allValues: undefined) => {};
   const flagChange = (e) => {};
   const renderForm = () => {
     return (
@@ -262,6 +238,91 @@ const MiddleContent = () => {
   const add = () => {
     checkItemRef.current.show();
   };
+  const save = () => {
+    if (isChangeReportResult) {
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'isChangeReportResult',
+          dataSource: false,
+        },
+      });
+
+      let hasIdReportData = reportResultList.filter((item) => {
+        if ('id' in item) {
+          return item;
+        }
+      });
+      let params = hasIdReportData.map((item) => {
+        return {
+          id: item.id,
+          colonyCount: item?.colonyCount,
+          ct: item.ct,
+          cutoff: item.cutoff,
+          germId: item.germId,
+          hasGerm: item.hasGerm,
+          od: item.od,
+          referenceRange: item.ref?.displayRef,
+          result: item.result,
+          result1: item.result1,
+          result2: item.result2,
+          result3: item.result3,
+          result4: item.result4,
+          resultFlag: item.resultFlag,
+        };
+      });
+      let noIdReportData = reportResultList
+        ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
+        .map((item: any) => {
+          return {
+            reportId: instrAndRecordId.id,
+            instrId: instrAndRecordId.instrId,
+            colonyCount: item?.colonyCount,
+            itemId:item.itemId,
+            ct: item.ct,
+            cutoff: item.cutoff,
+            germId: item.germId,
+            hasGerm: item.hasGerm,
+            od: item.od,
+            referenceRange: item.ref?.displayRef,
+            result: item.result,
+            result1: item.result1,
+            result2: item.result2,
+            result3: item.result3,
+            result4: item.result4,
+            resultFlag: item.resultFlag,
+          };
+        });
+
+      //return;
+      reportResultUpdate(params).then((res) => {
+        if (res.code === 200) {
+          message.success('编辑成功');
+          dispatch({
+            type: 'generalInspectionMag/save',
+            payload: {
+              type: 'reportMiddleUpdate',
+              dataSource: true,
+            },
+          });
+        }
+      });
+      reportResultSave(noIdReportData).then((res) => {
+        if (res.code === 200) {
+          message.success('保存成功');
+          dispatch({
+            type: 'generalInspectionMag/save',
+            payload: {
+              type: 'reportMiddleUpdate',
+              dataSource: true,
+            },
+          });
+        }
+      });
+    }
+    // if (isAdd) {
+    // }
+  };
   const batchAdd = () => {
     batchAddRef.current.show();
   };
@@ -282,6 +343,15 @@ const MiddleContent = () => {
             dataSource: res.data,
           },
         });
+      } else {
+        setResultList([]);
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'reportResultList',
+            dataSource: [],
+          },
+        });
       }
     });
   };
@@ -299,7 +369,7 @@ const MiddleContent = () => {
         <Button type="primary" size="small" onClick={batchAdd}>
           批量录入
         </Button>
-        <Button type="primary" size="small" onClick={add}>
+        <Button type="primary" size="small" onClick={save}>
           保存
         </Button>
       </div>

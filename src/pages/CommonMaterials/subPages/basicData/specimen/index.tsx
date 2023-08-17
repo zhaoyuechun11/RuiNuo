@@ -24,47 +24,45 @@ const Specimen = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
 
-  // const [selectedCount, setSelectedCount] = useState(0); // 选中数量
-  // const [selectedKeys, setSelectedKeys] = useState([]); // 选中的人员id列表
-  const [statisticsList, setStatisticsList] = useState<RewardItem[]>([]);
+  const [statisticsList, setStatisticsList] = useState([]);
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const [selectedRows, setSelectedRows] = useState([]);
   const searchVal = useRef();
   const importRef = useRef();
   const [btnPermissions, setBtnPermissions] = useState([]);
-  const getList = useCallback(
-    (param: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchSecondPage',
-        payload: {
-          ...param,
-          callback: (res: {
-            code: number;
-            data: {
-              records: React.SetStateAction<RewardItem[]>;
-              total: React.SetStateAction<number>;
-            };
-          }) => {
-            if (res.code === 200) {
-              setStatisticsList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
-        },
-      });
-    },
-    [dispatch, sort, order],
-  );
 
   useEffect(() => {
     getList({ pageNum, pageSize, parentId: Number(params.id) });
-  }, [pageNum, pageSize]);
+  }, []);
+  useEffect(() => {
+    getList({ pageNum, pageSize, parentId: Number(params.id) });
+  }, [pageNum, pageSize, params]);
   useEffect(() => {
     const { btn } = main(transformTree(useDetail.permissions), '/commonMaterials/basicData');
     setBtnPermissions(btn);
   }, [useDetail]);
-
+  const getList = (param: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchSecondPage',
+      payload: {
+        ...param,
+        callback: (res: {
+          code: number;
+          data: {
+            records: React.SetStateAction<RewardItem[]>;
+            total: React.SetStateAction<number>;
+          };
+        }) => {
+          if (res.code === 200) {
+            debugger;
+            setStatisticsList(res.data.records);
+            setTotal(res.data.total);
+          }
+        },
+      },
+    });
+  };
   const Columns = [
     {
       title: '字典编码',
@@ -283,25 +281,25 @@ const Specimen = () => {
         })}
       </div>
       {renderForm()}
-      {/* <Table
-        columns={statisticsColumns}
+      <Table
+        columns={Columns}
         rowKey="id"
         // onSelectCount={(count, keys) => {
         //   setSelectedCount(count);
         //   setSelectedKeys(keys);
         // }}
-        handleTableChange={onTableChange}
+        // handleTableChange={onTableChange}
         loading={loading}
         pagination={{
-          current: page,
-          pageSize: page_size,
+          current: pageNum,
+          pageSize: pageSize,
           total,
           onChange: pageChange,
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
         dataSource={statisticsList}
-      ></Table> */}
-      <Table
+      ></Table>
+      {/* <Table
         columns={Columns}
         unit="个"
         selectedRows={selectedRows}
@@ -309,7 +307,7 @@ const Specimen = () => {
         rowClassName={styles.rowStyle}
         selectedRowKeys={selectedRows.map((i) => i.id)}
         data={{
-          list: statisticsList,
+          list: [],
           pagination: {
             total,
             current: pageNum,
@@ -334,7 +332,7 @@ const Specimen = () => {
         onChange={handleStandardTableChange}
         rowKey="id"
         isRowSelection={true}
-      />
+      /> */}
       <EditOrAddModal
         Ref={modalRef}
         refresh={() => getList({ pageNum, pageSize, parentId: Number(params.id) })}

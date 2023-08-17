@@ -1,47 +1,87 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Table } from 'antd';
 import { Dialog } from '@components';
+import { getReportByReportUnit } from '../../../../../../models/server';
+import { useSelector, useDispatch } from 'umi';
 const CheckItem = ({ Ref }) => {
   const dialogRef = useRef();
+  const dispatch = useDispatch();
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [reportList, setReportList] = useState([]);
+  const { reportResultList } = useSelector((state: any) => state.generalInspectionMag);
   useImperativeHandle(Ref, () => ({
     show: () => {
       dialogRef.current && dialogRef.current.show();
+      getReportList();
     },
   }));
+  const getReportList = () => {
+    const reportUnit = sessionStorage.getItem('reportUnit');
+
+    if (reportUnit) {
+      const newReportUnit = JSON.parse(reportUnit);
+      getReportByReportUnit({ reportUnitId: newReportUnit.key }).then((res) => {
+        if (res.code === 200) {
+          let result = res.data?.map((item) => {
+            return {
+              key: item.id,
+              itemId: item.id,
+              itemCode: item.itemCode,
+              itemName: item.itemName,
+              // ...item,
+            };
+          });
+          setReportList(result);
+        }
+      });
+    }
+  };
   const columns = [
     {
       title: '项目编号',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'itemCode',
+      key: 'itemCode',
       render: (text) => <a>{text}</a>,
       width: 150,
     },
     {
       title: '项目名称',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'itemName',
+      key: 'itemName',
       width: 80,
     },
   ];
-  const data = [
-    {
-      key: 1,
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: 2,
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 2 Lake Park, London No. 2 Lake Park',
-      tags: ['loser'],
-    },
-  ];
-  const onOk = () => {};
-  const onChangeSelected = (selectedRowKeys) => {
+
+  const onOk = () => {
+    let filterResult = reportList?.filter((item) =>
+      selectedKeys.some((data) => data === item.itemId),
+    );
+    const mergedArray = [filterResult, reportResultList].reduce((acc, val) => acc.concat(val), []);
+    /**去重 */
+    let map = new Map();
+    for (let item of mergedArray) {
+      map.set(item.itemId, item);
+    }
+    const result = [...map.values()];
+
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'reportResultList',
+        dataSource: result,
+      },
+    });
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'isChangeReportResult',
+        dataSource: true,
+      },
+    });
+
+    dialogRef.current && dialogRef.current.hide();
+  };
+  const onChangeSelected = (selectedRowKeys: any) => {
     setSelectedKeys(selectedRowKeys);
   };
   const rowSelection = {
@@ -58,7 +98,7 @@ const CheckItem = ({ Ref }) => {
       }}
       onOk={onOk}
     >
-      <Table columns={columns} dataSource={data} rowSelection={rowSelection} />
+      <Table columns={columns} dataSource={reportList} rowSelection={rowSelection} />
     </Dialog>
   );
 };

@@ -28,6 +28,13 @@ const FlagModal = ({ Ref }) => {
           dataSource: false,
         },
       });
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'reportMiddleUpdate',
+          dataSource: false,
+        },
+      });
       form.resetFields();
       setRecord(recordVal);
       setFieldName(fieldName);
@@ -56,14 +63,31 @@ const FlagModal = ({ Ref }) => {
         }
       });
       record[fieldName] = resultVal;
+      record['resultFlag'] = form.getFieldsValue().result;
     } else {
       record[fieldName] = form.getFieldsValue().result;
-      //   reportResultList.map((item) => {
-      //     if (item.id === record.id) {
-      //       item = record;
-      //     }
-      //   });
     }
+
+    if (record.dataType === 1) {
+      console.log('form.getFieldsValue().result', form.getFieldsValue().result, record);
+      if (
+        form.getFieldsValue().result > record.ref.lowValue &&
+        form.getFieldsValue().result < record.ref.highValue
+      ) {
+        record['prompt'] = '正常';
+      }
+      if (form.getFieldsValue().result < record.ref.lowValue) {
+        record['prompt'] = '↓';
+      } else if (form.getFieldsValue().result > record.ref.highValue) {
+        record['prompt'] = '↑';
+      }
+    }
+    console.log('record', record);
+    // reportResultList.map((item) => {
+    //   if (item.id === record.id) {
+    //     item = record;
+    //   }
+    // });
 
     // dispatch({
     //   type: 'generalInspectionMag/save',

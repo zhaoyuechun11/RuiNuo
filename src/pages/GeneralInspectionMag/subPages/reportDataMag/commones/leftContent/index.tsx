@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'umi';
 import Icon from '@components/Icon';
 import style from './index.less';
@@ -11,8 +11,14 @@ const LeftContent = () => {
   const { instrAndRecordId, reportLeftData } = useSelector(
     (state: any) => state.generalInspectionMag,
   );
+  const reportUnit = sessionStorage.getItem('reportUnit');
   useEffect(() => {
-    getList({ reportUnitName: 'gg' });
+    if (reportUnit) {
+      const newReportUnit = JSON.parse(reportUnit);
+      getList({ reportUnitName: newReportUnit.children });
+    } else {
+      getList({ reportUnitName: '' });
+    }
   }, []);
   useEffect(() => {
     if (instrAndRecordId.id || instrAndRecordId.instrId) {

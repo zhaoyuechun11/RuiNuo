@@ -13,6 +13,8 @@ const CheckItem = ({ Ref }) => {
     show: () => {
       dialogRef.current && dialogRef.current.show();
       getReportList();
+      let ids = reportResultList.map((item) => item.itemId);
+      setSelectedKeys(ids);
     },
   }));
   const getReportList = () => {
@@ -28,6 +30,7 @@ const CheckItem = ({ Ref }) => {
               itemId: item.id,
               itemCode: item.itemCode,
               itemName: item.itemName,
+              dataType: item.dataType,
               // ...item,
             };
           });
@@ -56,19 +59,28 @@ const CheckItem = ({ Ref }) => {
     let filterResult = reportList?.filter((item) =>
       selectedKeys.some((data) => data === item.itemId),
     );
-    const mergedArray = [filterResult, reportResultList].reduce((acc, val) => acc.concat(val), []);
+    let someResult = reportResultList.filter((item) =>
+      filterResult.some((data) => data.itemId === item.itemId),
+    );
+    let noSomeResult = filterResult.filter(
+      (item) => !someResult.some((data) => data.itemId === item.itemId),
+    );
+    //debugger;
+    const mergedArray = [someResult, noSomeResult].reduce((acc, val) => acc.concat(val), []);
+
+    debugger;
     /**去重 */
-    let map = new Map();
-    for (let item of mergedArray) {
-      map.set(item.itemId, item);
-    }
-    const result = [...map.values()];
+    // let map = new Map();
+    // for (let item of mergedArray) {
+    //   map.set(item.itemId, item);
+    // }
+    // const result = [...map.values()];
 
     dispatch({
       type: 'generalInspectionMag/save',
       payload: {
         type: 'reportResultList',
-        dataSource: result,
+        dataSource: mergedArray,
       },
     });
     dispatch({

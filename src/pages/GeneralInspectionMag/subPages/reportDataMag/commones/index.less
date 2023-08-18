@@ -2,16 +2,20 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  button:nth-child(3) {
-    margin: 0 10px;
-  }
-  button:nth-child(4) {
-    margin: 0 10px 0 0;
-  }
   :global {
     .ant-input {
       width: 140px;
-      height: 28px;
+    }
+    .ant-row {
+      width: 100%;
+      & > div:nth-child(2),
+      & > div:nth-child(3),
+      & > div:nth-child(4) {
+        margin: 0 5px;
+      }
+      & > div:nth-child(1) {
+        margin-right: 5px;
+      }
     }
   }
 }
@@ -58,8 +62,8 @@
   }
 }
 .blue {
-  background-color: #007aff;
   color: #fff;
+  background-color: #007aff;
   :global {
     .ant-table-row:hover > td,
     td.ant-table-cell-row-hover {

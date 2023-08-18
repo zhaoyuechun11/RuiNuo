@@ -63,3 +63,9 @@ export function getReportByReportUnit(params) {
 export function reportResultSave(params) {
   return axios('lab/reportResultCommon/save', 'post', params);
 }
+export function reportResultDelete(params) {
+  return axios('lab/reportResultCommon/delete', 'post', params);
+}
+export function reportProjectDetail(params) {
+  return axios('basic/labItem', 'get', params);
+}

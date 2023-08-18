@@ -25,7 +25,12 @@ import {
   reportUnitInstr,
   listByReportUnit,
 } from '@/models/server';
-import { reportMainUpdate, updateRefuse, reportResultSave ,reportResultUpdate} from '../../../../models/server';
+import {
+  reportMainUpdate,
+  updateRefuse,
+  reportResultSave,
+  reportResultUpdate,
+} from '../../../../models/server';
 import styles from '../index.less';
 import style from './index.less';
 const { Option } = Select;
@@ -46,7 +51,7 @@ const RightContent = () => {
   const [department, setDepartment] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(2);
   const [total, setTotal] = useState();
   const [popoverVisible, setPopoverVisible] = useState(false);
   const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
@@ -291,25 +296,26 @@ const RightContent = () => {
   };
   const getRowClassName = (record, index) => {
     let className = 'normal';
-    if (index === clickRow) {
+    if (record.id === clickRow) {
       className = styles.blue;
       return className;
     }
+
     // if (
     //   record?.id == creenReportList[creenReportList.length - 1]?.id &&
     //   Math.ceil(total / 50) == pageNum
     // ) {
-    //   let paramsVal = {
-    //     id: creenReportList[creenReportList.length - 1]?.id,
-    //     instrId: form.getFieldValue('instrId'),
-    //   };
-    //   dispatch({
-    //     type: 'generalInspectionMag/save',
-    //     payload: {
-    //       type: 'instrAndRecordId',
-    //       dataSource: paramsVal,
-    //     },
-    //   });
+    //   // let paramsVal = {
+    //   //   id: creenReportList[creenReportList.length - 1]?.id,
+    //   //   instrId: form.getFieldValue('instrId'),
+    //   // };
+    //   // dispatch({
+    //   //   type: 'generalInspectionMag/save',
+    //   //   payload: {
+    //   //     type: 'instrAndRecordId',
+    //   //     dataSource: paramsVal,
+    //   //   },
+    //   // });
 
     //   className = styles.blue;
     //   return className;
@@ -445,6 +451,7 @@ const RightContent = () => {
                 },
               });
             }
+
             if (res.data.total === 0) {
               dispatch({
                 type: 'generalInspectionMag/save',
@@ -460,6 +467,10 @@ const RightContent = () => {
                   dataSource: [],
                 },
               });
+            }
+
+            if (res.data.current === res.data.pages) {
+              setClickRow(res.data.records[res.data.records.length - 1]?.id);
             }
           }
         },
@@ -612,7 +623,7 @@ const RightContent = () => {
         }
       });
     }
-    setClickRow(index);
+    setClickRow(record.id);
     let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
     dispatch({
       type: 'generalInspectionMag/save',

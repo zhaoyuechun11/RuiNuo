@@ -1,5 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Table, Form, Input, Select, Button, Dropdown, Menu, Popconfirm, message } from 'antd';
+import {
+  Table,
+  Form,
+  Input,
+  Select,
+  Button,
+  Dropdown,
+  Menu,
+  Popconfirm,
+  message,
+  Row,
+  Col,
+} from 'antd';
 import { useDispatch, useSelector } from 'umi';
 import Icon from '@components/Icon';
 import styles from '../index.less';
@@ -7,9 +19,22 @@ import CheckItem from './commones/checkItem';
 import DetailsModal from './commones/detailsModal';
 import BatchAdd from './commones/batchAdd';
 
-import { reportResult, reportResultSave, reportResultUpdate } from '../../../../models/server';
+import {
+  reportResult,
+  reportResultSave,
+  reportResultUpdate,
+  reportResultDelete,
+} from '../../../../models/server';
 import FlagModal from './commones/flagModal';
 const { Option } = Select;
+const defaultValData = [
+  { id: 'P', name: '阳性' },
+  { id: 'NP', name: '弱阳性' },
+  { id: 'N', name: '阴性' },
+  { id: 'H', name: '偏高' },
+  { id: 'L', name: '偏低' },
+  { id: 'NOR', name: '正常' },
+];
 const MiddleContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
@@ -198,31 +223,65 @@ const MiddleContent = () => {
       },
     });
   };
-  const searchHandle = (changedValues: any, allValues: undefined) => {};
+  const seach = () => {
+    const { itemCode, resultFlag } = form.getFieldsValue();
+    let searchResult = [];
+    if (itemCode && resultFlag) {
+      resultList.map((item) => {
+        let flag = true;
+        // 遍历每个条件，如果selectedOption有一个条件没有被满足就返回 false
+        for (let key in form.getFieldsValue()) {
+          if (item[key] !== form.getFieldsValue()[key]) {
+            flag = false;
+            break;
+          }
+        }
+        if (flag) {
+          searchResult.push(item);
+        }
+      });
+    } else {
+      let filterFlag = resultList.filter((item) => item.resultFlag.indexOf(resultFlag) !== -1);
+      let filterCode = [];
+      if (itemCode) {
+        filterCode = resultList.filter((item) => item.itemCode.indexOf(itemCode) !== -1);
+      }
+      searchResult = [filterFlag, filterCode].reduce((acc, val) => acc.concat(val), []);
+      if (resultFlag === undefined && itemCode === '') {
+        searchResult = resultList;
+      }
+    }
+    dispatch({
+      type: 'generalInspectionMag/save',
+      payload: {
+        type: 'reportResultList',
+        dataSource: searchResult,
+      },
+    });
+  };
+
   const flagChange = (e) => {};
   const renderForm = () => {
     return (
-      <Form onValuesChange={searchHandle} layout="inline" form={form}>
-        <Form.Item name="sampleBarcode">
-          <Input placeholder="请输入项目编号名称" style={{ width: 130 }} />
+      <Form layout="inline" form={form}>
+        <Form.Item name="itemCode">
+          <Input placeholder="请输入项目编号名称" style={{ width: 130 }} allowClear />
         </Form.Item>
         <div id="flag" className={styles.flag}>
-          <Form.Item name="instrId">
+          <Form.Item name="resultFlag">
             <Select
               onChange={flagChange}
               placeholder="请选择检测仪器"
               autoComplete="off"
               allowClear
               getPopupContainer={() => document.getElementById('flag')}
+              style={{ width: 130 }}
             >
-              <Option value={1} key={1}>
-                阴
-              </Option>
-              {/* {reportUnitInstrList?.map((item, index) => (
+              {defaultValData?.map((item, index) => (
                 <Option value={item.id} key={index}>
-                  {item.instrName}
+                  {item.name}
                 </Option>
-              ))} */}
+              ))}
             </Select>
           </Form.Item>
         </div>
@@ -231,6 +290,23 @@ const MiddleContent = () => {
   };
   const delCurrentItem = (item: any) => {
     debugger;
+    if ('id' in item) {
+      reportResultDelete({ ids: [item.id] }).then((res) => {
+        if (res.code === 200) {
+          message.success('删除成功');
+          getReportResult(instrAndRecordId);
+        }
+      });
+    } else {
+      let result = reportResultList.filter((val) => val.itemId !== item.itemId);
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'reportResultList',
+          dataSource: result,
+        },
+      });
+    }
   };
   const detail = (item: any) => {
     detailRef.current.show(item);
@@ -278,7 +354,7 @@ const MiddleContent = () => {
             reportId: instrAndRecordId.id,
             instrId: instrAndRecordId.instrId,
             colonyCount: item?.colonyCount,
-            itemId:item.itemId,
+            itemId: item.itemId,
             ct: item.ct,
             cutoff: item.cutoff,
             germId: item.germId,
@@ -294,7 +370,6 @@ const MiddleContent = () => {
           };
         });
 
-      //return;
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
@@ -307,21 +382,21 @@ const MiddleContent = () => {
           });
         }
       });
-      reportResultSave(noIdReportData).then((res) => {
-        if (res.code === 200) {
-          message.success('保存成功');
-          dispatch({
-            type: 'generalInspectionMag/save',
-            payload: {
-              type: 'reportMiddleUpdate',
-              dataSource: true,
-            },
-          });
-        }
-      });
+      if (noIdReportData.length > 0) {
+        reportResultSave(noIdReportData).then((res) => {
+          if (res.code === 200) {
+            message.success('保存成功');
+            dispatch({
+              type: 'generalInspectionMag/save',
+              payload: {
+                type: 'reportMiddleUpdate',
+                dataSource: true,
+              },
+            });
+          }
+        });
+      }
     }
-    // if (isAdd) {
-    // }
   };
   const batchAdd = () => {
     batchAddRef.current.show();
@@ -360,18 +435,33 @@ const MiddleContent = () => {
       <div className={styles.search_box}>
         {renderForm()}
 
-        <Button type="primary" size="small" onClick={add}>
-          添加
-        </Button>
-        <Button type="primary" size="small" onClick={reset}>
-          重置
-        </Button>
-        <Button type="primary" size="small" onClick={batchAdd}>
-          批量录入
-        </Button>
-        <Button type="primary" size="small" onClick={save}>
-          保存
-        </Button>
+        <Row>
+          <Col>
+            <Button type="primary" size="small" onClick={seach}>
+              查询
+            </Button>
+          </Col>
+          <Col>
+            <Button type="primary" size="small" onClick={add}>
+              添加
+            </Button>
+          </Col>
+          <Col>
+            <Button type="primary" size="small" onClick={reset}>
+              重置
+            </Button>
+          </Col>
+          <Col>
+            <Button type="primary" size="small" onClick={batchAdd}>
+              批量录入
+            </Button>
+          </Col>
+          <Col>
+            <Button type="primary" size="small" onClick={save}>
+              保存
+            </Button>
+          </Col>
+        </Row>
       </div>
       <Table
         dataSource={reportResultList}

@@ -64,6 +64,7 @@ const FlagModal = ({ Ref }) => {
       });
       record[fieldName] = resultVal;
       record['resultFlag'] = form.getFieldsValue().result;
+      record['prompt'] = form.getFieldsValue().result;
     } else {
       record[fieldName] = form.getFieldsValue().result;
     }

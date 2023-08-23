@@ -247,7 +247,7 @@ const MiddleContent = () => {
         filterCode = resultList.filter((item) => item.itemCode.indexOf(itemCode) !== -1);
       }
       searchResult = [filterFlag, filterCode].reduce((acc, val) => acc.concat(val), []);
-      if (resultFlag === undefined && itemCode === '') {
+      if (resultFlag === undefined && (itemCode === '' || itemCode == undefined)) {
         searchResult = resultList;
       }
     }
@@ -289,7 +289,6 @@ const MiddleContent = () => {
     );
   };
   const delCurrentItem = (item: any) => {
-    debugger;
     if ('id' in item) {
       reportResultDelete({ ids: [item.id] }).then((res) => {
         if (res.code === 200) {
@@ -298,6 +297,7 @@ const MiddleContent = () => {
         }
       });
     } else {
+      debugger;
       let result = reportResultList.filter((val) => val.itemId !== item.itemId);
       dispatch({
         type: 'generalInspectionMag/save',
@@ -418,6 +418,13 @@ const MiddleContent = () => {
             dataSource: res.data,
           },
         });
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'resultListCheckItemUsed',
+            dataSource: res.data,
+          },
+        });
       } else {
         setResultList([]);
         dispatch({
@@ -427,11 +434,18 @@ const MiddleContent = () => {
             dataSource: [],
           },
         });
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'resultListCheckItemUsed',
+            dataSource: [],
+          },
+        });
       }
     });
   };
   return (
-    <>
+    <div className={styles.middle_content}>
       <div className={styles.search_box}>
         {renderForm()}
 
@@ -474,7 +488,7 @@ const MiddleContent = () => {
       <FlagModal Ref={editModalRef} />
       <DetailsModal Ref={detailRef} />
       <BatchAdd Ref={batchAddRef} />
-    </>
+    </div>
   );
 };
 export default MiddleContent;

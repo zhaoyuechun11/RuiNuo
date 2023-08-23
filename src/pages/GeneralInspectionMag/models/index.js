@@ -20,6 +20,7 @@ const generalInspectionMag = {
     reportResultList: [],
     isChangeReportResult: false,
     isAdd: false,
+    resultListCheckItemUsed: [],
   },
   effects: {
     *fetchReportMainDataList({ payload }, { call }) {

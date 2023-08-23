@@ -69,3 +69,6 @@ export function reportResultDelete(params) {
 export function reportProjectDetail(params) {
   return axios('basic/labItem', 'get', params);
 }
+export function getListByItems(params) {
+  return axios('lab/reportResultCommon/getListByItems', 'get', params);
+}

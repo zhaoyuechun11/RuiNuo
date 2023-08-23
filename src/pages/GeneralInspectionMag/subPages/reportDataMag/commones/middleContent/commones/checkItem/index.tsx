@@ -1,14 +1,18 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { Table } from 'antd';
+import { Table, Form, Input } from 'antd';
 import { Dialog } from '@components';
-import { getReportByReportUnit } from '../../../../../../models/server';
+import { getReportByReportUnit, getListByItems } from '../../../../../../models/server';
 import { useSelector, useDispatch } from 'umi';
 const CheckItem = ({ Ref }) => {
   const dialogRef = useRef();
   const dispatch = useDispatch();
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [reportList, setReportList] = useState([]);
-  const { reportResultList } = useSelector((state: any) => state.generalInspectionMag);
+  const { reportResultList, instrAndRecordId, resultListCheckItemUsed } = useSelector(
+    (state: any) => state.generalInspectionMag,
+  );
+  const [form] = Form.useForm();
+  const reportUnit = sessionStorage.getItem('reportUnit');
   useImperativeHandle(Ref, () => ({
     show: () => {
       dialogRef.current && dialogRef.current.show();
@@ -18,8 +22,6 @@ const CheckItem = ({ Ref }) => {
     },
   }));
   const getReportList = () => {
-    const reportUnit = sessionStorage.getItem('reportUnit');
-
     if (reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);
       getReportByReportUnit({ reportUnitId: newReportUnit.key }).then((res) => {
@@ -31,7 +33,6 @@ const CheckItem = ({ Ref }) => {
               itemCode: item.itemCode,
               itemName: item.itemName,
               dataType: item.dataType,
-              // ...item,
             };
           });
           setReportList(result);
@@ -59,36 +60,41 @@ const CheckItem = ({ Ref }) => {
     let filterResult = reportList?.filter((item) =>
       selectedKeys.some((data) => data === item.itemId),
     );
-    let someResult = reportResultList.filter((item) =>
-      filterResult.some((data) => data.itemId === item.itemId),
+    let someResult = filterResult.filter(
+      (item) => !resultListCheckItemUsed.some((data) => data.itemId === item.itemId),
     );
-    let noSomeResult = filterResult.filter(
-      (item) => !someResult.some((data) => data.itemId === item.itemId),
-    );
-    //debugger;
-    const mergedArray = [someResult, noSomeResult].reduce((acc, val) => acc.concat(val), []);
-
     debugger;
-    /**去重 */
-    // let map = new Map();
-    // for (let item of mergedArray) {
-    //   map.set(item.itemId, item);
-    // }
-    // const result = [...map.values()];
+    // let noSomeResult = filterResult.filter(
+    //   (item) => !someResult.some((data) => data.itemId === item.itemId),
+    // );
+    //debugger;
+    // const mergedArray = [someResult, noSomeResult].reduce((acc, val) => acc.concat(val), []);
 
-    dispatch({
-      type: 'generalInspectionMag/save',
-      payload: {
-        type: 'reportResultList',
-        dataSource: mergedArray,
-      },
-    });
-    dispatch({
-      type: 'generalInspectionMag/save',
-      payload: {
-        type: 'isChangeReportResult',
-        dataSource: true,
-      },
+    getListByItems({
+      instrId: instrAndRecordId.instrId,
+      reportId: instrAndRecordId.id,
+      labItemIds: someResult.map((item) => item.itemId),
+    }).then((res) => {
+      if (res.code === 200) {
+        const mergedArray = [resultListCheckItemUsed, res.data].reduce(
+          (acc, val) => acc.concat(val),
+          [],
+        );
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'reportResultList',
+            dataSource: mergedArray,
+          },
+        });
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'isChangeReportResult',
+            dataSource: true,
+          },
+        });
+      }
     });
 
     dialogRef.current && dialogRef.current.hide();
@@ -99,6 +105,30 @@ const CheckItem = ({ Ref }) => {
   const rowSelection = {
     selectedRowKeys: selectedKeys,
     onChange: onChangeSelected,
+    getCheckboxProps: (record) => ({
+      disabled: resultListCheckItemUsed.map((item) => item.itemId).includes(record.itemId), // Column configuration not to be checked
+    }),
+  };
+  const handleSearch = (changedValues, allValues) => {
+    const newReportUnit = JSON.parse(reportUnit);
+    let param = {
+      ...allValues,
+      reportUnitId: newReportUnit.key,
+    };
+    getReportByReportUnit(param).then((res) => {
+      if (res.code === 200) {
+        let result = res.data?.map((item) => {
+          return {
+            key: item.id,
+            itemId: item.id,
+            itemCode: item.itemCode,
+            itemName: item.itemName,
+            dataType: item.dataType,
+          };
+        });
+        setReportList(result);
+      }
+    });
   };
   return (
     <Dialog
@@ -110,6 +140,11 @@ const CheckItem = ({ Ref }) => {
       }}
       onOk={onOk}
     >
+      <Form layout="inline" form={form} onValuesChange={handleSearch} style={{ padding: '20px' }}>
+        <Form.Item name="key">
+          <Input placeholder="请输入关键字" allowClear />
+        </Form.Item>
+      </Form>
       <Table columns={columns} dataSource={reportList} rowSelection={rowSelection} />
     </Dialog>
   );

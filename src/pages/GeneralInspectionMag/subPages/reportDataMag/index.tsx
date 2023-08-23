@@ -8,8 +8,12 @@ const { TabPane } = Tabs;
 const ReportDataMag = () => {
   return (
     <Row>
-      <Col span={15} style={{ borderRight: '6px solid #fafafa' }}>
-        <Tabs defaultActiveKey="10" size="small">
+      <Col span={15} style={{ borderRight: '2px solid #cecece' }}>
+        <Tabs
+          defaultActiveKey="10"
+          size="small"
+          tabBarStyle={{ borderBottom: '1px solid #cecece' }}
+        >
           <TabPane tab="原始申请单" key="1">
             原始申请单
           </TabPane>

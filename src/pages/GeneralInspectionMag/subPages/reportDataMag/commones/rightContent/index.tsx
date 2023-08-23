@@ -205,11 +205,30 @@ const RightContent = () => {
   const checkChange = (e) => {};
   const instrChange = (e) => {};
   const searchHandle = (changedValues: any, allValues: undefined) => {
+    // getCreenReportList({
+    //   ...allValues,
+    //   pageNum,
+    //   pageSize,
+    //   ...extendForm.getFieldsValue(),
+    //   labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+    // });
+  };
+  const seach = () => {
+    let param = {};
     if (activeKey !== '10') {
       setActiveKey('10');
     }
+    if (/-/.test(form.getFieldValue('sampleNoStart'))) {
+      console.log(form.getFieldValue('sampleNoStart').split('-'));
+      let result = form.getFieldValue('sampleNoStart').split('-');
+      param = {
+        sampleNoStart: result[0],
+        sampleNoEnd: result[1],
+      };
+    }
     getCreenReportList({
-      ...allValues,
+      ...form.getFieldsValue(),
+      ...param,
       pageNum,
       pageSize,
       ...extendForm.getFieldsValue(),
@@ -223,12 +242,11 @@ const RightContent = () => {
           <DatePicker
             format="YYYY-MM-DD"
             placeholder="请选择检验日期"
-            style={{ width: 120 }}
-            // onChange={labDateChange}
+            style={{ width: 120, marginBottom: '15px' }}
           />
         </Form.Item>
         <Form.Item name="execBy">
-          <Select allowClear placeholder="请选择检验技师">
+          <Select allowClear placeholder="检验技师" style={{ width: 120 }}>
             {executorByReportUnit.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -239,7 +257,13 @@ const RightContent = () => {
           </Select>
         </Form.Item>
         <Form.Item name="reqItemIds">
-          <Select allowClear onChange={checkChange} placeholder="请选择检验目的" mode="multiple">
+          <Select
+            allowClear
+            onChange={checkChange}
+            placeholder="检验目的"
+            mode="multiple"
+            style={{ width: 120 }}
+          >
             {reportUnitReqItemList?.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -250,7 +274,12 @@ const RightContent = () => {
           </Select>
         </Form.Item>
         <Form.Item name="reportUnitCode">
-          <Select allowClear onChange={reportUnitChange} placeholder="请选择报告单元">
+          <Select
+            allowClear
+            onChange={reportUnitChange}
+            placeholder="报告单元"
+            style={{ width: 120 }}
+          >
             {reportUnit?.map((item) => {
               return (
                 <Option value={item.reportUnitCode} key={item.id}>
@@ -261,7 +290,7 @@ const RightContent = () => {
           </Select>
         </Form.Item>
         <Form.Item name="instrId">
-          <Select allowClear onChange={instrChange} placeholder="请选择检验仪器">
+          <Select allowClear onChange={instrChange} placeholder="检验仪器" style={{ width: 120 }}>
             {reportUnitInstrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -272,11 +301,7 @@ const RightContent = () => {
           </Select>
         </Form.Item>
         <Form.Item name="sampleNoStart">
-          <Input placeholder="请输入样本编号" style={{ width: 140 }} />
-        </Form.Item>
-        <span>至</span>
-        <Form.Item name="sampleNoEnd">
-          <Input placeholder="请输入样本编号" style={{ width: 140 }} />
+          <Input placeholder="样本编号或范围" style={{ width: 120 }} allowClear />
         </Form.Item>
       </Form>
     );
@@ -435,14 +460,12 @@ const RightContent = () => {
           if (res.code === 200) {
             setCreenReportList(res.data.records);
             setTotal(res.data.total);
-            console.log(Math.ceil(res.data.total / 50) == pageNum);
 
             if (Math.ceil(res.data.total / 50) == pageNum) {
               let paramsVal = {
                 id: res.data.records[res.data.records.length - 1]?.id,
                 instrId: form.getFieldValue('instrId'),
               };
-              console.log(paramsVal);
               dispatch({
                 type: 'generalInspectionMag/save',
                 payload: {
@@ -591,7 +614,12 @@ const RightContent = () => {
           dataSource: false,
         },
       });
-      let params = reportResultList.map((item) => {
+      let hasIdReportData = reportResultList.filter((item) => {
+        if ('id' in item) {
+          return item;
+        }
+      });
+      let params = hasIdReportData.map((item) => {
         return {
           id: item.id,
           colonyCount: item?.colonyCount,
@@ -600,7 +628,7 @@ const RightContent = () => {
           germId: item.germId,
           hasGerm: item.hasGerm,
           od: item.od,
-          referenceRange: item.ref.displayRef,
+          referenceRange: item.ref?.displayRef,
           result: item.result,
           result1: item.result1,
           result2: item.result2,
@@ -609,6 +637,29 @@ const RightContent = () => {
           resultFlag: item.resultFlag,
         };
       });
+      let noIdReportData = reportResultList
+        ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
+        .map((item: any) => {
+          return {
+            reportId: instrAndRecordId.id,
+            instrId: instrAndRecordId.instrId,
+            colonyCount: item?.colonyCount,
+            itemId: item.itemId,
+            ct: item.ct,
+            cutoff: item.cutoff,
+            germId: item.germId,
+            hasGerm: item.hasGerm,
+            od: item.od,
+            referenceRange: item.ref?.displayRef,
+            result: item.result,
+            result1: item.result1,
+            result2: item.result2,
+            result3: item.result3,
+            result4: item.result4,
+            resultFlag: item.resultFlag,
+          };
+        });
+
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
@@ -622,6 +673,20 @@ const RightContent = () => {
           });
         }
       });
+      if (noIdReportData.length > 0) {
+        reportResultSave(noIdReportData).then((res) => {
+          if (res.code === 200) {
+            message.success('保存成功');
+            dispatch({
+              type: 'generalInspectionMag/save',
+              payload: {
+                type: 'reportMiddleUpdate',
+                dataSource: true,
+              },
+            });
+          }
+        });
+      }
     }
     setClickRow(record.id);
     let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
@@ -632,6 +697,90 @@ const RightContent = () => {
         dataSource: idParams,
       },
     });
+  };
+  const refresh = () => {
+    if (isChangeReportResult) {
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'isChangeReportResult',
+          dataSource: false,
+        },
+      });
+      let hasIdReportData = reportResultList.filter((item) => {
+        if ('id' in item) {
+          return item;
+        }
+      });
+      let params = hasIdReportData.map((item) => {
+        return {
+          id: item.id,
+          colonyCount: item?.colonyCount,
+          ct: item.ct,
+          cutoff: item.cutoff,
+          germId: item.germId,
+          hasGerm: item.hasGerm,
+          od: item.od,
+          referenceRange: item.ref?.displayRef,
+          result: item.result,
+          result1: item.result1,
+          result2: item.result2,
+          result3: item.result3,
+          result4: item.result4,
+          resultFlag: item.resultFlag,
+        };
+      });
+      let noIdReportData = reportResultList
+        ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
+        .map((item: any) => {
+          return {
+            reportId: instrAndRecordId.id,
+            instrId: instrAndRecordId.instrId,
+            colonyCount: item?.colonyCount,
+            itemId: item.itemId,
+            ct: item.ct,
+            cutoff: item.cutoff,
+            germId: item.germId,
+            hasGerm: item.hasGerm,
+            od: item.od,
+            referenceRange: item.ref?.displayRef,
+            result: item.result,
+            result1: item.result1,
+            result2: item.result2,
+            result3: item.result3,
+            result4: item.result4,
+            resultFlag: item.resultFlag,
+          };
+        });
+
+      reportResultUpdate(params).then((res) => {
+        if (res.code === 200) {
+          message.success('编辑成功');
+          getCreenReportList({
+            ...form.getFieldsValue(),
+            labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+            ...extendForm.getFieldsValue(),
+            [sort]: order,
+            pageNum,
+            pageSize,
+          });
+        }
+      });
+      if (noIdReportData.length > 0) {
+        reportResultSave(noIdReportData).then((res) => {
+          if (res.code === 200) {
+            message.success('保存成功');
+            dispatch({
+              type: 'generalInspectionMag/save',
+              payload: {
+                type: 'reportMiddleUpdate',
+                dataSource: true,
+              },
+            });
+          }
+        });
+      }
+    }
   };
   const popover_content = () => {
     return (
@@ -769,12 +918,12 @@ const RightContent = () => {
     <div className={styles.right_content}>
       <Row>
         <Col span={18}>{renderForm()}</Col>
-        <Col span={6}>
+        <Col span={2}>
           {' '}
-          {/* <Button type="primary" onClick={seach}>
+          <Button type="primary" onClick={seach} size="small">
             查询
-          </Button> */}
-          <Button type="primary" onClick={reset}>
+          </Button>
+          <Button type="primary" onClick={reset} size="small" style={{ margin: '5px 0' }}>
             重置
           </Button>
           <Popover
@@ -786,13 +935,19 @@ const RightContent = () => {
             open={popoverVisible}
             onOpenChange={(val) => setPopoverVisible(val)}
           >
-            <Button type="primary" onClick={extend}>
+            <Button type="primary" onClick={extend} size="small">
               扩展
             </Button>
           </Popover>
         </Col>
       </Row>
-      <Tabs defaultActiveKey="10" size="small" onChange={tabChange} activeKey={activeKey}>
+      <Tabs
+        defaultActiveKey="10"
+        size="small"
+        onChange={tabChange}
+        activeKey={activeKey}
+        tabBarStyle={{ borderBottom: '1px solid #cecece' }}
+      >
         <TabPane tab="全部" key="10"></TabPane>
         <TabPane tab="已初审" key="1"></TabPane>
         <TabPane tab="已终审" key="2"></TabPane>
@@ -804,7 +959,7 @@ const RightContent = () => {
         <TabPane tab="急诊" key="9"></TabPane>
       </Tabs>
 
-      <Button type="primary" size="small">
+      <Button type="primary" size="small" onClick={() => refresh()}>
         刷新
       </Button>
       <Button type="primary" size="small">

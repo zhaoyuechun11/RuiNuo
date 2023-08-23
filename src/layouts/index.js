@@ -43,7 +43,7 @@ class index extends Component {
               />
               <Layout style={{ backgroundColor: '#fff' }} key={2}>
                 <Header />
-                <Content style={{ margin: '50px 16px' }}>{this.props.children}</Content>
+                <Content style={{ margin: '15px 16px' }}>{this.props.children}</Content>
               </Layout>
             </Layout>
           </Spin>

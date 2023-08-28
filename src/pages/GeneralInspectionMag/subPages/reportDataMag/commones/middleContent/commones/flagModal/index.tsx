@@ -21,6 +21,7 @@ const FlagModal = ({ Ref }) => {
   const [resultList, setResultList] = useState([]);
   useImperativeHandle(Ref, () => ({
     showModal: (recordVal, fieldName, typeVal) => {
+    
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {

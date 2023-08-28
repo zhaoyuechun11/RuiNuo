@@ -77,7 +77,7 @@ const LeftContent = () => {
                 name="iconanniu-bianji"
                 classStyle={style.editIcon}
                 onClick={(e) => {
-                  editModalRef.current.showModal(1);
+                  editModalRef.current.showModal(1, item?.fieldVal);
                 }}
               />
             )}
@@ -86,7 +86,7 @@ const LeftContent = () => {
                 name="iconanniu-bianji"
                 classStyle={style.editIcon}
                 onClick={(e) => {
-                  editModalRef.current.showModal(2);
+                  editModalRef.current.showModal(2, item?.fieldVal);
                 }}
               />
             )}

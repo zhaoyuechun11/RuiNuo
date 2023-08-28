@@ -24,6 +24,8 @@ import {
   reportResultSave,
   reportResultUpdate,
   reportResultDelete,
+  addCommonDelete,
+  addCommonUpdate,
 } from '../../../../models/server';
 import FlagModal from './commones/flagModal';
 const { Option } = Select;
@@ -35,6 +37,7 @@ const defaultValData = [
   { id: 'L', name: '偏低' },
   { id: 'NOR', name: '正常' },
 ];
+
 const MiddleContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
@@ -45,9 +48,14 @@ const MiddleContent = () => {
   const detailRef = useRef();
   const batchAddRef = useRef();
   const [resultList, setResultList] = useState([]);
-  const { instrAndRecordId, reportResultList, isChangeReportResult, isAdd } = useSelector(
-    (state: any) => state.generalInspectionMag,
-  );
+  const {
+    instrAndRecordId,
+    reportResultList,
+    isChangeReportResult,
+    resultListCheckItemUsed,
+    isAdd,
+  } = useSelector((state: any) => state.generalInspectionMag);
+  const updateInfoData = useRef();
   const reportUnit = sessionStorage.getItem('reportUnit');
   useEffect(() => {
     var str = 'Result11';
@@ -293,11 +301,11 @@ const MiddleContent = () => {
       reportResultDelete({ ids: [item.id] }).then((res) => {
         if (res.code === 200) {
           message.success('删除成功');
+          addCommonDeleteInfo(item);
           getReportResult(instrAndRecordId);
         }
       });
     } else {
-      debugger;
       let result = reportResultList.filter((val) => val.itemId !== item.itemId);
       dispatch({
         type: 'generalInspectionMag/save',
@@ -308,14 +316,61 @@ const MiddleContent = () => {
       });
     }
   };
+  const addCommonDeleteInfo = (val) => {
+    let params = {
+      beforeChange: { itemId: [val.itemId] },
+      objectId: instrAndRecordId.id,
+      winName: '普检数据报告管理',
+    };
+    addCommonDelete(params).then((res) => {
+      if (res.code === 200) {
+        message.success('添加日志成功');
+      }
+    });
+  };
   const detail = (item: any) => {
     detailRef.current.show(item);
   };
   const add = () => {
     checkItemRef.current.show();
   };
+  const addCommonUpdateInfo = () => {
+    let updateInfo = [];
+    var reg = /result/;
+    reportResult({ reportId: instrAndRecordId.id, instrId: instrAndRecordId.instrId }).then(
+      (res: any) => {
+        if (res.code === 200) {
+          reportResultList.map((el, index) => {
+            Object.keys(el).forEach(function (key) {
+              console.log(res.data[index][key], el[key]);
+              if (reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key]) {
+                updateInfo.push({ itemId: el.itemId, [key]: res.data[index][key] + '|' + el[key] });
+              }
+            });
+          });
+
+          updateInfoData.current = updateInfo.reduce(function (acc, curr) {
+            let findIndex = acc.findIndex(function (item) {
+              return item.itemId === curr.itemId;
+            });
+
+            if (findIndex === -1) {
+              acc.push(curr);
+            } else {
+              acc[findIndex] = Object.assign({}, acc[findIndex], curr);
+            }
+
+            return acc;
+          }, []);
+        }
+      },
+    );
+  };
+
   const save = () => {
+    //return;
     if (isChangeReportResult) {
+      addCommonUpdateInfo();
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -373,6 +428,19 @@ const MiddleContent = () => {
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
+          console.log(updateInfoData.current);
+          let param = {
+            data: updateInfoData.current,
+          };
+          addCommonUpdate({
+            beforeChange: param,
+            objectId: instrAndRecordId.id,
+            winName: '普检数据报告管理',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日子成功');
+            }
+          });
           dispatch({
             type: 'generalInspectionMag/save',
             payload: {
@@ -385,7 +453,7 @@ const MiddleContent = () => {
       if (noIdReportData.length > 0) {
         reportResultSave(noIdReportData).then((res) => {
           if (res.code === 200) {
-            message.success('保存成功');
+            message.success('添加成功');
             dispatch({
               type: 'generalInspectionMag/save',
               payload: {

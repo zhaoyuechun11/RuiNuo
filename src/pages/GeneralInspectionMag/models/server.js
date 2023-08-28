@@ -72,3 +72,12 @@ export function reportProjectDetail(params) {
 export function getListByItems(params) {
   return axios('lab/reportResultCommon/getListByItems', 'get', params);
 }
+export function addCommonDelete(params) {
+  return axios('lab/reportTrace/addCommonDelete', 'post', params);
+}
+export function addCommonUpdate(params) {
+  return axios('lab/reportTrace/addCommonUpdate', 'post', params);
+}
+export function addMainUpdate(params) {
+  return axios('lab/reportTrace/addMainUpdate', 'post', params);
+}

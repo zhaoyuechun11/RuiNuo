@@ -93,6 +93,16 @@ export default {
               component: '@/pages/Setting/subPages/geneInsRepListModel',
               title: '普检报告数据列表模块管理',
             },
+            {
+              path: '/setting/batchInputTemplate',
+              component: '@/pages/Setting/subPages/batchInputTemplate',
+              title: '批录入模版',
+            },
+            {
+              path: '/setting/entryMaintenance',
+              component: '@/pages/Setting/subPages/entryMaintenance',
+              title: '词条维护',
+            },
           ],
         },
         {

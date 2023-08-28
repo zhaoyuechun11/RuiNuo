@@ -1894,6 +1894,22 @@ export const menu = [
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],
       },
+      {
+        key: 'batchInputTemplate',
+        url: '/setting/batchInputTemplate',
+        name: '批录入模版',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
+      {
+        key: 'entryMaintenance',
+        url: '/setting/entryMaintenance',
+        name: '词条维护',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
+      },
     ],
   },
   {

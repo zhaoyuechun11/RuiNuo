@@ -81,3 +81,12 @@ export function addCommonUpdate(params) {
 export function addMainUpdate(params) {
   return axios('lab/reportTrace/addMainUpdate', 'post', params);
 }
+export function reportResultImages(params) {
+  return axios('lab/reportResultImages/list', 'get', params);
+}
+export function chartData(params) {
+  return axios('lab/reportResultCommon/getTrendChartList', 'get', params);
+}
+export function reportResultImagesChange(params) {
+  return axios('lab/reportResultImages/change', 'post', params);
+}

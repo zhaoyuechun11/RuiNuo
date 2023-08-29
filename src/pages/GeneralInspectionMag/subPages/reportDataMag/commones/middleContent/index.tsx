@@ -28,6 +28,7 @@ import {
   addCommonUpdate,
 } from '../../../../models/server';
 import FlagModal from './commones/flagModal';
+import ChartData from './commones/chart';
 const { Option } = Select;
 const defaultValData = [
   { id: 'P', name: '阳性' },
@@ -47,14 +48,10 @@ const MiddleContent = () => {
   const editModalRef = useRef();
   const detailRef = useRef();
   const batchAddRef = useRef();
+  const chartRef = useRef();
   const [resultList, setResultList] = useState([]);
-  const {
-    instrAndRecordId,
-    reportResultList,
-    isChangeReportResult,
-    resultListCheckItemUsed,
-    isAdd,
-  } = useSelector((state: any) => state.generalInspectionMag);
+  const { instrAndRecordId, reportResultList, isChangeReportResult, resultListCheckItemUsed } =
+    useSelector((state: any) => state.generalInspectionMag);
   const updateInfoData = useRef();
   const reportUnit = sessionStorage.getItem('reportUnit');
   useEffect(() => {
@@ -212,7 +209,13 @@ const MiddleContent = () => {
             删除
           </Popconfirm>
         </Menu.Item>
-        <Menu.Item>趋势图</Menu.Item>
+        <Menu.Item
+          onClick={() => {
+            chartRef.current.show(item);
+          }}
+        >
+          趋势图
+        </Menu.Item>
         <Menu.Item onClick={() => detail(item)}>详情</Menu.Item>
       </Menu>
     );
@@ -428,7 +431,6 @@ const MiddleContent = () => {
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
-          console.log(updateInfoData.current);
           let param = {
             data: updateInfoData.current,
           };
@@ -438,7 +440,7 @@ const MiddleContent = () => {
             winName: '普检数据报告管理',
           }).then((res) => {
             if (res.code === 200) {
-              message.success('添加修改日子成功');
+              message.success('添加修改日志成功');
             }
           });
           dispatch({
@@ -556,6 +558,7 @@ const MiddleContent = () => {
       <FlagModal Ref={editModalRef} />
       <DetailsModal Ref={detailRef} />
       <BatchAdd Ref={batchAddRef} />
+      <ChartData Ref={chartRef} />
     </div>
   );
 };

@@ -54,6 +54,13 @@ const LeftContent = () => {
             }
           });
         });
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'reportLeftVal',
+            dataSource: res.data,
+          },
+        });
 
         dispatch({
           type: 'generalInspectionMag/save',

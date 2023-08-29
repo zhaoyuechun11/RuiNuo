@@ -15,6 +15,7 @@ const generalInspectionMag = {
     singleInstrSeletedKeys: [],
     instrAndRecordId: { id: '', instrId: '' },
     reportLeftData: [],
+    reportLeftVal: [],
     reportLefUpdate: false,
     reportMiddleUpdate: false,
     reportResultList: [],

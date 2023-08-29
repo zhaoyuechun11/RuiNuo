@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 // import { Button } from '@/components';
 import {
   Table,
@@ -30,6 +30,8 @@ import {
   updateRefuse,
   reportResultSave,
   reportResultUpdate,
+  reportResult,
+  addCommonUpdate,
 } from '../../../../models/server';
 import styles from '../index.less';
 import style from './index.less';
@@ -63,6 +65,7 @@ const RightContent = () => {
   const [order, setOrder] = useState('');
   const { useDetail } = useSelector((state: any) => state.global);
   const [activeKey, setActiveKey] = useState('10');
+  const updateInfoData = useRef();
   const {
     reportLefUpdate,
     instrAndRecordId,
@@ -491,7 +494,7 @@ const RightContent = () => {
                 },
               });
             }
-
+            debugger;
             if (res.data.current === res.data.pages) {
               setClickRow(res.data.records[res.data.records.length - 1]?.id);
             }
@@ -605,8 +608,45 @@ const RightContent = () => {
       }
     });
   };
+  const addCommonUpdateInfo = () => {
+    let updateInfo = [];
+    var reg = /result/;
+
+    reportResult({ reportId: instrAndRecordId.id, instrId: instrAndRecordId.instrId }).then(
+      (res: any) => {
+        if (res.code === 200) {
+          debugger;
+          reportResultList.map((el, index) => {
+            Object.keys(el).forEach(function (key) {
+              console.log(res.data[index][key], el[key]);
+              if (reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key]) {
+                updateInfo.push({ itemId: el.itemId, [key]: res.data[index][key] + '|' + el[key] });
+              }
+            });
+          });
+
+          updateInfoData.current = updateInfo.reduce(function (acc, curr) {
+            let findIndex = acc.findIndex(function (item) {
+              return item.itemId === curr.itemId;
+            });
+
+            if (findIndex === -1) {
+              acc.push(curr);
+            } else {
+              acc[findIndex] = Object.assign({}, acc[findIndex], curr);
+            }
+
+            return acc;
+          }, []);
+
+          console.log(updateInfoData.current);
+        }
+      },
+    );
+  };
   const onRowClick = (record: any, index: any) => {
     if (isChangeReportResult) {
+      addCommonUpdateInfo();
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -663,6 +703,18 @@ const RightContent = () => {
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
+          let param = {
+            data: updateInfoData.current,
+          };
+          addCommonUpdate({
+            beforeChange: param,
+            objectId: instrAndRecordId.id,
+            winName: '普检数据报告管理',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日志成功');
+            }
+          });
           getCreenReportList({
             ...form.getFieldsValue(),
             labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
@@ -700,6 +752,7 @@ const RightContent = () => {
   };
   const refresh = () => {
     if (isChangeReportResult) {
+      addCommonUpdateInfo();
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -756,6 +809,18 @@ const RightContent = () => {
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
+          let param = {
+            data: updateInfoData.current,
+          };
+          addCommonUpdate({
+            beforeChange: param,
+            objectId: instrAndRecordId.id,
+            winName: '普检数据报告管理',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日志成功');
+            }
+          });
           getCreenReportList({
             ...form.getFieldsValue(),
             labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),

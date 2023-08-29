@@ -28,7 +28,8 @@ let removePending = (ever) => {
       // ever.url.indexOf('/apiweb/interview/config/index') > -1 ||
       // ever.url.indexOf('/apiweb/user/getUserDetail') > -1
       ever.url.indexOf('/basic/dict/getList') > -1 ||
-      ever.url.indexOf('lab/reportResultCommon/getSampleNo') > -1
+      ever.url.indexOf('lab/reportResultCommon/getSampleNo') > -1 ||
+      ever.url.indexOf('lab/reportResultCommon/getList') > -1
     ) {
       return;
     }
@@ -52,7 +53,7 @@ axios.interceptors.request.use(
         config.url === 'lab/reqMainSplit/preTransfer' ||
         config.url === 'lab/reqMainSplit/instrMachineAllocation' ||
         config.url === 'lab/reqMainSplit/manualMachineAllocation' ||
-        config.url === 'lab/reportResultCommon/update'||
+        config.url === 'lab/reportResultCommon/update' ||
         config.url === 'lab/reportResultCommon/save'
       ) {
         config.data = config.data;

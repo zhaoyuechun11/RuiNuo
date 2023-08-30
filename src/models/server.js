@@ -32,3 +32,6 @@ export function reportUnitInstr(params) {
 export function listByReportUnit(params) {
   return axiosBase('/sys/user/listByReportUnit', 'get', params);
 }
+export function reportProjectSele(params) {
+  return axiosBase('/basic/labItem/getList', 'get', params);
+}

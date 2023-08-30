@@ -382,7 +382,7 @@ const RightContent = () => {
     );
   };
   const getReportUnitList = () => {
-    reportUnitList({ userId: useDetail }).then((res) => {
+    reportUnitList({ userId: useDetail.id }).then((res) => {
       if (res.code === 200) {
         setReportUnit(res.data);
         if (res.data.length > 0) {

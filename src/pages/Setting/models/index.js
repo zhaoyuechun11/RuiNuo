@@ -14,7 +14,19 @@ import {
   reportMainDataOperateList,
   reportMainDataListPage,
   reportListDefaultUpdate,
-  reportListModalAdd
+  reportListModalAdd,
+  inputTemplate,
+  inputTemplateAdd,
+  inputTemplateUpdate,
+  inputTemplateDelete,
+  inputTemplateDetail,
+  inputTemplateDetailAdd,
+  inputTemplateDetailUpdate,
+  wordEntry,
+  wordEntryAdd,
+  wordEntryUpdate,
+  wordEntryDelete,
+  wordEntryChange,
 } from './server';
 import isFunction from 'lodash/isFunction';
 const IndexModel = {
@@ -99,6 +111,66 @@ const IndexModel = {
     *reportListModalAdd({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(reportListModalAdd, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplate({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplate, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplateAdd({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplateAdd, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplateUpdate({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplateUpdate, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplateDelete({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplateDelete, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplateDetail({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplateDetail, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplateDetailAdd({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplateDetailAdd, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchInputTemplateDetailUpdate({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(inputTemplateDetailUpdate, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchWordEntry({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(wordEntry, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchWordEntryAdd({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(wordEntryAdd, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchWordEntryUpdate({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(wordEntryUpdate, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchWordEntryDelete({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(wordEntryDelete, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchWordEntryChange({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(wordEntryChange, { ...params });
       isFunction(callback) && callback(response);
     },
   },

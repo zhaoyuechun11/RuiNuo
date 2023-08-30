@@ -99,6 +99,11 @@ export default {
               title: '批录入模版',
             },
             {
+              path: '/Setting/batchInputTemplateDetail/:id',
+              component: '@/pages/Setting/subPages/batchInputTemplate/batchInputTemplateDetail',
+              title: '批录入详情',
+            },
+            {
               path: '/setting/entryMaintenance',
               component: '@/pages/Setting/subPages/entryMaintenance',
               title: '词条维护',

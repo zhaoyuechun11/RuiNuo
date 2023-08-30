@@ -2,7 +2,8 @@ import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Form, Input, message, Switch, Select } from 'antd';
 import { useDispatch, useSelector } from 'umi';
-import { reportUnitSelect } from '@/models/server';
+import { reportProjectSele } from '@/models/server';
+
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 },
@@ -13,16 +14,20 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
+  const [pid, setPid] = useState();
   const dispatch = useDispatch();
-  const [flag, setFlag] = useState(false);
-  const [reportUnitList, setReportUnitList] = useState([]);
+
+  const [reportProjectList, setReportProjectList] = useState([]);
   const { useDetail } = useSelector((state: any) => state.global);
   useImperativeHandle(Ref, () => ({
-    show: (record: { id: React.SetStateAction<undefined> }) => {
+    show: (record, pid) => {
       dialogRef.current && dialogRef.current.show();
-      getReportUnitSelect();
+      getReportProjectSelect();
+      setPid(pid);
       if (record) {
+        debugger;
         form.setFieldsValue({ ...record });
+
         setId(record.id);
       } else {
         setId(null);
@@ -33,10 +38,10 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       dialogRef.current && dialogRef.current.hide();
     },
   }));
-  const getReportUnitSelect = () => {
-    reportUnitSelect({ userId: useDetail.id }).then((res) => {
+  const getReportProjectSelect = () => {
+    reportProjectSele().then((res) => {
       if (res.code === 200) {
-        setReportUnitList(res.data);
+        setReportProjectList(res.data);
       }
     });
   };
@@ -44,11 +49,11 @@ const EditOrAddModal = ({ Ref, refresh }) => {
     form.validateFields().then((value) => {
       if (id) {
         dispatch({
-          type: 'Setting/fetchInputTemplateUpdate',
+          type: 'Setting/fetchInputTemplateDetailUpdate',
           payload: {
             ...value,
-            autoFlag: flag ? 1 : 0,
             id,
+            mainId: pid,
             callback: (res: {
               code: number;
               data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
@@ -63,11 +68,10 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         });
       } else {
         dispatch({
-          type: 'Setting/fetchInputTemplateAdd',
-
+          type: 'Setting/fetchInputTemplateDetailAdd',
           payload: {
             ...value,
-            autoFlag: flag ? 1 : 0,
+            mainId: pid,
             callback: (res: {
               code: number;
               data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
@@ -83,9 +87,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       }
     });
   };
-  const onChange = (e) => {
-    setFlag(e);
-  };
 
   return (
     <Dialog
@@ -98,30 +99,19 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       onOk={onOk}
     >
       <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
-        <Form.Item label="批输入模板名称" name="templateName">
-          <Input placeholder="请输入批输入模板名称" />
+        <Form.Item label="默认的输入值" name="defaultValue">
+          <Input placeholder="请输入默认的输入值" />
         </Form.Item>
-        <Form.Item label="自动输入起始号" name="startNo">
-          <Input placeholder="请输入自动输入起始号" disabled={!flag} />
+        <Form.Item label="输入序号" name="orderNo">
+          <Input placeholder="请输入输入序号" />
         </Form.Item>
-        <Form.Item label="自动输入终止号" name="endNo">
-          <Input placeholder="请输入自动输入终止号" disabled={!flag} />
-        </Form.Item>
-        <Form.Item label="输入代号" name="inputCode">
-          <Input placeholder="请输入输入代号" />
-        </Form.Item>
-        <Form.Item label="备注" name="remark">
-          <Input placeholder="请输入备注" />
-        </Form.Item>
-        <Form.Item label="自动输入标志" name="autoFlag">
-          <Switch checked={flag} onChange={onChange} />
-        </Form.Item>
-        <Form.Item name="reportUnitId" label="报告单元">
-          <Select placeholder="请选择报告单元" allowClear>
-            {reportUnitList.map((item) => {
+
+        <Form.Item name="itemId" label="检验项目">
+          <Select placeholder="请选择检验项目" allowClear>
+            {reportProjectList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
-                  {item.reportUnitName}
+                  {item.itemName}
                 </Option>
               );
             })}

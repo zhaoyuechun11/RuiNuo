@@ -63,3 +63,42 @@ export function reportListDefaultUpdate(params) {
 export function reportListModalAdd(params) {
   return axiosBase('sys/module/addReportMainDataList', 'post', params);
 }
+export function inputTemplate(params) {
+  return axiosBase('basic/itemInputTemplateMain/page', 'get', params);
+}
+export function inputTemplateAdd(params) {
+  return axiosBase('basic/itemInputTemplateMain/add', 'post', params);
+}
+export function inputTemplateUpdate(params) {
+  return axiosBase('basic/itemInputTemplateMain/update', 'post', params);
+}
+export function inputTemplateDelete(params) {
+  return axiosBase('basic/itemInputTemplateMain/delete', 'post', params);
+}
+export function inputTemplateDetail(params) {
+  return axiosBase('basic/itemInputTemplateDetail/page', 'get', params);
+}
+export function inputTemplateDetailAdd(params) {
+  return axiosBase('basic/itemInputTemplateDetail/add', 'post', params);
+}
+export function inputTemplateDetailUpdate(params) {
+  return axiosBase('basic/itemInputTemplateDetail/update', 'post', params);
+}
+export function inputTemplateDetailDelete(params) {
+  return axiosBase('basic/itemInputTemplateDetail/delete', 'post', params);
+}
+export function wordEntry(params) {
+  return axiosBase('basic/wordEntry/page', 'get', params);
+}
+export function wordEntryAdd(params) {
+  return axiosBase('basic/wordEntry/add', 'post', params);
+}
+export function wordEntryUpdate(params) {
+  return axiosBase('basic/wordEntry/update', 'post', params);
+}
+export function wordEntryDelete(params) {
+  return axiosBase('basic/wordEntry/delete', 'post', params);
+}
+export function wordEntryChange(params) {
+  return axiosBase('basic/wordEntry/change', 'post', params);
+}

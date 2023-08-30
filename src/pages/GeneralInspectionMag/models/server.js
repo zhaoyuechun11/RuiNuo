@@ -90,3 +90,9 @@ export function chartData(params) {
 export function reportResultImagesChange(params) {
   return axios('lab/reportResultImages/change', 'post', params);
 }
+export function templateList(params) {
+  return axios('basic/itemInputTemplateMain/list', 'get', params);
+}
+export function templateDetailList(params) {
+  return axios('basic/itemInputTemplateDetail/list', 'get', params);
+}

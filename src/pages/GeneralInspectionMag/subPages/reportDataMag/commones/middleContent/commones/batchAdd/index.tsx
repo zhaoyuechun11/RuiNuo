@@ -1,21 +1,29 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Table, Form, Select } from 'antd';
-import { templateList, templateDetailList } from '../../../../../../models/server';
+import { Table, Form, Select, Input, Checkbox, Row, Col } from 'antd';
+import { templateList, templateDetailList, getListByItems } from '../../../../../../models/server';
+
+import styles from './index.less';
+import { useSelector, useDispatch } from 'umi';
 const { Option } = Select;
 const BatchAdd = ({ Ref }) => {
   const dialogRef = useRef();
-  const [selectedKeys, setSelectedKeys] = useState([]);
   const [form] = Form.useForm();
   const [templateData, setTemplateData] = useState([]);
   const [list, setList] = useState([]);
+  const reportUnit = sessionStorage.getItem('reportUnit');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const { templateId, instrAndRecordId, resultListCheckItemUsed } = useSelector(
+    (state: any) => state.generalInspectionMag,
+  );
+  const dispatch = useDispatch();
   useImperativeHandle(Ref, () => ({
     show: () => {
       dialogRef.current && dialogRef.current.show();
-      const reportUnit = sessionStorage.getItem('reportUnit');
+      setCurrentIndex(0);
       if (reportUnit) {
         const newReportUnit = JSON.parse(reportUnit);
-        getTemplateList(newReportUnit.key);
+        getTemplateList(newReportUnit.key, '');
       }
     },
   }));
@@ -33,49 +41,99 @@ const BatchAdd = ({ Ref }) => {
       key: 'age',
       width: 80,
     },
-    {
-      title: '模版',
-      dataIndex: 'mainName',
-      key: 'mainName',
-      width: 80,
-    },
   ];
 
-  const onOk = () => {};
-  const onChangeSelected = (selectedRowKeys) => {
-    setSelectedKeys(selectedRowKeys);
+  const onOk = () => {
+    templateDetailList({ mainIds: templateId }).then((res) => {
+      if (res.code === 200) {
+        const temp = res.data.reduce((tempArr: any, item: any) => {
+          if (tempArr.findIndex((ele: any) => ele.itemId === item.itemId) === -1) {
+            tempArr.push(item);
+          }
+          return tempArr;
+        }, []);
+        console.log(temp);
+        getListByItems({
+          instrId: instrAndRecordId.instrId,
+          reportId: instrAndRecordId.id,
+          labItemIds: temp.map((item) => item.itemId),
+        }).then((res) => {
+          if (res.code === 200) {
+            res.data.map((item, index) => {
+              temp.map((tempItem) => {
+                if (item.itemId === tempItem.itemId) {
+                  res.data[index]['result'] = tempItem.defaultValue;
+                }
+              });
+            });
+            const mergedArray = [resultListCheckItemUsed, res.data].reduce(
+              (acc, val) => acc.concat(val),
+              [],
+            );
+            const result = mergedArray.reduce((tempArr: any, item: any) => {
+              if (tempArr.findIndex((ele: any) => ele.itemId === item.itemId) === -1) {
+                tempArr.push(item);
+              }
+              return tempArr;
+            }, []);
+            dispatch({
+              type: 'generalInspectionMag/save',
+              payload: {
+                type: 'reportResultList',
+                dataSource: result,
+              },
+            });
+            dispatch({
+              type: 'generalInspectionMag/save',
+              payload: {
+                type: 'isChangeReportResult',
+                dataSource: true,
+              },
+            });
+            dispatch({
+              type: 'generalInspectionMag/save',
+              payload: {
+                type: 'batchAdd',
+                dataSource: true,
+              },
+            });
+           
+          }
+        });
+      }
+    });
+    dialogRef.current && dialogRef.current.hide();
   };
-  const rowSelection = {
-    selectedRowKeys: selectedKeys,
-    onChange: onChangeSelected,
+
+  const searchHandle = (changedValues: any, allValues: undefined) => {
+    const newReportUnit = JSON.parse(reportUnit);
+    getTemplateList(newReportUnit.key, allValues.key);
   };
-  const searchHandle = (changedValues: any, allValues: undefined) => {};
-  const getTemplateList = (val) => {
-    templateList({ reportUnitId: val }).then((res) => {
+  const getTemplateList = (val, key) => {
+    templateList({ reportUnitId: val, key }).then((res) => {
       if (res.code === 200) {
         setTemplateData(res.data);
+        getTemplateDetailList([res.data[0].id]);
       }
     });
   };
   const getTemplateDetailList = (id) => {
-    templateDetailList({ mainId: id }).then((res) => {
+    templateDetailList({ mainIds: id }).then((res) => {
       if (res.code === 200) {
-        let result = templateData.filter((item) => item.id === id);
-        // let templateList = res.data.map((item) => {
-        //   return {
-        //     ...item,
-        //     templateName: result[0].templateName,
-        //     templateId: result[0].id,
-        //   };
-        // });
         setList(res.data);
       }
     });
   };
-  const templateChange = (e) => {
-    console.log(e);
-    getTemplateDetailList(e);
+
+  const onChange = (e) => {
+    templateId.push(e.id);
+    console.log(templateId);
   };
+  const clickName = (index: any, item: any) => {
+    setCurrentIndex(index);
+    getTemplateDetailList([item.id]);
+  };
+
   return (
     <Dialog
       ref={dialogRef}
@@ -86,7 +144,7 @@ const BatchAdd = ({ Ref }) => {
       }}
       onOk={onOk}
     >
-      <Form onValuesChange={searchHandle} layout="inline" form={form}>
+      {/* <Form onValuesChange={searchHandle} layout="inline" form={form}>
         <Select placeholder="请选择录入模版" allowClear onChange={templateChange} mode="multiple">
           {templateData?.map((item, index) => {
             return (
@@ -96,8 +154,32 @@ const BatchAdd = ({ Ref }) => {
             );
           })}
         </Select>
-      </Form>
-      <Table columns={columns} dataSource={list} rowSelection={rowSelection} />
+      </Form> */}
+      <Row>
+        <Col span={8}>
+          <Form onValuesChange={searchHandle} layout="inline" form={form}>
+            <Form.Item name="key">
+              <Input placeholder="请输入关键字" allowClear />
+            </Form.Item>
+          </Form>
+          {templateData?.map((item, index) => {
+            return (
+              <div style={{ display: 'flex' }}>
+                <Checkbox onChange={() => onChange(item)}></Checkbox>
+                <div
+                  onClick={() => clickName(index, item)}
+                  className={`${currentIndex === index ? styles.blue : ''}`}
+                >
+                  {item.templateName}
+                </div>
+              </div>
+            );
+          })}
+        </Col>
+        <Col span={16}>
+          <Table columns={columns} dataSource={list} />
+        </Col>
+      </Row>
     </Dialog>
   );
 };

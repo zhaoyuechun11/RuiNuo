@@ -22,6 +22,8 @@ const generalInspectionMag = {
     isChangeReportResult: false,
     isAdd: false,
     resultListCheckItemUsed: [],
+    templateId: [],
+    batchAdd: false,
   },
   effects: {
     *fetchReportMainDataList({ payload }, { call }) {

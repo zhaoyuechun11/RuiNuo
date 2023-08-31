@@ -72,6 +72,7 @@ const RightContent = () => {
     isChangeReportResult,
     reportResultList,
     reportMiddleUpdate,
+    batchAdd,
   } = useSelector((state: any) => state.generalInspectionMag);
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
@@ -464,11 +465,12 @@ const RightContent = () => {
             setCreenReportList(res.data.records);
             setTotal(res.data.total);
 
-            if (Math.ceil(res.data.total / 50) == pageNum) {
+            if (Math.ceil(res.data.total / 50) == pageNum && !reportMiddleUpdate) {
               let paramsVal = {
                 id: res.data.records[res.data.records.length - 1]?.id,
                 instrId: form.getFieldValue('instrId'),
               };
+              debugger;
               dispatch({
                 type: 'generalInspectionMag/save',
                 payload: {
@@ -494,8 +496,8 @@ const RightContent = () => {
                 },
               });
             }
-            debugger;
-            if (res.data.current === res.data.pages) {
+
+            if (res.data.current === res.data.pages && !reportMiddleUpdate) {
               setClickRow(res.data.records[res.data.records.length - 1]?.id);
             }
           }
@@ -615,19 +617,26 @@ const RightContent = () => {
     reportResult({ reportId: instrAndRecordId.id, instrId: instrAndRecordId.instrId }).then(
       (res: any) => {
         if (res.code === 200) {
+          console.log(reportResultList);
           debugger;
           reportResultList.map((el, index) => {
             Object.keys(el).forEach(function (key) {
-              console.log(res.data[index][key], el[key]);
+              // console.log(res.data[index][key], el[key]);
+              console.log(
+                reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key],
+              );
               if (reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key]) {
-                updateInfo.push({ itemId: el.itemId, [key]: res.data[index][key] + '|' + el[key] });
+                updateInfo.push({
+                  itemId: el?.itemId,
+                  [key]: res.data[index][key] + '|' + el[key],
+                });
               }
             });
           });
 
-          updateInfoData.current = updateInfo.reduce(function (acc, curr) {
+          updateInfoData.current = updateInfo?.reduce(function (acc, curr) {
             let findIndex = acc.findIndex(function (item) {
-              return item.itemId === curr.itemId;
+              return item?.itemId === curr?.itemId;
             });
 
             if (findIndex === -1) {
@@ -638,15 +647,15 @@ const RightContent = () => {
 
             return acc;
           }, []);
-
-          console.log(updateInfoData.current);
         }
       },
     );
   };
   const onRowClick = (record: any, index: any) => {
     if (isChangeReportResult) {
-      addCommonUpdateInfo();
+      if (!batchAdd) {
+        addCommonUpdateInfo();
+      }
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -669,12 +678,12 @@ const RightContent = () => {
           hasGerm: item.hasGerm,
           od: item.od,
           referenceRange: item.ref?.displayRef,
-          result: item.result,
-          result1: item.result1,
-          result2: item.result2,
-          result3: item.result3,
-          result4: item.result4,
-          resultFlag: item.resultFlag,
+          result: item?.result,
+          result1: item?.result1,
+          result2: item?.result2,
+          result3: item?.result3,
+          result4: item?.result4,
+          resultFlag: item?.resultFlag,
         };
       });
       let noIdReportData = reportResultList
@@ -684,19 +693,19 @@ const RightContent = () => {
             reportId: instrAndRecordId.id,
             instrId: instrAndRecordId.instrId,
             colonyCount: item?.colonyCount,
-            itemId: item.itemId,
+            itemId: item?.itemId,
             ct: item.ct,
             cutoff: item.cutoff,
             germId: item.germId,
             hasGerm: item.hasGerm,
             od: item.od,
             referenceRange: item.ref?.displayRef,
-            result: item.result,
-            result1: item.result1,
-            result2: item.result2,
-            result3: item.result3,
-            result4: item.result4,
-            resultFlag: item.resultFlag,
+            result: item?.result,
+            result1: item?.result1,
+            result2: item?.result2,
+            result3: item?.result3,
+            result4: item?.result4,
+            resultFlag: item?.resultFlag,
           };
         });
 
@@ -715,14 +724,14 @@ const RightContent = () => {
               message.success('添加修改日志成功');
             }
           });
-          getCreenReportList({
-            ...form.getFieldsValue(),
-            labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
-            ...extendForm.getFieldsValue(),
-            [sort]: order,
-            pageNum,
-            pageSize,
-          });
+          // getCreenReportList({
+          //   ...form.getFieldsValue(),
+          //   labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
+          //   ...extendForm.getFieldsValue(),
+          //   [sort]: order,
+          //   pageNum,
+          //   pageSize,
+          // });
         }
       });
       if (noIdReportData.length > 0) {
@@ -742,6 +751,7 @@ const RightContent = () => {
     }
     setClickRow(record.id);
     let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
+    debugger;
     dispatch({
       type: 'generalInspectionMag/save',
       payload: {

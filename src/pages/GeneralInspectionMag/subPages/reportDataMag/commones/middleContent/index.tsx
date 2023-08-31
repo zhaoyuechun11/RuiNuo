@@ -26,7 +26,6 @@ import {
   reportResultDelete,
   addCommonDelete,
   addCommonUpdate,
-  
 } from '../../../../models/server';
 import FlagModal from './commones/flagModal';
 import ChartData from './commones/chart';
@@ -51,8 +50,9 @@ const MiddleContent = () => {
   const batchAddRef = useRef();
   const chartRef = useRef();
   const [resultList, setResultList] = useState([]);
-  const { instrAndRecordId, reportResultList, isChangeReportResult, resultListCheckItemUsed } =
-    useSelector((state: any) => state.generalInspectionMag);
+  const { instrAndRecordId, reportResultList, isChangeReportResult } = useSelector(
+    (state: any) => state.generalInspectionMag,
+  );
   const updateInfoData = useRef();
   const reportUnit = sessionStorage.getItem('reportUnit');
   useEffect(() => {
@@ -97,105 +97,100 @@ const MiddleContent = () => {
   }, [isChangeReportResult]);
 
   useEffect(() => {
-    if (list.length > 0) {
-      var reg = /result/;
-      const firstColumm = list.splice(0, 1).map((column) => {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          fixed: 'left',
-          width: 80,
-          ellipsis: true,
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      });
+    var reg = /result/;
+    const firstColumm = list?.slice(0, 1).map((column) => {
+      return {
+        title: column.name,
+        dataIndex: column.key,
+        responsive: ['xl', 'xxl'],
+        align: 'center',
+        fixed: 'left',
+        width: 80,
+        ellipsis: true,
+        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+      };
+    });
 
-      const middleColumns = list.map((column) => {
-        let result = reg.test(column.key);
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          width: result ? 100 : 70,
-          ellipsis: true,
-          render: (text: string | number, record: any) => {
-            return (
-              <span>
-                {column.key === 'displayRef' ? record.ref?.displayRef : text}
-                {result && record.dataType === 1 ? (
-                  <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />
-                ) : record.dataType === 3 && result ? (
+    const middleColumns = list?.slice(1).map((column) => {
+      let result = reg.test(column.key);
+      return {
+        title: column.name,
+        dataIndex: column.key,
+        responsive: ['xl', 'xxl'],
+        align: 'center',
+        width: result ? 100 : 70,
+        ellipsis: true,
+        render: (text: string | number, record: any) => {
+          return (
+            <span>
+              {column.key === 'displayRef' ? record.ref?.displayRef : text}
+              {result && record.dataType === 1 ? (
+                <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />
+              ) : record.dataType === 3 && result ? (
+                <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
+                  选择
+                </Button>
+              ) : result && record.dataType === 2 ? (
+                <>
+                  <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />{' '}
                   <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
                     选择
                   </Button>
-                ) : result && record.dataType === 2 ? (
-                  <>
-                    <Icon
-                      name="iconanniu-bianji"
-                      onClick={() => resultEdit(record, column.key, 1)}
-                    />{' '}
-                    <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
-                      选择
-                    </Button>
-                  </>
-                ) : null}
-              </span>
-            );
-          },
-        };
-      });
-      const lastColumns = {
-        title: '操作',
-        dataIndex: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 100,
-        render: (text: string, record: Record<string, any>) => (
-          <Dropdown
-            arrow
-            overlay={() => menu(record)}
-            trigger={['click']}
-            placement="bottomCenter"
-            overlayClassName="dropdownWrap"
-          >
-            <div className="flex_center w100" style={{ height: '40px', cursor: 'pointer' }}>
-              <div className="flex_between" style={{ width: 22 }}>
-                <div
-                  style={{
-                    width: 4,
-                    height: 4,
-                    background: '#007bff',
-                    borderRadius: '50%',
-                  }}
-                />
-                <div
-                  style={{
-                    width: 4,
-                    height: 4,
-                    background: '#007bff',
-                    borderRadius: '50%',
-                  }}
-                />
-                <div
-                  style={{
-                    width: 4,
-                    height: 4,
-                    background: '#007bff',
-                    borderRadius: '50%',
-                  }}
-                />
-              </div>
-            </div>
-          </Dropdown>
-        ),
+                </>
+              ) : null}
+            </span>
+          );
+        },
       };
-      const coumns = [...firstColumm, ...middleColumns, lastColumns];
-      setTableHeaderCoumn(coumns);
-    }
-  }, [list]);
+    });
+    const lastColumns = {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      align: 'center',
+      width: 100,
+      render: (text: string, record: Record<string, any>) => (
+        <Dropdown
+          arrow
+          overlay={() => menu(record)}
+          trigger={['click']}
+          placement="bottomCenter"
+          overlayClassName="dropdownWrap"
+        >
+          <div className="flex_center w100" style={{ height: '40px', cursor: 'pointer' }}>
+            <div className="flex_between" style={{ width: 22 }}>
+              <div
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: '#007bff',
+                  borderRadius: '50%',
+                }}
+              />
+              <div
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: '#007bff',
+                  borderRadius: '50%',
+                }}
+              />
+              <div
+                style={{
+                  width: 4,
+                  height: 4,
+                  background: '#007bff',
+                  borderRadius: '50%',
+                }}
+              />
+            </div>
+          </div>
+        </Dropdown>
+      ),
+    };
+    const coumns = [...firstColumm, ...middleColumns, lastColumns];
+    setTableHeaderCoumn(coumns);
+  }, [list, instrAndRecordId]);
   const menu = (item) => {
     return (
       <Menu>

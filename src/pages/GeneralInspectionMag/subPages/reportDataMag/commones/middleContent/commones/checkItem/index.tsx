@@ -63,7 +63,7 @@ const CheckItem = ({ Ref }) => {
     let someResult = filterResult.filter(
       (item) => !resultListCheckItemUsed.some((data) => data.itemId === item.itemId),
     );
-    debugger;
+
     // let noSomeResult = filterResult.filter(
     //   (item) => !someResult.some((data) => data.itemId === item.itemId),
     // );

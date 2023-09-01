@@ -58,8 +58,6 @@ const RightContent = () => {
   const [popoverVisible, setPopoverVisible] = useState(false);
   const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
   const [reportUnit, setReportUnit] = useState([]);
-  const [reportUnitInstrList, setReportUnitInstr] = useState([]);
-  const [executorByReportUnit, setExecutorByReportUnit] = useState([]);
   const [creenReportList, setCreenReportList] = useState([]);
   const [sort, setSort] = useState('');
   const [order, setOrder] = useState('');
@@ -73,6 +71,8 @@ const RightContent = () => {
     reportResultList,
     reportMiddleUpdate,
     batchAdd,
+    personList,
+    reportUnitInstrList
   } = useSelector((state: any) => state.generalInspectionMag);
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
@@ -251,7 +251,7 @@ const RightContent = () => {
         </Form.Item>
         <Form.Item name="execBy">
           <Select allowClear placeholder="检验技师" style={{ width: 120 }}>
-            {executorByReportUnit.map((item) => {
+            {personList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
                   {item.name}
@@ -411,14 +411,27 @@ const RightContent = () => {
     reportUnitInstr({ reportUnitId }).then((res: any) => {
       if (res.code === 200) {
         res.data.unshift({ id: 0, instrName: '手工' });
-        setReportUnitInstr(res.data);
+       
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'reportUnitInstrList',
+            dataSource: res.data,
+          },
+        });
       }
     });
   };
   const getListByReportUnit = (reportUnitId: any) => {
     listByReportUnit({ reportUnitId }).then((res) => {
       if (res.code === 200) {
-        setExecutorByReportUnit(res.data);
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'personList',
+            dataSource: res.data,
+          },
+        });
         if (res.data.length > 0) {
           form.setFieldsValue({ execBy: useDetail.id });
         } else {
@@ -712,18 +725,20 @@ const RightContent = () => {
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
-          let param = {
-            data: updateInfoData.current,
-          };
-          addCommonUpdate({
-            beforeChange: param,
-            objectId: instrAndRecordId.id,
-            winName: '普检数据报告管理',
-          }).then((res) => {
-            if (res.code === 200) {
-              message.success('添加修改日志成功');
-            }
-          });
+          if (!batchAdd) {
+            let param = {
+              data: updateInfoData.current,
+            };
+            addCommonUpdate({
+              beforeChange: param,
+              objectId: instrAndRecordId.id,
+              winName: '普检数据报告管理',
+            }).then((res) => {
+              if (res.code === 200) {
+                message.success('添加修改日志成功');
+              }
+            });
+          }
           // getCreenReportList({
           //   ...form.getFieldsValue(),
           //   labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
@@ -751,7 +766,7 @@ const RightContent = () => {
     }
     setClickRow(record.id);
     let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
-    debugger;
+
     dispatch({
       type: 'generalInspectionMag/save',
       payload: {
@@ -762,7 +777,9 @@ const RightContent = () => {
   };
   const refresh = () => {
     if (isChangeReportResult) {
-      addCommonUpdateInfo();
+      if (!batchAdd) {
+        addCommonUpdateInfo();
+      }
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -822,15 +839,17 @@ const RightContent = () => {
           let param = {
             data: updateInfoData.current,
           };
-          addCommonUpdate({
-            beforeChange: param,
-            objectId: instrAndRecordId.id,
-            winName: '普检数据报告管理',
-          }).then((res) => {
-            if (res.code === 200) {
-              message.success('添加修改日志成功');
-            }
-          });
+          if (!batchAdd) {
+            addCommonUpdate({
+              beforeChange: param,
+              objectId: instrAndRecordId.id,
+              winName: '普检数据报告管理',
+            }).then((res) => {
+              if (res.code === 200) {
+                message.success('添加修改日志成功');
+              }
+            });
+          }
           getCreenReportList({
             ...form.getFieldsValue(),
             labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),

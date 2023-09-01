@@ -94,6 +94,13 @@ const CheckItem = ({ Ref }) => {
             dataSource: true,
           },
         });
+        dispatch({
+          type: 'generalInspectionMag/save',
+          payload: {
+            type: 'batchAdd',
+            dataSource: true,
+          },
+        });
       }
     });
 

@@ -4,6 +4,9 @@ import {
   reportDataDetaiTableHeader,
   reportListTableHeader,
   screenReportList,
+  reexamineResult,
+  reexamineReq,
+  deApprovalList,
 } from './server';
 const generalInspectionMag = {
   namespace: 'generalInspectionMag',
@@ -24,6 +27,9 @@ const generalInspectionMag = {
     resultListCheckItemUsed: [],
     templateId: [],
     batchAdd: false,
+    resultUpdateRecord: [],
+    personList: [],
+    reportUnitInstrList: [],
   },
   effects: {
     *fetchReportMainDataList({ payload }, { call }) {
@@ -44,6 +50,21 @@ const generalInspectionMag = {
     *fetchCreenReportList({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(screenReportList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReexamineResult({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reexamineResult, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReexamineReq({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reexamineReq, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchDeApprovalList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(deApprovalList, { ...params });
       isFunction(callback) && callback(response);
     },
   },

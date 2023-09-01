@@ -96,3 +96,24 @@ export function templateList(params) {
 export function templateDetailList(params) {
   return axios('basic/itemInputTemplateDetail/list', 'get', params);
 }
+export function getExplainContent(params) {
+  return axios('lab/reportMain/getExplainContent', 'get', params);
+}
+export function getExplainSuggestions(params) {
+  return axios('basic/wordEntry/getExplainSuggestions', 'get', params);
+}
+export function updateExplainContent(params) {
+  return axios('lab/reportMain/updateExplainContent', 'post', params);
+}
+export function selectUpdateList(params) {
+  return axios('lab/reportResultCommon/selectUpdateList', 'get', params);
+}
+export function reexamineResult(params) {
+  return axios('lab/reexamineResult/page', 'get', params);
+}
+export function reexamineReq(params) {
+  return axios('lab/reexamineReq/list', 'get', params);
+}
+export function deApprovalList(params) {
+  return axios('lab/abnormalTrace/deApprovalPage', 'get', params);
+}

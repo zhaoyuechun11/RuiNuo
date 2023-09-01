@@ -38,7 +38,7 @@ const GraphicData = () => {
       <Row gutter={16}>
         {list?.map((item) => {
           return (
-            <Col className="gutter-row" span={8}>
+            <Col className="gutter-row" span={4}>
               <Row>
                 <Checkbox onChange={(e) => onChange(e, item)} checked={item.isRptUse}>
                   是否用于修改

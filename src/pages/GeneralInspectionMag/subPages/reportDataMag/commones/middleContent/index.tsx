@@ -267,7 +267,6 @@ const MiddleContent = () => {
     });
   };
 
-  const flagChange = (e) => {};
   const renderForm = () => {
     return (
       <Form layout="inline" form={form}>
@@ -277,8 +276,7 @@ const MiddleContent = () => {
         <div id="flag" className={styles.flag}>
           <Form.Item name="resultFlag">
             <Select
-              onChange={flagChange}
-              placeholder="请选择检测仪器"
+              placeholder="请选择标志"
               autoComplete="off"
               allowClear
               getPopupContainer={() => document.getElementById('flag')}
@@ -369,7 +367,9 @@ const MiddleContent = () => {
   const save = () => {
     //return;
     if (isChangeReportResult) {
-      addCommonUpdateInfo();
+      if (!batchAdd) {
+        addCommonUpdateInfo();
+      }
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -427,18 +427,20 @@ const MiddleContent = () => {
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
-          let param = {
-            data: updateInfoData.current,
-          };
-          addCommonUpdate({
-            beforeChange: param,
-            objectId: instrAndRecordId.id,
-            winName: '普检数据报告管理',
-          }).then((res) => {
-            if (res.code === 200) {
-              message.success('添加修改日志成功');
-            }
-          });
+          if (!batchAdd) {
+            let param = {
+              data: updateInfoData.current,
+            };
+            addCommonUpdate({
+              beforeChange: param,
+              objectId: instrAndRecordId.id,
+              winName: '普检数据报告管理',
+            }).then((res) => {
+              if (res.code === 200) {
+                message.success('添加修改日志成功');
+              }
+            });
+          }
           dispatch({
             type: 'generalInspectionMag/save',
             payload: {
@@ -549,6 +551,7 @@ const MiddleContent = () => {
         scroll={{ x: 500 }}
         size="small"
         bordered
+        pagination={false}
       />
       <CheckItem Ref={checkItemRef} />
       <FlagModal Ref={editModalRef} />

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Row, Col, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import GraphicData from './commones/graphicData';
 import ExplainAdvise from './commones/explainAdvise';
 import ResultUpdateRecord from './commones/resultUpdateRecord';
+import ReviewRecords from './commones/reviewRecords';
+import DeapprovalRecord from './commones/deapprovalRecord';
 const { TabPane } = Tabs;
 const MiddleBottom = () => {
   return (
@@ -17,8 +19,12 @@ const MiddleBottom = () => {
       <TabPane tab="结果修改" key="3">
         <ResultUpdateRecord />
       </TabPane>
-      <TabPane tab="项目复查记录" key="4"></TabPane>
-      <TabPane tab="反审核记录" key="5"></TabPane>
+      <TabPane tab="项目复查记录" key="4">
+        <ReviewRecords />
+      </TabPane>
+      <TabPane tab="反审核记录" key="5">
+        <DeapprovalRecord />
+      </TabPane>
     </Tabs>
   );
 };

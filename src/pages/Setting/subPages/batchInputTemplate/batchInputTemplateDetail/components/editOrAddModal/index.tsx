@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Switch, Select } from 'antd';
+import { Form, Input, message, Select } from 'antd';
 import { useDispatch, useSelector } from 'umi';
 import { reportProjectSele } from '@/models/server';
 
@@ -16,16 +16,16 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const [id, setId] = useState();
   const [pid, setPid] = useState();
   const dispatch = useDispatch();
-
+  const { reportTempleName } = useSelector((state: any) => state.Setting);
   const [reportProjectList, setReportProjectList] = useState([]);
-  const { useDetail } = useSelector((state: any) => state.global);
+
   useImperativeHandle(Ref, () => ({
     show: (record, pid) => {
       dialogRef.current && dialogRef.current.show();
       getReportProjectSelect();
       setPid(pid);
+      form.setFieldsValue({ reportTemple: reportTempleName });
       if (record) {
-        debugger;
         form.setFieldsValue({ ...record });
 
         setId(record.id);
@@ -47,11 +47,14 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   };
   const onOk = () => {
     form.validateFields().then((value) => {
+      const { defaultValue, itemId, orderNo } = value;
+      let params = { defaultValue, itemId, orderNo };
+
       if (id) {
         dispatch({
           type: 'Setting/fetchInputTemplateDetailUpdate',
           payload: {
-            ...value,
+            ...params,
             id,
             mainId: pid,
             callback: (res: {
@@ -70,7 +73,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         dispatch({
           type: 'Setting/fetchInputTemplateDetailAdd',
           payload: {
-            ...value,
+            ...params,
             mainId: pid,
             callback: (res: {
               code: number;
@@ -99,13 +102,9 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       onOk={onOk}
     >
       <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
-        <Form.Item label="默认的输入值" name="defaultValue">
-          <Input placeholder="请输入默认的输入值" />
+        <Form.Item label="报告模版" name="reportTemple">
+          <Input disabled />
         </Form.Item>
-        <Form.Item label="输入序号" name="orderNo">
-          <Input placeholder="请输入输入序号" />
-        </Form.Item>
-
         <Form.Item name="itemId" label="检验项目">
           <Select placeholder="请选择检验项目" allowClear>
             {reportProjectList.map((item) => {
@@ -116,6 +115,12 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               );
             })}
           </Select>
+        </Form.Item>
+        <Form.Item label="默认的输入值" name="defaultValue">
+          <Input placeholder="请输入默认的输入值" />
+        </Form.Item>
+        <Form.Item label="输入序号" name="orderNo">
+          <Input placeholder="请输入输入序号" />
         </Form.Item>
       </Form>
     </Dialog>

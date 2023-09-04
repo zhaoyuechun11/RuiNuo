@@ -23,6 +23,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       getReportUnitSelect();
       if (record) {
         form.setFieldsValue({ ...record });
+        setFlag(record.autoFlag === 1 ? true : false);
         setId(record.id);
       } else {
         setId(null);
@@ -98,8 +99,26 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       onOk={onOk}
     >
       <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
+        <Form.Item
+          name="reportUnitId"
+          label="报告单元"
+          rules={[{ required: true, message: '请输入旧密码' }]}
+        >
+          <Select placeholder="请选择报告单元" allowClear>
+            {reportUnitList.map((item) => {
+              return (
+                <Option value={item.id} key={item.id}>
+                  {item.reportUnitName}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
         <Form.Item label="批输入模板名称" name="templateName">
           <Input placeholder="请输入批输入模板名称" />
+        </Form.Item>
+        <Form.Item label="自动输入标志" name="autoFlag">
+          <Switch checked={flag} onChange={onChange} />
         </Form.Item>
         <Form.Item label="自动输入起始号" name="startNo">
           <Input placeholder="请输入自动输入起始号" disabled={!flag} />
@@ -112,20 +131,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         </Form.Item>
         <Form.Item label="备注" name="remark">
           <Input placeholder="请输入备注" />
-        </Form.Item>
-        <Form.Item label="自动输入标志" name="autoFlag">
-          <Switch checked={flag} onChange={onChange} />
-        </Form.Item>
-        <Form.Item name="reportUnitId" label="报告单元">
-          <Select placeholder="请选择报告单元" allowClear>
-            {reportUnitList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.reportUnitName}
-                </Option>
-              );
-            })}
-          </Select>
         </Form.Item>
       </Form>
     </Dialog>

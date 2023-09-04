@@ -11,9 +11,9 @@ const { TextArea } = Input;
 const ExplainAdvise = () => {
   const [comment, setComment] = useState([]); // 评价草稿
   const { instrAndRecordId } = useSelector((state: any) => state.generalInspectionMag);
-  const [content, setContent] = useState();
   const [suggestions, setSuggestions] = useState([]);
   const [form] = Form.useForm();
+  const [formSearch] = Form.useForm();
   // 输入框触发
   const onInputer = (e) => {
     let comment = e.target.value;
@@ -21,17 +21,18 @@ const ExplainAdvise = () => {
   };
   useEffect(() => {
     explainContent();
-    explainSuggestions();
+    explainSuggestions({ key: '' });
   }, []);
   const explainContent = () => {
     getExplainContent({ id: instrAndRecordId.id }).then((res) => {
       if (res.code === 200) {
         form.setFieldsValue({ suggestions: res.data });
+        setComment(res.data);
       }
     });
   };
-  const explainSuggestions = () => {
-    getExplainSuggestions().then((res) => {
+  const explainSuggestions = (params: any) => {
+    getExplainSuggestions(params).then((res) => {
       if (res.code === 200) {
         setSuggestions(res.data);
       }
@@ -98,17 +99,25 @@ const ExplainAdvise = () => {
   const menu = (item) => {
     return (
       <Menu>
-        <Menu.Item onClick={() => add(item)}>添加</Menu.Item>
+        <Menu.Item onClick={() => addWrap(item)}>换行添加</Menu.Item>
+        <Menu.Item onClick={() => add(item)}>增量添加</Menu.Item>
         <Menu.Item onClick={() => cover(item)}>覆盖</Menu.Item>
       </Menu>
     );
   };
-  const add = (item: any) => {
+  const addWrap = (item: any) => {
     let result = form.getFieldsValue().suggestions;
     form.setFieldsValue({ suggestions: result + '\n' + item.entryTypeValue });
+    setComment(result + item.entryTypeValue);
+  };
+  const add = (item: any) => {
+    let result = form.getFieldsValue().suggestions;
+    form.setFieldsValue({ suggestions: result + item.entryTypeValue });
+    setComment(result + item.entryTypeValue);
   };
   const cover = (item: any) => {
     form.setFieldsValue({ suggestions: item.entryTypeValue });
+    setComment(item.entryTypeValue);
   };
   const sure = () => {
     updateExplainContent({
@@ -119,6 +128,23 @@ const ExplainAdvise = () => {
         message.success('添加成功!');
       }
     });
+  };
+  const searchHandle = (changedValues: any, allValues: undefined) => {
+    explainSuggestions(allValues);
+  };
+  const renderForm = () => {
+    return (
+      <Form
+        layout="inline"
+        form={formSearch}
+        style={{ marginBottom: '10px' }}
+        onValuesChange={searchHandle}
+      >
+        <Form.Item name="key" label="词条搜索">
+          <Input placeholder="请输入关键字" style={{ width: 130 }} allowClear />
+        </Form.Item>
+      </Form>
+    );
   };
   return (
     <>
@@ -134,13 +160,8 @@ const ExplainAdvise = () => {
         </Form.Item>
         <div style={{ textAlign: 'right', width: '100%' }}>{comment.length}/500</div>
       </Form>
-      <Table
-        columns={columns}
-        dataSource={suggestions}
-        bordered
-        title={() => '词条搜索'}
-        size="small"
-      />
+      {renderForm()}
+      <Table columns={columns} dataSource={suggestions} bordered size="small" pagination={false} />
       <div>
         <Button onClick={sure} style={{ margin: 'auto' }}>
           确定

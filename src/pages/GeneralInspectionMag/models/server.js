@@ -117,3 +117,9 @@ export function reexamineReq(params) {
 export function deApprovalList(params) {
   return axios('lab/abnormalTrace/deApprovalPage', 'get', params);
 }
+export function getReexamineItems(params) {
+  return axios('lab/reportMain/getReexamineItems', 'get', params);
+}
+export function applyReview(params) {
+  return axios('lab/reportMain/reexamineReq', 'post', params);
+}

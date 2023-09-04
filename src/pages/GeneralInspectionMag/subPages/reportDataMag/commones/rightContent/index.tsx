@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import { Button } from '@/components';
 import {
   Table,
   Form,
@@ -14,7 +13,7 @@ import {
   message,
   Popconfirm,
 } from 'antd';
-import { useDispatch, useLocation, useSelector } from 'umi';
+import { useDispatch, useSelector } from 'umi';
 import moment from 'moment';
 import {
   getHospitalList,
@@ -35,12 +34,12 @@ import {
 } from '../../../../models/server';
 import styles from '../index.less';
 import style from './index.less';
+import ReviewModal from './commones/reviewModal';
 const { Option } = Select;
 const { TabPane } = Tabs;
 
 const RightContent = () => {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
   const [list, setList] = useState([]);
   const [reportList, setReportList] = useState([]);
   const [tableHeaderCoumn, setTableHeaderCoumn] = useState([]);
@@ -72,10 +71,11 @@ const RightContent = () => {
     reportMiddleUpdate,
     batchAdd,
     personList,
-    reportUnitInstrList
+    reportUnitInstrList,
   } = useSelector((state: any) => state.generalInspectionMag);
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
+  const reviewModal = useRef();
 
   useEffect(() => {
     form.setFieldsValue({ labDate: moment(now1, 'YYYY-MM-DD') });
@@ -320,7 +320,7 @@ const RightContent = () => {
     setSelectedKeys(selectedRowKeys);
   };
   const rowSelection = {
-    selectedRowKeys: selectedKeys,
+    // selectedRowKeys: selectedKeys,
     onChange: onChangeSelected,
   };
   const getRowClassName = (record, index) => {
@@ -411,7 +411,7 @@ const RightContent = () => {
     reportUnitInstr({ reportUnitId }).then((res: any) => {
       if (res.code === 200) {
         res.data.unshift({ id: 0, instrName: '手工' });
-       
+
         dispatch({
           type: 'generalInspectionMag/save',
           payload: {
@@ -475,15 +475,19 @@ const RightContent = () => {
           data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
         }) => {
           if (res.code === 200) {
-            setCreenReportList(res.data.records);
+            const result = res.data.records.map((item) => {
+              return {
+                ...item,
+                key: item.id,
+              };
+            });
+            setCreenReportList(result);
             setTotal(res.data.total);
-
             if (Math.ceil(res.data.total / 50) == pageNum && !reportMiddleUpdate) {
               let paramsVal = {
                 id: res.data.records[res.data.records.length - 1]?.id,
                 instrId: form.getFieldValue('instrId'),
               };
-              debugger;
               dispatch({
                 type: 'generalInspectionMag/save',
                 payload: {
@@ -584,10 +588,12 @@ const RightContent = () => {
     let params = { id: instrAndRecordId.id };
     let newParams = {};
     if (val === 1) {
-      newParams = {
-        ...params,
-        retestFlag: true,
-      };
+      if (selectedKeys.length === 0) {
+        message.warning('请选择要复查的项目!');
+        return;
+      }
+      reviewModal.current.show(selectedKeys);
+      return;
     } else {
       newParams = {
         ...params,
@@ -1117,6 +1123,7 @@ const RightContent = () => {
           };
         }}
       />
+      <ReviewModal Ref={reviewModal} />
     </div>
   );
 };

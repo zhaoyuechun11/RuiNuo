@@ -31,7 +31,9 @@ import {
 import isFunction from 'lodash/isFunction';
 const IndexModel = {
   namespace: 'Setting',
-  state: {},
+  state: {
+    reportTempleName: '',
+  },
   effects: {
     *fetchParamsSetList({ payload }, { call }) {
       const { callback, ...params } = payload;

@@ -23,29 +23,23 @@ const GraphicData = () => {
     reportResultImagesChange({ id: val.id }).then((res) => {
       if (res.code === 200) {
         message.success('报告状态修改成功!');
-        dispatch({
-          type: 'generalInspectionMag/save',
-          payload: {
-            type: 'reportMiddleUpdate',
-            dataSource: true,
-          },
-        });
+        getImages();
       }
     });
   };
   return (
     <div>
-      <Row gutter={16}>
+      <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
         {list?.map((item) => {
           return (
-            <Col className="gutter-row" span={4}>
+            <Col className="gutter-row" span={6}>
               <Row>
                 <Checkbox onChange={(e) => onChange(e, item)} checked={item.isRptUse}>
-                  是否用于修改
+                  报告
                 </Checkbox>
               </Row>
               <Row>
-                <Image src={item.imgPath} style={{ width: 100, height: 100 }} />
+                <Image src={item.imgPath} style={{ width: 200, height: 200 }} />
               </Row>
             </Col>
           );

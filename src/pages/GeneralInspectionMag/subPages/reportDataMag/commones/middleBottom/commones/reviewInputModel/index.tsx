@@ -6,7 +6,7 @@ const { Option } = Select;
 const ReviewInputModel = ({ Ref }) => {
   const dispatch = useDispatch();
   const { useDetail } = useSelector((state: any) => state.global);
-  const { personList, reportUnitInstrList, instrAndRecordId } = useSelector(
+  const { personList, reportUnitInstrList, instrAndRecordId, reportLeftVal } = useSelector(
     (state: any) => state.generalInspectionMag,
   );
   const [form] = Form.useForm();
@@ -85,6 +85,10 @@ const ReviewInputModel = ({ Ref }) => {
   return (
     <Dialog ref={dialogRef} title={'复查结果录入'} onOk={onOk}>
       <Form layout="inline" form={form}>
+        <Row>
+          <Col>复查样本:</Col>
+          <Col>{reportLeftVal.sampleBarcode}</Col>
+        </Row>
         <Row>
           <Col>
             <Form.Item

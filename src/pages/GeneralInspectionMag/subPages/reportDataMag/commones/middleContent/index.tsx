@@ -128,13 +128,13 @@ const MiddleContent = () => {
                 <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />
               ) : record.dataType === 3 && result ? (
                 <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
-                  选择
+                  选
                 </Button>
               ) : result && record.dataType === 2 ? (
                 <>
                   <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />{' '}
                   <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
-                    选择
+                    选
                   </Button>
                 </>
               ) : null}

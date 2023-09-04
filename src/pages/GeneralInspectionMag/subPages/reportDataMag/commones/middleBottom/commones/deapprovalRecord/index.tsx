@@ -32,21 +32,6 @@ const DeapprovalRecord = () => {
   };
   const columns = [
     {
-      title: '实验室Id',
-      dataIndex: 'labId',
-      ellipsis: true,
-      align: 'center',
-      fixed: 'left',
-      width: 100,
-    },
-    {
-      title: '异常操作对象的ID',
-      dataIndex: 'objectId',
-      ellipsis: true,
-      align: 'center',
-      width: 100,
-    },
-    {
       title: '操作时间',
       dataIndex: 'operateTime',
       align: 'center',
@@ -63,44 +48,6 @@ const DeapprovalRecord = () => {
       dataIndex: 'reason',
       align: 'center',
       width: 100,
-    },
-    {
-      title: '表名',
-      dataIndex: 'tableName',
-      align: 'center',
-      width: 100,
-    },
-    {
-      title: '异常操作类型',
-      dataIndex: 'traceType',
-      align: 'center',
-      width: 100,
-      ellipsis: true,
-      render: (text) => {
-        return (
-          <span>
-            {text === 1
-              ? '反审核'
-              : text === 2
-              ? '样本复查'
-              : text === 3
-              ? '拒检'
-              : text === 4
-              ? '延迟'
-              : text === 5
-              ? '撤销拒检'
-              : null}
-          </span>
-        );
-      },
-    },
-    {
-      title: '操作页面的名称',
-      dataIndex: 'winName',
-      align: 'center',
-      fixed: 'right',
-      width: 100,
-      ellipsis: true,
     },
   ];
 

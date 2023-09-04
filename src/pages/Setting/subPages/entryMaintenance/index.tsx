@@ -18,14 +18,6 @@ const EntryMaintenance = () => {
   const [entryTypeList, setEntryTypeList] = useState([]);
   const Columns = [
     {
-      title: '顺序',
-      dataIndex: 'seq',
-      align: 'center',
-      width: 100,
-      fixed: 'left',
-      sorter: (a, b) => a.seq - b.seq,
-    },
-    {
       title: '词条编码',
       dataIndex: 'entryId',
       sorter: (a, b) => a.entryId - b.entryId,
@@ -37,6 +29,14 @@ const EntryMaintenance = () => {
       dataIndex: 'entryTypeValue',
       align: 'center',
       width: 100,
+    },
+    {
+      title: '顺序',
+      dataIndex: 'seq',
+      align: 'center',
+      width: 100,
+      fixed: 'left',
+      sorter: (a, b) => a.seq - b.seq,
     },
     {
       title: '备注',

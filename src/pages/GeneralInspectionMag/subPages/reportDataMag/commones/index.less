@@ -52,6 +52,11 @@
       overflow: auto;
     }
   }
+  :global {
+    .ant-table-tbody > tr.ant-table-row-selected > td {
+      background-color: #007aff !important;
+    }
+  }
 }
 .middle_content {
   :global {
@@ -80,7 +85,7 @@
 }
 .blue {
   color: #fff;
-  background-color: #007aff;
+  background-color: #007aff !important;
   :global {
     .ant-table-row:hover > td,
     td.ant-table-cell-row-hover {

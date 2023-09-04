@@ -40,6 +40,9 @@ const BatchInputTemplate = () => {
       title: '自动标志',
       dataIndex: 'autoFlag',
       align: 'center',
+      render: (text) => {
+        return <span>{text === 1 ? '自动' : '非自动'}</span>;
+      },
     },
     {
       title: '自动输入起始号',
@@ -64,7 +67,15 @@ const BatchInputTemplate = () => {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
               onClick={() => {
+                dispatch({
+                  type: 'Setting/save',
+                  payload: {
+                    type: 'reportTempleName',
+                    dataSource: record.templateName,
+                  },
+                });
                 history.push(`/Setting/batchInputTemplateDetail/${record.id}`);
+             
               }}
             >
               明细
@@ -112,7 +123,6 @@ const BatchInputTemplate = () => {
     getReportUnitSelect();
   }, []);
   const deleteTemplate = (id: any) => {
-
     dispatch({
       type: 'Setting/fetchInputTemplateDelete',
       payload: {

@@ -65,7 +65,7 @@ const ChartData = ({ Ref }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={640}
+      width={840}
       title={'趋势图'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();

@@ -106,6 +106,7 @@ const ReviewModal = ({ Ref }) => {
       itemIds: selectedKeys,
       reexamineReason: reasonReviewForm.getFieldsValue().reexamineReason,
       reportIds: reportIds.current,
+      winName: '普检报告数据管理',
     };
     applyReview(params).then((res) => {
       if (res.code === 200) {

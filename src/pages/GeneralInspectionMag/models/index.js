@@ -31,6 +31,8 @@ const generalInspectionMag = {
     personList: [],
     reportUnitInstrList: [],
     reviewList: [],
+    reviewReultsList: [],
+    reviewReultsFlag:false
   },
   effects: {
     *fetchReportMainDataList({ payload }, { call }) {

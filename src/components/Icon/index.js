@@ -1,16 +1,16 @@
-import React, { Fragment, Component } from 'react';
-import classNames from 'classnames';
+import React, { Component } from 'react';
+
 import style from './index.less';
 
 class Icon extends Component {
   render() {
     const { name, nameStyle, classStyle, ...restProps } = this.props;
     return (
-      <span
+      <div
         className={`${'iconfont'} ${style[name]} ${classStyle}`}
         style={{ ...nameStyle }}
         {...restProps}
-      ></span>
+      ></div>
     );
   }
 }

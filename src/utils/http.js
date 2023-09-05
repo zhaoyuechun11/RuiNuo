@@ -54,7 +54,8 @@ axios.interceptors.request.use(
         config.url === 'lab/reqMainSplit/instrMachineAllocation' ||
         config.url === 'lab/reqMainSplit/manualMachineAllocation' ||
         config.url === 'lab/reportResultCommon/update' ||
-        config.url === 'lab/reportResultCommon/save'
+        config.url === 'lab/reportResultCommon/save' ||
+        config.url === 'lab/reexamineResult/add'
       ) {
         config.data = config.data;
       } else {

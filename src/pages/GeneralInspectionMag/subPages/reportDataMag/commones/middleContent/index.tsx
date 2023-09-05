@@ -15,6 +15,7 @@ import {
 import { useDispatch, useSelector } from 'umi';
 import Icon from '@components/Icon';
 import styles from '../index.less';
+import './index.css';
 import CheckItem from './commones/checkItem';
 import DetailsModal from './commones/detailsModal';
 import BatchAdd from './commones/batchAdd';
@@ -38,7 +39,33 @@ const defaultValData = [
   { id: 'L', name: '偏低' },
   { id: 'NOR', name: '正常' },
 ];
-
+import { Resizable } from 'react-resizable';
+const ResizableTitle = (props) => {
+  const { onResize, width, ...restProps } = props;
+  if (!width) {
+    return <th {...restProps} />;
+  }
+  return (
+    <Resizable
+      width={width}
+      height={0}
+      handle={
+        <span
+          className="react-resizable-handle"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        />
+      }
+      onResize={onResize}
+      draggableOpts={{
+        enableUserSelectHack: false,
+      }}
+    >
+      <th {...restProps} />
+    </Resizable>
+  );
+};
 const MiddleContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
@@ -122,7 +149,7 @@ const MiddleContent = () => {
         ellipsis: true,
         render: (text: string | number, record: any) => {
           return (
-            <span>
+            <div className="edit_icon">
               {column.key === 'displayRef' ? record.ref?.displayRef : text}
               {result && record.dataType === 1 ? (
                 <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />
@@ -131,14 +158,14 @@ const MiddleContent = () => {
                   选
                 </Button>
               ) : result && record.dataType === 2 ? (
-                <>
+                <div className="button_icon">
                   <Icon name="iconanniu-bianji" onClick={() => resultEdit(record, column.key, 1)} />{' '}
                   <Button size="small" onClick={() => resultEdit(record, column.key, 2)}>
                     选
                   </Button>
-                </>
+                </div>
               ) : null}
-            </span>
+            </div>
           );
         },
       };
@@ -191,6 +218,23 @@ const MiddleContent = () => {
     const coumns = [...firstColumm, ...middleColumns, lastColumns];
     setTableHeaderCoumn(coumns);
   }, [list, instrAndRecordId]);
+  const handleResize =
+    (index) =>
+    (_, { size }) => {
+      const newColumns = [...tableHeaderCoumn];
+      newColumns[index] = {
+        ...newColumns[index],
+        width: size.width,
+      };
+      setTableHeaderCoumn(newColumns);
+    };
+  const mergeColumns = tableHeaderCoumn.map((col, index) => ({
+    ...col,
+    onHeaderCell: (column) => ({
+      width: column.width,
+      onResize: handleResize(index),
+    }),
+  }));
   const menu = (item) => {
     return (
       <Menu>
@@ -547,7 +591,12 @@ const MiddleContent = () => {
       </div>
       <Table
         dataSource={reportResultList}
-        columns={tableHeaderCoumn}
+        components={{
+          header: {
+            cell: ResizableTitle,
+          },
+        }}
+        columns={mergeColumns}
         scroll={{ x: 500 }}
         size="small"
         bordered

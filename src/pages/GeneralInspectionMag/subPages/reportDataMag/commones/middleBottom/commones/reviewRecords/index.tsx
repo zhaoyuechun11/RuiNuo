@@ -38,46 +38,54 @@ const ReviewRecords = () => {
     {
       title: '项目编号',
       dataIndex: 'itemCode',
-      render: (text) => <a>{text}</a>,
       ellipsis: true,
       align: 'center',
+      width: 100,
+      fixed: 'left',
     },
     {
       title: '项目名称',
       dataIndex: 'itemName',
       ellipsis: true,
       align: 'center',
+      width: 100,
     },
     {
       title: '复查前结果',
       dataIndex: 'reBeforeResult',
-      render: (text) => <a>{text}</a>,
       align: 'center',
+      width: 100,
     },
     {
       title: '复查后',
       dataIndex: 'reResult1',
       align: 'center',
+      width: 100,
     },
     {
       title: '复查样本号',
       dataIndex: 'reSampleNo',
       align: 'center',
+      width: 100,
     },
     {
       title: '复查原因',
       dataIndex: 'reexamineReason',
       align: 'center',
+      width: 100,
     },
     {
       title: '复查人',
       dataIndex: 'reOperator',
       align: 'center',
+      width: 100,
     },
     {
       title: '复查时间',
       dataIndex: 'reexamineDate',
       align: 'center',
+      fixed: 'right',
+      width: 150,
     },
   ];
   const renderForm = () => {
@@ -103,13 +111,13 @@ const ReviewRecords = () => {
     <>
       <Row style={{ alignItems: 'center', marginBottom: '10px' }}>
         <Col> {renderForm()} </Col>
-        <Col style={{ marginRight: '10px' }}>
+        <Col>
           <Button type="primary" size="small" onClick={seach}>
             查询
           </Button>
         </Col>
 
-        <Col>
+        <Col style={{ margin: ' 0 10px' }}>
           <Button type="primary" size="small" onClick={reset}>
             重置
           </Button>
@@ -133,8 +141,12 @@ const ReviewRecords = () => {
           onChange: pageChange,
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
+        scroll={{ x: 300 }}
       />
-      <ReviewInputModel Ref={modalInput} />
+      <ReviewInputModel
+        Ref={modalInput}
+        refresh={() => getList({ reportId: instrAndRecordId.id, pageNum, pageSize })}
+      />
     </>
   );
 };

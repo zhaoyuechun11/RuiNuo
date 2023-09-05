@@ -1,0 +1,29 @@
+.form_box {
+  :global {
+    .ant-row {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+}
+.icon_edit {
+  display: flex;
+  justify-content: space-around;
+}
+:global {
+  .react-resizable {
+    position: relative;
+    background-clip: padding-box;
+  }
+
+  .react-resizable-handle {
+    position: absolute;
+    right: -5px;
+    bottom: 0;
+    z-index: 1;
+    width: 10px;
+    height: 100%;
+    background-image: none;
+    cursor: col-resize;
+  }
+}

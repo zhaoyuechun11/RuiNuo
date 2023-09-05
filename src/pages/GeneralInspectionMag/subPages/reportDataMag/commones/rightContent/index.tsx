@@ -72,6 +72,7 @@ const RightContent = () => {
     batchAdd,
     personList,
     reportUnitInstrList,
+    reviewReultsFlag,
   } = useSelector((state: any) => state.generalInspectionMag);
   const [clickRow, setClickRow] = useState();
   var now1 = moment().format('YYYY-MM-DD');
@@ -191,7 +192,7 @@ const RightContent = () => {
       pageNum,
       pageSize,
     });
-  }, [pageNum, pageSize, sort, order, reportLefUpdate, reportMiddleUpdate]);
+  }, [pageNum, pageSize, sort, order, reportLefUpdate, reportMiddleUpdate, reviewReultsFlag]);
 
   const getList = (params) => {
     dispatch({

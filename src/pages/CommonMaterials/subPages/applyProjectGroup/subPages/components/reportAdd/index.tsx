@@ -13,7 +13,7 @@ const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 16 },
 };
-const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type }) => {
+const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList }) => {
   const dialogRef = useRef();
   const [list, setList] = useState([]);
   const selectedVal = useRef();
@@ -165,7 +165,6 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, t
         <Form.Item label="默认值">
           <Select
             placeholder="请选择默认值"
-            autoComplete="off"
             allowClear
             onChange={handleChangeSelect}
           >

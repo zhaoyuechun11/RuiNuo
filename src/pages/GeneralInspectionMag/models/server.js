@@ -123,3 +123,6 @@ export function getReexamineItems(params) {
 export function applyReview(params) {
   return axios('lab/reportMain/reexamineReq', 'post', params);
 }
+export function reexamineResultAdd(params) {
+  return axios('lab/reexamineResult/add', 'post', params);
+}

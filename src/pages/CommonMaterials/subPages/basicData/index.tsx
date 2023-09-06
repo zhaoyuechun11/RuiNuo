@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
 import { Button, Icon, Table } from '@/components';
 import styles from './index.less';
-import { useDispatch, useSelector, history, useLocation } from 'umi';
+import { useDispatch, useSelector, history } from 'umi';
 
 const FormItem = Form.Item;
 const BasicData = () => {
@@ -13,15 +13,6 @@ const BasicData = () => {
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
-
-  const { useDetail } = useSelector((state: any) => state.global);
-  const location = useLocation();
-  console.log('location', location);
-  console.log('useDetail', useDetail);
-
-
-  
-
   const [list, setList] = useState([]);
   const Columns = [
     {

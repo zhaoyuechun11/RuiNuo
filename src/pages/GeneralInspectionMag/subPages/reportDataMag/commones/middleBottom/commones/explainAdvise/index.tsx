@@ -9,7 +9,7 @@ import {
 import { useSelector } from 'umi';
 const { TextArea } = Input;
 const ExplainAdvise = () => {
-  const [comment, setComment] = useState([]); // 评价草稿
+  const [comment, setComment] = useState(0);
   const { instrAndRecordId } = useSelector((state: any) => state.generalInspectionMag);
   const [suggestions, setSuggestions] = useState([]);
   const [form] = Form.useForm();
@@ -42,7 +42,6 @@ const ExplainAdvise = () => {
     {
       title: '词条代号',
       dataIndex: 'entryId',
-      render: (text) => <a>{text}</a>,
       align: 'center',
     },
     {
@@ -123,7 +122,7 @@ const ExplainAdvise = () => {
     updateExplainContent({
       id: instrAndRecordId.id,
       explainContent: form.getFieldsValue().suggestions,
-    }).then((res) => {
+    }).then((res: any) => {
       if (res.code === 200) {
         message.success('添加成功!');
       }
@@ -141,7 +140,7 @@ const ExplainAdvise = () => {
         onValuesChange={searchHandle}
       >
         <Form.Item name="key" label="词条搜索">
-          <Input placeholder="请输入关键字" style={{ width: 130 }} allowClear />
+          <Input placeholder="请输入关键字" style={{ width: 240 }} allowClear />
         </Form.Item>
       </Form>
     );
@@ -158,7 +157,7 @@ const ExplainAdvise = () => {
             onChange={onInputer}
           />
         </Form.Item>
-        <div style={{ textAlign: 'right', width: '100%' }}>{comment.length}/500</div>
+        <div style={{ textAlign: 'right', width: '100%' }}>{comment?.length||0}/500</div>
       </Form>
       {renderForm()}
       <Table columns={columns} dataSource={suggestions} bordered size="small" pagination={false} />

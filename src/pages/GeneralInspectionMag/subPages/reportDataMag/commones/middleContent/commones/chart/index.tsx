@@ -1,44 +1,26 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-
 import { Dialog } from '@components';
 import { chartData } from '../../../../../../models/server';
 import { useSelector } from 'umi';
 import { Chart } from '@antv/g2';
 const ChartData = ({ Ref }) => {
   const dialogRef = useRef();
-  const [test, setTest] = useState(false);
-  const currentItem = useRef();
-  const [list, setList] = useState([]);
-  const { instrAndRecordId, reportLeftVal } = useSelector(
-    (state: any) => state.generalInspectionMag,
-  );
+  const { reportLeftVal } = useSelector((state: any) => state.generalInspectionMag);
 
   useImperativeHandle(Ref, () => ({
     show: (val) => {
       dialogRef.current && dialogRef.current.show();
-      setTest(true);
-      currentItem.current = val;
+
+      const { instrId, itemId } = val;
+      const { hospitalId, patientNo, reportUnitCode } = reportLeftVal;
+      getChartData({ instrId, itemId, hospitalId, patientNo, reportUnitCode });
     },
   }));
-  useEffect(() => {
-    if (test) {
-      console.log(reportLeftVal);
-      console.log(instrAndRecordId);
 
-      getChartData();
-    }
-  }, [test]);
-  const getChartData = () => {
-    let params = {
-      hospitalId: reportLeftVal.hospitalId,
-      instrId: currentItem.current?.instrId,
-      itemId: currentItem.current?.itemId,
-      patientNo: reportLeftVal.patientNo,
-      reportUnitCode: reportLeftVal.reportUnitCode,
-    };
-    chartData(params).then((res) => {
+  const getChartData = (params: any) => {
+    chartData(params).then((res: any) => {
       if (res.code === 200) {
-        const result = res.data.map((item) => {
+        const result = res.data.map((item: any) => {
           return { genre: item.labDate, sold: item.result };
         });
 

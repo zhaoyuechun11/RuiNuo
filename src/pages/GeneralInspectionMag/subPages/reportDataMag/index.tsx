@@ -4,6 +4,7 @@ import LeftContent from './commones/leftContent';
 import MiddleContent from './commones/middleContent';
 import RightContent from './commones/rightContent';
 import MiddleBottom from './commones/middleBottom';
+import styles from './index.less';
 const { TabPane } = Tabs;
 const ReportDataMag = () => {
   return (
@@ -40,7 +41,7 @@ const ReportDataMag = () => {
           </TabPane>
           <TabPane tab="当前报告数据" key="10">
             <Row>
-              <Col span={8} style={{ borderBottom: '1px solid #cecece' }}>
+              <Col span={8} className={styles.left_box}>
                 <LeftContent />
               </Col>
               <Col span={16}>

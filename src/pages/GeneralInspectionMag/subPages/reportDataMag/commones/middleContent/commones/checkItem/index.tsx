@@ -87,13 +87,7 @@ const CheckItem = ({ Ref }) => {
             dataSource: mergedArray,
           },
         });
-        dispatch({
-          type: 'generalInspectionMag/save',
-          payload: {
-            type: 'isChangeReportResult',
-            dataSource: true,
-          },
-        });
+     
         dispatch({
           type: 'generalInspectionMag/save',
           payload: {

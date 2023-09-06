@@ -54,7 +54,6 @@ const LeftContent = () => {
             }
           });
         });
-        debugger;
         dispatch({
           type: 'generalInspectionMag/save',
           payload: {

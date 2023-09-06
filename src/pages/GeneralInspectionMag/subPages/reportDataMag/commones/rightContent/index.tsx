@@ -13,7 +13,7 @@ import {
   message,
   Popconfirm,
 } from 'antd';
-import { useDispatch, useSelector } from 'umi';
+import { useDispatch, useSelector, useLocation } from 'umi';
 import moment from 'moment';
 import {
   getHospitalList,
@@ -41,7 +41,6 @@ const { TabPane } = Tabs;
 const RightContent = () => {
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
-  const [reportList, setReportList] = useState([]);
   const [tableHeaderCoumn, setTableHeaderCoumn] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [form] = Form.useForm();
@@ -52,7 +51,7 @@ const RightContent = () => {
   const [department, setDepartment] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(2);
+  const [pageSize, setPageSize] = useState(50);
   const [total, setTotal] = useState();
   const [popoverVisible, setPopoverVisible] = useState(false);
   const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
@@ -63,6 +62,7 @@ const RightContent = () => {
   const { useDetail } = useSelector((state: any) => state.global);
   const [activeKey, setActiveKey] = useState('10');
   const updateInfoData = useRef();
+  const location = useLocation();
   const {
     reportLefUpdate,
     instrAndRecordId,
@@ -104,38 +104,48 @@ const RightContent = () => {
     });
   }, []);
   useEffect(() => {
+    if (reportMiddleUpdate) {
+      dispatch({
+        type: 'generalInspectionMag/save',
+        payload: {
+          type: 'reportMiddleUpdate',
+          dataSource: false,
+        },
+      });
+    }
+  }, [location.pathname]);
+  useEffect(() => {
     if (list.length > 0) {
-      // const firstColumm = list.splice(0, 1).map((column) => {
-      //   return {
-      //     title: column.name,
-      //     dataIndex: column.key,
-      //     responsive: ['xl', 'xxl'],
-      //     align: 'center',
-      //     fixed: 'left',
-      //     width: 60,
-      //     ellipsis: true,
-      //     render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-      //   };
-      // });
+      const firstColumm = list?.slice(0, 1).map((column) => {
+        return {
+          title: column.name,
+          dataIndex: column.key,
+          responsive: ['xl', 'xxl'],
+          align: 'center',
+          fixed: 'left',
+          width: 120,
+          ellipsis: true,
+          sorter: column.key === 'sampleBarcode',
+          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+        };
+      });
 
-      const middleColumns = list.map((column) => {
+      const middleColumns = list?.slice(1).map((column) => {
         return {
           title: column.name,
           dataIndex: column.key,
           sorter:
-            column.key === 'sampleBarcode' ||
             column.key === 'labDate' ||
             column.key === 'sampleNo' ||
             column.key === 'patientName' ||
             column.key === 'age' ||
-            column.key === 'sendDept' ||
             column.key === 'sendDept' ||
             column.key === 'sendDoctor'
               ? true
               : false,
           responsive: ['xl', 'xxl'],
           align: 'center',
-          width: 60,
+          width: column.key === 'instrName' || column.key === 'sampleNo' ? 160 : 60,
           ellipsis: true,
           render: (text: string | number) => {
             return (
@@ -179,7 +189,7 @@ const RightContent = () => {
           </div>
         ),
       };
-      const coumns = [...middleColumns];
+      const coumns = [...firstColumm, ...middleColumns];
       setTableHeaderCoumn(coumns);
     }
   }, [list]);
@@ -637,14 +647,14 @@ const RightContent = () => {
     reportResult({ reportId: instrAndRecordId.id, instrId: instrAndRecordId.instrId }).then(
       (res: any) => {
         if (res.code === 200) {
-          console.log(reportResultList);
-          debugger;
-          reportResultList.map((el, index) => {
+          let hasIdReportData = reportResultList.filter((item) => {
+            if ('id' in item) {
+              return item;
+            }
+          });
+
+          hasIdReportData.map((el, index) => {
             Object.keys(el).forEach(function (key) {
-              // console.log(res.data[index][key], el[key]);
-              console.log(
-                reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key],
-              );
               if (reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key]) {
                 updateInfo.push({
                   itemId: el?.itemId,
@@ -672,10 +682,37 @@ const RightContent = () => {
     );
   };
   const onRowClick = (record: any, index: any) => {
-    if (isChangeReportResult) {
-      if (!batchAdd) {
-        addCommonUpdateInfo();
+    let hasIdReportData = reportResultList.filter((item) => {
+      if ('id' in item) {
+        return item;
       }
+    });
+
+    let noIdReportData = reportResultList
+      ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
+      .map((item: any) => {
+        return {
+          reportId: instrAndRecordId.id,
+          instrId: instrAndRecordId.instrId,
+          colonyCount: item?.colonyCount,
+          itemId: item?.itemId,
+          ct: item.ct,
+          cutoff: item.cutoff,
+          germId: item.germId,
+          hasGerm: item.hasGerm,
+          od: item.od,
+          referenceRange: item.ref?.displayRef,
+          result: item?.result,
+          result1: item?.result1,
+          result2: item?.result2,
+          result3: item?.result3,
+          result4: item?.result4,
+          resultFlag: item?.resultFlag,
+        };
+      });
+    if (isChangeReportResult) {
+      addCommonUpdateInfo();
+
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -683,11 +720,7 @@ const RightContent = () => {
           dataSource: false,
         },
       });
-      let hasIdReportData = reportResultList.filter((item) => {
-        if ('id' in item) {
-          return item;
-        }
-      });
+
       let params = hasIdReportData.map((item) => {
         return {
           id: item.id,
@@ -706,70 +739,38 @@ const RightContent = () => {
           resultFlag: item?.resultFlag,
         };
       });
-      let noIdReportData = reportResultList
-        ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
-        .map((item: any) => {
-          return {
-            reportId: instrAndRecordId.id,
-            instrId: instrAndRecordId.instrId,
-            colonyCount: item?.colonyCount,
-            itemId: item?.itemId,
-            ct: item.ct,
-            cutoff: item.cutoff,
-            germId: item.germId,
-            hasGerm: item.hasGerm,
-            od: item.od,
-            referenceRange: item.ref?.displayRef,
-            result: item?.result,
-            result1: item?.result1,
-            result2: item?.result2,
-            result3: item?.result3,
-            result4: item?.result4,
-            resultFlag: item?.resultFlag,
-          };
-        });
 
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
-          if (!batchAdd) {
-            let param = {
-              data: updateInfoData.current,
-            };
-            addCommonUpdate({
-              beforeChange: param,
-              objectId: instrAndRecordId.id,
-              winName: '普检数据报告管理',
-            }).then((res) => {
-              if (res.code === 200) {
-                message.success('添加修改日志成功');
-              }
-            });
-          }
-          // getCreenReportList({
-          //   ...form.getFieldsValue(),
-          //   labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
-          //   ...extendForm.getFieldsValue(),
-          //   [sort]: order,
-          //   pageNum,
-          //   pageSize,
-          // });
+          let param = {
+            data: updateInfoData.current,
+          };
+          addCommonUpdate({
+            beforeChange: param,
+            objectId: instrAndRecordId.id,
+            winName: '普检数据报告管理',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日志成功');
+            }
+          });
         }
       });
-      if (noIdReportData.length > 0) {
-        reportResultSave(noIdReportData).then((res) => {
-          if (res.code === 200) {
-            message.success('保存成功');
-            dispatch({
-              type: 'generalInspectionMag/save',
-              payload: {
-                type: 'reportMiddleUpdate',
-                dataSource: true,
-              },
-            });
-          }
-        });
-      }
+    }
+    if (noIdReportData.length > 0 && batchAdd) {
+      reportResultSave(noIdReportData).then((res) => {
+        if (res.code === 200) {
+          message.success('保存成功');
+          dispatch({
+            type: 'generalInspectionMag/save',
+            payload: {
+              type: 'reportMiddleUpdate',
+              dataSource: true,
+            },
+          });
+        }
+      });
     }
     setClickRow(record.id);
     let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
@@ -783,10 +784,35 @@ const RightContent = () => {
     });
   };
   const refresh = () => {
-    if (isChangeReportResult) {
-      if (!batchAdd) {
-        addCommonUpdateInfo();
+    let hasIdReportData = reportResultList.filter((item) => {
+      if ('id' in item) {
+        return item;
       }
+    });
+    let noIdReportData = reportResultList
+      ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
+      .map((item: any) => {
+        return {
+          reportId: instrAndRecordId.id,
+          instrId: instrAndRecordId.instrId,
+          colonyCount: item?.colonyCount,
+          itemId: item.itemId,
+          ct: item.ct,
+          cutoff: item.cutoff,
+          germId: item.germId,
+          hasGerm: item.hasGerm,
+          od: item.od,
+          referenceRange: item.ref?.displayRef,
+          result: item.result,
+          result1: item.result1,
+          result2: item.result2,
+          result3: item.result3,
+          result4: item.result4,
+          resultFlag: item.resultFlag,
+        };
+      });
+    if (isChangeReportResult) {
+      addCommonUpdateInfo();
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -794,11 +820,7 @@ const RightContent = () => {
           dataSource: false,
         },
       });
-      let hasIdReportData = reportResultList.filter((item) => {
-        if ('id' in item) {
-          return item;
-        }
-      });
+
       let params = hasIdReportData.map((item) => {
         return {
           id: item.id,
@@ -817,28 +839,6 @@ const RightContent = () => {
           resultFlag: item.resultFlag,
         };
       });
-      let noIdReportData = reportResultList
-        ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
-        .map((item: any) => {
-          return {
-            reportId: instrAndRecordId.id,
-            instrId: instrAndRecordId.instrId,
-            colonyCount: item?.colonyCount,
-            itemId: item.itemId,
-            ct: item.ct,
-            cutoff: item.cutoff,
-            germId: item.germId,
-            hasGerm: item.hasGerm,
-            od: item.od,
-            referenceRange: item.ref?.displayRef,
-            result: item.result,
-            result1: item.result1,
-            result2: item.result2,
-            result3: item.result3,
-            result4: item.result4,
-            resultFlag: item.resultFlag,
-          };
-        });
 
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
@@ -846,17 +846,15 @@ const RightContent = () => {
           let param = {
             data: updateInfoData.current,
           };
-          if (!batchAdd) {
-            addCommonUpdate({
-              beforeChange: param,
-              objectId: instrAndRecordId.id,
-              winName: '普检数据报告管理',
-            }).then((res) => {
-              if (res.code === 200) {
-                message.success('添加修改日志成功');
-              }
-            });
-          }
+          addCommonUpdate({
+            beforeChange: param,
+            objectId: instrAndRecordId.id,
+            winName: '普检数据报告管理',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日志成功');
+            }
+          });
           getCreenReportList({
             ...form.getFieldsValue(),
             labDate: form.getFieldValue('labDate')?.format('YYYY-MM-DD'),
@@ -867,20 +865,20 @@ const RightContent = () => {
           });
         }
       });
-      if (noIdReportData.length > 0) {
-        reportResultSave(noIdReportData).then((res) => {
-          if (res.code === 200) {
-            message.success('保存成功');
-            dispatch({
-              type: 'generalInspectionMag/save',
-              payload: {
-                type: 'reportMiddleUpdate',
-                dataSource: true,
-              },
-            });
-          }
-        });
-      }
+    }
+    if (noIdReportData.length > 0 && batchAdd) {
+      reportResultSave(noIdReportData).then((res) => {
+        if (res.code === 200) {
+          message.success('保存成功');
+          dispatch({
+            type: 'generalInspectionMag/save',
+            payload: {
+              type: 'reportMiddleUpdate',
+              dataSource: true,
+            },
+          });
+        }
+      });
     }
   };
   const popover_content = () => {

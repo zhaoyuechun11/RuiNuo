@@ -1,11 +1,10 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Table, Form, Select, Input, Checkbox, Row, Col } from 'antd';
+import { Table, Form, Input, Checkbox, Row, Col } from 'antd';
 import { templateList, templateDetailList, getListByItems } from '../../../../../../models/server';
 
 import styles from './index.less';
 import { useSelector, useDispatch } from 'umi';
-const { Option } = Select;
 const BatchAdd = ({ Ref }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -32,7 +31,6 @@ const BatchAdd = ({ Ref }) => {
       title: '项目名称',
       dataIndex: 'itemName',
       key: 'name',
-      render: (text) => <a>{text}</a>,
       width: 150,
     },
     {
@@ -86,18 +84,10 @@ const BatchAdd = ({ Ref }) => {
             dispatch({
               type: 'generalInspectionMag/save',
               payload: {
-                type: 'isChangeReportResult',
-                dataSource: true,
-              },
-            });
-            dispatch({
-              type: 'generalInspectionMag/save',
-              payload: {
                 type: 'batchAdd',
                 dataSource: true,
               },
             });
-           
           }
         });
       }
@@ -113,7 +103,7 @@ const BatchAdd = ({ Ref }) => {
     templateList({ reportUnitId: val, key }).then((res) => {
       if (res.code === 200) {
         setTemplateData(res.data);
-        getTemplateDetailList([res.data[0].id]);
+        getTemplateDetailList([res.data[0]?.id]);
       }
     });
   };
@@ -127,7 +117,6 @@ const BatchAdd = ({ Ref }) => {
 
   const onChange = (e) => {
     templateId.push(e.id);
-    console.log(templateId);
   };
   const clickName = (index: any, item: any) => {
     setCurrentIndex(index);
@@ -156,15 +145,20 @@ const BatchAdd = ({ Ref }) => {
         </Select>
       </Form> */}
       <Row>
-        <Col span={8}>
-          <Form onValuesChange={searchHandle} layout="inline" form={form}>
+        <Col span={8} className={styles.list_form}>
+          <Form
+            onValuesChange={searchHandle}
+            layout="inline"
+            form={form}
+            className={styles.form_box}
+          >
             <Form.Item name="key">
               <Input placeholder="请输入关键字" allowClear />
             </Form.Item>
           </Form>
           {templateData?.map((item, index) => {
             return (
-              <div style={{ display: 'flex' }}>
+              <div className={styles.list}>
                 <Checkbox onChange={() => onChange(item)}></Checkbox>
                 <div
                   onClick={() => clickName(index, item)}
@@ -177,7 +171,7 @@ const BatchAdd = ({ Ref }) => {
           })}
         </Col>
         <Col span={16}>
-          <Table columns={columns} dataSource={list} />
+          <Table columns={columns} dataSource={list} pagination={false} size="small" />
         </Col>
       </Row>
     </Dialog>

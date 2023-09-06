@@ -77,7 +77,7 @@ const MiddleContent = () => {
   const batchAddRef = useRef();
   const chartRef = useRef();
   const [resultList, setResultList] = useState([]);
-  const { instrAndRecordId, reportResultList, isChangeReportResult } = useSelector(
+  const { instrAndRecordId, reportResultList, isChangeReportResult, batchAdd } = useSelector(
     (state: any) => state.generalInspectionMag,
   );
   const updateInfoData = useRef();
@@ -376,12 +376,19 @@ const MiddleContent = () => {
     checkItemRef.current.show();
   };
   const addCommonUpdateInfo = () => {
+    console.log(reportResultList);
     let updateInfo = [];
     var reg = /result/;
     reportResult({ reportId: instrAndRecordId.id, instrId: instrAndRecordId.instrId }).then(
       (res: any) => {
         if (res.code === 200) {
-          reportResultList.map((el, index) => {
+          let hasIdReportData = reportResultList.filter((item) => {
+            if ('id' in item) {
+              return item;
+            }
+          });
+          console.log(hasIdReportData);
+          hasIdReportData.map((el, index) => {
             Object.keys(el).forEach(function (key) {
               console.log(res.data[index][key], el[key]);
               if (reg.test(key) && key !== 'resultFlag' && res.data[index][key] !== el[key]) {
@@ -389,7 +396,6 @@ const MiddleContent = () => {
               }
             });
           });
-
           updateInfoData.current = updateInfo.reduce(function (acc, curr) {
             let findIndex = acc.findIndex(function (item) {
               return item.itemId === curr.itemId;
@@ -409,11 +415,36 @@ const MiddleContent = () => {
   };
 
   const save = () => {
-    //return;
-    if (isChangeReportResult) {
-      if (!batchAdd) {
-        addCommonUpdateInfo();
+    let hasIdReportData = reportResultList.filter((item) => {
+      if ('id' in item) {
+        return item;
       }
+    });
+    let noIdReportData = reportResultList
+      ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
+      .map((item: any) => {
+        return {
+          reportId: instrAndRecordId.id,
+          instrId: instrAndRecordId.instrId,
+          colonyCount: item?.colonyCount,
+          itemId: item.itemId,
+          ct: item.ct,
+          cutoff: item.cutoff,
+          germId: item.germId,
+          hasGerm: item.hasGerm,
+          od: item.od,
+          referenceRange: item.ref?.displayRef,
+          result: item.result,
+          result1: item.result1,
+          result2: item.result2,
+          result3: item.result3,
+          result4: item.result4,
+          resultFlag: item.resultFlag,
+        };
+      });
+    if (isChangeReportResult) {
+      addCommonUpdateInfo();
+
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {
@@ -422,11 +453,6 @@ const MiddleContent = () => {
         },
       });
 
-      let hasIdReportData = reportResultList.filter((item) => {
-        if ('id' in item) {
-          return item;
-        }
-      });
       let params = hasIdReportData.map((item) => {
         return {
           id: item.id,
@@ -445,72 +471,34 @@ const MiddleContent = () => {
           resultFlag: item.resultFlag,
         };
       });
-      let noIdReportData = reportResultList
-        ?.filter((item: any) => !hasIdReportData.some((data) => data.id === item.id))
-        .map((item: any) => {
-          return {
-            reportId: instrAndRecordId.id,
-            instrId: instrAndRecordId.instrId,
-            colonyCount: item?.colonyCount,
-            itemId: item.itemId,
-            ct: item.ct,
-            cutoff: item.cutoff,
-            germId: item.germId,
-            hasGerm: item.hasGerm,
-            od: item.od,
-            referenceRange: item.ref?.displayRef,
-            result: item.result,
-            result1: item.result1,
-            result2: item.result2,
-            result3: item.result3,
-            result4: item.result4,
-            resultFlag: item.resultFlag,
-          };
-        });
 
       reportResultUpdate(params).then((res) => {
         if (res.code === 200) {
           message.success('编辑成功');
-          if (!batchAdd) {
-            let param = {
-              data: updateInfoData.current,
-            };
-            addCommonUpdate({
-              beforeChange: param,
-              objectId: instrAndRecordId.id,
-              winName: '普检数据报告管理',
-            }).then((res) => {
-              if (res.code === 200) {
-                message.success('添加修改日志成功');
-              }
-            });
-          }
-          dispatch({
-            type: 'generalInspectionMag/save',
-            payload: {
-              type: 'reportMiddleUpdate',
-              dataSource: true,
-            },
+          let param = {
+            data: updateInfoData.current,
+          };
+          addCommonUpdate({
+            beforeChange: param,
+            objectId: instrAndRecordId.id,
+            winName: '普检数据报告管理',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日志成功');
+            }
           });
         }
       });
-      if (noIdReportData.length > 0) {
-        reportResultSave(noIdReportData).then((res) => {
-          if (res.code === 200) {
-            message.success('添加成功');
-            dispatch({
-              type: 'generalInspectionMag/save',
-              payload: {
-                type: 'reportMiddleUpdate',
-                dataSource: true,
-              },
-            });
-          }
-        });
-      }
+    }
+    if (noIdReportData.length > 0 && batchAdd) {
+      reportResultSave(noIdReportData).then((res) => {
+        if (res.code === 200) {
+          message.success('添加成功');
+        }
+      });
     }
   };
-  const batchAdd = () => {
+  const batchAddShow = () => {
     batchAddRef.current.show();
   };
   const reset = () => {
@@ -578,7 +566,7 @@ const MiddleContent = () => {
             </Button>
           </Col>
           <Col>
-            <Button type="primary" size="small" onClick={batchAdd}>
+            <Button type="primary" size="small" onClick={batchAddShow}>
               批量录入
             </Button>
           </Col>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
@@ -113,7 +113,6 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
             {btnPermissions.map((item) => {
               return item.mark === 'referenceValueDelete' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
                   onClick={() => {
                     deleteBind(record.id);
                   }}
@@ -122,7 +121,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
                 </Button>
               ) : item.mark === 'referenceValueEdit' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
+                  style={{ margin: '0 4px' }}
                   onClick={() => {
                     addModal.current.show(record, 'edit');
                   }}
@@ -137,23 +136,21 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchRPreferenceValue',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchRPreferenceValue',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, labItemId: parent.id });
@@ -229,24 +226,26 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
-        return (
-          item.mark === 'referenceValueAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions.map((item: any) => {
+          return (
+            item.mark === 'referenceValueAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         columns={Columns}
         rowKey="id"

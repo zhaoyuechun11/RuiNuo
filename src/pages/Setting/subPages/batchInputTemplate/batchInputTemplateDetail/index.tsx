@@ -6,7 +6,7 @@ import { Button, Icon, BackButton } from '@/components';
 import { Table } from '@/common';
 import { downLoad, transformTree, main } from '@/utils';
 import { inputTemplateDetailDelete } from '../../../models/server';
-import styles from './index.less';
+import styles from '../../index.less';
 import EditOrAddModal from './components/editOrAddModal';
 
 const FormItem = Form.Item;
@@ -161,7 +161,7 @@ const BatchInputTemplateDetail = () => {
   return (
     <>
       <BackButton />
-      <div className={styles.search_box}>
+      <div className={styles.search_bth}>
         {renderForm()}
         <div className={styles.operateBtns}>
           <Button btnType="primary" onClick={add}>

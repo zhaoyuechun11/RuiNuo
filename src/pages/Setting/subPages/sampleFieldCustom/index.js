@@ -27,13 +27,17 @@ const Index = () => {
       title: '字段名称',
       dataIndex: 'name',
       width: '200px',
+      align: 'center',
       ellipsis: true,
       render: (text, record) => {
         return (
           <Tooltip title={text} style={{ marginLeft: '26px' }}>
             {' '}
             <span>
-              <Icon name="iconmianshilunci-changantuodong" style={{ paddingRight: '8px' }} />
+              <Icon
+                name="iconmianshilunci-changantuodong"
+                style={{ paddingRight: '8px', display: 'inherit' }}
+              />
               {text}
             </span>
           </Tooltip>
@@ -43,6 +47,7 @@ const Index = () => {
     {
       title: '字段类型',
       dataIndex: 'dataType',
+      align: 'center',
       render: (text) => {
         return (
           (text === 1 && '单行文本') ||
@@ -58,6 +63,7 @@ const Index = () => {
     {
       title: '显示',
       dataIndex: 'isDisplay',
+      align: 'center',
       render: (text, record) => {
         return record.key === 'reportUnitName' ||
           record.key === 'labDate' ||
@@ -75,6 +81,7 @@ const Index = () => {
     {
       title: '必填',
       dataIndex: 'isRequired',
+      align: 'center',
       render: (text, record) => {
         return text && record.name === '姓名' ? (
           <Checkbox value={record} checked disabled></Checkbox>
@@ -88,6 +95,7 @@ const Index = () => {
     {
       title: '创建者',
       dataIndex: 'operatorName',
+      align: 'center',
     },
     {
       title: '操作',
@@ -116,15 +124,16 @@ const Index = () => {
             </Button>
           </div>
         ) : (
-          // '-'
-          <Button
-            onClick={() => {
-              editField(record);
-            }}
-            className={s.edit}
-          >
-            编辑
-          </Button>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              onClick={() => {
+                editField(record);
+              }}
+              className={s.edit}
+            >
+              编辑
+            </Button>
+          </div>
         );
       },
     },

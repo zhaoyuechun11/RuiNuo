@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
@@ -33,6 +33,7 @@ const ApplyProjectGroup = () => {
   const confirmModalRef = useRef();
   const idRef = useRef();
   const [btnPermissions, setBtnPermissions] = useState([]);
+  const [selectIndex, setSelectIndex] = useState(0);
   const columns = [
     {
       title: '项目类别',
@@ -48,7 +49,7 @@ const ApplyProjectGroup = () => {
       title: '顺序',
       dataIndex: 'seq',
       align: 'center',
-      width: 150,
+      width: 80,
     },
     {
       title: '物价编码',
@@ -188,7 +189,6 @@ const ApplyProjectGroup = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         modalRef.current.show(record);
                       }}
@@ -197,7 +197,7 @@ const ApplyProjectGroup = () => {
                     </Button>
                   ) : item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         deleteCurrentItem(record.id);
                       }}
@@ -208,42 +208,39 @@ const ApplyProjectGroup = () => {
                 </>
               );
             })}
-            <Button
+            {/* <Button
               onClick={() => {
                 getCurrentItem(record);
               }}
             >
               明细
-            </Button>
+            </Button> */}
           </div>
         );
       },
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchApplyProjectList',
-        payload: {
-          ...params,
-          callback: (res: {
-            code: number;
-            data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
-          }) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchApplyProjectList',
+      payload: {
+        ...params,
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
-    majorGroupList();
   }, [pageNum, pageSize]);
   useEffect(() => {
     majorGroupList();
@@ -313,6 +310,11 @@ const ApplyProjectGroup = () => {
   const getCurrentItem = (val: React.SetStateAction<undefined>) => {
     setCurrentItem(val);
   };
+  const getRowClassName = (record: any, index: any) => {
+    let className = '';
+    className = index === selectIndex ? styles.selectedRow : '';
+    return className;
+  };
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
@@ -354,32 +356,32 @@ const ApplyProjectGroup = () => {
   };
   return (
     <>
-      {btnPermissions?.map((item) => {
-        return (
-          <div className={styles.operateBtns}>
-            {item.mark === 'add' ? (
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions?.map((item) => {
+            return item.mark === 'add' ? (
               <Button btnType="primary" onClick={add}>
                 <PlusOutlined style={{ marginRight: 4 }} />
                 新增
               </Button>
             ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }}>
+              <Button btnType="primary" onClick={importData}>
                 导入
               </Button>
             ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }}>
+              <Button btnType="primary" onClick={exportData}>
                 导出
               </Button>
-            ) : null}
-          </div>
-        );
-      })}
-      {renderForm()}
+            ) : null;
+          })}
+        </div>
+      </div>
       <Table
         size={'small'}
         columns={columns}
         rowKey="id"
-        handleTableChange={onTableChange}
+        onChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
@@ -389,6 +391,16 @@ const ApplyProjectGroup = () => {
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
         dataSource={list}
+        rowClassName={getRowClassName}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              // 设置选中的index
+              setSelectIndex(index);
+              getCurrentItem(record);
+            },
+          };
+        }}
       />
       <EditOrAddModal
         Ref={modalRef}

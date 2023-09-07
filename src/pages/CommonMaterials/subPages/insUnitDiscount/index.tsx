@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, message, Select, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Icon } from '@/components';
 import { useDispatch, useSelector, useLocation } from 'umi';
-import { downLoad, main,transformTree } from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import styles from '../index.less';
 import BatchImport from '../../commones/batchImport';
@@ -153,7 +153,6 @@ const insUnitDiscount = () => {
                 <>
                   {item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         deleteBind(record.id);
                       }}
@@ -162,7 +161,7 @@ const insUnitDiscount = () => {
                     </Button>
                   ) : item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         addModal.current.show(record, 'edit');
                       }}
@@ -179,26 +178,23 @@ const insUnitDiscount = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchInsUnitDiscountList',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchInsUnitDiscountList',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
-    getHospitalList();
   }, [pageNum, pageSize]);
   useEffect(() => {
     getHospitalList();
@@ -277,7 +273,6 @@ const insUnitDiscount = () => {
         <Form.Item name="hospitalId">
           <Select
             placeholder="请选择单位名称"
-            autoComplete="off"
             allowClear
             showSearch
             style={{ width: 224, height: 35 }}
@@ -308,12 +303,7 @@ const insUnitDiscount = () => {
           />
         </Form.Item>
         <Form.Item name="returnTypeId">
-          <Select
-            placeholder="请选择回款类别"
-            autoComplete="off"
-            allowClear
-            style={{ width: 224, height: 35 }}
-          >
+          <Select placeholder="请选择回款类别" allowClear style={{ width: 224, height: 35 }}>
             {returnTypeList?.map((item) => {
               return (
                 <Option value={item.id} key={item.id} className={styles.returnType}>
@@ -328,34 +318,36 @@ const insUnitDiscount = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
-          return (
-            <>
-              {item.mark === 'add' ? (
-                <Button
-                  btnType="primary"
-                  onClick={() => {
-                    addModal.current.show();
-                  }}
-                >
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
-                </Button>
-              ) : item.mark === 'import' ? (
-                <Button btnType="primary" onClick={importData}>
-                  导入
-                </Button>
-              ) : item.mark === 'export' ? (
-                <Button btnType="primary" onClick={exportData}>
-                  导出
-                </Button>
-              ) : null}
-            </>
-          );
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions.map((item) => {
+            return (
+              <>
+                {item.mark === 'add' ? (
+                  <Button
+                    btnType="primary"
+                    onClick={() => {
+                      addModal.current.show();
+                    }}
+                  >
+                    <PlusOutlined style={{ marginRight: 4 }} />
+                    新增
+                  </Button>
+                ) : item.mark === 'import' ? (
+                  <Button btnType="primary" onClick={importData}>
+                    导入
+                  </Button>
+                ) : item.mark === 'export' ? (
+                  <Button btnType="primary" onClick={exportData}>
+                    导出
+                  </Button>
+                ) : null}
+              </>
+            );
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         size={'small'}
         columns={Columns}

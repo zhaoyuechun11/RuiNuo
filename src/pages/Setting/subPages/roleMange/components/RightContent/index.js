@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import styles from './index.less';
-import { Switch, Form, Input, Select, Dropdown, Menu, message, Button } from 'antd';
+import s from '../../../index.less';
+import { Switch, Form, Input, Select, Dropdown, Menu, message } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import debounce from 'lodash/debounce';
 import { Icon, Confirm } from '@/components';
 import Table from '../../../../components/Table/index';
 import AssignRoles from '../AssignRoles'; // 分配角色
-import { userDelete, resetPwd, getMemberList } from '../../models/server';
+import { userDelete, resetPwd } from '../../models/server';
 import NewAdd from '../NewAdd';
 
 const FormItem = Form.Item;
@@ -68,7 +69,6 @@ class RightContent extends Component {
                 pageSizeOptions: ['10', '20', '30', '40'],
               },
             },
-           
           });
           this.formRef.current &&
             this.formRef.current.setFieldsValue({
@@ -93,31 +93,18 @@ class RightContent extends Component {
       title: '姓名',
       dataIndex: 'name',
       width: 140,
+      align: 'center',
     },
-    // {
-    //   title: '部门',
-    //   dataIndex: 'department',
-    //   width: 200,
-    //   render: (text, record, index) => {
-    //     return <div>{text || '--'}</div>;
-    //   },
-    // },
-    // {
-    //   title: '职位',
-    //   dataIndex: 'position',
-    //   width: 80,
-    //   render: (text, record, index) => {
-    //     return <div>{text || '--'}</div>;
-    //   },
-    // },
     {
       title: '角色',
       dataIndex: 'roleName',
       width: 200,
+      align: 'center',
     },
     {
       title: '帐号状态',
       dataIndex: 'is_auth',
+      align: 'center',
       width: 67,
       render: (text, record, index) => {
         return (
@@ -131,7 +118,10 @@ class RightContent extends Component {
                   callback: (res) => {
                     const { code = '' } = res;
                     if (code === 200) {
-                      this.fetchMemberList({ pageNum: this.state.page, pageSize: this.state.page_size  });
+                      this.fetchMemberList({
+                        pageNum: this.state.page,
+                        pageSize: this.state.page_size,
+                      });
                     }
                   },
                 },
@@ -200,8 +190,6 @@ class RightContent extends Component {
     },
   ];
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-
-
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -229,85 +217,73 @@ class RightContent extends Component {
   renderForm = () => {
     const { roleList = [] } = this.props.rolemanage;
     return (
-      <Form
-        onValuesChange={this.handleSearch}
-        layout="inline"
-        className={styles.rightContentForm}
-        ref={this.formRef}
-        initialValues={this.state.formValues}
-      >
-        <FormItem name="name" className={styles.name}>
-          <Input
-            placeholder="请输入员工名称"
-            autoComplete="off"
-            suffix={<Icon classStyle={styles.iconSouSuo} name="icongongzuotai-sousuo" />}
-            allowClear
-          />
-        </FormItem>
-        <FormItem name="account" className={styles.name}>
-          <Input
-            placeholder="请输入员工账号"
-            autoComplete="off"
-            suffix={<Icon classStyle={styles.iconSouSuo} name="icongongzuotai-sousuo" />}
-            allowClear
-          />
-        </FormItem>
-        <div id="role_id" className={styles.role_id}>
-          <FormItem name="roleId" className={styles.role_id}>
-            <Select
-              placeholder="请选择角色"
+      <div className={s.search_bth}>
+        <Form
+          onValuesChange={this.handleSearch}
+          layout="inline"
+          className={styles.rightContentForm}
+          ref={this.formRef}
+          initialValues={this.state.formValues}
+        >
+          <FormItem name="name" className={styles.name}>
+            <Input
+              placeholder="请输入员工名称"
               autoComplete="off"
+              suffix={<Icon classStyle={styles.iconSouSuo} name="icongongzuotai-sousuo" />}
               allowClear
-              getPopupContainer={() => document.getElementById('role_id')}
-            >
-              {roleList.length > 0 &&
-                roleList.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-            </Select>
+            />
           </FormItem>
-        </div>
-        <div id="sex" className={styles.role_id}>
-          <FormItem name="sex" className={styles.role_id}>
-            <Select
-              placeholder="请选择性别"
+          <FormItem name="account" className={styles.name}>
+            <Input
+              placeholder="请输入员工账号"
               autoComplete="off"
+              suffix={<Icon classStyle={styles.iconSouSuo} name="icongongzuotai-sousuo" />}
               allowClear
-              getPopupContainer={() => document.getElementById('sex')}
-            >
-              <Option value={`male`} key={`1`}>
-                男
-              </Option>
-              <Option value={`female`} key={`2`}>
-                女
-              </Option>
-            </Select>
+            />
           </FormItem>
-        </div>
-        {/* <div id="is_auth" className={styles.is_auth}>
-          <FormItem name="is_auth" className={styles.role_id}>
-            <Select
-              placeholder="请选择是否授权"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('is_auth')}
-            >
-              <Option value="">全部</Option>
-              <Option value="1">已授权</Option>
-              <Option value="2">未授权</Option>
-            </Select>
-          </FormItem>
-        </div> */}
-      </Form>
+          <div id="role_id" className={styles.role_id}>
+            <FormItem name="roleId" className={styles.role_id}>
+              <Select
+                placeholder="请选择角色"
+                autoComplete="off"
+                allowClear
+                getPopupContainer={() => document.getElementById('role_id')}
+              >
+                {roleList.length > 0 &&
+                  roleList.map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+              </Select>
+            </FormItem>
+          </div>
+          <div id="sex" className={styles.role_id}>
+            <FormItem name="sex" className={styles.role_id}>
+              <Select
+                placeholder="请选择性别"
+                autoComplete="off"
+                allowClear
+                getPopupContainer={() => document.getElementById('sex')}
+              >
+                <Option value={`male`} key={`1`}>
+                  男
+                </Option>
+                <Option value={`female`} key={`2`}>
+                  女
+                </Option>
+              </Select>
+            </FormItem>
+          </div>
+        </Form>
+      </div>
     );
   };
   handleSearch = (changedValues, allValues) => {
     const { formValues } = this.state;
     const values = {
       ...formValues,
-      pageNum:1,
+      pageNum: 1,
       ...allValues,
     };
     this.setState({
@@ -318,7 +294,6 @@ class RightContent extends Component {
   };
 
   handleSelectRows = (rows) => {
-    console.log('rows', rows)
     this.setState({
       selectedRows: rows,
     });
@@ -351,7 +326,7 @@ class RightContent extends Component {
   };
   render() {
     const { fetchMemberListLoading } = this.props;
-    const { selectedRows, } = this.state;
+    const { selectedRows } = this.state;
 
     return (
       <div className={styles.RightContent}>
@@ -426,10 +401,7 @@ class RightContent extends Component {
           </Table>
         </div>
 
-        <Confirm
-          confirmRef={this.modalRef}
-          onOk={this.confirmDelete}
-        />
+        <Confirm confirmRef={this.modalRef} onOk={this.confirmDelete} />
       </div>
     );
   }

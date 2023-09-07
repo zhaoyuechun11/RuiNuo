@@ -89,23 +89,21 @@ const Instrument = ({ parent, btnPermissions }) => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchApplyProjectItemInstr',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchApplyProjectItemInstr',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, reqItemId: parent.id });
@@ -173,24 +171,26 @@ const Instrument = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
-        return (
-          item.mark === 'instrumentAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions.map((item) => {
+          return (
+            item.mark === 'instrumentAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         size={'small'}
         columns={Columns}

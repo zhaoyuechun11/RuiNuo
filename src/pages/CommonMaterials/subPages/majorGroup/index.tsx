@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon } from '@/components';
-import { Form, Input, message ,Table} from 'antd';
+import { Form, Input, message, Table } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import { deleteMajorGroup, majorGroupExport } from '../../models/server';
-import styles from './index.less';
+import styles from '../index.less';
 import EditOrAddModal from './components/editOrAddModal';
 import BindModal from './components/bindModal';
 const MajorGroup = () => {
@@ -30,7 +30,7 @@ const MajorGroup = () => {
       fixed: 'left',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '分类编码',
@@ -79,7 +79,7 @@ const MajorGroup = () => {
       dataIndex: 'isAutoSampleId',
       align: 'center',
       width: 180,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '创建者id',
@@ -92,28 +92,28 @@ const MajorGroup = () => {
       dataIndex: 'isPrintBarcode',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '样本号用作样本条码号',
       dataIndex: 'isSampleIdAsBarcode',
       align: 'center',
       width: 180,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '管理分类id',
       dataIndex: 'labClassManageId',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '管理分类名称',
       dataIndex: 'labClassManageName',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '实验室编码',
@@ -126,21 +126,21 @@ const MajorGroup = () => {
       dataIndex: 'sampleIdResetRule',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '样本号生成规则',
       dataIndex: 'sampleIdRule',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '流水号长度',
       dataIndex: 'serialNumberLength',
       align: 'center',
       width: 150,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '顺序',
@@ -153,7 +153,7 @@ const MajorGroup = () => {
       fixed: 'right',
       align: 'center',
       width: 250,
-      
+
       render: (record: { id: any }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -162,7 +162,6 @@ const MajorGroup = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         modalRef.current.show(record);
                       }}
@@ -171,7 +170,7 @@ const MajorGroup = () => {
                     </Button>
                   ) : item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         deleteCurrentItem(record.id);
                       }}
@@ -180,7 +179,6 @@ const MajorGroup = () => {
                     </Button>
                   ) : item.mark === 'bind' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         bindRef.current.show(record.id);
                       }}
@@ -291,29 +289,31 @@ const MajorGroup = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
-          return (
-            <>
-              {item.mark === 'add' ? (
-                <Button btnType="primary" onClick={add}>
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
-                </Button>
-              ) : item.mark === 'import' ? (
-                <Button btnType="primary" onClick={importData}>
-                  导入
-                </Button>
-              ) : item.mark === 'export' ? (
-                <Button btnType="primary" onClick={exportData}>
-                  导出
-                </Button>
-              ) : null}
-            </>
-          );
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions.map((item) => {
+            return (
+              <>
+                {item.mark === 'add' ? (
+                  <Button btnType="primary" onClick={add}>
+                    <PlusOutlined style={{ marginRight: 4 }} />
+                    新增
+                  </Button>
+                ) : item.mark === 'import' ? (
+                  <Button btnType="primary" onClick={importData}>
+                    导入
+                  </Button>
+                ) : item.mark === 'export' ? (
+                  <Button btnType="primary" onClick={exportData}>
+                    导出
+                  </Button>
+                ) : null}
+              </>
+            );
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         size={'small'}
         columns={columns}

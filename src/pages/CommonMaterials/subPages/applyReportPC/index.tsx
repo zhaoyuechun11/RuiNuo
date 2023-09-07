@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table, Confirm } from '@/components';
-import { Form, Input, message, Tabs, Select } from 'antd';
+import { Button, Icon, Confirm } from '@/components';
+import { Form, Input, message, Tabs, Select, Table } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import { reportProjectExport, majorGroup, reportProjectDelete } from '../../models/server';
 import styles from '../index.less';
@@ -34,6 +34,7 @@ const ApplyReportPC = () => {
   const idRef = useRef();
   const [btnPermissions, setBtnPermissions] = useState([]);
   const [list, setList] = useState([]);
+  const [selectIndex, setSelectIndex] = useState(0);
   const columns = [
     {
       title: '项目类别',
@@ -42,7 +43,7 @@ const ApplyReportPC = () => {
       align: 'center',
       key: 'labClassName',
       width: 150,
-      sorter: (a, b) => a.labClassName.length - b.labClassName.length,
+      sorter: (a, b) => a.labClassName?.length - b.labClassName?.length,
       sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
     {
@@ -51,16 +52,16 @@ const ApplyReportPC = () => {
       align: 'center',
       width: 150,
       key: 'itemCode',
-      sorter: (a, b) => a.itemCode.length - b.itemCode.length,
+      sorter: (a, b) => a.itemCode?.length - b.itemCode?.length,
       sortOrder: sortedInfo.columnKey === 'itemCode' ? sortedInfo.order : null,
     },
     {
       title: '中文名称',
       dataIndex: 'itemName',
       align: 'center',
-      width: 150,
+      width: 180,
       key: 'itemName',
-      sorter: (a, b) => a.itemName.length - b.itemName.length,
+      sorter: (a, b) => a.itemName?.length - b.itemName?.length,
       sortOrder: sortedInfo.columnKey === 'itemName' ? sortedInfo.order : null,
     },
     {
@@ -83,7 +84,7 @@ const ApplyReportPC = () => {
       title: '数据类型',
       dataIndex: 'dataType',
       align: 'center',
-      width: 150,
+      width: 120,
     },
     {
       title: '数值单位',
@@ -162,7 +163,6 @@ const ApplyReportPC = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         modalRef.current.show(record);
                       }}
@@ -171,7 +171,7 @@ const ApplyReportPC = () => {
                     </Button>
                   ) : item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         deleteCurrentItem(record.id);
                       }}
@@ -182,42 +182,39 @@ const ApplyReportPC = () => {
                 </>
               );
             })}
-            <Button
+            {/* <Button
               onClick={() => {
                 getCurrentItem(record);
               }}
             >
               明细
-            </Button>
+            </Button> */}
           </div>
         );
       },
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchreRortProjectList',
-        payload: {
-          ...params,
-          callback: (res: {
-            code: number;
-            data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
-          }) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchreRortProjectList',
+      payload: {
+        ...params,
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
-    majorGroupList();
   }, [pageNum, pageSize]);
   useEffect(() => {
     majorGroupList();
@@ -287,6 +284,12 @@ const ApplyReportPC = () => {
   const getCurrentItem = (val: React.SetStateAction<undefined>) => {
     setCurrentItem(val);
   };
+  const getRowClassName = (record: any, index: any) => {
+    let className = '';
+    className = index === selectIndex ? styles.selectedRow : '';
+    return className;
+  };
+
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
@@ -328,10 +331,11 @@ const ApplyReportPC = () => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
-        return (
-          <div className={styles.operateBtns}>
-            {item.mark === 'add' ? (
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions.map((item) => {
+            return item.mark === 'add' ? (
               <Button btnType="primary" onClick={add}>
                 <PlusOutlined style={{ marginRight: 4 }} />
                 新增
@@ -344,16 +348,15 @@ const ApplyReportPC = () => {
               <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }}>
                 导出
               </Button>
-            ) : null}
-          </div>
-        );
-      })}
-      {renderForm()}
+            ) : null;
+          })}
+        </div>
+      </div>
       <Table
         size={'small'}
         columns={columns}
         rowKey="id"
-        handleTableChange={onTableChange}
+        onChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
@@ -363,6 +366,16 @@ const ApplyReportPC = () => {
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
         dataSource={list}
+        rowClassName={getRowClassName}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              // 设置选中的index
+              setSelectIndex(index);
+              getCurrentItem(record);
+            },
+          };
+        }}
       />
       <EditOrAddModal
         Ref={modalRef}
@@ -381,7 +394,7 @@ const ApplyReportPC = () => {
         <span style={{ marginLeft: '20px' }}>项目编号:</span>
         {currentItem?.itemCode || list[0]?.itemCode}
       </div>
-      <Tabs type="card">
+      <Tabs>
         <TabPane tab="仪器通道号" key="0">
           <InstrChannelNum parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>

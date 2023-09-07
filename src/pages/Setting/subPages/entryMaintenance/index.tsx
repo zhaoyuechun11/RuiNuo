@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, Select, Switch } from 'antd';
 import { Button, Icon, Table } from '@/components';
-import styles from './index.less';
+import { PlusOutlined } from '@ant-design/icons';
+import styles from '../index.less';
 import { useDispatch, useSelector } from 'umi';
 import { dictList } from '@/models/server';
 import EditOrAddModal from './components/editOrAddModal';
@@ -106,7 +107,6 @@ const EntryMaintenance = () => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              style={{ margin: '0 8px' }}
               onClick={() => {
                 modalRef.current && modalRef.current.show(record);
               }}
@@ -117,6 +117,7 @@ const EntryMaintenance = () => {
               onClick={() => {
                 deleteTemplate(record.id);
               }}
+              style={{ margin: '0 4px' }}
             >
               删除
             </Button>
@@ -126,12 +127,12 @@ const EntryMaintenance = () => {
     },
   ];
 
-  const getList = (params) => {
+  const getList = (params: any) => {
     dispatch({
       type: 'Setting/fetchWordEntry',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -152,7 +153,7 @@ const EntryMaintenance = () => {
       type: 'Setting/fetchWordEntryDelete',
       payload: {
         ids: [id],
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             getList({ pageNum, pageSize });
           }
@@ -217,16 +218,19 @@ const EntryMaintenance = () => {
   };
   return (
     <>
-      <div className={styles.search_box}>
+      <div className={styles.search_bth}>
         {renderForm()}
-        <Button
-          btnType="primary"
-          onClick={() => {
-            modalRef.current.show();
-          }}
-        >
-          新增
-        </Button>
+        <div className={styles.operateBtns}>
+          <Button
+            btnType="primary"
+            onClick={() => {
+              modalRef.current.show();
+            }}
+          >
+            <PlusOutlined style={{ marginRight: 4 }} />
+            新增
+          </Button>
+        </div>
       </div>
       <Table
         size={'small'}

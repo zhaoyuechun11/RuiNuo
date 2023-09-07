@@ -58,7 +58,6 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
             {btnPermissions.map((item) => {
               return item.mark === 'instrumentNumberDelete' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
                   onClick={() => {
                     deleteBind(record.id);
                   }}
@@ -67,7 +66,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
                 </Button>
               ) : item.mark === 'instrumentNumberEdit' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
+                  style={{ margin: '0 4px' }}
                   onClick={() => {
                     addModal.current.show(record, 'edit');
                   }}
@@ -82,23 +81,21 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchreRPInstrChannelNum',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchreRPInstrChannelNum',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, labItemId: parent.id });
@@ -182,24 +179,26 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
-        return (
-          item.mark === 'instrumentNumberAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions.map((item) => {
+          return (
+            item.mark === 'instrumentNumberAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         size={'small'}
         columns={Columns}

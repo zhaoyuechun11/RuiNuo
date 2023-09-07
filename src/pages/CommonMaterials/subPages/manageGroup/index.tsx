@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon,Table } from '@/components';
+import { Button, Icon, Table } from '@/components';
 import { Form, Input, message } from 'antd';
-import { downLoad, main ,transformTree} from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import { deleteManageGroup, manageGroupExport } from '../../models/server';
-import styles from './index.less';
+import styles from '../index.less';
 const ManageGroup = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -21,7 +21,7 @@ const ManageGroup = () => {
   const searchVal = useRef();
   const [list, setList] = useState([]);
   const [btnPermissions, setBtnPermissions] = useState([]);
- 
+
   const manageGroupColumns = [
     {
       title: 'code值',
@@ -87,26 +87,24 @@ const ManageGroup = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params) => {
-      dispatch({
-        type: 'commonMaterials/fetchManageGroupList',
-        payload: {
-          ...params,
-          callback: (res: {
-            code: number;
-            data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
-          }) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchManageGroupList',
+      payload: {
+        ...params,
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
@@ -182,29 +180,31 @@ const ManageGroup = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        {btnPermissions?.map((item) => {
-          return (
-            <>
-              {item.mark === 'add' ? (
-                <Button btnType="primary" onClick={add}>
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
-                </Button>
-              ) : item.mark === 'import' ? (
-                <Button btnType="primary" onClick={importData}>
-                  导入
-                </Button>
-              ) : item.mark === 'export' ? (
-                <Button btnType="primary" onClick={exportData}>
-                  导出
-                </Button>
-              ) : null}
-            </>
-          );
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions?.map((item) => {
+            return (
+              <>
+                {item.mark === 'add' ? (
+                  <Button btnType="primary" onClick={add}>
+                    <PlusOutlined style={{ marginRight: 4 }} />
+                    新增
+                  </Button>
+                ) : item.mark === 'import' ? (
+                  <Button btnType="primary" onClick={importData}>
+                    导入
+                  </Button>
+                ) : item.mark === 'export' ? (
+                  <Button btnType="primary" onClick={exportData}>
+                    导出
+                  </Button>
+                ) : null}
+              </>
+            );
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         columns={manageGroupColumns}
         rowKey="id"

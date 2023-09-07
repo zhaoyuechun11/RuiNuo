@@ -6,7 +6,7 @@ import { Button, Icon, BackButton } from '@/components';
 import { Table } from '@/common';
 import { downLoad, transformTree, main } from '@/utils';
 import { deleteBasic, basicDataExport } from '../../../models/server';
-import styles from './index.less';
+import styles from '../../index.less';
 import EditOrAddModal from './components/editOrAddModal';
 import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 
@@ -34,9 +34,6 @@ const Specimen = () => {
 
   useEffect(() => {
     getList({ pageNum, pageSize, parentId: Number(params.id) });
-  }, []);
-  useEffect(() => {
-    getList({ pageNum, pageSize, parentId: Number(params.id) });
   }, [pageNum, pageSize, params]);
   useEffect(() => {
     const { btn } = main(transformTree(useDetail.permissions), '/commonMaterials/basicData');
@@ -55,7 +52,6 @@ const Specimen = () => {
           };
         }) => {
           if (res.code === 200) {
-            debugger;
             setStatisticsList(res.data.records);
             setTotal(res.data.total);
           }
@@ -151,7 +147,7 @@ const Specimen = () => {
                 <>
                   {item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         deleteBasicData(record);
                       }}
@@ -219,10 +215,7 @@ const Specimen = () => {
       downLoad(href, '基础数据');
     });
   };
-  const handleSelectRows = (rows) => {
-    setSelectedRows(rows);
-  };
-  const handleStandardTableChange = (pagination, filtersArg, sorter) => {};
+
   const handleSearch = (changedValues, allValues) => {
     searchVal.current = allValues;
     const values = {
@@ -258,29 +251,31 @@ const Specimen = () => {
   return (
     <>
       <BackButton />
-      <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
-          return (
-            <>
-              {item.mark === 'add' ? (
-                <Button btnType="primary" onClick={add}>
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
-                </Button>
-              ) : item.mark === 'import' ? (
-                <Button btnType="primary" onClick={importData}>
-                  导入
-                </Button>
-              ) : item.mark === 'export' ? (
-                <Button btnType="primary" onClick={exportData}>
-                  导出
-                </Button>
-              ) : null}
-            </>
-          );
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions.map((item) => {
+            return (
+              <>
+                {item.mark === 'add' ? (
+                  <Button btnType="primary" onClick={add}>
+                    <PlusOutlined style={{ marginRight: 4 }} />
+                    新增
+                  </Button>
+                ) : item.mark === 'import' ? (
+                  <Button btnType="primary" onClick={importData}>
+                    导入
+                  </Button>
+                ) : item.mark === 'export' ? (
+                  <Button btnType="primary" onClick={exportData}>
+                    导出
+                  </Button>
+                ) : null}
+              </>
+            );
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         columns={Columns}
         rowKey="id"

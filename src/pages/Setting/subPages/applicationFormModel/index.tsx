@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form, Input, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table } from '@/components';
-import styles from './index.less';
+import styles from '../index.less';
 import { useDispatch, useSelector, history } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 const FormItem = Form.Item;
@@ -36,7 +36,6 @@ const ApplicationFormModel = ({ type = 1 }) => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              style={{ margin: '0 8px' }}
               onClick={() => {
                 history.push(`/setting/sampleFieldCustom/${record.id}/${type}`);
               }}
@@ -44,7 +43,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
               明细
             </Button>
             <Button
-              style={{ margin: '0 8px' }}
+              style={{ margin: '0 4px' }}
               onClick={() => {
                 modalRef.current.show(record);
               }}
@@ -52,7 +51,6 @@ const ApplicationFormModel = ({ type = 1 }) => {
               修改
             </Button>
             <Button
-              style={{ margin: '0 8px' }}
               onClick={() => {
                 deleteCurrentItem(record.id);
               }}
@@ -168,17 +166,19 @@ const ApplicationFormModel = ({ type = 1 }) => {
   };
   return (
     <>
-      {renderForm()}
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            modalRef.current.show();
-          }}
-        >
-          <PlusOutlined />
-          新增
-        </Button>
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          <Button
+            btnType="primary"
+            onClick={() => {
+              modalRef.current.show();
+            }}
+          >
+            <PlusOutlined style={{ marginRight: 4 }}/>
+            新增
+          </Button>
+        </div>
       </div>
       <Table
         columns={Columns}

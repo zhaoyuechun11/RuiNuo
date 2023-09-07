@@ -29,7 +29,6 @@ class OrganizeInstitution extends Component {
           </div>
         </div>
         <div className={styles.OrganizeInstitutionContainer}>
-          <Left />
           <RightContent />
         </div>
       </div>

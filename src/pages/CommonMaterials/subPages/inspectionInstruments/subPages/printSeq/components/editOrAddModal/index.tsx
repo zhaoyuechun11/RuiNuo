@@ -79,8 +79,8 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
       onOk={onOk}
       //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
-        <Form.Item
+      <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
+        {/* <Form.Item
           name="labItemId"
           label="报告项目"
           rules={[{ required: true, message: '请选择报告项目' }]}
@@ -97,7 +97,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               );
             })}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="顺序" name="seq">
           <InputNumber />
         </Form.Item>

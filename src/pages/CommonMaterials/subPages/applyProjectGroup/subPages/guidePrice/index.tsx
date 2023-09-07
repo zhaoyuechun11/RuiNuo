@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {  useEffect, useRef, useState } from 'react';
 import { Form, Input, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
@@ -43,7 +43,6 @@ const GuidePrice = ({ parent, btnPermissions }) => {
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             {item.mark === 'guidePriceDelete' ? (
               <Button
-                style={{ margin: '0 8px' }}
                 onClick={() => {
                   deleteBind(record.id);
                 }}
@@ -52,7 +51,7 @@ const GuidePrice = ({ parent, btnPermissions }) => {
               </Button>
             ) : item.mark === 'guidePriceEdit' ? (
               <Button
-                style={{ margin: '0 8px' }}
+                style={{ margin: '0 4px' }}
                 onClick={() => {
                   addModal.current.show(record, 'edit');
                 }}
@@ -66,23 +65,21 @@ const GuidePrice = ({ parent, btnPermissions }) => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchReqItemPriceList',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchReqItemPriceList',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, reqItemId: parent.id });
@@ -142,24 +139,26 @@ const GuidePrice = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
-        return (
-          item.mark === 'guidePriceAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions.map((item) => {
+          return (
+            item.mark === 'guidePriceAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         size={'small'}
         columns={Columns}

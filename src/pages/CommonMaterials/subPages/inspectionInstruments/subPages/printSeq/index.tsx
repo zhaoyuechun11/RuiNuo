@@ -47,7 +47,6 @@ const PrintSeq = ({ parent, btnPermissions }) => {
                 <>
                   {item.mark === 'printDelete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         deleteBind(record.id);
                       }}
@@ -56,7 +55,7 @@ const PrintSeq = ({ parent, btnPermissions }) => {
                     </Button>
                   ) : item.mark === 'printEdit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         addModal.current.show(record, 'edit');
                       }}
@@ -160,24 +159,26 @@ const PrintSeq = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions?.map((item) => {
-        return (
-          item.mark === 'printAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions?.map((item) => {
+          return (
+            item.mark === 'printAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         columns={Columns}
         rowKey="id"

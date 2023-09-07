@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon } from '@/components';
-import { Form, Input, message, Switch,Table } from 'antd';
+import { Form, Input, message, Switch, Table } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import { deleteHospital, hospitalExport } from '../../models/server';
 import styles from '../index.less';
@@ -41,7 +41,7 @@ const InspectionUnit = () => {
     {
       title: '地区名称',
       dataIndex: 'areaName',
-      width: 150,
+      width: 180,
       align: 'center',
     },
     {
@@ -73,7 +73,7 @@ const InspectionUnit = () => {
       dataIndex: 'barcodePreCode',
       width: 150,
       align: 'center',
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '联系人',
@@ -92,7 +92,7 @@ const InspectionUnit = () => {
       dataIndex: 'financeCode',
       width: 150,
       align: 'center',
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '送检单位编码',
@@ -205,7 +205,6 @@ const InspectionUnit = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         modalRef.current.show(record);
                       }}
@@ -214,7 +213,7 @@ const InspectionUnit = () => {
                     </Button>
                   ) : item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         deleteCurrentItem(record.id);
                       }}
@@ -252,7 +251,6 @@ const InspectionUnit = () => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
   useEffect(() => {
-   
     const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
@@ -326,29 +324,31 @@ const InspectionUnit = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        {btnPermissions.map((item) => {
-          return (
-            <>
-              {item.mark === 'add' ? (
-                <Button btnType="primary" onClick={add}>
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
-                </Button>
-              ) : item.mark === 'import' ? (
-                <Button btnType="primary" onClick={importData}>
-                  导入
-                </Button>
-              ) : item.mark === 'export' ? (
-                <Button btnType="primary" onClick={exportData}>
-                  导出
-                </Button>
-              ) : null}
-            </>
-          );
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions.map((item) => {
+            return (
+              <>
+                {item.mark === 'add' ? (
+                  <Button btnType="primary" onClick={add}>
+                    <PlusOutlined style={{ marginRight: 4 }} />
+                    新增
+                  </Button>
+                ) : item.mark === 'import' ? (
+                  <Button btnType="primary" onClick={importData}>
+                    导入
+                  </Button>
+                ) : item.mark === 'export' ? (
+                  <Button btnType="primary" onClick={exportData}>
+                    导出
+                  </Button>
+                ) : null}
+              </>
+            );
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         size={'small'}
         columns={columns}
@@ -376,7 +376,6 @@ const InspectionUnit = () => {
         actionUrl={`${process.env.baseURL}/basic/hospital/importHospital`}
         title={'运检单位'}
       ></BatchImport>
-      {/*<BindModal Ref={bindRef} refresh={() => getList({ pageNum, pageSize })}></BindModal> */}
     </>
   );
 };

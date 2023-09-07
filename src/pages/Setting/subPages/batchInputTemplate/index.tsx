@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, Select } from 'antd';
 import { Button, Icon, Table } from '@/components';
-import styles from './index.less';
+import { PlusOutlined } from '@ant-design/icons';
+import styles from '../index.less';
 import { useDispatch, useSelector, history } from 'umi';
 import { reportUnitSelect } from '@/models/server';
 import EditOrAddModal from './components/editOrAddModal';
@@ -75,13 +76,12 @@ const BatchInputTemplate = () => {
                   },
                 });
                 history.push(`/Setting/batchInputTemplateDetail/${record.id}`);
-             
               }}
             >
               明细
             </Button>
             <Button
-              style={{ margin: '0 8px' }}
+              style={{ margin: '0 4px' }}
               onClick={() => {
                 modalRef.current && modalRef.current.show(record);
               }}
@@ -101,12 +101,12 @@ const BatchInputTemplate = () => {
     },
   ];
 
-  const getList = (params) => {
+  const getList = (params: any) => {
     dispatch({
       type: 'Setting/fetchInputTemplate',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -127,7 +127,7 @@ const BatchInputTemplate = () => {
       type: 'Setting/fetchInputTemplateDelete',
       payload: {
         ids: [id],
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             getList({ pageNum, pageSize });
           }
@@ -192,16 +192,19 @@ const BatchInputTemplate = () => {
   };
   return (
     <>
-      <div className={styles.search_box}>
+      <div className={styles.search_bth}>
         {renderForm()}
-        <Button
-          btnType="primary"
-          onClick={() => {
-            modalRef.current.show();
-          }}
-        >
-          新增
-        </Button>
+        <div className={styles.operateBtns}>
+          <Button
+            btnType="primary"
+            onClick={() => {
+              modalRef.current.show();
+            }}
+          >
+            <PlusOutlined style={{ marginRight: 4 }} />
+            新增
+          </Button>
+        </div>
       </div>
       <Table
         size={'small'}

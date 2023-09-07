@@ -41,7 +41,6 @@ const Formula = ({ parent, btnPermissions }) => {
             {btnPermissions.map((item) => {
               return item.mark === 'formulaDelete' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
                   onClick={() => {
                     deleteBind(record.id);
                   }}
@@ -50,7 +49,7 @@ const Formula = ({ parent, btnPermissions }) => {
                 </Button>
               ) : item.mark === 'formulaEdit' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
+                  style={{ margin: '0 4px' }}
                   onClick={() => {
                     addModal.current.show(record, 'edit');
                   }}
@@ -70,7 +69,7 @@ const Formula = ({ parent, btnPermissions }) => {
       type: 'commonMaterials/fetchFormulaList',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -155,24 +154,26 @@ const Formula = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions.map((item) => {
-        return (
-          item.mark === 'formulaAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions.map((item) => {
+          return (
+            item.mark === 'formulaAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         size={'small'}
         columns={Columns}

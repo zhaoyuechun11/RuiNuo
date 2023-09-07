@@ -1,5 +1,5 @@
-import React, { PureComponent, Fragment } from 'react';
-import { Table, Alert } from 'antd';
+import React, { PureComponent } from 'react';
+import { Table } from 'antd';
 import styles from './index.less';
 
 function initTotalList(columns) {
@@ -77,6 +77,7 @@ class StandardTable extends PureComponent {
         )}
         {isRowSelection ? (
           <Table
+            size="small"
             rowKey={rowKey || 'key'}
             rowSelection={rowSelection}
             dataSource={list}
@@ -99,6 +100,7 @@ class StandardTable extends PureComponent {
           />
         ) : (
           <Table
+            size="small"
             rowKey={rowKey || 'key'}
             dataSource={list}
             pagination={paginationProps}

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { Button, Icon } from '@/components';
-import { Form, Input ,Table} from 'antd';
-import { main ,transformTree} from '@/utils';
+import { Form, Input, Table } from 'antd';
+import { main, transformTree } from '@/utils';
 import BindModal from './components/bindModal';
 const TaskGroup = () => {
   const dispatch = useDispatch();
@@ -100,23 +100,21 @@ const TaskGroup = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params) => {
-      dispatch({
-        type: 'commonMaterials/fetchTaskPageData',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchTaskPageData',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
@@ -149,7 +147,7 @@ const TaskGroup = () => {
   };
   const renderForm = () => {
     return (
-      <Form onValuesChange={handleSearch} layout="inline">
+      <Form onValuesChange={handleSearch} layout="inline" style={{ marginBottom: '10px' }}>
         <Form.Item name="code">
           <Input
             placeholder="请输入字典编码"

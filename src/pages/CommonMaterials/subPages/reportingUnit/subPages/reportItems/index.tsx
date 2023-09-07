@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, message, Select, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
@@ -73,7 +73,7 @@ const ReportItems = ({ parent }) => {
       type: 'commonMaterials/fetchReportItemBindsList',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -151,19 +151,21 @@ const ReportItems = ({ parent }) => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        <Button
-          btnType="primary"
-          onClick={() => {
-            addModal.current.show();
-          }}
-        >
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          <Button
+            btnType="primary"
+            onClick={() => {
+              addModal.current.show();
+            }}
+          >
+            <PlusOutlined style={{ marginRight: 4 }} />
+            新增
+          </Button>
+        </div>
       </div>
 
-      {renderForm()}
       <Table
         columns={Columns}
         rowKey="id"

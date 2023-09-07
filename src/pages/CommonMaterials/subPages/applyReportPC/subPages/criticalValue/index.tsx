@@ -33,7 +33,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       dataIndex: 'instrName',
       align: 'center',
       width: 100,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '样本类型',
@@ -82,7 +82,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       dataIndex: 'lowChar',
       align: 'center',
       width: 100,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '危机值上限值',
@@ -95,7 +95,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       dataIndex: 'highChar',
       align: 'center',
       width: 100,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '操作',
@@ -108,7 +108,6 @@ const CriticalValue = ({ parent, btnPermissions }) => {
             {btnPermissions?.map((item) => {
               return item.mark === 'criticalValueDelete' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
                   onClick={() => {
                     deleteBind(record.id);
                   }}
@@ -117,7 +116,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
                 </Button>
               ) : item.mark === 'criticalValueEdit' ? (
                 <Button
-                  style={{ margin: '0 8px' }}
+                  style={{ margin: '0 4px' }}
                   onClick={() => {
                     addModal.current.show(record, 'edit');
                   }}
@@ -132,23 +131,21 @@ const CriticalValue = ({ parent, btnPermissions }) => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchRPCriticalValue',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchRPCriticalValue',
+      payload: {
+        ...params,
+        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, labItemId: parent.id });
@@ -224,24 +221,26 @@ const CriticalValue = ({ parent, btnPermissions }) => {
   };
   return (
     <>
-      {btnPermissions?.map((item) => {
-        return (
-          item.mark === 'criticalValueAdd' && (
-            <div className={styles.operateBtns}>
-              <Button
-                btnType="primary"
-                onClick={() => {
-                  addModal.current.show();
-                }}
-              >
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            </div>
-          )
-        );
-      })}
-      {renderForm()}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        {btnPermissions?.map((item: any) => {
+          return (
+            item.mark === 'criticalValueAdd' && (
+              <div className={styles.operateBtns}>
+                <Button
+                  btnType="primary"
+                  onClick={() => {
+                    addModal.current.show();
+                  }}
+                >
+                  <PlusOutlined style={{ marginRight: 4 }} />
+                  新增
+                </Button>
+              </div>
+            )
+          );
+        })}
+      </div>
       <Table
         size={'small'}
         columns={Columns}

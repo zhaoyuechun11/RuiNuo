@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Table, message } from 'antd';
 import AliasEdit from './components/Edit/index';
 import { permission, deletePermission } from './models/server';
-import { Confirm ,Button} from '@/components';
+import { Confirm, Button } from '@/components';
+import styles from '../index.less';
 
 const permissionMange = () => {
   const [page, setPage] = useState(1);
@@ -21,8 +22,7 @@ const permissionMange = () => {
     {
       title: '别名',
       dataIndex: 'cname',
-      key: 'age',
-      width: '12%',
+      align: 'center',
     },
     {
       title: '操作',
@@ -30,7 +30,7 @@ const permissionMange = () => {
       align: 'center',
       render: (text, record, index) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.tabale_operate_box}>
             <Button
               onClick={() => {
                 modalRef.current.show();
@@ -44,7 +44,6 @@ const permissionMange = () => {
               onClick={() => {
                 editAlias(record);
               }}
-              // className={s.edit}
             >
               编辑
             </Button>
@@ -85,6 +84,7 @@ const permissionMange = () => {
       <Table
         columns={columns}
         dataSource={permissionListData}
+        size="small"
         pagination={{
           pageSize,
           current: page,

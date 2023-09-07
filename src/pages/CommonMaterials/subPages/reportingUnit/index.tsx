@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon, Table } from '@/components';
-import { Form, Input, message, Select, Tabs } from 'antd';
+import { Button, Icon,  } from '@/components';
+import { Form, Input, message, Select, Tabs ,Table} from 'antd';
 import { main, transformTree } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import { reportUnitDelete } from '../../models/server';
 import { majorGroup } from '@/models/server';
-import styles from './index.less';
+import styles from '../index.less';
 import InstrumentList from './subPages/instrumentList';
 import ReportItems from './subPages/reportItems';
 const { Option } = Select;
@@ -26,6 +26,7 @@ const ReportingUnit = () => {
   const [btnPermissions, setBtnPermissions] = useState([]);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [currentItem, setCurrentItem] = useState();
+  const [selectIndex, setSelectIndex] = useState(0);
   const manageGroupColumns = [
     {
       title: '序列号',
@@ -59,7 +60,6 @@ const ReportingUnit = () => {
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button
-              style={{ margin: '0 8px' }}
               onClick={() => {
                 modalRef.current.show(record);
               }}
@@ -67,7 +67,7 @@ const ReportingUnit = () => {
               修改
             </Button>
             <Button
-              style={{ margin: '0 8px' }}
+              style={{ margin: '0 4px' }}
               onClick={() => {
                 deleteCurrentItem(record.id);
               }}
@@ -167,6 +167,11 @@ const ReportingUnit = () => {
   const getCurrentItem = (val: React.SetStateAction<undefined>) => {
     setCurrentItem(val);
   };
+  const getRowClassName = (record: any, index: any) => {
+    let className = '';
+    className = index === selectIndex ? styles.selectedRow : '';
+    return className;
+  };
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
@@ -208,18 +213,20 @@ const ReportingUnit = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
+      <div className={styles.search_bth}>
         {renderForm()}
-        <Button btnType="primary" onClick={add}>
-          <PlusOutlined style={{ marginRight: 4 }} />
-          新增
-        </Button>
+        <div className={styles.operateBtns}>
+          <Button btnType="primary" onClick={add}>
+            <PlusOutlined style={{ marginRight: 4 }} />
+            新增
+          </Button>
+        </div>
       </div>
       <Table
         size={'small'}
         columns={manageGroupColumns}
         rowKey="id"
-        handleTableChange={onTableChange}
+        onChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
@@ -229,6 +236,16 @@ const ReportingUnit = () => {
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
         dataSource={list}
+        rowClassName={getRowClassName}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              // 设置选中的index
+              setSelectIndex(index);
+              getCurrentItem(record);
+            },
+          };
+        }}
       />
       <EditOrAddModal
         Ref={modalRef}
@@ -240,7 +257,7 @@ const ReportingUnit = () => {
         <span style={{ marginLeft: '20px' }}>报告单元代码:</span>
         {currentItem?.reportUnitCode || list[0]?.reportUnitCode}
       </div>
-      <Tabs type="card">
+      <Tabs>
         <TabPane tab="仪器" key="0">
           <InstrumentList parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>

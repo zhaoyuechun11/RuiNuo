@@ -54,14 +54,14 @@ const inspectionInstruments = () => {
       dataIndex: 'instrName',
       align: 'center',
       width: 100,
-      ellipsis:true,
+      ellipsis: true,
     },
     {
       title: '管理分类名称',
       dataIndex: 'labClassManageName',
       align: 'center',
       width: 100,
-      ellipsis:true
+      ellipsis: true,
     },
     {
       title: '实验室编码',
@@ -94,7 +94,6 @@ const inspectionInstruments = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         modalRef.current.show(record);
                       }}
@@ -103,7 +102,7 @@ const inspectionInstruments = () => {
                     </Button>
                   ) : item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px' }}
                       onClick={() => {
                         deleteCurrentItem(record.id);
                       }}
@@ -112,7 +111,7 @@ const inspectionInstruments = () => {
                     </Button>
                   ) : item.mark === 'bind' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
+                      style={{ margin: '0 4px 0 0' }}
                       onClick={() => {
                         bindRef.current.show(record.id);
                       }}
@@ -238,25 +237,27 @@ const inspectionInstruments = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        {btnPermissions?.map((item) => {
-          return item.mark === 'add' ? (
-            <Button btnType="primary" onClick={add}>
-              <PlusOutlined style={{ marginRight: 4 }} />
-              新增
-            </Button>
-          ) : item.mark === 'import' ? (
-            <Button btnType="primary" onClick={importData}>
-              导入
-            </Button>
-          ) : item.mark === 'export' ? (
-            <Button btnType="primary" onClick={exportData}>
-              导出
-            </Button>
-          ) : null;
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions?.map((item) => {
+            return item.mark === 'add' ? (
+              <Button btnType="primary" onClick={add} style={{ padding: '6px 10px' }}>
+                <PlusOutlined style={{ marginRight: 4 }} />
+                新增
+              </Button>
+            ) : item.mark === 'import' ? (
+              <Button btnType="primary" onClick={importData}>
+                导入
+              </Button>
+            ) : item.mark === 'export' ? (
+              <Button btnType="primary" onClick={exportData}>
+                导出
+              </Button>
+            ) : null;
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         size={'small'}
         columns={columns}
@@ -281,8 +282,16 @@ const inspectionInstruments = () => {
         Ref={modalRef}
         refresh={() => getList({ pageNum, pageSize })}
       ></EditOrAddModal>
-      <Tabs type="card">
-        <TabPane tab="打印顺序" key="0">
+      <Tabs>
+        <TabPane
+          key="0"
+          tab={
+            <span style={{ display: 'flex' }}>
+              <Icon name="icongongzuotai-sousuo" />
+              打印顺序
+            </span>
+          }
+        >
           <PrintSeq parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
       </Tabs>

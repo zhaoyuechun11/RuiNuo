@@ -88,7 +88,7 @@ const inspectionInstruments = () => {
       width: 400,
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions?.map((item) => {
               return (
                 <>
@@ -135,32 +135,27 @@ const inspectionInstruments = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'commonMaterials/fetchInstrList',
-        payload: {
-          ...params,
-          callback: (res: {
-            code: number;
-            data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
-          }) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchInstrList',
+      payload: {
+        ...params,
+        callback: (res: {
+          code: number;
+          data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
+        }) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
     if (useDetail) {
-      // const { btn } = main(transformTree(useDetail.permissions), location.pathname);
-      // console.log(transformTree(useDetail.permissions));
-      // console.log(useDetail.permissions);
       const { btn } = main(transformTree(useDetail.permissions), location.pathname);
       setBtnPermissions(btn);
     }
@@ -242,16 +237,16 @@ const inspectionInstruments = () => {
         <div className={styles.operateBtns}>
           {btnPermissions?.map((item) => {
             return item.mark === 'add' ? (
-              <Button btnType="primary" onClick={add} style={{ padding: '6px 10px' }}>
+              <Button btnType="primary" onClick={add} style={{ padding: '6px 10px' }} >
                 <PlusOutlined style={{ marginRight: 4 }} />
                 新增
               </Button>
             ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData}>
+              <Button btnType="primary" onClick={importData} >
                 导入
               </Button>
             ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData}>
+              <Button btnType="primary" onClick={exportData} >
                 导出
               </Button>
             ) : null;
@@ -262,10 +257,6 @@ const inspectionInstruments = () => {
         size={'small'}
         columns={columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

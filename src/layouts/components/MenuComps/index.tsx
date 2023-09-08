@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
-import { transformTree } from '@/utils';
 import { menu } from '@/utils/constant';
-const { Header, Content, Footer, Sider } = Layout;
+const {  Sider } = Layout;
 const { SubMenu } = Menu;
-import { Link, history, useSelector } from 'umi';
+import { Link, useSelector } from 'umi';
 interface IMenu {
   title: string;
   children: Array<IMenu>;

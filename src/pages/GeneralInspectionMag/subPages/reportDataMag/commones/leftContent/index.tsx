@@ -72,10 +72,10 @@ const LeftContent = () => {
       }
     });
   };
-  return reportLeftData.map((item) => {
+  return reportLeftData.map((item: any, index: any) => {
     return (
       <>
-        <div className={style.wrap}>
+        <div className={style.wrap} key={index}>
           <div className={style.title}>{item.name}</div>
           <div>
             {item?.fieldVal}

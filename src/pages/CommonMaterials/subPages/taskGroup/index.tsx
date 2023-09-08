@@ -105,7 +105,7 @@ const TaskGroup = () => {
       type: 'commonMaterials/fetchTaskPageData',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);

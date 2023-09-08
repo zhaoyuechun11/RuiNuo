@@ -7,7 +7,6 @@ import {
   getRoleList, //获取角色列表
   changeAuth, //授权
   getShareData, //获取共享人数据列表
-  getSelectShareData, //已选择的共享人数据
   saveShareId, //保存已选择的人员
   getOperatorList, //获取接收负责人数据
   cancelAuth, // 交接人下岗位列表及对应用户数据
@@ -100,7 +99,7 @@ export default {
             pageSize: page_size,
           },
         };
-     
+
         yield put({
           type: 'saveMemberList',
           payload: payloadData,
@@ -182,26 +181,7 @@ export default {
         payload: shareList.filter((i, ind) => ind !== index),
       });
     },
-    *fetchSelectShare({ payload }, { call, put }) {
-      let { callback, ...others } = payload;
-      let response = yield call(getSelectShareData, others);
-      let { status_code = '' } = response;
-      if (status_code * 1 === 200) {
-        yield put({
-          type: 'saveSelectShare',
-          payload: response.data.list,
-        });
-        isFunction(callback) && callback();
-      }
-    },
-    *changeSelectShare({ payload }, { call, put }) {
-      let { callback, ...others } = others;
-      yield put({
-        type: 'saveSelectShare',
-        payload: data,
-      });
-      isFunction(callback) && callback();
-    },
+
     *fetchSaveShareId({ payload }, { call, put }) {
       let { callback, ...others } = payload;
       let response = yield call(saveShareId, { ...others });
@@ -222,55 +202,7 @@ export default {
         isFunction(callback) && callback();
       }
     },
-    *fetchAvailablePositionList({ payload }, { call, put }) {
-      let { callback, ...others } = payload;
-      let response = yield call(getAvailablePositionList, { ...others });
-      let { status_code = '' } = response;
-      if (status_code * 1 === 200) {
-        const { list = [], count = 0 } = response.data || {};
-        const { page, page_size } = payload;
-        list.forEach((item) => {
-          item.key = item.id;
-        });
-        const payloadData = {
-          list,
-          pagination: {
-            total: count,
-            current: page,
-            pageSize: page_size,
-          },
-        };
-        yield put({
-          type: 'saveAvailablePositionList',
-          payload: payloadData,
-        });
-        isFunction(callback) && callback();
-      }
-    },
-    *transferSave({ payload }, { call, put }) {
-      let { callback, ...others } = payload;
-      let response = yield call(taskTransferSave, { ...others });
-      let { status_code = '' } = response;
-      if (status_code * 1 === 200) {
-        isFunction(callback) && callback();
-      }
-    },
-    *syncDing({ payload }, { call, put }) {
-      let { callback, ...others } = payload;
-      let response = yield call(syncAuthChange, { ...others });
-      let { status_code = '' } = response;
-      if (status_code * 1 === 200) {
-        isFunction(callback) && callback();
-      }
-    },
-    *fetchShareDel({ payload }, { call, put }) {
-      let { callback, ...others } = payload;
-      let response = yield call(sharedel, { ...others });
-      let { status_code = '' } = response;
-      if (status_code * 1 === 200) {
-        isFunction(callback) && callback();
-      }
-    },
+
     *bulkCancelAuth({ payload }, { call, put }) {
       const { callback, ...params } = payload;
       const response = yield call(cancelAuth, { ...params });
@@ -288,7 +220,6 @@ export default {
       };
     },
     saveMemberList(state, action) {
-   
       return {
         ...state,
         memberlistData: action.payload,

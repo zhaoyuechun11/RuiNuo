@@ -147,7 +147,7 @@ const insUnitDiscount = () => {
       fixed: 'right',
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions.map((item) => {
               return (
                 <>

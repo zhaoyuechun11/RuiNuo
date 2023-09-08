@@ -173,7 +173,6 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
             >
               <Select
                 placeholder="请选择项目类别"
-                autoComplete="off"
                 allowClear
                 value={majorGroupData[0]?.id}
                 defaultValue={majorGroupData[0]?.id}
@@ -209,11 +208,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
               name="itemName"
               rules={[{ required: true, message: '请输入项目中文名称' }]}
             >
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入项目中文名称"
-              />
+              <Input maxLength={10} placeholder="请输入项目中文名称" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -222,31 +217,19 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
               name="enName"
               rules={[{ required: true, message: '请输入项目英文名称' }]}
             >
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入项目英文名称"
-              />
+              <Input maxLength={10} placeholder="请输入项目英文名称" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={12}>
           <Col span={12}>
             <Form.Item label="缩写代号" name="shortName">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入缩写代号"
-              />
+              <Input maxLength={10} placeholder="请输入缩写代号" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="单位" name="unit">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入单位"
-              />
+              <Input maxLength={10} placeholder="请输入单位" />
             </Form.Item>
           </Col>
         </Row>
@@ -329,7 +312,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
                 allowClear
                 // showArrow={false}
                 onInputKeyDown={onInputKeyDownPosition}
-                autoComplete="off"
+
                 // defaultActiveFirstOption={false}
               >
                 {testMethod.map((item) => {
@@ -344,7 +327,12 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           </Col>
           <Col span={12}>
             <Form.Item name="reportUnitId" label="报告单元">
-              <Select placeholder="请选择报告单元" showSearch allowClear>
+              <Select
+                placeholder="请选择报告单元"
+                showSearch
+                allowClear
+                getPopupContainer={() => document.body}
+              >
                 {reportUnit.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>

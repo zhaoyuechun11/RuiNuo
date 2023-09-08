@@ -105,7 +105,7 @@ const EntryMaintenance = () => {
       width: 100,
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             <Button
               onClick={() => {
                 modalRef.current && modalRef.current.show(record);

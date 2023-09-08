@@ -1,14 +1,16 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select, InputNumber, Row, Col } from 'antd';
+import { Form, Input, message, Select, InputNumber, Row, Col, Checkbox } from 'antd';
 import {
   oneLevelTypeModalSel,
   RPreferenceValueAdd,
   RPreferenceValueUpdate,
 } from '../../../../../../models/server';
+import styles from './index.less';
 
 const { Option } = Select;
 const prompt = ['↑↑', '↓↓', '↑', '↓', '+', '*'];
+const InputGroup = Input.Group;
 const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -17,7 +19,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   const [ageUnit, setAgeUnit] = useState([]);
   const [sex, setSex] = useState([]);
   useImperativeHandle(Ref, () => ({
-    show: async (record: { id: React.SetStateAction<undefined> }) => {
+    show: (record: any) => {
       dialogRef.current && dialogRef.current.show();
       form && form.resetFields();
       getList({ type: 'BT' });
@@ -97,17 +99,16 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={600}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Form form={form} layout="vertical" style={{ padding: '20px' }}>
+      <Form form={form} layout="vertical" style={{ padding: '20px' }} className={styles.form_box}>
         <Row gutter={24}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item
               label="仪器"
               name="instrId"
@@ -123,20 +124,22 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
                 })}
               </Select>
             </Form.Item>
-          </Col>
-          <Col span={12}>
-            <div id="sampleTypeId">
+          </Col> */}
+          <Col span={14}>
+            <InputGroup compact>
+              <Form.Item>
+                <Checkbox>
+                  <div>参考值与样</div>
+                  <div>本类型有关</div>
+                </Checkbox>
+              </Form.Item>
+
               <Form.Item
                 name="sampleTypeId"
                 label="样本类型"
                 rules={[{ required: true, message: '请选择样本类型' }]}
               >
-                <Select
-                  placeholder="请选择样本类型"
-                  autoComplete="off"
-                  allowClear
-                  getPopupContainer={() => document.getElementById('sampleTypeId')}
-                >
+                <Select placeholder="请选择样本类型" allowClear style={{ width: 206 }}>
                   {sampleTypeList.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -146,136 +149,172 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
                   })}
                 </Select>
               </Form.Item>
-            </div>
+            </InputGroup>
+          </Col>
+          <Col span={10}>
+            <InputGroup compact>
+              <Form.Item>
+                <Checkbox>
+                  <div>参考值与</div>
+                  <div>性别有关</div>
+                </Checkbox>
+              </Form.Item>
+              <Form.Item
+                name="sex"
+                label="性别"
+                rules={[{ required: true, message: '请选择性别' }]}
+              >
+                <Select placeholder="请选择性别" allowClear>
+                  {sex.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.dictValue}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </InputGroup>
           </Col>
         </Row>
         <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              label="年龄"
-              name="ageFrom"
-              rules={[{ required: true, message: '请输入年龄' }]}
-            >
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入年龄"
-              />
-            </Form.Item>
+          <Col span={14}>
+            <InputGroup compact>
+              <Form.Item>
+                <Checkbox>
+                  <div>参考值与</div>
+                  <div>年龄有关</div>
+                </Checkbox>
+              </Form.Item>
+              <Form.Item
+                label="年龄"
+                name="ageFrom"
+                rules={[{ required: true, message: '请输入年龄' }]}
+              >
+                <Input
+                  maxLength={10}
+                  placeholder="请输入年龄"
+                  style={{ width: 90, marginRight: '10px', marginLeft: '10px' }}
+                />
+              </Form.Item>
+              <Form.Item
+                name="ageFromUnitId"
+                rules={[{ required: true, message: '请选择年龄单位从' }]}
+                label="年龄单位"
+              >
+                <Select placeholder="年龄单位" allowClear style={{ width: 110 }}>
+                  {ageUnit.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.dictValue}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </InputGroup>
           </Col>
-          <Col span={12}>
-            <Form.Item
-              label="年龄到"
-              name="ageTo"
-              rules={[{ required: true, message: '请输入年龄到' }]}
-            >
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入年龄到"
-              />
-            </Form.Item>
+          <Col span={10}>
+            <InputGroup compact>
+              <Form.Item
+                label="年龄到"
+                name="ageTo"
+                rules={[{ required: true, message: '请输入年龄到' }]}
+              >
+                <Input maxLength={10} placeholder="请输入年龄到" style={{ width: 90 }} />
+              </Form.Item>
+              <Form.Item
+                name="ageToUnitId"
+                label="年龄单位"
+                rules={[{ required: true, message: '请选择年龄单位到' }]}
+              >
+                <Select
+                  placeholder="年龄单位"
+                  allowClear
+                  style={{ width: 110, marginLeft: '10px' }}
+                >
+                  {ageUnit.map((item) => {
+                    return (
+                      <Option value={item.id} key={item.id}>
+                        {item.dictValue}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </InputGroup>
+          </Col>
+        </Row>
+
+        <Row gutter={24}>
+          <Col span={14}>
+            <InputGroup compact style={{ marginLeft: '100px' }}>
+              <Form.Item name="highValue" label="上限值">
+                <InputNumber
+                  max={100}
+                  placeholder="请输入上限值"
+                  style={{ width: 90 }}
+                  onChange={highValueChange}
+                />
+              </Form.Item>
+              <Form.Item
+                name="highChar"
+                label="上限提示字符"
+                rules={[{ required: true, message: '请选择上限提示字符' }]}
+              >
+                <Select
+                  placeholder="请选择上限提示字符"
+                  allowClear
+                  style={{ width: 110, marginLeft: '10px' }}
+                >
+                  {prompt.map((item) => {
+                    return (
+                      <Option value={item} key={item}>
+                        {item}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </InputGroup>
+          </Col>
+          <Col span={10}>
+            <InputGroup compact>
+              <Form.Item name="lowValue" label="下限值">
+                <InputNumber
+                  min={0}
+                  max={100}
+                  placeholder="请输入下限值"
+                  style={{ width: 90 }}
+                  onChange={lowValueChange}
+                />
+              </Form.Item>
+              <Form.Item
+                name="lowChar"
+                label="下限提示字符"
+                rules={[{ required: true, message: '请选择下限提示字符' }]}
+              >
+                <Select
+                  placeholder="请选择下限提示字符"
+                  allowClear
+                  style={{ width: 110, marginLeft: '10px' }}
+                >
+                  {prompt.map((item) => {
+                    return (
+                      <Option value={item} key={item}>
+                        {item}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </InputGroup>
           </Col>
         </Row>
         <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              name="ageFromUnitId"
-              label="年龄单位从"
-              rules={[{ required: true, message: '请选择年龄单位从' }]}
-            >
-              <Select placeholder="请选择年龄单位从" autoComplete="off" allowClear>
-                {ageUnit.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.dictValue}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="ageToUnitId"
-              label="年龄单位到"
-              rules={[{ required: true, message: '请选择年龄单位到' }]}
-            >
-              <Select placeholder="请选择年龄单位到" autoComplete="off" allowClear>
-                {ageUnit.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.dictValue}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item
-              name="highChar"
-              label="上限提示字符"
-              rules={[{ required: true, message: '请选择上限提示字符' }]}
-            >
-              <Select placeholder="请选择上限提示字符" autoComplete="off" allowClear>
-                {prompt.map((item) => {
-                  return (
-                    <Option value={item} key={item}>
-                      {item}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="lowChar"
-              label="下限提示字符"
-              rules={[{ required: true, message: '请选择下限提示字符' }]}
-            >
-              <Select placeholder="请选择下限提示字符" autoComplete="off" allowClear>
-                {prompt.map((item) => {
-                  return (
-                    <Option value={item} key={item}>
-                      {item}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Form.Item name="highValue" label="上限值">
-              <InputNumber
-                max={100}
-                placeholder="请输入上限值"
-                style={{ width: '100%' }}
-                onChange={highValueChange}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="lowValue" label="下限值">
-              <InputNumber
-                min={0}
-                max={100}
-                placeholder="请输入下限值"
-                style={{ width: '100%' }}
-                onChange={lowValueChange}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item name="sex" label="性别" rules={[{ required: true, message: '请选择性别' }]}>
-              <Select placeholder="请选择性别" autoComplete="off" allowClear>
+              <Select placeholder="请选择性别" allowClear>
                 {sex.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>
@@ -285,15 +324,10 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
                 })}
               </Select>
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </Col> */}
+          <Col span={12} style={{ marginLeft: 100 }}>
             <Form.Item name="displayRef" label="显示参考范围">
-              <InputNumber
-                min={1}
-                max={99}
-                placeholder="请输入显示参考范围"
-                style={{ width: '100%' }}
-              />
+              <InputNumber min={1} max={99} placeholder="请输入显示参考范围" />
             </Form.Item>
           </Col>
         </Row>

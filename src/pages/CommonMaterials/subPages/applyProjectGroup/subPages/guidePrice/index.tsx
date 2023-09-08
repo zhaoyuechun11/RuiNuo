@@ -40,7 +40,7 @@ const GuidePrice = ({ parent, btnPermissions }) => {
       align: 'center',
       render: (record: { id: any }) => {
         return btnPermissions.map((item) => {
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {item.mark === 'guidePriceDelete' ? (
               <Button
                 onClick={() => {

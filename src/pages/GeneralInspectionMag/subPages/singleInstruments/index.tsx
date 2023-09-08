@@ -319,7 +319,7 @@ const SingleInstrument = () => {
       align: 'center',
       width: 200,
       render: (text: string, record: Record<string, any>) => (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className={styles.action_btn}>
           <Button
             onClick={() => {
               // history.push(

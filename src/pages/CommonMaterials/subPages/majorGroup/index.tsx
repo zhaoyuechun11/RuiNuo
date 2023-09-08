@@ -156,7 +156,7 @@ const MajorGroup = () => {
 
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions.map((item) => {
               return (
                 <>
@@ -195,8 +195,8 @@ const MajorGroup = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params) => {
+  const getList = 
+    (params:any) => {
       dispatch({
         type: 'commonMaterials/fetchMajorGroupList',
         payload: {
@@ -212,9 +212,9 @@ const MajorGroup = () => {
           },
         },
       });
-    },
-    [dispatch, sort, order],
-  );
+    }
+
+
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);

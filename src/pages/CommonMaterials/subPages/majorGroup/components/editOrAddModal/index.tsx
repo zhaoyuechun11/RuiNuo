@@ -120,7 +120,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
       <Form form={form} layout={'vertical'} style={{ padding: '20px' }}>
         <Row gutter={24}>
@@ -223,8 +222,12 @@ const EditOrAddModal = ({ Ref, refresh }) => {
                     ]}
                   >
                     <Select allowClear>
-                      {sampleRule.map((item) => {
-                        return <Option value={item}>{item}</Option>;
+                      {sampleRule.map((item, index) => {
+                        return (
+                          <Option value={item} key={index}>
+                            {item}
+                          </Option>
+                        );
                       })}
                     </Select>
                   </Form.Item>

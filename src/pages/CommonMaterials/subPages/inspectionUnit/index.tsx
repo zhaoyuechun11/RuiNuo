@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon } from '@/components';
@@ -197,12 +197,12 @@ const InspectionUnit = () => {
       fixed: 'right',
       align: 'center',
       width: 200,
-      render: (text, record: RewardItem) => {
+      render: (text, record: any) => {
         return (
-          <div style={{ display: 'flex' }}>
-            {btnPermissions.map((item) => {
+          <div className={styles.action_btn}>
+            {btnPermissions.map((item, index) => {
               return (
-                <>
+                <div key={index}>
                   {item.mark === 'edit' ? (
                     <Button
                       onClick={() => {
@@ -221,7 +221,7 @@ const InspectionUnit = () => {
                       删除
                     </Button>
                   ) : null}
-                </>
+                </div>
               );
             })}
           </div>
@@ -230,23 +230,21 @@ const InspectionUnit = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params) => {
-      dispatch({
-        type: 'commonMaterials/fetchHospitalList',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchHospitalList',
+      payload: {
+        ...params,
+        callback: (res: any) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
   }, [pageNum, pageSize]);
@@ -327,7 +325,7 @@ const InspectionUnit = () => {
       <div className={styles.search_bth}>
         {renderForm()}
         <div className={styles.operateBtns}>
-          {btnPermissions.map((item) => {
+          {btnPermissions.map((item, index) => {
             return (
               <>
                 {item.mark === 'add' ? (

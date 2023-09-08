@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
-import styles from '../../../index.less';
+import styles from '../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, RPCriticalValueDele } from '../../../../models/server';
@@ -136,7 +136,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       type: 'commonMaterials/fetchRPCriticalValue',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res:any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -201,12 +201,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
         <Form.Item name="instrId">
-          <Select
-            placeholder="请选择仪器"
-            autoComplete="off"
-            allowClear
-            // onChange={projectCategoryChange}
-          >
+          <Select placeholder="请选择仪器" allowClear>
             {instrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -222,7 +217,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
   return (
     <>
       <div className={styles.search_bth}>
-        {renderForm()}
+        {/* {renderForm()} */}
         {btnPermissions?.map((item: any) => {
           return (
             item.mark === 'criticalValueAdd' && (

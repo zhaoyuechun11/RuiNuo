@@ -2,23 +2,24 @@ import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Form, Input, message, Select, Switch } from 'antd';
 import { RPInstrChannelNumAdd, RPInstrChannelNumUpdate } from '../../../../../../models/server';
+import { useSelector } from 'umi';
 const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 },
 };
 const { Option } = Select;
 
-const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
+const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [disable, setDisable] = useState(false);
   const [id, setId] = useState();
-
+  const { instrList, instrId } = useSelector((state: any) => state.commonMaterials);
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
       dialogRef.current && dialogRef.current.show();
       form && form.resetFields();
-
+      form.setFieldsValue({ instrId });
       if (record) {
         form.setFieldsValue({
           ...record,
@@ -62,7 +63,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   const isDisableChange = (e: boolean | ((prevState: boolean) => boolean)) => {
     setDisable(e);
   };
- 
+
   return (
     <Dialog
       ref={dialogRef}
@@ -72,14 +73,10 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
       <Form form={form} {...layout}>
         <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
-          <Select
-            placeholder="请选择仪器"
-            allowClear
-          >
+          <Select placeholder="请选择仪器" allowClear disabled>
             {instrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -89,12 +86,13 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
             })}
           </Select>
         </Form.Item>
+
         <Form.Item
           label="通道号"
           name="interCode"
           rules={[{ required: true, message: '请输入通道号' }]}
         >
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入通道号" />
+          <Input maxLength={10} placeholder="请输入通道号" />
         </Form.Item>
         <Form.Item name="isDisable" label="禁用">
           <Switch onChange={isDisableChange} checked={disable} />

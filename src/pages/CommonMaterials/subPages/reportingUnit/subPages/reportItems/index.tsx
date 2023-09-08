@@ -46,7 +46,7 @@ const ReportItems = ({ parent }) => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             <Button
               style={{ margin: '0 8px' }}
               onClick={() => {

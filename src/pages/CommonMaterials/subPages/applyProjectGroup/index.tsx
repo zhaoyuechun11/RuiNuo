@@ -13,6 +13,7 @@ import ReportProject from './subPages/report';
 import GuidePrice from './subPages/guidePrice';
 import EditOrAddModal from './components/editOrAddModal';
 import BatchImport from '../../commones/batchImport';
+const { Option } = Select;
 const { TabPane } = Tabs;
 const ApplyProjectGroup = () => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const ApplyProjectGroup = () => {
       align: 'center',
       key: 'labClassName',
       width: 150,
-      sorter: (a, b) => a.labClassName.length - b.labClassName.length,
+      sorter: (a:any, b:any) => a.labClassName.length - b.labClassName.length,
       sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
     {
@@ -208,13 +209,6 @@ const ApplyProjectGroup = () => {
                 </>
               );
             })}
-            {/* <Button
-              onClick={() => {
-                getCurrentItem(record);
-              }}
-            >
-              明细
-            </Button> */}
           </div>
         );
       },

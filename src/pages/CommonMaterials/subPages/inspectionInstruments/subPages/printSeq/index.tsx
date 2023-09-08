@@ -161,10 +161,10 @@ const PrintSeq = ({ parent, btnPermissions }) => {
     <>
       <div className={styles.search_bth}>
         {renderForm()}
-        {btnPermissions?.map((item) => {
+        {btnPermissions?.map((item: any, index: any) => {
           return (
             item.mark === 'printAdd' && (
-              <div className={styles.operateBtns}>
+              <div className={styles.operateBtns} key={index}>
                 <Button
                   btnType="primary"
                   onClick={() => {
@@ -199,7 +199,6 @@ const PrintSeq = ({ parent, btnPermissions }) => {
       />
       <EditOrAddModal
         Ref={addModal}
-        instrList={instrList}
         parent={parent}
         refresh={() => getList({ pageNum, pageSize, instrId: parent.id })}
       ></EditOrAddModal>

@@ -15,6 +15,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
   const [sort, setSort] = useState('account_integral');
   const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
+  const { instrId } = useSelector((state: any) => state.commonMaterials);
   const addModal = useRef();
   const [instrList, setInstrList] = useState([]);
   const [list, setList] = useState([]);
@@ -24,6 +25,11 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
     {
       title: '仪器',
       dataIndex: 'instrName',
+      align: 'center',
+    },
+    {
+      title: '项目代号',
+      dataIndex: 'projectCode',
       align: 'center',
     },
     {
@@ -54,7 +60,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions.map((item) => {
               return item.mark === 'instrumentNumberDelete' ? (
                 <Button
@@ -88,7 +94,13 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
         ...params,
         callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
           if (res.code === 200) {
-            setList(res.data.records);
+            const result = res.data.records.map((item) => {
+              return {
+                ...item,
+                projectCode: parent.enName,
+              };
+            });
+            setList(result);
             setTotal(res.data.total);
           }
         },
@@ -98,10 +110,10 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
 
   useEffect(() => {
     if (parent) {
-      getList({ pageNum, pageSize, labItemId: parent.id });
-      getInstrList();
+      getList({ pageNum, pageSize, labItemId: parent.id, instrId });
+      //getInstrList();
     }
-  }, [pageNum, pageSize, parent]);
+  }, [pageNum, pageSize, parent, instrId]);
 
   const onTableChange = (
     pagination: Record<string, unknown>,
@@ -122,7 +134,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
     const values = {
       pageNum,
       pageSize,
-      reqItemId: parent.id,
+      labItemId: parent.id,
       ...allValues,
     };
     getList(values);
@@ -150,7 +162,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
-        <Form.Item name="instrId">
+        {/* <Form.Item name="instrId">
           <Select
             placeholder="请选择仪器"
             autoComplete="off"
@@ -165,7 +177,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
               );
             })}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item name="code">
           <Input
             placeholder="请输入通道号"
@@ -216,9 +228,8 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       />
       <EditOrAddModal
         Ref={addModal}
-        instrList={instrList}
         parent={parent}
-        refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id })}
+        refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id, instrId })}
       ></EditOrAddModal>
       <Confirm
         confirmRef={confirmModalRef}

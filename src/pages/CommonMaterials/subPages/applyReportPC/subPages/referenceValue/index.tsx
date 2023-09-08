@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
-import styles from '../../../index.less';
+import styles from '../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, RPreferenceValueDele } from '../../../../models/server';
@@ -109,7 +109,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
       width: 200,
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions.map((item) => {
               return item.mark === 'referenceValueDelete' ? (
                 <Button
@@ -208,9 +208,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
         <Form.Item name="instrId">
           <Select
             placeholder="请选择仪器"
-            autoComplete="off"
             allowClear
-            // onChange={projectCategoryChange}
           >
             {instrList.map((item) => {
               return (
@@ -227,7 +225,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
   return (
     <>
       <div className={styles.search_bth}>
-        {renderForm()}
+        {/* {renderForm()} */}
         {btnPermissions.map((item: any) => {
           return (
             item.mark === 'referenceValueAdd' && (

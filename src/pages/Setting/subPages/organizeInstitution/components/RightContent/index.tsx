@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import s from '../../../index.less';
 import styles from './index.less';
-import { UserAddOutlined } from '@ant-design/icons';
-import { Tooltip, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import { useDispatch, useSelector } from 'umi';
-import { Table, Icon } from '@/components';
+import { Table, Button } from '@/components';
 import DelRole from '../DelRole';
 import NewAdd from '../NewAdd';
 
 const RightContent = () => {
   const loading = useSelector((state) => state.loading.global);
   const { rolelistData } = useSelector((state) => state.role);
-  console.log(rolelistData);
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
-  const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const columns = [
     {
@@ -32,7 +30,6 @@ const RightContent = () => {
     {
       title: '已分配的员工',
       dataIndex: 'users',
-
       align: 'center',
       render: (record) => {
         let desc = '';
@@ -61,7 +58,7 @@ const RightContent = () => {
       render: (text, record, index) => {
         let { ...others } = record;
         return (
-          <div className={s.tabale_operate_box} key={record.id}>
+          <div className={s.tabale_operate_box} >
             <NewAdd
               {...others}
               type="edit"
@@ -108,21 +105,12 @@ const RightContent = () => {
             fetchRoleIndex();
           }}
         >
-          <div className={styles.addRole}>
-            <UserAddOutlined />
-            <span>新增角色</span>
-          </div>
+          <Button btnType="primary">
+            <PlusOutlined style={{ marginRight: 4 }} />
+            新增
+          </Button>
         </NewAdd>
       </div>
-      {/* <Table
-          className={styles.tablePadding}
-          rowClassName={styles.rowStyle}
-          columns={this.columns}
-          data={rolelistData}
-          // pagination={false}
-          loading={roleindexLoading}
-          isRowSelection={false}
-        /> */}
       <Table
         columns={columns}
         rowKey="id"

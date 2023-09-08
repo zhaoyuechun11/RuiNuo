@@ -28,7 +28,7 @@ import {
   oneLevelTypeModalSel,
   reportUnitList,
   reportUnitInstrList,
-  reportItemBindsList
+  reportItemBindsList,
 } from './server';
 
 import isFunction from 'lodash/isFunction';
@@ -36,6 +36,8 @@ const commonMaterials = {
   namespace: 'commonMaterials',
   state: {
     labClass: [],
+    instrId: '',
+    instrList: [],
   },
   effects: {
     *fetchSecondPage({ payload }, { call }) {

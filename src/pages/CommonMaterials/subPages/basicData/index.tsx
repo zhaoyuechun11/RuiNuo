@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
 import { Button, Icon, Table } from '@/components';
 import styles from './index.less';
@@ -32,7 +32,6 @@ const BasicData = () => {
       dataIndex: 'dictValue',
       sorter: true,
       align: 'center',
-      // sorter: (a, b) => a.dictValue - b.dictValue,
     },
     {
       title: '英文',
@@ -81,7 +80,7 @@ const BasicData = () => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             <Button
               style={{ margin: '0 8px' }}
               onClick={() => {
@@ -96,26 +95,23 @@ const BasicData = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params) => {
-      dispatch({
-        type: 'commonMaterials/fetchFirstPage',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'commonMaterials/fetchFirstPage',
+      payload: {
+        ...params,
+        callback: (res: any) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch, sort, order],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
-
   }, [pageNum, pageSize]);
 
   const onTableChange = (

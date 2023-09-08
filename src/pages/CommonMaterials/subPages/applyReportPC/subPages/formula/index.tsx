@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {  useEffect, useRef, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
-import styles from '../../../index.less';
+import styles from '../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, formulaDele } from '../../../../models/server';
@@ -37,7 +37,7 @@ const Formula = ({ parent, btnPermissions }) => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions.map((item) => {
               return item.mark === 'formulaDelete' ? (
                 <Button
@@ -136,7 +136,6 @@ const Formula = ({ parent, btnPermissions }) => {
         <Form.Item name="instrId">
           <Select
             placeholder="请选择仪器"
-            autoComplete="off"
             allowClear
             // onChange={projectCategoryChange}
           >
@@ -155,7 +154,7 @@ const Formula = ({ parent, btnPermissions }) => {
   return (
     <>
       <div className={styles.search_bth}>
-        {renderForm()}
+        {/* {renderForm()} */}
         {btnPermissions.map((item) => {
           return (
             item.mark === 'formulaAdd' && (

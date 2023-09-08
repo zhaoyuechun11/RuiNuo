@@ -50,7 +50,7 @@ const Instrument = ({ parent, btnPermissions }) => {
         return (
           <Switch
             checked={record.isEnabled}
-            onChange={(checked) => {
+            onChange={() => {
               dispatch({
                 type: 'commonMaterials/fetchAPItemInstrBindsState',
                 payload: {

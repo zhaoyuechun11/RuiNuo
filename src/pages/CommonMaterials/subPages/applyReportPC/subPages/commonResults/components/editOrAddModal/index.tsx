@@ -24,7 +24,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
     show: async (record: { id: React.SetStateAction<undefined> }) => {
       dialogRef.current && dialogRef.current.show();
       form && form.resetFields();
-
+      form.setFieldsValue({ projectCode: parent.shortName });
       if (record) {
         form.setFieldsValue({
           ...record,
@@ -72,15 +72,13 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
+      <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
+        <Form.Item name="projectCode" label="项目代号">
+          <Input disabled />
+        </Form.Item>
         <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
-          <Select
-            placeholder="请选择仪器"
-            autoComplete="off"
-            allowClear
-          >
+          <Select placeholder="请选择仪器" allowClear>
             {instrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -95,12 +93,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
           label="结果标志"
           rules={[{ required: true, message: '请选择结果标志' }]}
         >
-          <Select
-            placeholder="请选择结果标志"
-            autoComplete="off"
-            allowClear
-            // onChange={handleChangeSelect}
-          >
+          <Select placeholder="请选择结果标志" allowClear>
             {defaultValData.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -111,10 +104,10 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
           </Select>
         </Form.Item>
         <Form.Item name="result" label="结果">
-          <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入结果" />
+          <Input placeholder="请输入结果" />
         </Form.Item>
         <Form.Item label="快速录入码" name="shortCode">
-          <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入快速录入码" />
+          <Input placeholder="请输入快速录入码" />
         </Form.Item>
         <Form.Item label="顺序" name="seq">
           <InputNumber />

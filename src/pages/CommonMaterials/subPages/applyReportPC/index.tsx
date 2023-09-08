@@ -4,8 +4,14 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select, Table } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
-import { reportProjectExport, majorGroup, reportProjectDelete } from '../../models/server';
+import {
+  reportProjectExport,
+  majorGroup,
+  reportProjectDelete,
+  transferInstrList,
+} from '../../models/server';
 import styles from '../index.less';
+import s from './index.less';
 import EditOrAddModal from './components/editOrAddModal';
 import BatchImport from '../../commones/batchImport';
 import InstrChannelNum from './subPages/InstrChannelNum';
@@ -25,6 +31,7 @@ const ApplyReportPC = () => {
   const [sortedInfo, setSortedInfo] = useState({});
   const loading = useSelector((state) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
+  const { instrList } = useSelector((state: any) => state.commonMaterials);
   const modalRef = useRef();
   const searchVal = useRef();
   const [majorGroupData, setMajorGroupData] = useState([]);
@@ -35,6 +42,8 @@ const ApplyReportPC = () => {
   const [btnPermissions, setBtnPermissions] = useState([]);
   const [list, setList] = useState([]);
   const [selectIndex, setSelectIndex] = useState(0);
+
+  const [activeKey, setActiveKey] = useState('0');
   const columns = [
     {
       title: '项目类别',
@@ -47,7 +56,7 @@ const ApplyReportPC = () => {
       sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
     {
-      title: '编号',
+      title: '项目编号',
       dataIndex: 'itemCode',
       align: 'center',
       width: 150,
@@ -65,6 +74,13 @@ const ApplyReportPC = () => {
       sortOrder: sortedInfo.columnKey === 'itemName' ? sortedInfo.order : null,
     },
     {
+      title: '缩写代号',
+      dataIndex: 'shortName',
+      align: 'center',
+      width: 150,
+      key: 'shortName',
+    },
+    {
       title: '英文名称',
       dataIndex: 'enName',
       align: 'center',
@@ -73,13 +89,7 @@ const ApplyReportPC = () => {
       sorter: (a, b) => a.enName.length - b.enName.length,
       sortOrder: sortedInfo.columnKey === 'enName' ? sortedInfo.order : null,
     },
-    {
-      title: '缩写代号',
-      dataIndex: 'shortName',
-      align: 'center',
-      width: 150,
-      key: 'shortName',
-    },
+
     {
       title: '数据类型',
       dataIndex: 'dataType',
@@ -157,7 +167,7 @@ const ApplyReportPC = () => {
       width: 250,
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.action_btn}>
             {btnPermissions?.map((item) => {
               return (
                 <>
@@ -182,13 +192,6 @@ const ApplyReportPC = () => {
                 </>
               );
             })}
-            {/* <Button
-              onClick={() => {
-                getCurrentItem(record);
-              }}
-            >
-              明细
-            </Button> */}
           </div>
         );
       },
@@ -218,6 +221,7 @@ const ApplyReportPC = () => {
   }, [pageNum, pageSize]);
   useEffect(() => {
     majorGroupList();
+    getInstrList();
     const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
@@ -295,12 +299,7 @@ const ApplyReportPC = () => {
       <Form onValuesChange={handleSearch} layout="inline">
         <div id="labClassId">
           <Form.Item name="labClassId">
-            <Select
-              placeholder="请选择项目类别"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
-            >
+            <Select placeholder="请选择项目类别" allowClear>
               {majorGroupData.length > 0 &&
                 majorGroupData.map((item) => (
                   <Option value={item.id} key={item.id}>
@@ -329,6 +328,50 @@ const ApplyReportPC = () => {
       </Form>
     );
   };
+  const getInstrList = () => {
+    transferInstrList().then((res) => {
+      if (res.code === 200) {
+        //setInstrList(res.data);
+        dispatch({
+          type: 'commonMaterials/save',
+          payload: {
+            type: 'instrList',
+            dataSource: res.data,
+          },
+        });
+      }
+    });
+  };
+  const instrChange = (e) => {
+    dispatch({
+      type: 'commonMaterials/save',
+      payload: {
+        type: 'instrId',
+        dataSource: e,
+      },
+    });
+  };
+  const tabRenderForm = () => {
+    return (
+      <Form layout="inline" className={styles.search_box}>
+        <Form.Item name="instrId" label="检验仪器">
+          <Select placeholder="请选择仪器" allowClear onChange={instrChange}>
+            {instrList.map((item) => {
+              return (
+                <Option value={item.id} key={item.id}>
+                  {item.instrName}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+      </Form>
+    );
+  };
+  const activeKeyChange = (e) => {
+    setActiveKey(e);
+  };
+
   return (
     <>
       <div className={styles.search_bth}>
@@ -388,13 +431,18 @@ const ApplyReportPC = () => {
         title={'报告'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>
-      <div style={{ marginBottom: '20px' }}>
-        <span>项目类别:</span>
-        {currentItem?.labClassName || list[0]?.labClassName}
-        <span style={{ marginLeft: '20px' }}>项目编号:</span>
-        {currentItem?.itemCode || list[0]?.itemCode}
+      <div className={s.tabsTitle}>
+        <div>
+          <span>项目类别:</span>
+          {currentItem?.labClassName || list[0]?.labClassName}
+        </div>
+        <div>
+          <span style={{ marginLeft: '20px' }}>项目代号:</span>
+          {currentItem?.shortName || list[0]?.shortName}
+        </div>
+        <div>{tabRenderForm()}</div>
       </div>
-      <Tabs>
+      <Tabs activeKey={activeKey} onChange={activeKeyChange}>
         <TabPane tab="仪器通道号" key="0">
           <InstrChannelNum parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>

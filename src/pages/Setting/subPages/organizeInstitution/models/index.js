@@ -1,14 +1,10 @@
 import {
   getRoleIndex, //角色列表
-  getRoleAssign, //已分配角色列表
-  getParentIndex, //可选择的父级角色列表
   roleAdd, //新增角色
   roleEdit, //编辑角色
   roleDel, //删除角色
 } from './server';
 import isFunction from 'lodash/isFunction';
-import { message } from 'antd';
-
 export default {
   namespace: 'role',
   state: {

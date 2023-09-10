@@ -121,6 +121,12 @@ const ApplyReportPC = () => {
       },
     },
     {
+      title: '计算项目',
+      dataIndex: 'method',
+      align: 'center',
+      width: 150,
+    },
+    {
       title: '测试方法',
       dataIndex: 'method',
       align: 'center',

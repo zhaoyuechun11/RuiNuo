@@ -15,11 +15,13 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const [disable, setDisable] = useState(false);
   const [id, setId] = useState();
   const { instrList, instrId } = useSelector((state: any) => state.commonMaterials);
+  const [selecteInstr, setSelecteInstr] = useState();
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
       dialogRef.current && dialogRef.current.show();
       form && form.resetFields();
-      form.setFieldsValue({ instrId });
+      // form.setFieldsValue({ instrId });
+      getInstr();
       if (record) {
         form.setFieldsValue({
           ...record,
@@ -41,6 +43,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
         RPInstrChannelNumUpdate({
           id: id,
           labItemId: parent.id,
+          instrId,
           ...value,
         }).then((res: { code: number }) => {
           if (res.code === 200) {
@@ -50,20 +53,25 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           }
         });
       } else {
-        RPInstrChannelNumAdd({ ...value, labItemId: parent.id }).then((res: { code: number }) => {
-          if (res.code === 200) {
-            message.success('添加成功');
-            dialogRef.current && dialogRef.current.hide();
-            refresh();
-          }
-        });
+        RPInstrChannelNumAdd({ ...value, labItemId: parent.id, instrId }).then(
+          (res: { code: number }) => {
+            if (res.code === 200) {
+              message.success('添加成功');
+              dialogRef.current && dialogRef.current.hide();
+              refresh();
+            }
+          },
+        );
       }
     });
   };
   const isDisableChange = (e: boolean | ((prevState: boolean) => boolean)) => {
     setDisable(e);
   };
-
+  const getInstr = () => {
+    let result = instrList.filter((item: any) => item.id == instrId);
+    setSelecteInstr(result[0].instrName);
+  };
   return (
     <Dialog
       ref={dialogRef}
@@ -74,8 +82,20 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
       }}
       onOk={onOk}
     >
+      {!id && (
+        <div
+          style={{
+            borderBottom: '1px solid #cecede',
+            paddingBottom: '10px',
+            margin: '20px 55px',
+          }}
+        >
+          <span>检验仪器:</span>
+          {selecteInstr}
+        </div>
+      )}
       <Form form={form} {...layout}>
-        <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
+        {/* <Form.Item label="检验仪器" name="instrId">
           <Select placeholder="请选择仪器" allowClear disabled>
             {instrList.map((item) => {
               return (
@@ -85,7 +105,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               );
             })}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           label="通道号"

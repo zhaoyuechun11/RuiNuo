@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, message, Select } from 'antd';
+import { Form, message, Select, Checkbox, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
-import styles from '../../index.less';
+import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { transferInstrList, RPreferenceValueDele } from '../../../../models/server';
@@ -206,10 +206,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
         <Form.Item name="instrId">
-          <Select
-            placeholder="请选择仪器"
-            allowClear
-          >
+          <Select placeholder="请选择仪器" allowClear>
             {instrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
@@ -226,10 +223,29 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
     <>
       <div className={styles.search_bth}>
         {/* {renderForm()} */}
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: '80px' }}>参考值与:</div>
+          <Checkbox.Group style={{ width: '100%' }}>
+            <Row>
+              <Col span={7}>
+                <Checkbox value="A">性别有关</Checkbox>
+              </Col>
+              <Col span={7}>
+                <Checkbox value="B">年龄有关</Checkbox>
+              </Col>
+              <Col span={10}>
+                <Checkbox value="C">样本类型有关</Checkbox>
+              </Col>
+            </Row>
+          </Checkbox.Group>
+        </div>
         {btnPermissions.map((item: any) => {
           return (
             item.mark === 'referenceValueAdd' && (
               <div className={styles.operateBtns}>
+                <Button btnType="primary" style={{ marginRight: '10px' }}>
+                  确定
+                </Button>
                 <Button
                   btnType="primary"
                   onClick={() => {

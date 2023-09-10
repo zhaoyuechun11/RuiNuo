@@ -1,23 +1,28 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Form, Input, message, Select, InputNumber, Row, Col, Checkbox } from 'antd';
+
 import {
   oneLevelTypeModalSel,
   RPreferenceValueAdd,
   RPreferenceValueUpdate,
 } from '../../../../../../models/server';
 import styles from './index.less';
+import { useSelector } from 'umi';
 
 const { Option } = Select;
 const prompt = ['↑↑', '↓↓', '↑', '↓', '+', '*'];
 const InputGroup = Input.Group;
-const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
+const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
   const [sampleTypeList, setSampleTypeList] = useState([]);
   const [ageUnit, setAgeUnit] = useState([]);
   const [sex, setSex] = useState([]);
+  const { instrList, instrId } = useSelector((state: any) => state.commonMaterials);
+  const [selecteInstr, setSelecteInstr] = useState();
+
   useImperativeHandle(Ref, () => ({
     show: (record: any) => {
       dialogRef.current && dialogRef.current.show();
@@ -25,6 +30,8 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       getList({ type: 'BT' });
       getList({ type: 'AU' });
       getList({ type: 'SX' });
+      getInstr();
+
       if (record) {
         form.setFieldsValue({
           ...record,
@@ -96,16 +103,32 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       form.setFieldsValue({ displayRef: form.getFieldValue('highValue') });
     }
   };
+  const getInstr = () => {
+    let result = instrList.filter((item: any) => item.id == instrId);
+    setSelecteInstr(result[0]?.instrName);
+  };
   return (
     <Dialog
       ref={dialogRef}
-      width={600}
+      width={680}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
     >
+      <div
+        style={{
+          borderBottom: '1px solid #cecede',
+          paddingBottom: '10px',
+          margin: '20px 55px 0',
+          display: 'flex',
+        }}
+      >
+        <div>检验仪器: {selecteInstr}</div>
+        <div style={{ marginLeft: '320px' }}>项目代号:{parent?.shortName}</div>
+      </div>
+
       <Form form={form} layout="vertical" style={{ padding: '20px' }} className={styles.form_box}>
         <Row gutter={24}>
           {/* <Col span={12}>
@@ -151,7 +174,8 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               </Form.Item>
             </InputGroup>
           </Col>
-          <Col span={10}>
+          <Col span={1}></Col>
+          <Col span={9}>
             <InputGroup compact>
               <Form.Item>
                 <Checkbox>
@@ -164,7 +188,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
                 label="性别"
                 rules={[{ required: true, message: '请选择性别' }]}
               >
-                <Select placeholder="请选择性别" allowClear>
+                <Select placeholder="请选择性别" allowClear style={{ width: 120 }}>
                   {sex.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -178,7 +202,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
           </Col>
         </Row>
         <Row gutter={24}>
-          <Col span={14}>
+          <Col span={12}>
             <InputGroup compact>
               <Form.Item>
                 <Checkbox>
@@ -197,6 +221,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
                   style={{ width: 90, marginRight: '10px', marginLeft: '10px' }}
                 />
               </Form.Item>
+
               <Form.Item
                 name="ageFromUnitId"
                 rules={[{ required: true, message: '请选择年龄单位从' }]}
@@ -214,7 +239,23 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               </Form.Item>
             </InputGroup>
           </Col>
-          <Col span={10}>
+          <Col span={1} style={{ lineHeight: '86px' }}>
+            <span>{`<`}</span>
+          </Col>
+          <Col span={1} style={{ padding: 0 }}>
+            <span
+              style={{
+                borderBottom: '1px solid #000',
+                display: 'block',
+                marginTop: '44px',
+              }}
+            ></span>
+          </Col>
+          <Col span={1} style={{ lineHeight: '86px' }}>
+            {' '}
+            <span>{`>`}</span>
+          </Col>
+          <Col span={9}>
             <InputGroup compact>
               <Form.Item
                 label="年龄到"
@@ -247,7 +288,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
         </Row>
 
         <Row gutter={24}>
-          <Col span={14}>
+          <Col span={12}>
             <InputGroup compact style={{ marginLeft: '100px' }}>
               <Form.Item name="highValue" label="上限值">
                 <InputNumber
@@ -278,7 +319,23 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               </Form.Item>
             </InputGroup>
           </Col>
-          <Col span={10}>
+          <Col span={1} style={{ lineHeight: '86px', paddingLeft: '10px' }}>
+            <span>{`<`}</span>
+          </Col>
+          <Col span={1} style={{ padding: 0 }}>
+            <span
+              style={{
+                borderBottom: '1px solid #000',
+                display: 'block',
+                marginTop: '44px',
+              }}
+            ></span>
+          </Col>
+          <Col span={1} style={{ lineHeight: '86px', paddingLeft: '10px' }}>
+            {' '}
+            <span>{`>`}</span>
+          </Col>
+          <Col span={9}>
             <InputGroup compact>
               <Form.Item name="lowValue" label="下限值">
                 <InputNumber
@@ -325,9 +382,14 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               </Select>
             </Form.Item>
           </Col> */}
-          <Col span={12} style={{ marginLeft: 100 }}>
-            <Form.Item name="displayRef" label="显示参考范围">
-              <InputNumber min={1} max={99} placeholder="请输入显示参考范围" />
+          <Col span={20} style={{ marginLeft: 100, width: '82%' }}>
+            <Form.Item label="显示参考范围">
+              <InputNumber
+                min={1}
+                max={99}
+                placeholder="请输入显示参考范围"
+                style={{ width: '100%' }}
+              />
             </Form.Item>
           </Col>
         </Row>

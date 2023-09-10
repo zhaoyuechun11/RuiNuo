@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, message, Select } from 'antd';
+import { Form, Input, message, Select, Checkbox, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
 import styles from '../../index.less';
@@ -98,6 +98,18 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       ellipsis: true,
     },
     {
+      title: '最近两次结果相隔天数',
+      dataIndex: 'highValue',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '最近两次结果不可能的差值',
+      dataIndex: 'highChar',
+      align: 'center',
+      width: 100,
+    },
+    {
       title: '操作',
       align: 'center',
       fixed: 'right',
@@ -136,7 +148,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       type: 'commonMaterials/fetchRPCriticalValue',
       payload: {
         ...params,
-        callback: (res:any) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             setList(res.data.records);
             setTotal(res.data.total);
@@ -218,6 +230,22 @@ const CriticalValue = ({ parent, btnPermissions }) => {
     <>
       <div className={styles.search_bth}>
         {/* {renderForm()} */}
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: '80px' }}>参考值与:</div>
+          <Checkbox.Group style={{ width: '100%' }}>
+            <Row>
+              <Col span={7}>
+                <Checkbox value="A">性别有关</Checkbox>
+              </Col>
+              <Col span={7}>
+                <Checkbox value="B">年龄有关</Checkbox>
+              </Col>
+              <Col span={10}>
+                <Checkbox value="C">样本类型有关</Checkbox>
+              </Col>
+            </Row>
+          </Checkbox.Group>
+        </div>
         {btnPermissions?.map((item: any) => {
           return (
             item.mark === 'criticalValueAdd' && (

@@ -15,7 +15,7 @@ const defaultValData = [
   { id: 'L', name: '偏低' },
   { id: 'NOR', name: '正常' },
 ];
-const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
+const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
@@ -73,11 +73,18 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       }}
       onOk={onOk}
     >
+      <div
+        style={{
+          borderBottom: '1px solid #cecede',
+          paddingBottom: '10px',
+          margin: '20px 60px 0px 40px',
+          display: 'flex',
+        }}
+      >
+        项目代号:{parent?.shortName}
+      </div>
       <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
-        <Form.Item name="projectCode" label="项目代号">
-          <Input disabled />
-        </Form.Item>
-        <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
+        {/* <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
           <Select placeholder="请选择仪器" allowClear>
             {instrList.map((item) => {
               return (
@@ -87,6 +94,13 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               );
             })}
           </Select>
+        </Form.Item> */}
+        <Form.Item
+          name="result"
+          label="常用结果"
+          rules={[{ required: true, message: '请选择常用结果' }]}
+        >
+          <Input placeholder="请输入结果" />
         </Form.Item>
         <Form.Item
           name="resultFlag"
@@ -103,9 +117,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item name="result" label="结果">
-          <Input placeholder="请输入结果" />
-        </Form.Item>
+
         <Form.Item label="快速录入码" name="shortCode">
           <Input placeholder="请输入快速录入码" />
         </Form.Item>

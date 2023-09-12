@@ -10,7 +10,7 @@ const BatchAdd = ({ Ref }) => {
   const [form] = Form.useForm();
   const [templateData, setTemplateData] = useState([]);
   const [list, setList] = useState([]);
-  const reportUnit = sessionStorage.getItem('reportUnit');
+  const reportUnit = localStorage.getItem('reportUnit');
   const [currentIndex, setCurrentIndex] = useState(0);
   const { templateId, instrAndRecordId, resultListCheckItemUsed } = useSelector(
     (state: any) => state.generalInspectionMag,
@@ -158,7 +158,7 @@ const BatchAdd = ({ Ref }) => {
           </Form>
           {templateData?.map((item, index) => {
             return (
-              <div className={styles.list}>
+              <div className={styles.list} key={index}>
                 <Checkbox onChange={() => onChange(item)}></Checkbox>
                 <div
                   onClick={() => clickName(index, item)}

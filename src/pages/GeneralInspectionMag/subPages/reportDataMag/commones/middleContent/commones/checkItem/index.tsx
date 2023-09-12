@@ -12,7 +12,7 @@ const CheckItem = ({ Ref }) => {
     (state: any) => state.generalInspectionMag,
   );
   const [form] = Form.useForm();
-  const reportUnit = sessionStorage.getItem('reportUnit');
+  const reportUnit = localStorage.getItem('reportUnit');
   useImperativeHandle(Ref, () => ({
     show: () => {
       dialogRef.current && dialogRef.current.show();

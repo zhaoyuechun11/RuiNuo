@@ -95,7 +95,7 @@ const ExplainAdvise = () => {
       },
     },
   ];
-  const menu = (item) => {
+  const menu = (item: any) => {
     return (
       <Menu>
         <Menu.Item onClick={() => addWrap(item)}>换行添加</Menu.Item>
@@ -157,7 +157,7 @@ const ExplainAdvise = () => {
             onChange={onInputer}
           />
         </Form.Item>
-        <div style={{ textAlign: 'right', width: '100%' }}>{comment?.length||0}/500</div>
+        <div style={{ textAlign: 'right', width: '100%' }}>{comment?.length || 0}/500</div>
       </Form>
       {renderForm()}
       <Table columns={columns} dataSource={suggestions} bordered size="small" pagination={false} />

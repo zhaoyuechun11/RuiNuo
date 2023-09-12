@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { chartData } from '../../../../../../models/server';
 import { useSelector } from 'umi';

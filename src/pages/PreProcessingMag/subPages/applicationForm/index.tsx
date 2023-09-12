@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Table } from '@common';
-import { Button, Icon } from '@/components';
-import { Form, Input, message, Select, DatePicker, Tooltip } from 'antd';
+import { Icon } from '@/components';
+import { Form, Input, message, Select, DatePicker, Tooltip, Button } from 'antd';
 import { useDispatch } from 'umi';
 import { getHospitalList, userList, examineData, getMainOrder } from '../../models/server';
 import SampleApplication from './components/SampleApplication';
 import SetHeaderModal from '../sampleRegistration/components/SetHeaderModal';
+import s from './index.less';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 let columns: (
@@ -236,44 +237,32 @@ const applicationForm = () => {
   };
   const renderForm = () => {
     return (
-      <Form onValuesChange={handleSearch} layout="inline">
-        <div id="hospitalId">
-          <Form.Item name="hospitalId">
-            <Select
-              placeholder="请选择送检单位"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('hospitalId')}
-            >
-              {hospital?.map((item, index) => (
-                <Option value={item.id} key={index}>
-                  {item.hospitalName}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </div>
-        <div id="creatErId">
-          <Form.Item name="creatErId">
-            <Select
-              placeholder="请选择登记人"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('creatErId')}
-            >
-              {personList?.map((item, index) => (
-                <Option value={item.id} key={index}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </div>
+      <Form onValuesChange={handleSearch} layout="inline" className={s.form_box}>
+        <Form.Item name="hospitalId">
+          <Select placeholder="请选择送检单位" allowClear>
+            {hospital?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.hospitalName}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="creatErId">
+          <Select placeholder="请选择登记人" allowClear>
+            {personList?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.name}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
         <Form.Item name="createDateStart">
           <RangePicker
             showTime
             placeholder={['登记开始日期', '登记结束日期']}
-            style={{ width: 300 }}
+            style={{ width: 300, height: 35, border: '1px solid #9d9fa0' }}
           />
         </Form.Item>
         <Form.Item name="receiveBarcode">
@@ -289,14 +278,13 @@ const applicationForm = () => {
   };
   return (
     <>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', marginBottom: '10px', alignItems: 'center' }}>
         {renderForm()}
-        <Button btnType="primary" onClick={examine}>
+        <Button type="primary" onClick={examine} size="small">
           审核
         </Button>
         <Tooltip placement="top" arrowPointAtCenter title="自定义表头">
           <span
-            //   className={styles.settings}
             onClick={() => {
               setRef.current && setRef.current?.show();
             }}

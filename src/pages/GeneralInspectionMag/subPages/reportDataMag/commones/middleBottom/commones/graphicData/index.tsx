@@ -30,9 +30,9 @@ const GraphicData = () => {
   return (
     <div>
       <Row gutter={[{ xs: 8, sm: 16, md: 24, lg: 32 }, 20]}>
-        {list?.map((item) => {
+        {list?.map((item: any, index: any) => {
           return (
-            <Col className="gutter-row" span={6}>
+            <Col className="gutter-row" key={index}>
               <Row>
                 <Checkbox onChange={(e) => onChange(e, item)} checked={item.isRptUse}>
                   报告

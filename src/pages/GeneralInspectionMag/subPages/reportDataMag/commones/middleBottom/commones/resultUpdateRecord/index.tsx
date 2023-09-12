@@ -30,7 +30,6 @@ const ResultUpdateRecord = () => {
     {
       title: '项目编号',
       dataIndex: 'itemCode',
-      render: (text) => <a>{text}</a>,
       ellipsis: true,
       align: 'center',
     },
@@ -43,7 +42,6 @@ const ResultUpdateRecord = () => {
     {
       title: '修改前',
       dataIndex: 'resultBeFore',
-      render: (text) => <a>{text}</a>,
       align: 'center',
     },
     {
@@ -54,7 +52,6 @@ const ResultUpdateRecord = () => {
     {
       title: '修改人',
       dataIndex: 'operator',
-      render: (text) => <a>{text}</a>,
       align: 'center',
     },
     {

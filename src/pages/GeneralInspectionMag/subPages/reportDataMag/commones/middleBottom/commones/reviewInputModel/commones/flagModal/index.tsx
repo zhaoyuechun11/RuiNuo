@@ -1,6 +1,6 @@
 import React, { useState, useRef, useImperativeHandle } from 'react';
 import { Dialog } from '@components';
-import { Select, message, Form, Input } from 'antd';
+import { Select, Form, Input } from 'antd';
 
 import style from './index.less';
 import { useSelector, useDispatch } from 'umi';

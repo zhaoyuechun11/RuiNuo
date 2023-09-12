@@ -16,13 +16,6 @@ const Applying = ({ type }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(applyList);
-    //debugger
-    // const result = applyList?.map((item) => {
-    //   return { sampleTypeName: item.defaultSampleTypeName, itemName: item.reqItemName, ...item };
-    // });
-    //console.log('result', result);
-
     setList(applyList);
   }, [applyList]);
   useEffect(() => {
@@ -71,9 +64,9 @@ const Applying = ({ type }) => {
     {
       title: '操作',
       key: 'action',
-      align:'center',
+      align: 'center',
       render: (text, record) => (
-        <div style={{display:'flex',justifyContent:'center'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button
             onClick={() => {
               deleteCurrentItem(record.id, 1);
@@ -247,6 +240,7 @@ const Applying = ({ type }) => {
       <Table
         columns={type === 1 ? applyColumns : type === 2 ? inspectionColumns : informationColumns}
         dataSource={type === 1 ? list : type === 2 ? sampleListData : informationList}
+        size="small"
       />
       <ReportItems refs={reportItemsRef} />
     </>

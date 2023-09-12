@@ -374,7 +374,7 @@ const QueryData = ({ queryData }) => {
   };
 
   return (
-    <Card style={{ padding: '24px 20px 24px' }}>
+    <Card style={{ padding: '0px 20px' }}>
       <div className={style.queryData}>
         <Form
           form={form}

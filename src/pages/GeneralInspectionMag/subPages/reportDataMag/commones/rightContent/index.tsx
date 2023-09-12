@@ -85,7 +85,7 @@ const RightContent = () => {
     getDictList({ type: 'DP' });
     getDictList({ type: 'FT' });
     getReportUnitList();
-    const reportUnit = sessionStorage.getItem('reportUnit');
+    const reportUnit = localStorage.getItem('reportUnit');
     if (reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);
       form.setFieldsValue({ reportUnitCode: newReportUnit.value });
@@ -411,7 +411,7 @@ const RightContent = () => {
     });
   };
   const reportUnitChange = (e: any, option: any) => {
-    sessionStorage.setItem('reportUnit', JSON.stringify(option));
+    localStorage.setItem('reportUnit', JSON.stringify(option));
     if (e) {
       getReportUnitReqItem(option.key);
       getReportUnitInstr(option.key);

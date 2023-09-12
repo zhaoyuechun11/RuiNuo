@@ -6,6 +6,7 @@ import { Form, Input, message, Tabs, Select, Switch } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import { applyProjectDelete, applyProjectExport, majorGroup } from '../../models/server';
 import styles from '../index.less';
+import s from './index.less';
 import UseHospital from './subPages/useHospital';
 import CombinationDetails from './subPages/combinationDetails';
 import Instrument from './subPages/instrument';
@@ -115,7 +116,7 @@ const ApplyProjectGroup = () => {
         return (
           <Switch
             checked={record.isDisable}
-            onChange={(checked) => {
+            onChange={() => {
               dispatch({
                 type: 'commonMaterials/fetchApplyProjectState',
                 payload: {
@@ -407,7 +408,7 @@ const ApplyProjectGroup = () => {
         title={'申请'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>
-      <div>
+     <div className={s.tabsTitle}>
         <span>项目编码:</span>
         {currentItem?.reqItemCode || list[0]?.reqItemCode}
         <span style={{ marginLeft: '20px' }}>项目名称:</span>

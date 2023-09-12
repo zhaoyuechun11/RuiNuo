@@ -7,7 +7,7 @@ import {
   RPreferenceValueAdd,
   RPreferenceValueUpdate,
 } from '../../../../../../models/server';
-import styles from './index.less';
+import styles from '../../../criticalReference.less';
 import { useSelector } from 'umi';
 
 const { Option } = Select;
@@ -47,6 +47,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
   }));
   const onOk = () => {
     form.validateFields().then((value) => {
+      debugger;
       if (id) {
         RPreferenceValueUpdate({
           id: id,
@@ -119,35 +120,18 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
     >
       <div
         style={{
-          borderBottom: '1px solid #cecede',
+          borderBottom: '1px solid #1890ff',
           paddingBottom: '10px',
-          margin: '20px 55px 0',
+          margin: '20px 40px 0px 20px',
           display: 'flex',
         }}
       >
         <div>检验仪器: {selecteInstr}</div>
-        <div style={{ marginLeft: '320px' }}>项目代号:{parent?.shortName}</div>
+        <div style={{ marginLeft: '220px' }}>项目代号:{parent?.shortName}</div>
       </div>
 
       <Form form={form} layout="vertical" style={{ padding: '20px' }} className={styles.form_box}>
         <Row gutter={24}>
-          {/* <Col span={12}>
-            <Form.Item
-              label="仪器"
-              name="instrId"
-              rules={[{ required: true, message: '请选择仪器' }]}
-            >
-              <Select placeholder="请选择仪器" autoComplete="off" allowClear>
-                {instrList.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.instrName}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col> */}
           <Col span={14}>
             <InputGroup compact>
               <Form.Item>
@@ -162,7 +146,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 label="样本类型"
                 rules={[{ required: true, message: '请选择样本类型' }]}
               >
-                <Select placeholder="请选择样本类型" allowClear style={{ width: 206 }}>
+                <Select placeholder="请选择样本类型" allowClear className={styles.sampleType}>
                   {sampleTypeList.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -188,7 +172,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 label="性别"
                 rules={[{ required: true, message: '请选择性别' }]}
               >
-                <Select placeholder="请选择性别" allowClear style={{ width: 120 }}>
+                <Select placeholder="请选择性别" allowClear className={styles.sex}>
                   {sex.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -215,11 +199,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 name="ageFrom"
                 rules={[{ required: true, message: '请输入年龄' }]}
               >
-                <Input
-                  maxLength={10}
-                  placeholder="请输入年龄"
-                  style={{ width: 90, marginRight: '10px', marginLeft: '10px' }}
-                />
+                <Input maxLength={10} placeholder="请输入年龄" className={styles.age} />
               </Form.Item>
 
               <Form.Item
@@ -227,7 +207,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 rules={[{ required: true, message: '请选择年龄单位从' }]}
                 label="年龄单位"
               >
-                <Select placeholder="年龄单位" allowClear style={{ width: 110 }}>
+                <Select placeholder="年龄单位" allowClear className={styles.ageUnit}>
                   {ageUnit.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -239,19 +219,13 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               </Form.Item>
             </InputGroup>
           </Col>
-          <Col span={1} style={{ lineHeight: '86px' }}>
+          <Col span={1} className={styles.arrow}>
             <span>{`<`}</span>
           </Col>
-          <Col span={1} style={{ padding: 0 }}>
-            <span
-              style={{
-                borderBottom: '1px solid #000',
-                display: 'block',
-                marginTop: '44px',
-              }}
-            ></span>
+          <Col span={1} className={styles.line}>
+            <span></span>
           </Col>
-          <Col span={1} style={{ lineHeight: '86px' }}>
+          <Col span={1} className={styles.arrow}>
             {' '}
             <span>{`>`}</span>
           </Col>
@@ -262,18 +236,14 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 name="ageTo"
                 rules={[{ required: true, message: '请输入年龄到' }]}
               >
-                <Input maxLength={10} placeholder="请输入年龄到" style={{ width: 90 }} />
+                <Input maxLength={10} placeholder="请输入年龄到" className={styles.ageTo} />
               </Form.Item>
               <Form.Item
                 name="ageToUnitId"
                 label="年龄单位"
                 rules={[{ required: true, message: '请选择年龄单位到' }]}
               >
-                <Select
-                  placeholder="年龄单位"
-                  allowClear
-                  style={{ width: 110, marginLeft: '10px' }}
-                >
+                <Select placeholder="年龄单位" allowClear className={styles.ageToUnit}>
                   {ageUnit.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -289,13 +259,13 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
 
         <Row gutter={24}>
           <Col span={12}>
-            <InputGroup compact style={{ marginLeft: '100px' }}>
+            <InputGroup compact className={styles.highGroup}>
               <Form.Item name="highValue" label="上限值">
                 <InputNumber
                   max={100}
                   placeholder="请输入上限值"
-                  style={{ width: 90 }}
                   onChange={highValueChange}
+                  className={styles.highVal}
                 />
               </Form.Item>
               <Form.Item
@@ -303,11 +273,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 label="上限提示字符"
                 rules={[{ required: true, message: '请选择上限提示字符' }]}
               >
-                <Select
-                  placeholder="请选择上限提示字符"
-                  allowClear
-                  style={{ width: 110, marginLeft: '10px' }}
-                >
+                <Select placeholder="请选择上限提示字符" allowClear className={styles.highChar}>
                   {prompt.map((item) => {
                     return (
                       <Option value={item} key={item}>
@@ -319,19 +285,13 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               </Form.Item>
             </InputGroup>
           </Col>
-          <Col span={1} style={{ lineHeight: '86px', paddingLeft: '10px' }}>
+          <Col span={1} className={`${styles.arrow} ${styles.hight_low}`}>
             <span>{`<`}</span>
           </Col>
-          <Col span={1} style={{ padding: 0 }}>
-            <span
-              style={{
-                borderBottom: '1px solid #000',
-                display: 'block',
-                marginTop: '44px',
-              }}
-            ></span>
+          <Col span={1} className={styles.line}>
+            <span></span>
           </Col>
-          <Col span={1} style={{ lineHeight: '86px', paddingLeft: '10px' }}>
+          <Col span={1} className={styles.arrow}>
             {' '}
             <span>{`>`}</span>
           </Col>
@@ -342,8 +302,8 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                   min={0}
                   max={100}
                   placeholder="请输入下限值"
-                  style={{ width: 90 }}
                   onChange={lowValueChange}
+                  className={styles.lowValue}
                 />
               </Form.Item>
               <Form.Item
@@ -351,11 +311,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
                 label="下限提示字符"
                 rules={[{ required: true, message: '请选择下限提示字符' }]}
               >
-                <Select
-                  placeholder="请选择下限提示字符"
-                  allowClear
-                  style={{ width: 110, marginLeft: '10px' }}
-                >
+                <Select placeholder="请选择下限提示字符" allowClear className={styles.lowChar}>
                   {prompt.map((item) => {
                     return (
                       <Option value={item} key={item}>
@@ -369,21 +325,8 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           </Col>
         </Row>
         <Row gutter={24}>
-          {/* <Col span={12}>
-            <Form.Item name="sex" label="性别" rules={[{ required: true, message: '请选择性别' }]}>
-              <Select placeholder="请选择性别" allowClear>
-                {sex.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.dictValue}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col> */}
-          <Col span={20} style={{ marginLeft: 100, width: '82%' }}>
-            <Form.Item label="显示参考范围">
+          <Col span={20} className={styles.displayRef}>
+            <Form.Item label="显示参考范围" name="displayRef">
               <InputNumber
                 min={1}
                 max={99}

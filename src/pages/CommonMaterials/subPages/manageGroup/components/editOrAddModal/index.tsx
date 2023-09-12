@@ -60,14 +60,13 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
         <Form.Item label="code值" name="code" rules={[{ required: true, message: '请输入code值' }]}>
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入code值" />
+          <Input placeholder="请输入code值" />
         </Form.Item>
         <Form.Item label="名称" name="name" rules={[{ required: true, message: '请输入code值' }]}>
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入名称" />
+          <Input placeholder="请输入名称" />
         </Form.Item>
         <Form.Item label="颜色" name="color">
           <ColorPicker backgroundColor={record} />

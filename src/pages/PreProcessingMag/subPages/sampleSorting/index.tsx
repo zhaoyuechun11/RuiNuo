@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Tabs, Form, Input, DatePicker, Select, message } from 'antd';
-import { Button, Icon } from '@/components';
+import { Table, Tabs, Form, Input, DatePicker, Select, message, Button } from 'antd';
+import { Icon } from '@/components';
 import { useDispatch, useSelector, history } from 'umi';
 import { scanSortingSave, getHospitalList, preSortNum } from '../../models/server';
 import { majorGroup, manageListSelect } from '@/models/server';
@@ -452,16 +452,17 @@ const SampleSorting = () => {
   };
   return (
     <>
-      <Tabs type="card">
+      <Tabs>
         <TabPane tab="单个扫码分拣" key="1">
-          <div style={{ marginBottom: '10px' }} className={styles.common}>
+          <div style={{ margin: '10px 0' }} className={styles.common}>
             {renderForm()}
             <div className={styles.common}>
-              <Button btnType="primary" onClick={save}>
+              <Button type="primary" onClick={save} size="small">
                 分拣信息保存
               </Button>
               <Button
-                btnType="primary"
+                size="small"
+                type="primary"
                 style={{ margin: '0 10px' }}
                 onClick={() => {
                   history.push('/preProcessingMag/bloodSeparationMag');
@@ -510,16 +511,18 @@ const SampleSorting = () => {
           />
         </TabPane>
         <TabPane tab="批量查询分拣" key="2">
-          <div style={{ marginBottom: '10px', alignItems: 'center' }} className={styles.common}>
+          <div style={{ margin: '10px 0', alignItems: 'center' }} className={styles.common}>
             {batchSortingForm()}
             <div style={{ height: '40px' }} className={styles.common}>
               {/* <Button btnType="primary" onClick={save}>
                 查询待分拣样本
               </Button> */}
-              <Button btnType="primary" style={{ margin: '0 10px' }} onClick={sortSave}>
+              <Button type="primary" style={{ margin: '0 10px' }} onClick={sortSave} size="small">
                 分拣信息保存
               </Button>
-              <Button btnType="primary">打印标签</Button>
+              <Button type="primary" size="small">
+                打印标签
+              </Button>
               {/* <Button btnType="primary" style={{ margin: '0px 0px 0px 10px' }}>
                 选项
               </Button> */}

@@ -1,4 +1,4 @@
-import React, {  useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, message, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
@@ -25,6 +25,7 @@ const CommonResults = ({ parent, btnPermissions }) => {
       title: '顺序',
       dataIndex: 'seq',
       align: 'center',
+      width:100
     },
     {
       title: '结果',
@@ -95,17 +96,6 @@ const CommonResults = ({ parent, btnPermissions }) => {
     }
   }, [pageNum, pageSize, parent]);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -186,7 +176,6 @@ const CommonResults = ({ parent, btnPermissions }) => {
         columns={Columns}
         rowKey="id"
         size={'small'}
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

@@ -1,14 +1,11 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { message, Transfer, Table } from 'antd';
 import { Dialog } from '@/components';
-import style from '../index.less'
+import style from '../index.less';
 const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type }) => {
   const dialogRef = useRef();
   const [leftListData, setLeftListData] = useState([]);
-  const [mockData, setMockData] = useState([]);
   const [targetKeys, setTargetKeys] = useState([]);
-  const [oldMockData, setOldMockData] = useState([]);
-
 
   useImperativeHandle(Ref, () => ({
     show: (val) => {
@@ -20,29 +17,7 @@ const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type })
       dialogRef.current && dialogRef.current.hide();
     },
   }));
-  const getMock = () => {
-    const targetKeys = [];
-    const mockData = [];
-    for (let i = 0; i < 20; i++) {
-      const data = {
-        key: i.toString(),
-        title: `content${i + 1}`,
-        description: `description of content${i + 1}`,
-        chosen: Math.random() * 2 > 1,
-      };
-      if (data.chosen) {
-        targetKeys.push(data.key);
-      }
 
-      console.log('data', data);
-      mockData.push(data);
-      console.log('mockData', mockData);
-    }
-    console.log('targetKeys', targetKeys);
-    setOldMockData(mockData);
-    setMockData(mockData);
-    setTargetKeys(targetKeys);
-  };
   const getList = () => {
     let param = { reqItemId: parent?.id };
 
@@ -64,19 +39,7 @@ const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type })
   };
   const filterOption = (inputValue, option) => option.hospitalName.indexOf(inputValue) > -1;
   const handleChange = (targetKeys) => {
-    // this.setState({ targetKeys });
-    console.log('targetKeys', targetKeys);
     setTargetKeys(targetKeys);
-    // let arrayData = [];
-    // oldMockData.map((item) => {
-    //   targetKeys.map((targetItem) => {
-    //     if (item.key === targetItem) {
-    //       arrayData.push({ ...item, title: item.title + defaultVal });
-    //     }
-    //   });
-    // });
-    // let result = removeDuplicateObj(arrayData.concat(mockData));
-    // setMockData(result);
   };
   const handleSearch = (dir, value) => {
     console.log('search:', dir, value);
@@ -116,31 +79,6 @@ const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type })
       }
     });
   };
-  // const onChange = (checkedValues) => {
-  //   selectedVal.current = checkedValues;
-  //   setBindedVal(checkedValues);
-  // };
-  const handleChangeSelect = (value) => {
-    setDefaultVal(value);
-    let arrayData = [];
-    oldMockData.map((item) => {
-      targetKeys.map((targetItem) => {
-        if (item.key === targetItem) {
-          arrayData.push({ ...item, title: item.title + value });
-        }
-      });
-    });
-    let result = removeDuplicateObj(arrayData.concat(mockData));
-    setMockData(result);
-  };
-  const removeDuplicateObj = (arr) => {
-    let obj = {};
-    arr = arr.reduce((newArr, next) => {
-      obj[next.key] ? '' : (obj[next.key] = true && newArr.push(next));
-      return newArr;
-    }, []);
-    return arr;
-  };
 
   const columns = [
     {
@@ -166,9 +104,15 @@ const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type })
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Table columns={columns} rowKey="id" dataSource={[parent]} pagination={false} />
+      <Table
+        columns={columns}
+        rowKey="id"
+        dataSource={[parent]}
+        pagination={false}
+        size="small"
+        className={style.table_box}
+      />
       <Transfer
         dataSource={leftListData}
         showSearch

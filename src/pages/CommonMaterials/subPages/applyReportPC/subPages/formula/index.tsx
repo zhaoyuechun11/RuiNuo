@@ -1,35 +1,41 @@
-import React, {  useEffect, useRef, useState } from 'react';
-import { Form, message, Select } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
 import styles from '../../index.less';
+import s from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import { transferInstrList, formulaDele } from '../../../../models/server';
-const { Option } = Select;
+import { formulaDele } from '../../../../models/server';
 const Formula = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
+  const { instrId } = useSelector((state: any) => state.commonMaterials);
   const addModal = useRef();
-  const [instrList, setInstrList] = useState([]);
   const [list, setList] = useState([]);
   const confirmModalRef = useRef();
   const idRef = useRef();
   const Columns = [
     {
-      title: '仪器',
+      title: '检验仪器',
       dataIndex: 'instrName',
       align: 'center',
+      width:180
     },
     {
-      title: '公式内容',
+      title: '项目代号',
+      dataIndex: 'projectCode',
+      align: 'center',
+      width:200
+    },
+    {
+      title: '计算公式',
       dataIndex: 'formula',
       align: 'center',
+      width:450
     },
 
     {
@@ -37,7 +43,7 @@ const Formula = ({ parent, btnPermissions }) => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div className={styles.action_btn}>
+          <div className={s.action_btn}>
             {btnPermissions.map((item) => {
               return item.mark === 'formulaDelete' ? (
                 <Button
@@ -71,7 +77,13 @@ const Formula = ({ parent, btnPermissions }) => {
         ...params,
         callback: (res: any) => {
           if (res.code === 200) {
-            setList(res.data.records);
+            const result = res.data.records.map((item: any) => {
+              return {
+                ...item,
+                projectCode: parent.shortName,
+              };
+            });
+            setList(result);
             setTotal(res.data.total);
           }
         },
@@ -81,34 +93,13 @@ const Formula = ({ parent, btnPermissions }) => {
 
   useEffect(() => {
     if (parent) {
-      getList({ pageNum, pageSize, labItemId: parent.id });
-      getInstrList();
+      getList({ pageNum, pageSize, labItemId: parent.id, instrId });
     }
-  }, [pageNum, pageSize, parent]);
+  }, [pageNum, pageSize, parent, instrId]);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
-  };
-  const handleSearch = (changedValues, allValues) => {
-    const values = {
-      pageNum,
-      pageSize,
-      reqItemId: parent.id,
-      ...allValues,
-    };
-    getList(values);
   };
   const deleteBind = (id: any) => {
     confirmModalRef.current.show();
@@ -123,50 +114,23 @@ const Formula = ({ parent, btnPermissions }) => {
       }
     });
   };
-  const getInstrList = () => {
-    transferInstrList().then((res) => {
-      if (res.code === 200) {
-        setInstrList(res.data);
-      }
-    });
-  };
-  const renderForm = () => {
-    return (
-      <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
-        <Form.Item name="instrId">
-          <Select
-            placeholder="请选择仪器"
-            allowClear
-            // onChange={projectCategoryChange}
-          >
-            {instrList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.instrName}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-      </Form>
-    );
+
+  const add = () => {
+    if (!instrId) {
+      message.warning('请先选择仪器!');
+      return;
+    }
+    addModal.current.show();
   };
   return (
     <>
       <div className={styles.search_bth}>
-        {/* {renderForm()} */}
         {btnPermissions.map((item) => {
           return (
             item.mark === 'formulaAdd' && (
               <div className={styles.operateBtns}>
-                <Button
-                  btnType="primary"
-                  onClick={() => {
-                    addModal.current.show();
-                  }}
-                >
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
+                <Button btnType="primary" onClick={add}>
+                  计算向导...
                 </Button>
               </div>
             )
@@ -177,7 +141,6 @@ const Formula = ({ parent, btnPermissions }) => {
         size={'small'}
         columns={Columns}
         rowKey="id"
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
@@ -190,9 +153,8 @@ const Formula = ({ parent, btnPermissions }) => {
       />
       <EditOrAddModal
         Ref={addModal}
-        instrList={instrList}
         parent={parent}
-        refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id })}
+        refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id, instrId })}
       ></EditOrAddModal>
       <Confirm
         confirmRef={confirmModalRef}

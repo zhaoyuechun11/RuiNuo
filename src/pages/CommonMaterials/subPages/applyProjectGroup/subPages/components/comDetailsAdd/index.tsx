@@ -1,12 +1,14 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { message, Transfer, Table, Form, Input, Radio } from 'antd';
 import { Dialog } from '@/components';
+
 import {
   applyProjectItemByCompBindAdd,
   applyProjectItemByCompGetBinds,
   getSameProfessionList,
   getBindsList,
 } from '../../../../../models/server';
+import style from '../index.less';
 const layout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 16 },
@@ -20,7 +22,7 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
   const [targetKeys, setTargetKeys] = useState([]);
 
   useImperativeHandle(Ref, () => ({
-    show: (val) => {
+    show: (val:any) => {
       dialogRef.current && dialogRef.current.show();
     },
     hide: () => {
@@ -126,9 +128,8 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Table columns={columns} rowKey="id" dataSource={[parent]} pagination={false} />
+      <Table columns={columns} rowKey="id" dataSource={[parent]} pagination={false}  className={style.table_box} size='small'/>
       <Form form={form} {...layout} style={{ marginTop: '20px' }}>
         <Form.Item name="comboDescribe" label="明细描述">
           <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入明细描述" />

@@ -424,7 +424,12 @@ const SampleHandover = () => {
   };
   const batchSortingForm = () => {
     return (
-      <Form onValuesChange={batchSortinSearch} layout="inline" form={batchForm}>
+      <Form
+        onValuesChange={batchSortinSearch}
+        layout="inline"
+        form={batchForm}
+        className={styles.batch_form}
+      >
         <Form.Item name="createDateStart" label="登记日期">
           <RangePicker
             showTime={{ format: 'HH:mm:ss' }}
@@ -433,43 +438,33 @@ const SampleHandover = () => {
             style={{ width: 340 }}
           />
         </Form.Item>
-        <div id="hospitalId">
-          <Form.Item name="hospitalId" label="送检单位">
-            <Select
-              placeholder="请选择送检单位"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('hospitalId')}
-            >
-              {hospital?.map((item, index) => (
-                <Option value={item.id} key={index}>
-                  {item.hospitalName}
+
+        <Form.Item name="hospitalId" label="送检单位">
+          <Select placeholder="请选择送检单位" allowClear>
+            {hospital?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.hospitalName}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="labClassId" label="专业类别">
+          <Select
+            placeholder="请选择专业类别"
+            allowClear
+            mode="multiple"
+            defaultValue={() => majorGroupData.map((item) => item.id)}
+            onSearch={labClassChange}
+          >
+            {majorGroupData.length > 0 &&
+              majorGroupData.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.className}
                 </Option>
               ))}
-            </Select>
-          </Form.Item>
-        </div>
-
-        <div id="labClassId" className={styles.labClassBox}>
-          <Form.Item name="labClassId" label="专业类别">
-            <Select
-              placeholder="请选择专业类别"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
-              mode="multiple"
-              defaultValue={() => majorGroupData.map((item) => item.id)}
-              onSearch={labClassChange}
-            >
-              {majorGroupData.length > 0 &&
-                majorGroupData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.className}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+          </Select>
+        </Form.Item>
       </Form>
     );
   };
@@ -626,9 +621,9 @@ const SampleHandover = () => {
 
   return (
     <>
-      <Tabs type="card">
+      <Tabs>
         <TabPane tab="扫码至交接列" key="1">
-          <div style={{ marginBottom: '10px' }} className={styles.common}>
+          <div style={{ margin: '10px 0' }} className={styles.common}>
             {renderForm()}
             <Form layout="inline" form={form} className={styles.receiver_form}>
               <Form.Item name="labReceiveBy">
@@ -683,7 +678,7 @@ const SampleHandover = () => {
           />
         </TabPane>
         <TabPane tab="批量查询至交接列" key="2">
-          <div style={{ marginBottom: '10px', alignItems: 'center' }} className={styles.common}>
+          <div style={{ margin: '10px 0', alignItems: 'center' }} className={styles.common}>
             {batchSortingForm()}
             <Form layout="inline" form={form} className={styles.receiver_form}>
               <Form.Item name="receiver">

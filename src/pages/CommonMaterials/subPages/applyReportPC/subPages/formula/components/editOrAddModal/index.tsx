@@ -1,25 +1,24 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, message, Select, Radio, Button } from 'antd';
-import debounce from 'lodash/debounce';
+import { Form, Input, message, Radio, Button, Row, Col } from 'antd';
+
 import {
   formulaAdd,
   formulaUpdate,
-  reportProjectSele,
+  getDataTypeNumList,
   getCalculationResults,
 } from '../../../../../../models/server';
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
-};
-const { Option } = Select;
+import { useSelector } from 'umi';
+import styles from './index.less';
+
 const { TextArea } = Input;
-const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
+const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
   const [list, setList] = useState();
   const [activation, setActivation] = useState(true);
+  const { instrId } = useSelector((state: any) => state.commonMaterials);
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
       dialogRef.current && dialogRef.current.show();
@@ -45,7 +44,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
         formulaUpdate({
           id: id,
           labItemId: parent.id,
-          instrId: value.instrId,
+          instrId,
           formula: value.formula,
         }).then((res: { code: number }) => {
           if (res.code === 200) {
@@ -55,7 +54,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
           }
         });
       } else {
-        formulaAdd({ instrId: value.instrId, formula: value.formula, labItemId: parent.id }).then(
+        formulaAdd({ instrId, formula: value.formula, labItemId: parent.id }).then(
           (res: { code: number }) => {
             if (res.code === 200) {
               message.success('添加成功');
@@ -69,14 +68,13 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   };
 
   const reportProjectSeleList = (val: string) => {
-    reportProjectSele({ key: val }).then((res) => {
+    getDataTypeNumList().then((res) => {
       if (res.code === 200) {
         setList(res.data);
       }
     });
   };
   const charChange = (e) => {
-    console.log('e', e.target.value);
     setActivation(true);
 
     switch (e.target.value) {
@@ -98,13 +96,13 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       case 5:
         form.setFieldsValue({ formula: form.getFieldValue('formula') + ')' });
         break;
-      case 6:
-        form.setFieldsValue({ formula: '' });
-        break;
-      case 7:
-        calculationResults();
-        break;
     }
+  };
+  const clear = () => {
+    form.setFieldsValue({ formula: '' });
+  };
+  const verify = () => {
+    calculationResults();
   };
   const calculationResults = () => {
     console.log(form.getFieldValue('formula').replace(/\[|]/g, ''));
@@ -123,7 +121,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
       },
     );
   };
-  const add = (val) => {
+  const add = (val: any) => {
     setActivation(true);
     if (form.getFieldValue('formula')) {
       form.setFieldsValue({ formula: form.getFieldValue('formula') + '[' + val + ']' });
@@ -137,81 +135,80 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={864}
+      width={640}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
       }}
       footer={
-        <Button disabled={activation} onClick={onOk}>
-          保存
-        </Button>
+        <>
+          <Button type="primary" onClick={clear}>
+            清空
+          </Button>
+          <Button type="primary" onClick={verify}>
+            验证
+          </Button>
+          <Button disabled={activation} onClick={onOk}>
+            保存
+          </Button>
+        </>
       }
-      // onOk={onOk}
-
-      //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
-        <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
-          <Select
-            placeholder="请选择仪器"
-            autoComplete="off"
-            allowClear
-            // onChange={projectCategoryChange}
-          >
-            {instrList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.instrName}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-        <Form.Item label="检测项目">
-          <div>
-            <Input
-              placeholder="请输入关键字"
-              onChange={keywordsChange}
-              allowClear
-              style={{ marginBottom: '10px' }}
-            />
-
-            {list?.map((item) => {
-              return (
-                <div style={{ maxHeight: '200px', overflowY: 'scroll' }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    <div>{item.itemName}</div>
-                    <div>
-                      <Button onClick={() => add(item.id)}>添加</Button>
+      <Form form={form} className={styles.form_box}>
+        <Row>
+          <Col span={24}>
+            <Form.Item name="formula">
+              <TextArea></TextArea>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={10} style={{ border: '1px solid #9d9fa0' }}>
+            <div style={{ height: 300, overflowY: 'scroll', padding: 10 }}>
+              {list?.map((item: any) => {
+                return (
+                  <div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: '4px',
+                      }}
+                    >
+                      <div>{item.itemName}</div>
+                      <div>
+                        <Button onClick={() => add(item.id)} size="small" type="primary">
+                          添加
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </Form.Item>
-        <Form.Item name="formula" label="计算公式">
-          <TextArea></TextArea>
-        </Form.Item>
-        <Form.Item label="运算符">
-          <Radio.Group buttonStyle="solid" onChange={charChange}>
-            <Radio.Button value={0}>+</Radio.Button>
-            <Radio.Button value={1}>-</Radio.Button>
-            <Radio.Button value={2}>*</Radio.Button>
-            <Radio.Button value={3}>/</Radio.Button>
-            <Radio.Button value={4}>(</Radio.Button>
-            <Radio.Button value={5}>)</Radio.Button>
-            <Radio.Button value={6}>清空</Radio.Button>
-            <Radio.Button value={7}>验证</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
+                );
+              })}
+            </div>
+          </Col>
+          <Col span={2}></Col>
+          <Col span={12}>
+            <Form.Item>
+              <Radio.Group buttonStyle="solid" onChange={charChange}>
+                <Radio.Button value={0}>+</Radio.Button>
+                <Radio.Button value={1}>-</Radio.Button>
+                <Radio.Button value={2}>*</Radio.Button>
+                <Radio.Button value={3}>/</Radio.Button>
+                <Radio.Button value={4}>(</Radio.Button>
+                <Radio.Button value={5}>)</Radio.Button>
+                {/* <Radio.Button value={6}>清空</Radio.Button> */}
+                {/* <Radio.Button value={7}>验证</Radio.Button> */}
+              </Radio.Group>
+            </Form.Item>
+            <div>
+              <div>说明:</div>
+              <div>1.计算公式中不可包括其他计算项目,若有需要,一律转换为最原始的计算公式</div>
+              <div>2.所有项目代号必须“[”和“]”括起来</div>
+              <div>3.表达式可以为常数和空字符串</div>
+            </div>
+          </Col>
+        </Row>
       </Form>
     </Dialog>
   );

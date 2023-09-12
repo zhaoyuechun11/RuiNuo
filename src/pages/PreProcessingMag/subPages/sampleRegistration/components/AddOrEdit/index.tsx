@@ -8,10 +8,6 @@ import {
   Col,
   message,
   DatePicker,
-  Divider,
-  TreeSelect,
-  Tooltip,
-  Switch,
   Cascader,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -426,7 +422,7 @@ const AddOrEdit = () => {
         // className={s.addSingle}
       >
         <Row gutter={24}>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item label="录入方式" name="inputType">
               <Select
                 showSearch
@@ -444,7 +440,7 @@ const AddOrEdit = () => {
           </Col>
           {fieldList?.map((stru, index) => {
             return stru.dataType !== 2 ? (
-              <Col span={8} key={index}>
+              <Col span={6} key={index}>
                 <Form.Item
                   label={
                     <div
@@ -457,8 +453,6 @@ const AddOrEdit = () => {
                     </div>
                   }
                   name={[stru.isAuth ? 'system' : 'extend', `${stru.key}`]}
-                  // name={`${stru.key}`}
-                  // key={`${stru.key}`}
                   rules={[
                     {
                       required: stru.isRequired === true,
@@ -520,12 +514,10 @@ const AddOrEdit = () => {
                 </Form.Item>
               </Col>
             ) : (
-              <Col span={8} key={index}>
+              <Col span={6} key={index}>
                 <Form.Item
                   label={stru.name}
                   name={[stru.isAuth ? 'system' : 'extend', `${stru.key}`]}
-                  // name={`${stru.key}`}
-                  // key={`${stru.key}`}
                   rules={[
                     {
                       required: stru.isRequired === 1,

@@ -13,7 +13,7 @@ const FlagModal = ({ Ref }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const dialogRef = useRef();
-  const { reportResultList, instrAndRecordId } = useSelector(
+  const {  instrAndRecordId } = useSelector(
     (state: any) => state.generalInspectionMag,
   );
   const [type, setType] = useState();

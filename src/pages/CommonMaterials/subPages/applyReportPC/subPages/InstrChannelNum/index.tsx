@@ -1,23 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Form, Input, message, Select } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Form, Input, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
 import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import { transferInstrList, RPInstrChannelNumDele } from '../../../../models/server';
-const { Option } = Select;
+import { RPInstrChannelNumDele } from '../../../../models/server';
 const InstrChannelNum = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
   const { instrId } = useSelector((state: any) => state.commonMaterials);
   const addModal = useRef();
-  const [instrList, setInstrList] = useState([]);
   const [list, setList] = useState([]);
   const confirmModalRef = useRef();
   const idRef = useRef();
@@ -26,6 +22,7 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       title: '仪器',
       dataIndex: 'instrName',
       align: 'center',
+      width: 200,
     },
     {
       title: '项目代号',
@@ -33,14 +30,16 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       align: 'center',
     },
     {
-      title: '仪器通道号',
+      title: '通道号',
       dataIndex: 'interCode',
       align: 'center',
+      width: 100,
     },
     {
       title: '禁用',
       dataIndex: 'isDisable',
       align: 'center',
+      width: 100,
       render: (text) => {
         return <span>{text ? '禁用' : '启用'}</span>;
       },
@@ -49,11 +48,13 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       title: '创建日期',
       dataIndex: 'createDate',
       align: 'center',
+      width: 200,
     },
     {
       title: '创建人',
       dataIndex: 'creatEr',
       align: 'center',
+      width: 150,
     },
     {
       title: '操作',
@@ -92,12 +93,12 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       type: 'commonMaterials/fetchreRPInstrChannelNum',
       payload: {
         ...params,
-        callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
+        callback: (res: any) => {
           if (res.code === 200) {
             const result = res.data.records.map((item) => {
               return {
                 ...item,
-                projectCode: parent.enName,
+                projectCode: parent.shortName,
               };
             });
             setList(result);
@@ -111,21 +112,9 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, labItemId: parent.id, instrId });
-      //getInstrList();
     }
   }, [pageNum, pageSize, parent, instrId]);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -152,32 +141,16 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
       }
     });
   };
-  const getInstrList = () => {
-    transferInstrList().then((res) => {
-      if (res.code === 200) {
-        setInstrList(res.data);
-      }
-    });
+  const add = () => {
+    if (!instrId) {
+      message.warning('请先选择仪器!');
+      return;
+    }
+    addModal.current.show();
   };
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
-        {/* <Form.Item name="instrId">
-          <Select
-            placeholder="请选择仪器"
-            autoComplete="off"
-            allowClear
-            // onChange={projectCategoryChange}
-          >
-            {instrList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.instrName}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item> */}
         <Form.Item name="code">
           <Input
             placeholder="请输入通道号"
@@ -193,16 +166,11 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
     <>
       <div className={styles.search_bth}>
         {renderForm()}
-        {btnPermissions.map((item) => {
+        {btnPermissions.map((item: any, index: any) => {
           return (
             item.mark === 'instrumentNumberAdd' && (
-              <div className={styles.operateBtns}>
-                <Button
-                  btnType="primary"
-                  onClick={() => {
-                    addModal.current.show();
-                  }}
-                >
+              <div className={styles.operateBtns} key={index}>
+                <Button btnType="primary" onClick={add}>
                   <PlusOutlined style={{ marginRight: 4 }} />
                   新增
                 </Button>
@@ -215,7 +183,6 @@ const InstrChannelNum = ({ parent, btnPermissions }) => {
         size={'small'}
         columns={Columns}
         rowKey="id"
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

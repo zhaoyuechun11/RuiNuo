@@ -393,3 +393,6 @@ export function reportItemBindsDelete(params) {
 export function reportUnitReqItemChange(params) {
   return axios('basic/reportUnitReqItem/change', 'post', params);
 }
+export function getDataTypeNumList(params) {
+  return axios('basic/labItem/getDataTypeNumList', 'get', params);
+}

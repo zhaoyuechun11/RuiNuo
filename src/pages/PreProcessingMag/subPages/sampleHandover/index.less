@@ -1,5 +1,10 @@
 .common {
   display: flex;
+  :global {
+    .ant-input-affix-wrapper {
+      padding: 2px 11px !important;
+    }
+  }
 }
 
 .scanTable {
@@ -23,6 +28,25 @@
   :global {
     .ant-select-selector {
       width: 224px !important;
+    }
+  }
+}
+.batch_form {
+  :global {
+    .ant-picker {
+      border: 1px solid #9d9fa0 !important;
+      // height: 35px;
+      border-radius: 4px;
+    }
+  }
+}
+
+.batch_form,
+.receiver_form {
+  :global {
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      // height: 35px;
+      border-radius: 4px;
     }
   }
 }

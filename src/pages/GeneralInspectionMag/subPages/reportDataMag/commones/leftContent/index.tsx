@@ -11,7 +11,7 @@ const LeftContent = () => {
   const { instrAndRecordId, reportLeftData } = useSelector(
     (state: any) => state.generalInspectionMag,
   );
-  const reportUnit = sessionStorage.getItem('reportUnit');
+  const reportUnit = localStorage.getItem('reportUnit');
   useEffect(() => {
     if (reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);

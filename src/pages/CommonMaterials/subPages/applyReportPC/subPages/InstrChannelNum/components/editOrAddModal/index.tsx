@@ -4,8 +4,8 @@ import { Form, Input, message, Select, Switch } from 'antd';
 import { RPInstrChannelNumAdd, RPInstrChannelNumUpdate } from '../../../../../../models/server';
 import { useSelector } from 'umi';
 const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 5 },
+  wrapperCol: { span: 17 },
 };
 const { Option } = Select;
 
@@ -70,12 +70,12 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
   };
   const getInstr = () => {
     let result = instrList.filter((item: any) => item.id == instrId);
-    setSelecteInstr(result[0].instrName);
+    setSelecteInstr(result[0]?.instrName);
   };
   return (
     <Dialog
       ref={dialogRef}
-      width={640}
+      width={320}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -85,16 +85,16 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
       {!id && (
         <div
           style={{
-            borderBottom: '1px solid #cecede',
+            borderBottom: '1px solid #1890ff',
             paddingBottom: '10px',
-            margin: '20px 55px',
+            margin: '20px 26px',
           }}
         >
           <span>检验仪器:</span>
           {selecteInstr}
         </div>
       )}
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{ paddingLeft: '20px' }}>
         {/* <Form.Item label="检验仪器" name="instrId">
           <Select placeholder="请选择仪器" allowClear disabled>
             {instrList.map((item) => {

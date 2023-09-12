@@ -21,8 +21,12 @@ class index extends Component {
       pageLoading: true,
     };
   }
-  componentWillMount() {}
+  componentWillMount() {
 
+  }
+//   componentWillUnmount() {
+//     this.setState = ()=>false;
+// }
   componentDidMount() {}
 
   _renderSuccess = () => {

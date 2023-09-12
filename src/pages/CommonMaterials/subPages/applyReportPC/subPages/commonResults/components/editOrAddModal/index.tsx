@@ -2,10 +2,6 @@ import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Form, Input, message, Select, InputNumber } from 'antd';
 import { commonResultsAdd, commonResultsUpdate } from '../../../../../../models/server';
-const layout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
-};
 const { Option } = Select;
 const defaultValData = [
   { id: 'P', name: '阳性' },
@@ -15,6 +11,7 @@ const defaultValData = [
   { id: 'L', name: '偏低' },
   { id: 'NOR', name: '正常' },
 ];
+const InputGroup = Input.Group;
 const EditOrAddModal = ({ Ref, refresh, parent }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -66,7 +63,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={640}
+      width={320}
       title={id ? '编辑' : '新增'}
       onCancel={() => {
         dialogRef.current && dialogRef.current.hide();
@@ -75,26 +72,15 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
     >
       <div
         style={{
-          borderBottom: '1px solid #cecede',
+          borderBottom: '1px solid #1890ff',
           paddingBottom: '10px',
-          margin: '20px 60px 0px 40px',
+          margin: '20px 20px 0px 30px',
           display: 'flex',
         }}
       >
         项目代号:{parent?.shortName}
       </div>
-      <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
-        {/* <Form.Item label="仪器" name="instrId" rules={[{ required: true, message: '请选择仪器' }]}>
-          <Select placeholder="请选择仪器" allowClear>
-            {instrList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.instrName}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item> */}
+      <Form form={form} style={{ padding: '20px' }}>
         <Form.Item
           name="result"
           label="常用结果"
@@ -117,13 +103,14 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
             })}
           </Select>
         </Form.Item>
-
-        <Form.Item label="快速录入码" name="shortCode">
-          <Input placeholder="请输入快速录入码" />
-        </Form.Item>
-        <Form.Item label="顺序" name="seq">
-          <InputNumber />
-        </Form.Item>
+        <InputGroup compact>
+          <Form.Item label="快速录入码" name="shortCode" style={{ width: '59.7%' }}>
+            <Input placeholder="请输入快速录入码" style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item label="顺序" name="seq" style={{ width: '37%', marginLeft: '10px' }}>
+            <InputNumber style={{ width: '100%' }} />
+          </Form.Item>
+        </InputGroup>
       </Form>
     </Dialog>
   );

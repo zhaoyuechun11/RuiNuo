@@ -75,7 +75,7 @@ const SampleRegistration = () => {
           align: 'center',
           width: 180,
           render: (text: string, record: Record<string, any>) => (
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button
                 onClick={() => {
                   history.push(
@@ -86,6 +86,7 @@ const SampleRegistration = () => {
                 编辑
               </Button>
               <Button
+                style={{ marginLeft: '10px' }}
                 onClick={() => {
                   deleteCurrentItem(record.id);
                 }}
@@ -117,7 +118,6 @@ const SampleRegistration = () => {
             const selectedFields = res.data.filter(
               (item: Record<string, any>) => item?.isListDisplay == true,
             );
-            console.log(selectedFields);
             setSelectedColumns(selectedFields);
             setColumnOptionsList(res.data);
           }
@@ -195,6 +195,7 @@ const SampleRegistration = () => {
     <div>
       <div style={{ display: 'flex', marginBottom: '10px' }}>
         <Button
+          style={{ padding: '6px 10px' }}
           btnType="primary"
           onClick={() => {
             history.push('/preProcessingMag/sampleRegistration/addOrEdit/' + 0 + '/' + 'add');
@@ -211,16 +212,23 @@ const SampleRegistration = () => {
         </Button>
       </div>
       <QueryData />
-      <Tooltip placement="top" arrowPointAtCenter title="自定义表头">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'end',
+          alignItems: 'center',
+        }}
+      >
         <span
-          //   className={styles.settings}
           onClick={() => {
             setRef.current && setRef.current?.show();
           }}
         >
-          <Icon name="iconhouxuanren-shezhi" style={{ fontSize: 20 }} />
+          <Icon name="iconhouxuanren-shezhi" style={{ fontSize: 20, textAlign: 'right' }} />
         </span>
-      </Tooltip>
+        自定义表头
+      </div>
+
       <SampleView {...passProps} data={data} />
       <SetHeaderModal
         refs={setRef}

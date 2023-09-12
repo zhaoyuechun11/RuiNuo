@@ -1,6 +1,6 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
-import { Form, Input, Select, message, InputNumber } from 'antd';
+import { Form, Select, message, InputNumber } from 'antd';
 import {
   oneLevelTypeModalSel,
   guidPriceAddBind,
@@ -72,9 +72,8 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout}>
+      <Form form={form} {...layout} style={{ marginTop: '20px' }}>
         {/* <Form.Item label="顺序" name="dictCode" rules={[{ required: true, message: '请输入顺序' }]}>
           <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入顺序" />
         </Form.Item> */}
@@ -83,11 +82,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           name="standardPrice"
           rules={[{ required: true, message: '请输入价格' }]}
         >
-          <InputNumber
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入价格"
-          />
+          <InputNumber placeholder="请输入价格" />
         </Form.Item>
         <Form.Item name="feeTypeId" label="基准价类别">
           <Select placeholder="请选择基准价类别" autoComplete="off" allowClear>

@@ -1,6 +1,7 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { message, Transfer, Select, Table, Form } from 'antd';
 import { Dialog } from '@/components';
+import style from '../index.less';
 const defaultValData = [
   { id: 'P', name: '阳性' },
   { id: 'NP', name: '弱阳性' },
@@ -15,9 +16,6 @@ const layout = {
 };
 const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList }) => {
   const dialogRef = useRef();
-  const [list, setList] = useState([]);
-  const selectedVal = useRef();
-  const [bindedVal, setBindedVal] = useState([]);
   const [leftListData, setLeftListData] = useState([]);
   const [mockData, setMockData] = useState([]);
   const [targetKeys, setTargetKeys] = useState([]);
@@ -25,12 +23,8 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList })
   const [defaultVal, setDefaultVal] = useState();
   const [form] = Form.useForm();
   useImperativeHandle(Ref, () => ({
-    show: (val) => {
+    show: (val:any) => {
       dialogRef.current && dialogRef.current.show();
-      // id.current = val;
-
-      // List();
-
       getList();
       getLeftList();
     },
@@ -80,20 +74,7 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList })
   };
   const filterOption = (inputValue, option) => option.itemName.indexOf(inputValue) > -1;
   const handleChange = (targetKeys) => {
-    // this.setState({ targetKeys });
-    console.log('targetKeys', targetKeys);
     setTargetKeys(targetKeys);
-    // let arrayData = [];
-    // leftListData.map((item) => {
-    //   targetKeys.map((targetItem) => {
-    //     if (item.key === targetItem) {
-    //       arrayData.push({ ...item, itemName: item.itemName + defaultVal });
-    //     }
-    //   });
-    // });
-    // let result = removeDuplicateObj(arrayData.concat(leftListData));
-
-    // setLeftListData(result);
   };
   const handleSearch = (dir, value) => {
     console.log('search:', dir, value);
@@ -158,16 +139,18 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList })
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Table columns={columns} rowKey="id" dataSource={[parent]} pagination={false} />
+      <Table
+        columns={columns}
+        rowKey="id"
+        dataSource={[parent]}
+        pagination={false}
+        className={style.table_box} 
+        size='small'
+      />
       <Form form={form} {...layout} style={{ marginTop: '20px' }}>
         <Form.Item label="默认值">
-          <Select
-            placeholder="请选择默认值"
-            allowClear
-            onChange={handleChangeSelect}
-          >
+          <Select placeholder="请选择默认值" allowClear onChange={handleChangeSelect}>
             {defaultValData.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>

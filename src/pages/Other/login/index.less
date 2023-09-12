@@ -1,6 +1,9 @@
+body {
+  background-color: #bdd0f6;
+}
 .title {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: center;
 }
 .right {
   text-align: right;
@@ -8,6 +11,25 @@
 }
 :global {
   .login_btn {
-    margin: 0 170px;
+    width: 100%;
+  }
+}
+.header {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0 2px 3px -1px #ebeef3;
+}
+
+.login_box {
+  margin-top: 40px;
+  padding-top: 40px;
+  background-color: #fff;
+  .title {
+    display: flex;
+    justify-content: space-around;
+    & > div:nth-child(2) {
+      border-right: 1px solid #bdd0f6;
+    }
   }
 }

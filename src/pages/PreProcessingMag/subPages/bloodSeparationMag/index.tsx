@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tabs, Form, Input, message, DatePicker } from 'antd';
-import { Button, Icon } from '@/components';
+import { Table, Tabs, Form, Input, message, DatePicker, Button } from 'antd';
+import { Icon } from '@/components';
 import { getCurrentTime } from '@/utils';
 import { useDispatch, useSelector } from 'umi';
 import { bloodSave } from '../../models/server';
+import s from './index.less';
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 const BloodSeparationMag = () => {
@@ -249,7 +250,7 @@ const BloodSeparationMag = () => {
   };
   const batchBloodForm = () => {
     return (
-      <Form onValuesChange={batchBloodSearch} layout="inline">
+      <Form onValuesChange={batchBloodSearch} layout="inline" className={s.batch_form}>
         <Form.Item name="createDateStart">
           <RangePicker
             showTime={{ format: 'HH:mm:ss' }}
@@ -276,12 +277,12 @@ const BloodSeparationMag = () => {
     setFinishPageSize(size);
   };
   return (
-    <Tabs type="card" onChange={tabsChange}>
+    <Tabs onChange={tabsChange}>
       <TabPane tab="单个扫码分血" key={1}>
-        <div style={{ marginBottom: '10px', display: 'flex' }}>
+        <div className={s.search_box}>
           {renderForm()}
 
-          <Button btnType="primary" onClick={() => save(1)}>
+          <Button type="primary" onClick={() => save(1)} size="small">
             打印分血标签
           </Button>
         </div>
@@ -294,9 +295,9 @@ const BloodSeparationMag = () => {
         />
       </TabPane>
       <TabPane tab="查询分血" key={2}>
-        <div style={{ marginBottom: '10px', display: 'flex' }}>
+        <div className={s.batch_box}>
           {batchBloodForm()}
-          <Button btnType="primary" onClick={() => save(2)}>
+          <Button type="primary" onClick={() => save(2)} size="small">
             打印分血标签
           </Button>
         </div>

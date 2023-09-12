@@ -6,29 +6,31 @@
         svg {
           color: #007bff;
         }
+        line-height: 35px;
       }
       .ant-modal-header {
-        border-radius: 8px 8px 0 0;
-        padding: 18.5px 30px;
-        background: #fafbfe;
+        padding: 6px 30px;
+        background: #dff2fc;
         border-bottom: none;
+        border-radius: 8px 8px 0 0;
         .ant-modal-title {
+          color: #303133;
+          font-weight: 500;
           font-size: 15px;
           font-family: PingFangSC, PingFangSC-Medium;
-          font-weight: 500;
-          color: #303133;
         }
       }
       .ant-modal-body {
         padding: 0;
       }
       .ant-modal-footer {
-        padding: 29.5px 16px;
+        padding: 20px 16px;
+        border-top: 1px solid #1890ff;
       }
       .ant-input-affix-wrapper {
+        border: none;
         // background: #f9fafb;
         border-radius: 4px;
-        border: none;
         &.ant-input-affix-wrapper-focused {
           box-shadow: none;
         }
@@ -60,8 +62,8 @@
           .ant-picker,
           .ant-cascader-picker {
             width: 100%;
-            background: #ffff;
             height: 100%;
+            background: #ffff;
             border-radius: 4px;
             // border: none;
             &.ant-picker-focused {
@@ -79,39 +81,39 @@
     display: flex;
     justify-content: center;
     .submitDisabled {
-      box-shadow: none !important;
-      border: none !important;
-      background: #fafbfe !important;
       color: #909399 !important;
+      background: #fafbfe !important;
+      border: none !important;
+      box-shadow: none !important;
     }
     :global {
       button {
-        border-radius: 4px;
-        font-family: PingFangSC, PingFangSC-Regular;
         font-weight: 400;
+        font-family: PingFangSC, PingFangSC-Regular;
+        border-radius: 4px;
         &::after {
           display: none;
         }
         &:nth-child(1) {
-          box-shadow: none;
-          border: none;
-          background: #fafbfe;
           color: #909399;
+          background: #fafbfe;
+          border: none;
+          box-shadow: none;
         }
         &:last-child {
-          box-shadow: none;
-          border: none;
-          background-color: #007bff;
-          font-size: 14px;
-          color: #ffffff;
           margin-left: 32px;
+          color: #ffffff;
+          font-size: 14px;
+          background-color: #007bff;
+          border: none;
+          box-shadow: none;
         }
       }
     }
   }
   .ic-dialog-loading {
-    text-align: center;
     padding-top: 15px;
+    text-align: center;
   }
 
   // .ic-dialog-body {

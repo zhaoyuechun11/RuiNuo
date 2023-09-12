@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input, Table, Form, Select, Row, Col, Button } from 'antd';
-import { reexamineResult } from '../../../../../../models/server';
+import { Input, Table, Form, Row, Col, Button } from 'antd';
 import { useSelector, useDispatch } from 'umi';
 import ReviewInputModel from '../reviewInputModel';
 const ReviewRecords = () => {

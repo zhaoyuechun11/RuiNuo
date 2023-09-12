@@ -320,7 +320,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item
-              label="项目类别"
+              label="专业类别"
               name="labClassId"
               rules={[{ required: true, message: '请选择项目类别' }]}
             >

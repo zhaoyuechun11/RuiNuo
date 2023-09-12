@@ -81,7 +81,7 @@ const MiddleContent = () => {
     (state: any) => state.generalInspectionMag,
   );
   const updateInfoData = useRef();
-  const reportUnit = sessionStorage.getItem('reportUnit');
+  const reportUnit = localStorage.getItem('reportUnit');
   useEffect(() => {
     var str = 'Result11';
     var reg = /result/;

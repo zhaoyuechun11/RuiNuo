@@ -41,8 +41,8 @@ const ReportDataMag = () => {
           </TabPane>
           <TabPane tab="当前报告数据" key="10">
             <Row>
-              <Col span={8} className={styles.left_box}>
-                <LeftContent />
+              <Col span={8} className={styles.left_box} >
+                <LeftContent  />
               </Col>
               <Col span={16}>
                 <MiddleContent />

@@ -224,7 +224,14 @@ const ApplyReportPC = () => {
 
   useEffect(() => {
     getList({ pageNum, pageSize });
-  }, [pageNum, pageSize]);
+    dispatch({
+      type: 'commonMaterials/save',
+      payload: {
+        type: 'instrId',
+        dataSource: '',
+      },
+    });
+  }, [pageNum, pageSize, location.pathname]);
   useEffect(() => {
     majorGroupList();
     getInstrList();
@@ -237,11 +244,6 @@ const ApplyReportPC = () => {
     filters: Record<string, unknown>,
     sorter: Record<string, string>,
   ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setOrder(sorter);
     setSortedInfo(sorter);
     setSort(sorter.field);
   };
@@ -383,18 +385,18 @@ const ApplyReportPC = () => {
       <div className={styles.search_bth}>
         {renderForm()}
         <div className={styles.operateBtns}>
-          {btnPermissions.map((item) => {
+          {btnPermissions.map((item, index) => {
             return item.mark === 'add' ? (
-              <Button btnType="primary" onClick={add}>
+              <Button btnType="primary" onClick={add} key={index}>
                 <PlusOutlined style={{ marginRight: 4 }} />
                 新增
               </Button>
             ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }}>
+              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }} key={index}>
                 导入
               </Button>
             ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }}>
+              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }} key={index}>
                 导出
               </Button>
             ) : null;

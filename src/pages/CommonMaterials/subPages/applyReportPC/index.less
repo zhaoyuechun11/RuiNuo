@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  background-color: #cecece;
+  background-color: #dff2fc;
   & > div:last-child {
     margin-left: 10px;
     :global {
@@ -12,12 +12,19 @@
       }
     }
   }
+  & > div:nth-child(1) {
+    padding-left: 10px;
+  }
 }
+
 .search_bth {
+  display: flex;
+  align-items: center;
+  .operateBtns {
     display: flex;
-    align-items: center;
-    .operateBtns {
-      display: flex;
-      margin: 10px 0 10px 0px;
+    margin: 10px 0 10px 0px;
+    & > button:nth-child(1) {
+      padding: 6px 10px;
     }
+  }
 }

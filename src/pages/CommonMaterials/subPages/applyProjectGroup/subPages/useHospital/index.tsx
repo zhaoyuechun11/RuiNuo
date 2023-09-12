@@ -17,7 +17,6 @@ const UseHospital = ({ parent, btnPermissions }) => {
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const [sortedInfo, setSortedInfo] = useState({});
   const loading = useSelector((state: any) => state.loading.global);
   const addModal = useRef();
@@ -95,11 +94,7 @@ const UseHospital = ({ parent, btnPermissions }) => {
     filters: Record<string, unknown>,
     sorter: Record<string, string>,
   ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
     setSortedInfo(sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
     setSort(sorter.field);
   };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {

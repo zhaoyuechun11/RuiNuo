@@ -1,22 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, message, Select, Checkbox, Row, Col } from 'antd';
+import { message, Checkbox, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Confirm } from '@/components';
 import styles from '../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import { transferInstrList, RPCriticalValueDele } from '../../../../models/server';
-const { Option } = Select;
+import { RPCriticalValueDele } from '../../../../models/server';
 const CriticalValue = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
+  const { instrId } = useSelector((state: any) => state.commonMaterials);
   const addModal = useRef();
-  const [instrList, setInstrList] = useState([]);
   const [list, setList] = useState([]);
   const confirmModalRef = useRef();
   const idRef = useRef();
@@ -26,14 +23,13 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       dataIndex: 'seq',
       align: 'center',
       fixed: 'left',
-      width: 100,
+      width: 40,
     },
     {
       title: '仪器',
       dataIndex: 'instrName',
       align: 'center',
-      width: 100,
-      ellipsis: true,
+      width: 110,
     },
     {
       title: '样本类型',
@@ -45,57 +41,57 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       title: '年龄从',
       dataIndex: 'ageFrom',
       align: 'center',
-      width: 100,
+      width: 40,
     },
     {
-      title: '年龄单位从值',
+      title: '年龄单位',
       dataIndex: 'ageFromUnitValue',
       align: 'center',
-      width: 100,
+      width: 35,
     },
     {
       title: '年龄到',
       dataIndex: 'ageTo',
       align: 'center',
-      width: 100,
+      width: 40,
     },
     {
-      title: '年龄单位到值',
+      title: '年龄单位',
       dataIndex: 'ageToUnitValue',
       align: 'center',
-      width: 100,
+      width: 35,
     },
     {
       title: '性别',
       dataIndex: 'sexValue',
       align: 'center',
-      width: 100,
+      width: 40,
     },
     {
-      title: '危机值下限',
+      title: '下限',
       dataIndex: 'lowValue',
       align: 'center',
       width: 100,
     },
     {
-      title: '危机值下限提示字符',
+      title: '下限提示字符',
       dataIndex: 'lowChar',
       align: 'center',
-      width: 100,
-      ellipsis: true,
+      width: 50,
+      // ellipsis: true,
     },
     {
-      title: '危机值上限值',
+      title: '上限',
       dataIndex: 'highValue',
       align: 'center',
       width: 100,
     },
     {
-      title: '危机值上限字符',
+      title: '上限提示字符',
       dataIndex: 'highChar',
       align: 'center',
-      width: 100,
-      ellipsis: true,
+      width: 50,
+      // ellipsis: true,
     },
     {
       title: '最近两次结果相隔天数',
@@ -160,35 +156,15 @@ const CriticalValue = ({ parent, btnPermissions }) => {
 
   useEffect(() => {
     if (parent) {
-      getList({ pageNum, pageSize, labItemId: parent.id });
-      getInstrList();
+      getList({ pageNum, pageSize, labItemId: parent.id, instrId });
     }
-  }, [pageNum, pageSize, parent]);
+  }, [pageNum, pageSize, parent, instrId]);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
   };
-  const handleSearch = (changedValues, allValues) => {
-    const values = {
-      pageNum,
-      pageSize,
-      labItemId: parent.id,
-      ...allValues,
-    };
-    getList(values);
-  };
+
   const deleteBind = (id: any) => {
     confirmModalRef.current.show();
     idRef.current = id;
@@ -202,34 +178,10 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       }
     });
   };
-  const getInstrList = () => {
-    transferInstrList().then((res) => {
-      if (res.code === 200) {
-        setInstrList(res.data);
-      }
-    });
-  };
-  const renderForm = () => {
-    return (
-      <Form onValuesChange={handleSearch} layout="inline" className={styles.search_box}>
-        <Form.Item name="instrId">
-          <Select placeholder="请选择仪器" allowClear>
-            {instrList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.instrName}
-                </Option>
-              );
-            })}
-          </Select>
-        </Form.Item>
-      </Form>
-    );
-  };
+
   return (
     <>
       <div className={styles.search_bth}>
-        {/* {renderForm()} */}
         <div style={{ display: 'flex' }}>
           <div style={{ width: '80px' }}>参考值与:</div>
           <Checkbox.Group style={{ width: '100%' }}>
@@ -268,7 +220,6 @@ const CriticalValue = ({ parent, btnPermissions }) => {
         size={'small'}
         columns={Columns}
         rowKey="id"
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
@@ -282,7 +233,6 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       />
       <EditOrAddModal
         Ref={addModal}
-        instrList={instrList}
         parent={parent}
         refresh={() => getList({ pageNum, pageSize, labItemId: parent?.id })}
       ></EditOrAddModal>

@@ -16,7 +16,6 @@ import { Button, Icon } from '@/components';
 import { useDispatch, useSelector } from 'umi';
 
 import {
-  scanSortingSave,
   getHospitalList,
   sampleHandoverSave,
   recipientList,
@@ -456,6 +455,7 @@ const SampleHandover = () => {
             mode="multiple"
             defaultValue={() => majorGroupData.map((item) => item.id)}
             onSearch={labClassChange}
+            className={styles.major_group}
           >
             {majorGroupData.length > 0 &&
               majorGroupData.map((item) => (

@@ -34,7 +34,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div className={styles.action_btn}>
+          <div className={styles.tabale_operate_box}>
             <Button
               onClick={() => {
                 history.push(`/setting/sampleFieldCustom/${record.id}/${type}`);

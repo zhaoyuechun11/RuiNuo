@@ -1830,8 +1830,6 @@ export const menu = [
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],
       },
-   
-    
     ],
   },
   {
@@ -2176,6 +2174,15 @@ export const menu = [
             children: [],
           },
         ],
+      },
+
+      {
+        key: 'roleMange',
+        url: '/setting/customProcess',
+        name: '自定义流程',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+        children: [],
       },
     ],
   },

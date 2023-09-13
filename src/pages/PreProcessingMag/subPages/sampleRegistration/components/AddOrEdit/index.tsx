@@ -1,17 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { history, useDispatch, useParams, useSelector } from 'umi';
-import {
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-  message,
-  DatePicker,
-  Cascader,
-} from 'antd';
+import { Form, Input, Select, Row, Col, message, DatePicker, Cascader } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button } from '@/components';
+
+import { BackButton, Button } from '@/components';
 import AddMaterial from '../AddMaterial';
 import {
   moduleList,
@@ -398,6 +390,7 @@ const AddOrEdit = () => {
   };
   return (
     <div>
+      <BackButton />
       <div className={styles.title}>
         基本信息管理
         <Button btnType="primary" onClick={() => {}}>

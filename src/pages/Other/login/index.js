@@ -57,16 +57,12 @@ const Index = ({}) => {
               />
             </Form.Item>
             <InputGroup compact>
-              <Form.Item >
+              <Form.Item>
                 <Input placeholder="验证码" />
               </Form.Item>
               <div
-                style={{
-                  background: '#bdd0f6',
-                  height: '32px',
-                  width: '150px',
-                  marginLeft: '34px',
-                }}
+              
+                className={style.code}
               ></div>
             </InputGroup>
             <Form.Item>

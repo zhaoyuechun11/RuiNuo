@@ -108,6 +108,11 @@ export default {
               component: '@/pages/Setting/subPages/entryMaintenance',
               title: '词条维护',
             },
+            {
+              path: '/setting/customProcess',
+              component: '@/pages/Setting/subPages/customProcess',
+              title: '流程自定义',
+            },
           ],
         },
         {

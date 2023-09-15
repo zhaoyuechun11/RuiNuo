@@ -12,11 +12,11 @@ const CriticalValue = ({ parent, btnPermissions }) => {
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const loading = useSelector((state: any) => state.loading.global);
-  const { instrId } = useSelector((state: any) => state.commonMaterials);
+  const { instrId, criticalValueList } = useSelector((state: any) => state.commonMaterials);
   const addModal = useRef();
-  const [list, setList] = useState([]);
   const confirmModalRef = useRef();
   const idRef = useRef();
+  const [affectValList, setAffectValList] = useState([]);
   const Columns = [
     {
       title: '顺序',
@@ -146,8 +146,14 @@ const CriticalValue = ({ parent, btnPermissions }) => {
         ...params,
         callback: (res: any) => {
           if (res.code === 200) {
-            setList(res.data.records);
             setTotal(res.data.total);
+            dispatch({
+              type: 'commonMaterials/save',
+              payload: {
+                type: 'criticalValueList',
+                dataSource: res.data.records,
+              },
+            });
           }
         },
       },
@@ -157,6 +163,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, labItemId: parent.id, instrId });
+      affectVal(parent);
     }
   }, [pageNum, pageSize, parent, instrId]);
 
@@ -164,7 +171,19 @@ const CriticalValue = ({ parent, btnPermissions }) => {
     setPageNum(page);
     setPageSize(size);
   };
-
+  const affectVal = (val) => {
+    let result = [];
+    if (val.sexAffect) {
+      result.push('1');
+    }
+    if (val.ageAffect) {
+      result.push('2');
+    }
+    if (val.sampleTypeAffect) {
+      result.push('3');
+    }
+    setAffectValList(result);
+  };
   const deleteBind = (id: any) => {
     confirmModalRef.current.show();
     idRef.current = id;
@@ -184,16 +203,16 @@ const CriticalValue = ({ parent, btnPermissions }) => {
       <div className={styles.search_bth}>
         <div style={{ display: 'flex' }}>
           <div style={{ width: '80px' }}>参考值与:</div>
-          <Checkbox.Group style={{ width: '100%' }}>
+          <Checkbox.Group style={{ width: '100%' }} value={affectValList} disabled>
             <Row>
               <Col span={7}>
-                <Checkbox value="A">性别有关</Checkbox>
+                <Checkbox value="1">性别有关</Checkbox>
               </Col>
               <Col span={7}>
-                <Checkbox value="B">年龄有关</Checkbox>
+                <Checkbox value="2">年龄有关</Checkbox>
               </Col>
               <Col span={10}>
-                <Checkbox value="C">样本类型有关</Checkbox>
+                <Checkbox value="3">样本类型有关</Checkbox>
               </Col>
             </Row>
           </Checkbox.Group>
@@ -205,6 +224,10 @@ const CriticalValue = ({ parent, btnPermissions }) => {
                 <Button
                   btnType="primary"
                   onClick={() => {
+                    if (!instrId) {
+                      message.warning('请先选择仪器!');
+                      return;
+                    }
                     addModal.current.show();
                   }}
                 >
@@ -228,7 +251,7 @@ const CriticalValue = ({ parent, btnPermissions }) => {
           onChange: pageChange,
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
-        dataSource={list}
+        dataSource={criticalValueList}
         scroll={{ x: 1300 }}
       />
       <EditOrAddModal

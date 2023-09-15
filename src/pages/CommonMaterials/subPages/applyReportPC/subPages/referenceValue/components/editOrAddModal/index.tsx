@@ -35,7 +35,9 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
       if (record) {
         form.setFieldsValue({
           ...record,
+          sex: record.sex == 99 ? '' : record.sex,
         });
+
         setId(record.id);
       } else {
         setId(null);
@@ -47,12 +49,21 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
   }));
   const onOk = () => {
     form.validateFields().then((value) => {
-      debugger;
+      let params = {
+        ...value,
+        labItemId: parent.id,
+        instrId,
+        sampleTypeId: parent.sampleTypeAffect ? value.sampleTypeId : 0,
+        sex: parent.sexAffect ? value.sex : 99,
+        ageFrom: parent.ageAffect ? value.ageFrom : 0,
+        ageTo: parent.ageAffect ? value.ageTo : 100,
+        ageFromUnitId: parent.ageAffect ? value.ageFromUnitId : ageUnit[0].id,
+        ageToUnitId: parent.ageAffect ? value.ageToUnitId : ageUnit[0].id,
+      };
       if (id) {
         RPreferenceValueUpdate({
           id: id,
-          labItemId: parent.id,
-          ...value,
+          ...params,
         }).then((res: { code: number }) => {
           if (res.code === 200) {
             message.success('修改成功');
@@ -61,7 +72,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           }
         });
       } else {
-        RPreferenceValueAdd({ ...value, labItemId: parent.id }).then((res: { code: number }) => {
+        RPreferenceValueAdd(params).then((res: { code: number }) => {
           if (res.code === 200) {
             message.success('添加成功');
             dialogRef.current && dialogRef.current.hide();
@@ -135,7 +146,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           <Col span={14}>
             <InputGroup compact>
               <Form.Item>
-                <Checkbox>
+                <Checkbox checked={parent.sampleTypeAffect} disabled>
                   <div>参考值与样</div>
                   <div>本类型有关</div>
                 </Checkbox>
@@ -144,9 +155,16 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               <Form.Item
                 name="sampleTypeId"
                 label="样本类型"
-                rules={[{ required: true, message: '请选择样本类型' }]}
+                rules={[
+                  { required: parent.sampleTypeAffect ? true : false, message: '请选择样本类型' },
+                ]}
               >
-                <Select placeholder="请选择样本类型" allowClear className={styles.sampleType}>
+                <Select
+                  placeholder="请选择样本类型"
+                  allowClear
+                  className={styles.sampleType}
+                  disabled={parent.sampleTypeAffect ? false : true}
+                >
                   {sampleTypeList.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -162,7 +180,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           <Col span={9}>
             <InputGroup compact>
               <Form.Item>
-                <Checkbox>
+                <Checkbox checked={parent.sexAffect} disabled>
                   <div>参考值与</div>
                   <div>性别有关</div>
                 </Checkbox>
@@ -170,9 +188,14 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               <Form.Item
                 name="sex"
                 label="性别"
-                rules={[{ required: true, message: '请选择性别' }]}
+                rules={[{ required: parent.sexAffect ? true : false, message: '请选择性别' }]}
               >
-                <Select placeholder="请选择性别" allowClear className={styles.sex}>
+                <Select
+                  placeholder="请选择性别"
+                  allowClear
+                  className={styles.sex}
+                  disabled={parent.sexAffect ? false : true}
+                >
                   {sex.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -189,7 +212,7 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
           <Col span={12}>
             <InputGroup compact>
               <Form.Item>
-                <Checkbox>
+                <Checkbox checked={parent.ageAffect} disabled>
                   <div>参考值与</div>
                   <div>年龄有关</div>
                 </Checkbox>
@@ -197,17 +220,27 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               <Form.Item
                 label="年龄"
                 name="ageFrom"
-                rules={[{ required: true, message: '请输入年龄' }]}
+                rules={[{ required: parent.ageAffect ? true : false, message: '请输入年龄' }]}
               >
-                <Input maxLength={10} placeholder="请输入年龄" className={styles.age} />
+                <Input
+                  maxLength={10}
+                  placeholder="请输入年龄"
+                  className={styles.age}
+                  disabled={parent.ageAffect ? false : true}
+                />
               </Form.Item>
 
               <Form.Item
                 name="ageFromUnitId"
-                rules={[{ required: true, message: '请选择年龄单位从' }]}
+                rules={[{ required: parent.ageAffect ? true : false, message: '请选择年龄单位' }]}
                 label="年龄单位"
               >
-                <Select placeholder="年龄单位" allowClear className={styles.ageUnit}>
+                <Select
+                  placeholder="年龄单位"
+                  allowClear
+                  className={styles.ageUnit}
+                  disabled={parent.ageAffect ? false : true}
+                >
                   {ageUnit.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>
@@ -234,16 +267,26 @@ const EditOrAddModal = ({ Ref, refresh, parent }) => {
               <Form.Item
                 label="年龄到"
                 name="ageTo"
-                rules={[{ required: true, message: '请输入年龄到' }]}
+                rules={[{ required: parent.ageAffect ? true : false, message: '请输入年龄到' }]}
               >
-                <Input maxLength={10} placeholder="请输入年龄到" className={styles.ageTo} />
+                <Input
+                  maxLength={10}
+                  placeholder="请输入年龄到"
+                  className={styles.ageTo}
+                  disabled={parent.ageAffect ? false : true}
+                />
               </Form.Item>
               <Form.Item
                 name="ageToUnitId"
                 label="年龄单位"
-                rules={[{ required: true, message: '请选择年龄单位到' }]}
+                rules={[{ required: parent.ageAffect ? true : false, message: '请选择年龄单位' }]}
               >
-                <Select placeholder="年龄单位" allowClear className={styles.ageToUnit}>
+                <Select
+                  placeholder="年龄单位"
+                  allowClear
+                  className={styles.ageToUnit}
+                  disabled={parent.ageAffect ? false : true}
+                >
                   {ageUnit.map((item) => {
                     return (
                       <Option value={item.id} key={item.id}>

@@ -30,6 +30,8 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
   const [id, setId] = useState();
   const [reportUnit, setReportUnit] = useState([]);
   const editorRef = useRef();
+  const [calculateFlagVal, setCalculateFlagVal] = useState(false);
+  const [autoAddVal, setAutoAddVal] = useState(false);
   useImperativeHandle(Ref, () => ({
     show: async (record: { id: React.SetStateAction<undefined> }) => {
       getList({ type: 'FF' });
@@ -42,6 +44,8 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           ...record,
         });
         setId(record.id);
+        setCalculateFlagVal(record.calculateFlag);
+        setAutoAddVal(record.autoAdd);
       } else {
         setId(null);
         form.setFieldsValue({ labClassId: majorGroupData[0]?.id });
@@ -57,6 +61,8 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
         reportProjectUpdate({
           id: id,
           ...value,
+          calculateFlag: calculateFlagVal,
+          autoAdd: autoAddVal,
         }).then((res: { code: number }) => {
           if (res.code === 200) {
             message.success('修改成功');
@@ -65,17 +71,24 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           }
         });
       } else {
-        reportProjectAdd({ ...value }).then((res: { code: number }) => {
-          if (res.code === 200) {
-            message.success('添加成功');
-            dialogRef.current && dialogRef.current.hide();
-            refresh();
-          }
-        });
+        reportProjectAdd({ ...value, calculateFlag: calculateFlagVal, autoAdd: autoAddVal }).then(
+          (res: { code: number }) => {
+            if (res.code === 200) {
+              message.success('添加成功');
+              dialogRef.current && dialogRef.current.hide();
+              refresh();
+            }
+          },
+        );
       }
     });
   };
-
+  const calculateFlagChange = (e: any) => {
+    setCalculateFlagVal(e.target.checked);
+  };
+  const autoAddChange = (e: any) => {
+    setAutoAddVal(e.target.checked);
+  };
   const getList = (type: { type: string }) => {
     dictList(type).then((res: { code: number; data: React.SetStateAction<never[]> }) => {
       if (res.code === 200) {
@@ -281,12 +294,12 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData }) => {
           </Col>
           <Col span={2}>
             <Form.Item name="calculateFlag" label="计算项目" style={{ textAlign: 'center' }}>
-              <Checkbox></Checkbox>
+              <Checkbox checked={calculateFlagVal} onChange={calculateFlagChange}></Checkbox>
             </Form.Item>
           </Col>
           <Col span={2}>
             <Form.Item name="autoAdd" label="自动添加" style={{ textAlign: 'center' }}>
-              <Checkbox></Checkbox>
+              <Checkbox onChange={autoAddChange} checked={autoAddVal}></Checkbox>
             </Form.Item>
           </Col>
           <Col span={8}>

@@ -3,11 +3,13 @@ import { xmlstr } from '@utils';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import propertiesPanelModule from 'bpmn-js-properties-panel';
 import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda';
-// import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
+import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-// import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
-// import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
+import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
+import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css';
+import './index.less';
 const CustomProcess = () => {
   useEffect(() => {
     initBpmn();
@@ -18,15 +20,15 @@ const CustomProcess = () => {
       height: '100vh',
       //添加控制板
       propertiesPanel: {
-        // parent: '.properties-panel',
+        parent: '.properties-panel',
       },
       additionalModules: [
         // 左边工具栏以及节点
-        propertiesPanelModule,
-        propertiesProviderModule,
+        // propertiesPanelModule,
+         propertiesProviderModule,
       ],
       moddleExtensions: {
-        //camunda: camundaModdleDescriptor,
+        camunda: camundaModdleDescriptor,
       },
     });
 

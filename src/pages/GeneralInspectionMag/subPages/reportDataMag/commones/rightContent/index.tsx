@@ -31,10 +31,13 @@ import {
   reportResultUpdate,
   reportResult,
   addCommonUpdate,
+  firstAudit,
+  secondAudit,
 } from '../../../../models/server';
 import styles from '../index.less';
 import style from './index.less';
 import ReviewModal from './commones/reviewModal';
+import AuditWarning from './commones/auditWarning';
 const { Option } = Select;
 const { TabPane } = Tabs;
 
@@ -63,6 +66,7 @@ const RightContent = () => {
   const [activeKey, setActiveKey] = useState('10');
   const updateInfoData = useRef();
   const location = useLocation();
+  const auditModal = useRef();
   const {
     reportLefUpdate,
     instrAndRecordId,
@@ -162,33 +166,7 @@ const RightContent = () => {
           },
         };
       });
-      const lastColumns = {
-        title: '操作',
-        dataIndex: 'action',
-        fixed: 'right',
-        align: 'center',
-        width: 90,
-        render: (text: string, record: Record<string, any>) => (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {/* <Button
-              onClick={() => {
-                // history.push(
-                //   '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
-                // );
-              }}
-            >
-              编辑
-            </Button>
-            <Button
-              onClick={() => {
-                // deleteCurrentItem(record.id);
-              }}
-            >
-              删除
-            </Button> */}
-          </div>
-        ),
-      };
+
       const coumns = [...firstColumm, ...middleColumns];
       setTableHeaderCoumn(coumns);
     }
@@ -331,8 +309,34 @@ const RightContent = () => {
     setSelectedKeys(selectedRowKeys);
   };
   const rowSelection = {
-    // selectedRowKeys: selectedKeys,
     onChange: onChangeSelected,
+  };
+  const audit = () => {
+    if (selectedKeys.length === 0) {
+      message.warning('审核时请选择要审核的数据!');
+      return;
+    }
+    firstAudit({ ids: selectedKeys }).then((res) => {
+      if (res.code === 200) {
+        if (res.data.length !== 0) {
+          //message.warning(res.data);
+          auditModal.current.show(res.data);
+        } else {
+          message.success('成功!');
+        }
+      }
+    });
+  };
+  const finshAudit = () => {
+    if (selectedKeys.length === 0) {
+      message.warning('审核时请选择要审核的数据!');
+      return;
+    }
+    secondAudit({ ids: selectedKeys }).then((res) => {
+      if (res.code === 200) {
+        message.success(res.msg);
+      }
+    });
   };
   const getRowClassName = (record, index) => {
     let className = 'normal';
@@ -1061,10 +1065,10 @@ const RightContent = () => {
       <Button type="primary" size="small" onClick={() => refresh()}>
         刷新
       </Button>
-      <Button type="primary" size="small">
+      <Button type="primary" size="small" onClick={audit}>
         报告初审
       </Button>
-      <Button type="primary" size="small">
+      <Button type="primary" size="small" onClick={finshAudit}>
         报告终审
       </Button>
       <Button type="primary" size="small">
@@ -1123,6 +1127,7 @@ const RightContent = () => {
         }}
       />
       <ReviewModal Ref={reviewModal} />
+      <AuditWarning Ref={auditModal} />
     </div>
   );
 };

@@ -5,8 +5,13 @@ import { Button, Table, Confirm } from '@/components';
 import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
-import { RPreferenceValueDele } from '../../../../models/server';
-const ReferenceValue = ({ parent, btnPermissions }) => {
+import {
+  RPreferenceValueDele,
+  updateAffect,
+  deleteByLabItem,
+  deleteByLabItemRef,
+} from '../../../../models/server';
+const ReferenceValue = ({ parent, btnPermissions, refresh }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -16,7 +21,13 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
   const [list, setList] = useState([]);
   const confirmModalRef = useRef();
   const idRef = useRef();
-  const { instrId } = useSelector((state: any) => state.commonMaterials);
+  const { instrId, criticalValueList } = useSelector((state: any) => state.commonMaterials);
+  const [sexAffectVal, setSexAffectVal] = useState(false);
+  const [ageAffectVal, setAgeAffectVal] = useState(false);
+  const [sampleTypeAffectVal, setSampleTypeAffectVal] = useState(false);
+  const [affectValList, setAffectValList] = useState([]);
+  const [referenceValFlag, setReferenceValFlag] = useState(false);
+  const confirmModalAffectRef = useRef();
   const Columns = [
     {
       title: '顺序',
@@ -151,6 +162,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
   useEffect(() => {
     if (parent) {
       getList({ pageNum, pageSize, labItemId: parent.id, instrId });
+      affectVal(parent);
     }
   }, [pageNum, pageSize, parent, instrId]);
 
@@ -158,10 +170,22 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
     setPageNum(page);
     setPageSize(size);
   };
-
+  const affectVal = (val) => {
+    let result = [];
+    if (val.sexAffect) {
+      result.push('1');
+    }
+    if (val.ageAffect) {
+      result.push('2');
+    }
+    if (val.sampleTypeAffect) {
+      result.push('3');
+    }
+    setAffectValList(result);
+  };
   const deleteBind = (id: any) => {
-    confirmModalRef.current.show();
     idRef.current = id;
+    confirmModalRef.current.show();
   };
   const handleConfirmOk = () => {
     RPreferenceValueDele({ ids: [idRef.current] }).then((res) => {
@@ -180,22 +204,82 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
     }
     addModal.current.show();
   };
-
+  const referenceValChange = (e) => {
+    if (e.includes('1')) {
+      setSexAffectVal(true);
+    }
+    if (!e.includes('1')) {
+      setSexAffectVal(false);
+    }
+    if (e.includes('2')) {
+      setAgeAffectVal(true);
+    }
+    if (!e.includes('2')) {
+      setAgeAffectVal(false);
+    }
+    if (e.includes('3')) {
+      setSampleTypeAffectVal(true);
+    }
+    if (!e.includes('3')) {
+      setSampleTypeAffectVal(false);
+    }
+    setReferenceValFlag(true);
+    setAffectValList(e);
+  };
+  const sure = () => {
+    if (referenceValFlag) {
+      confirmModalAffectRef.current.show();
+    }
+  };
+  const handleRefeConfirmOk = () => {
+    let params = {
+      id: parent.id,
+      sampleTypeAffect: sampleTypeAffectVal,
+      sexAffect: sexAffectVal,
+      ageAffect: ageAffectVal,
+    };
+    updateAffect(params).then((res) => {
+      if (res.code === 200) {
+        message.success('保存状态成功!');
+        setReferenceValFlag(false);
+        confirmModalAffectRef.current.hide();
+        refresh();
+      }
+    });
+    if (criticalValueList.length > 0) {
+      deleteByLabItem({ labItemId: parent.id }).then((res) => {
+        if (res.code === 200) {
+          message.success('危机值删除成功!');
+        }
+      });
+    }
+    if (list.length > 0) {
+      deleteByLabItemRef({ labItemId: parent.id }).then((res) => {
+        if (res.code === 200) {
+          message.success('清除参考值成功!');
+        }
+      });
+    }
+  };
   return (
     <>
       <div className={styles.search_bth}>
         <div style={{ display: 'flex' }}>
           <div style={{ width: '80px' }}>参考值与:</div>
-          <Checkbox.Group style={{ width: '100%' }}>
+          <Checkbox.Group
+            style={{ width: '100%' }}
+            onChange={referenceValChange}
+            value={affectValList}
+          >
             <Row>
               <Col span={7}>
-                <Checkbox value="A">性别有关</Checkbox>
+                <Checkbox value="1">性别有关</Checkbox>
               </Col>
               <Col span={7}>
-                <Checkbox value="B">年龄有关</Checkbox>
+                <Checkbox value="2">年龄有关</Checkbox>
               </Col>
               <Col span={10}>
-                <Checkbox value="C">样本类型有关</Checkbox>
+                <Checkbox value="3">样本类型有关</Checkbox>
               </Col>
             </Row>
           </Checkbox.Group>
@@ -204,7 +288,7 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
           return (
             item.mark === 'referenceValueAdd' && (
               <div className={`${styles.operateBtns} ${styles.referOperateBtns}`}>
-                <Button btnType="primary" style={{ marginRight: '10px' }}>
+                <Button btnType="primary" style={{ marginRight: '10px' }} onClick={sure}>
                   确定
                 </Button>
                 <Button btnType="primary" onClick={add}>
@@ -243,6 +327,15 @@ const ReferenceValue = ({ parent, btnPermissions }) => {
         content="你正在删除该条数据, 删除后不能恢复"
         width={640}
         onOk={handleConfirmOk}
+      />
+      <Confirm
+        confirmRef={confirmModalAffectRef}
+        img="commom/remind.png"
+        imgStyle={{ width: 73 }}
+        title={'参数值状态有变化确定保存么?'}
+        content={'保存后已维护的参考范围及危急值范围设置会清空哦'}
+        width={640}
+        onOk={handleRefeConfirmOk}
       />
     </>
   );

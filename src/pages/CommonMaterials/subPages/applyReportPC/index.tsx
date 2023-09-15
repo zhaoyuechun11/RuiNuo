@@ -122,9 +122,21 @@ const ApplyReportPC = () => {
     },
     {
       title: '计算项目',
-      dataIndex: 'method',
+      dataIndex: 'calculateFlag',
       align: 'center',
       width: 150,
+      render: (text) => {
+        return <span>{text ? '是' : '否'}</span>;
+      },
+    },
+    {
+      title: '计算项目是否自动添加',
+      dataIndex: 'autoAdd',
+      align: 'center',
+      width: 150,
+      render: (text) => {
+        return <span>{text ? '是' : '否'}</span>;
+      },
     },
     {
       title: '测试方法',
@@ -455,7 +467,11 @@ const ApplyReportPC = () => {
           <InstrChannelNum parent={currentItem || list[0]} btnPermissions={btnPermissions} />
         </TabPane>
         <TabPane tab="参考值" key="1">
-          <ReferenceValue parent={currentItem || list[0]} btnPermissions={btnPermissions} />
+          <ReferenceValue
+            parent={currentItem || list[0]}
+            btnPermissions={btnPermissions}
+            refresh={() => getList({ pageNum, pageSize })}
+          />
         </TabPane>
         <TabPane tab="危机值" key="2">
           <CriticalValue parent={currentItem || list[0]} btnPermissions={btnPermissions} />

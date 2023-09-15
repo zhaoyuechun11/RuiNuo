@@ -38,6 +38,7 @@ const commonMaterials = {
     labClass: [],
     instrId: '',
     instrList: [],
+    criticalValueList:[]
   },
   effects: {
     *fetchSecondPage({ payload }, { call }) {

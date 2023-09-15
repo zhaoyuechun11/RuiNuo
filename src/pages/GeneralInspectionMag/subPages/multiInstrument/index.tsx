@@ -441,7 +441,7 @@ const MultiInstrument = () => {
 
   const renderForm = () => {
     return (
-      <Form form={form} className={styles.search_box}>
+      <Form form={form} className={`${styles.search_box} ${s.multiInstr_form}`}>
         <Row gutter={16}>
           <Col className="gutter-row" span={6}>
             <div className="gutter-box">

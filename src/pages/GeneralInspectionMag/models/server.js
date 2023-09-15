@@ -126,3 +126,9 @@ export function applyReview(params) {
 export function reexamineResultAdd(params) {
   return axios('lab/reexamineResult/add', 'post', params);
 }
+export function firstAudit(params) {
+  return axios('lab/reportMain/firstAudit', 'post', params);
+}
+export function secondAudit(params) {
+  return axios('lab/reportMain/secondAudit', 'post', params);
+}

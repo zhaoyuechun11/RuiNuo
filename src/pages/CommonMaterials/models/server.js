@@ -396,3 +396,12 @@ export function reportUnitReqItemChange(params) {
 export function getDataTypeNumList(params) {
   return axios('basic/labItem/getDataTypeNumList', 'get', params);
 }
+export function updateAffect(params) {
+  return axios('basic/labItem/updateAffect', 'post', params);
+}
+export function deleteByLabItem(params) {
+  return axios('basic/labItemCriticalValue/deleteByLabItem', 'post', params);
+}
+export function deleteByLabItemRef(params) {
+  return axios('basic/labItemRef/deleteByLabItem', 'post', params);
+}

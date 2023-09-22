@@ -44,7 +44,7 @@ const ApplyProjectGroup = () => {
       align: 'center',
       key: 'labClassName',
       width: 150,
-      sorter: (a:any, b:any) => a.labClassName.length - b.labClassName.length,
+      sorter: (a: any, b: any) => a.labClassName.length - b.labClassName.length,
       sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
     {
@@ -313,23 +313,17 @@ const ApplyProjectGroup = () => {
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
-        <div id="labClassId">
-          <Form.Item name="labClassId">
-            <Select
-              placeholder="请选择项目类别"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
-            >
-              {majorGroupData.length > 0 &&
-                majorGroupData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.className}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+        <Form.Item name="labClassId">
+          <Select placeholder="请选择项目类别" allowClear>
+            {majorGroupData.length > 0 &&
+              majorGroupData.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.className}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
+
         <Form.Item name="code">
           <Input
             placeholder="请输入项目编码"
@@ -408,7 +402,7 @@ const ApplyProjectGroup = () => {
         title={'申请'}
         refresh={() => getList({ pageNum, pageSize })}
       ></BatchImport>
-     <div className={s.tabsTitle}>
+      <div className={s.tabsTitle}>
         <span>项目编码:</span>
         {currentItem?.reqItemCode || list[0]?.reqItemCode}
         <span style={{ marginLeft: '20px' }}>项目名称:</span>

@@ -111,7 +111,22 @@ export default {
             {
               path: '/setting/customProcess',
               component: '@/pages/Setting/subPages/customProcess',
-              title: '流程自定义',
+              title: '新建流程',
+            },
+            {
+              path: '/setting/updateCustomProcess',
+              component: '@/pages/Setting/subPages/updateCustomProcess',
+              title: '修改流程',
+            },
+            {
+              path: '/setting/processMange',
+              component: '@/pages/Setting/subPages/processMange',
+              title: '流程自定义管理',
+            },
+            {
+              path: '/setting/processClassification',
+              component: '@/pages/Setting/subPages/processClassification',
+              title: '流程分类',
             },
           ],
         },

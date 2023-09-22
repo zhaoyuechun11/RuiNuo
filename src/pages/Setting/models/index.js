@@ -33,6 +33,11 @@ const IndexModel = {
   namespace: 'Setting',
   state: {
     reportTempleName: '',
+    processXml: '',
+    processFormData:{},
+    processRecordId:'',
+    bpmnModeler: null,
+    classFlowId:''
   },
   effects: {
     *fetchParamsSetList({ payload }, { call }) {

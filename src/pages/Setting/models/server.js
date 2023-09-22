@@ -102,3 +102,36 @@ export function wordEntryDelete(params) {
 export function wordEntryChange(params) {
   return axiosBase('basic/wordEntry/change', 'post', params);
 }
+export function flowchartList(params) {
+  return axiosBase('basic/flowchart/page', 'get', params);
+}
+export function flowchartAdd(params) {
+  return axiosBase('basic/flowchart/add', 'post', params);
+}
+export function flowchartDelete(params) {
+  return axiosBase('basic/flowchart/delete', 'post', params);
+}
+export function getFlowchart(params) {
+  return axiosBase('basic/flowchart/getXmlData', 'get', params);
+}
+export function flowchartUpdate(params) {
+  return axiosBase('basic/flowchart/update', 'post', params);
+}
+export function flowchartEnable(params) {
+  return axiosBase('basic/flowchart/enable', 'post', params);
+}
+export function getSuitFlowCond(params) {
+  return axiosBase('basic/suitFlowCond/page', 'get', params);
+}
+export function suitFlowCondAdd(params) {
+  return axiosBase('basic/suitFlowCond/add', 'post', params);
+}
+export function flowchart(params) {
+  return axiosBase('basic/flowchart/list', 'get', params);
+}
+export function suitFlowCondUpdate(params) {
+  return axiosBase('basic/suitFlowCond/update', 'post', params);
+}
+export function suitFlowCondDelete(params) {
+  return axiosBase('basic/suitFlowCond/delete', 'post', params);
+}

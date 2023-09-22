@@ -444,7 +444,6 @@ const MiddleContent = () => {
       });
     if (isChangeReportResult) {
       addCommonUpdateInfo();
-
       dispatch({
         type: 'generalInspectionMag/save',
         payload: {

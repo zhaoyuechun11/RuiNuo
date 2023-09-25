@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
 import CommonProps from './props/CommonProps';
 import UserTaskProps from './props/UserTaskProps';
+import SequenceFlowProps from './props/SequenceFlowProps';
 import { useSelector } from 'umi';
 import bpmnHelper from '../js/helper/BpmnHelper';
+import styles from './index.less';
 const { TabPane } = Tabs;
 const RightAttribute = () => {
   const [element, setElement] = useState({});
@@ -41,6 +43,7 @@ const RightAttribute = () => {
           } else {
             // 展示新增图形的属性
             let result = bpmnHelper.getComponentByEleType(e.element.type);
+            console.log(result);
             setPropsComponent(result);
             setElement(e.element);
           }
@@ -83,13 +86,18 @@ const RightAttribute = () => {
     return elementRegistry.get(id);
   };
   return (
-    <Tabs defaultActiveKey="1">
-      <TabPane tab="基本信息" key="1">
+    <Tabs
+      defaultActiveKey="1"
+      className={styles.tabs_box}
+    >
+      {/* <TabPane tab="基本信息" key="1">
         Content of Tab Pane 1
-      </TabPane>
+      </TabPane> */}
       <TabPane tab="基础设置" key="2">
         {propsComponent === 'CommonProps' ? (
           <CommonProps element={element}></CommonProps>
+        ) : propsComponent === 'bpmn:SequenceFlow' ? (
+          <SequenceFlowProps element={element}></SequenceFlowProps>
         ) : (
           <UserTaskProps element={element}></UserTaskProps>
         )}

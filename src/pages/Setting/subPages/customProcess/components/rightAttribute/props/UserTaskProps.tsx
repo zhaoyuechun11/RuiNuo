@@ -1,20 +1,30 @@
-import React, { useEffect } from 'react';
-import { Form, Input } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Select } from 'antd';
 import { useSelector } from 'umi';
 import bpmnHelper from '../../js/helper/BpmnHelper';
 import elementHelper from '../../js/helper/ElementHelper';
+import { getUserList } from '@/models/server';
+import styles from '../index.less';
+const { Option } = Select;
+
 const UserTaskProps = ({ element }) => {
   const [form] = Form.useForm();
   const { bpmnModeler } = useSelector((state: any) => state.Setting);
+  const [findUserType, setFindUserType] = useState();
+  const [userList, setUserList] = useState([]);
+  useEffect(() => {
+    getList();
+  }, []);
   useEffect(() => {
     if (!element) {
       return;
     }
+
     element.type === 'bpmn:UserTask';
     const businessObject = element.businessObject;
-    form.setFieldsValue({ nameNode: businessObject.name });
+    form.setFieldsValue({ nameNode: businessObject?.name, id: element.id || '' });
     const bpmnFactory = bpmnModeler.get('bpmnFactory');
-    let extensionElements = businessObject.get('extensionElements');
+    let extensionElements = businessObject?.get('extensionElements');
 
     if (!extensionElements) {
       extensionElements = elementHelper.createElement(
@@ -45,20 +55,35 @@ const UserTaskProps = ({ element }) => {
     }
 
     const modeling = bpmnModeler.get('modeling');
+    if (businessObject) {
+      modeling.updateProperties(element, {
+        extensionElements: extensionElements,
+      });
 
-    modeling.updateProperties(element, {
-      extensionElements: extensionElements,
-    });
+      if (getPropertieByName(customProperties, 'findUserType')) {
+        let result = getPropertieByName(customProperties, 'findUserType');
+        setFindUserType(result);
+      } else {
+        createOrUpdateCustomProperties('findUserType', findUserType);
+      }
+    }
   }, [element]);
   const valuesChange = (changedValues: any, allValues: any) => {
-    for (let key in changedValues) {
-      if (key === 'nameNode') {
-        const modeling = bpmnModeler.get('modeling');
-        modeling.updateProperties(element, {
-          name: changedValues[key],
-        });
-        createOrUpdateCustomProperties(key, changedValues[key]);
-      }
+    const modeling = bpmnModeler.get('modeling');
+    if (changedValues.nameNode) {
+      modeling.updateProperties(element, {
+        name: changedValues.nameNode,
+      });
+      createOrUpdateCustomProperties('nameNode', changedValues.nameNode);
+    }
+    if (changedValues.id) {
+      modeling.updateProperties(element, {
+        id: changedValues.id,
+      });
+      createOrUpdateCustomProperties('id', changedValues.id);
+    }
+    if (changedValues.users) {
+      modeling.updateProperties(element, { users: changedValues.users });
     }
   };
   const getPropertieByName = (customProperties: any, name: any) => {
@@ -68,10 +93,7 @@ const UserTaskProps = ({ element }) => {
     if (property === 'findUserType' && value === '6') {
       //this.getUserTaskList()
     }
-
-    //const bpmnModeler = bpmnModeler();
     const bpmnFactory = bpmnModeler.get('bpmnFactory');
-
     let extensionElements = bpmnHelper.getPropertie(element, 'extensionElements');
     if (!extensionElements) {
       extensionElements = elementHelper.createElement(
@@ -89,7 +111,6 @@ const UserTaskProps = ({ element }) => {
         extensionElements.get('values')[i] &&
         extensionElements.get('values')[i].$type === 'flowable:CustomProperties'
       ) {
-        debugger;
         customProperties = extensionElements.get('values')[i];
         customPropertiesIndex = i;
       }
@@ -116,15 +137,39 @@ const UserTaskProps = ({ element }) => {
       extensionElements: extensionElements,
     });
   };
+  const handleChange = (e) => {
+    createOrUpdateCustomProperties('findUserType', e);
+  };
+  const getList = () => {
+    getUserList().then((res) => {
+      if (res.code === 200) {
+        setUserList(res.data);
+      }
+    });
+  };
   return (
     <>
-      <div>节点设置</div>
-      <Form layout="inline" form={form} onValuesChange={valuesChange}>
-        <Form.Item name="labClassId" label="编号">
+      <div className={styles.header}>节点设置</div>
+      <Form form={form} onValuesChange={valuesChange} layout="vertical" className={styles.form_box}>
+        <Form.Item name="id" label="编号">
           <Input />
         </Form.Item>
         <Form.Item name="nameNode" label="名称">
           <Input />
+        </Form.Item>
+        <Form.Item label="分配个人" name="findUserType">
+          <Select defaultValue="lucy" onChange={handleChange}>
+            <Option value="jack">Jack</Option>
+            <Option value="lucy">Lucy</Option>
+            <Option value="Yiminghe">yiminghe</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="分配人" name="users">
+          <Select onChange={handleChange} mode="multiple">
+            {userList?.map((item) => {
+              return <Option value={item.id}>{item.name}</Option>;
+            })}
+          </Select>
         </Form.Item>
       </Form>
     </>

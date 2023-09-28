@@ -64,8 +64,8 @@ const ProcessClassification = () => {
       render: (record: { id: any }) => {
         return (
           <div className={styles.tabale_operate_box}>
-            <Button>
-              <BranchesOutlined onClick={() => processPreview(record.flowId)}></BranchesOutlined>
+            <Button onClick={() => processPreview(record.flowId)}>
+              <BranchesOutlined></BranchesOutlined>
             </Button>
             <Button
               onClick={() => {
@@ -97,14 +97,7 @@ const ProcessClassification = () => {
     getSuitFlowCondList(params);
   };
   const processPreview = (id: any) => {
-    dispatch({
-      type: 'Setting/save',
-      payload: {
-        type: 'classFlowId',
-        dataSource: id,
-      },
-    });
-    history.push('/setting/updateCustomProcess');
+    history.push(`/setting/updateCustomProcess/${id}`);
   };
   const renderForm = () => {
     return (

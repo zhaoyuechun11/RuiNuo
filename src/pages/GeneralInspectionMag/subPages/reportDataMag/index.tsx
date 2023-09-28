@@ -1,9 +1,11 @@
 import React from 'react';
 import { Row, Col, Tabs } from 'antd';
+import { history } from 'umi';
 import LeftContent from './commones/leftContent';
 import MiddleContent from './commones/middleContent';
 import RightContent from './commones/rightContent';
 import MiddleBottom from './commones/middleBottom';
+import SampleTraceability from './commones/sampleTraceability';
 import styles from './index.less';
 const { TabPane } = Tabs;
 const ReportDataMag = () => {
@@ -19,10 +21,12 @@ const ReportDataMag = () => {
             原始申请单
           </TabPane>
           <TabPane tab="样本溯源" key="2">
-            样本溯源
+            <SampleTraceability></SampleTraceability>
           </TabPane>
           <TabPane tab="试剂耗材" key="4">
-            试剂耗材
+            <div onClick={() => history.push(`/generalInspectionMag/sampleTraceability/${1}`)}>
+              样本溯源
+            </div>
           </TabPane>
           <TabPane tab="交接及提示" key="5">
             交接及提示
@@ -41,8 +45,8 @@ const ReportDataMag = () => {
           </TabPane>
           <TabPane tab="当前报告数据" key="10">
             <Row>
-              <Col span={8} className={styles.left_box} >
-                <LeftContent  />
+              <Col span={8} className={styles.left_box}>
+                <LeftContent />
               </Col>
               <Col span={16}>
                 <MiddleContent />

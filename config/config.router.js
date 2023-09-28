@@ -114,7 +114,7 @@ export default {
               title: '新建流程',
             },
             {
-              path: '/setting/updateCustomProcess',
+              path: '/setting/updateCustomProcess/:id',
               component: '@/pages/Setting/subPages/updateCustomProcess',
               title: '修改流程',
             },
@@ -251,6 +251,12 @@ export default {
               path: '/generalInspectionMag/reportDataMag',
               component: '@/pages/GeneralInspectionMag/subPages/reportDataMag',
               title: '普检数据报告管理',
+            },
+            {
+              path: '/generalInspectionMag/sampleTraceability/:id',
+              component:
+                '@/pages/GeneralInspectionMag/subPages/reportDataMag/commones/sampleTraceability',
+              title: '样本溯源',
             },
           ],
         },

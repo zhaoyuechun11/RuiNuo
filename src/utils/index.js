@@ -1,4 +1,3 @@
-
 import moment from 'moment';
 import URL from './env';
 import 'moment/locale/zh-cn';
@@ -553,7 +552,7 @@ export const containsNumbers = (str) => {
   // 判断字符串中是否包含数字
   return /\d/.test(str);
 };
-// export const xmlstr = 
+// export const xmlstr =
 // `<?xml version="1.0" encoding="UTF-8"?>
 // <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="5.1.2">
 // <process id="Process_1" isExecutable="false">
@@ -583,6 +582,258 @@ export const containsNumbers = (str) => {
 //     </bpmndi:BPMNPlane>
 // </bpmndi:BPMNDiagram>
 // </definitions>`
+export const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-38422fae-e03e-43a3-bef4-bd33b32041b2" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="5.1.2">
+  <process id="Process_1" isExecutable="false">
+    <startEvent id="StartEvent_ops_coffee" name="开始">
+      <outgoing>Flow_0jfbnmb</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_0jfbnmb" sourceRef="StartEvent_ops_coffee" targetRef="Activity_0pih3d0" />
+    <userTask id="Activity_0pih3d0" name="流程1">
+      <incoming>Flow_0jfbnmb</incoming>
+      <outgoing>Flow_0ow8zy1</outgoing>
+    </userTask>
+    <task id="Activity_07b4aeg" name="流程2">
+      <incoming>Flow_0ow8zy1</incoming>
+      <outgoing>Flow_0iaccmi</outgoing>
+    </task>
+    <sequenceFlow id="Flow_0ow8zy1" sourceRef="Activity_0pih3d0" targetRef="Activity_07b4aeg" />
+    <task id="Activity_11xlozw" name="流程3">
+      <incoming>Flow_0iaccmi</incoming>
+      <outgoing>Flow_0bax3n1</outgoing>
+    </task>
+    <task id="Activity_11xlozw" name="流程3">
+    <incoming>Flow_0iaccmi</incoming>
+    <outgoing>Flow_0bax3n1</outgoing>
+  </task>
+    <sequenceFlow id="Flow_0iaccmi" sourceRef="Activity_07b4aeg" targetRef="Activity_11xlozw" />
+    <sequenceFlow id="Flow_0bax3n1" sourceRef="Activity_11xlozw" targetRef="Event_07dyz8d" />
+    <endEvent id="Event_07dyz8d" name="結束">
+      <incoming>Flow_0bax3n1</incoming>
+    </endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BpmnDiagram_1">
+    <bpmndi:BPMNPlane id="BpmnPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="Flow_0jfbnmb_di" bpmnElement="Flow_0jfbnmb">
+        <omgdi:waypoint x="188" y="120" />
+        <omgdi:waypoint x="300" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ow8zy1_di" bpmnElement="Flow_0ow8zy1">
+        <omgdi:waypoint x="400" y="120" />
+        <omgdi:waypoint x="530" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0iaccmi_di" bpmnElement="Flow_0iaccmi">
+        <omgdi:waypoint x="630" y="120" />
+        <omgdi:waypoint x="780" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bax3n1_di" bpmnElement="Flow_0bax3n1">
+        <omgdi:waypoint x="880" y="120" />
+        <omgdi:waypoint x="1032" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1y45yut_di" bpmnElement="StartEvent_ops_coffee">
+        <omgdc:Bounds x="152" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="159" y="153" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pih3d0_di" bpmnElement="Activity_0pih3d0">
+        <omgdc:Bounds x="300" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11xlozw_di" bpmnElement="Activity_11xlozw">
+        <omgdc:Bounds x="780" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07b4aeg_di" bpmnElement="Activity_07b4aeg">
+        <omgdc:Bounds x="530" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07dyz8d_di" bpmnElement="Event_07dyz8d">
+        <omgdc:Bounds x="1032" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1039" y="145" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>`;
+
+export const xmls = `<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:flowable="http://flowable.org/bpmn" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns0="undefined" targetNamespace="http://www.flowable.org/processdef">
+  <process id="Process_1" name="Process_name_1" isExecutable="true">
+    <documentation>Process_name_1</documentation>
+    <startEvent id="StartEvent_1" name="开始节点" />
+    <userTask id="UserTask_Id" name="签收">
+      <extensionElements>
+        <flowable:customProperties userIdList="" userNameList="" assigneeField="" handlerStrategy="skip" roleGroupCode="" roleCode="" findUserType="5" relationNodeId="" actionList="start,draft" taskType="start" sequential="parallel" proportion="100" formName="" selectFormKey="" selectPath="0" />
+      </extensionElements>
+      <outgoing>Flow_00wn7rp</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_Id" sourceRef="StartEvent_1" targetRef="UserTask_Id" />
+    <task id="Activity_1b5u0kk" name="分拣">
+      <incoming>Flow_00wn7rp</incoming>
+      <outgoing>Flow_124i5zd</outgoing>
+    </task>
+    <sequenceFlow id="Flow_00wn7rp" sourceRef="UserTask_Id" targetRef="Activity_1b5u0kk" />
+    <task id="Activity_19nurrm" name="交接">
+      <incoming>Flow_124i5zd</incoming>
+      <outgoing>Flow_05os3y9</outgoing>
+    </task>
+    <sequenceFlow id="Flow_124i5zd" sourceRef="Activity_1b5u0kk" targetRef="Activity_19nurrm" />
+    <task id="Activity_0vkclnp" name="取材">
+      <incoming>Flow_05os3y9</incoming>
+      <outgoing>Flow_1ee0957</outgoing>
+    </task>
+    <sequenceFlow id="Flow_05os3y9" sourceRef="Activity_19nurrm" targetRef="Activity_0vkclnp" />
+    <task id="Activity_1viymg4" name="包埋">
+      <incoming>Flow_1ee0957</incoming>
+      <outgoing>Flow_14ujqqk</outgoing>
+    </task>
+    <sequenceFlow id="Flow_1ee0957" sourceRef="Activity_0vkclnp" targetRef="Activity_1viymg4" />
+    <task id="Activity_05wa52t" name="制片">
+      <incoming>Flow_14ujqqk</incoming>
+      <outgoing>Flow_18qrqrp</outgoing>
+      <outgoing>Flow_1mp28o8</outgoing>
+    </task>
+    <sequenceFlow id="Flow_14ujqqk" sourceRef="Activity_1viymg4" targetRef="Activity_05wa52t" />
+    <task id="Activity_09yrdgc" name="分子病理评估">
+      <incoming>Flow_18qrqrp</incoming>
+      <outgoing>Flow_11ytzwh</outgoing>
+    </task>
+    <sequenceFlow id="Flow_18qrqrp" sourceRef="Activity_05wa52t" targetRef="Activity_09yrdgc" />
+    <task id="Activity_05z1dfi" name="PCR核酸提取">
+      <incoming>Flow_1mp28o8</incoming>
+      <incoming>Flow_11ytzwh</incoming>
+      <incoming>Flow_0o3lzvq</incoming>
+      <outgoing>Flow_0xxs3m0</outgoing>
+    </task>
+    <sequenceFlow id="Flow_1mp28o8" sourceRef="Activity_05wa52t" targetRef="Activity_05z1dfi" />
+    <sequenceFlow id="Flow_11ytzwh" sourceRef="Activity_09yrdgc" targetRef="Activity_05z1dfi" />
+    <task id="Activity_1l2i80u" name="PCR扩增">
+      <incoming>Flow_0xxs3m0</incoming>
+      <outgoing>Flow_1t0qavy</outgoing>
+    </task>
+    <sequenceFlow id="Flow_0xxs3m0" sourceRef="Activity_05z1dfi" targetRef="Activity_1l2i80u" />
+    <task id="Activity_0ujnhjn" name="数据采集">
+      <incoming>Flow_1t0qavy</incoming>
+      <outgoing>Flow_0llsuhh</outgoing>
+      <outgoing>Flow_0o3lzvq</outgoing>
+    </task>
+    <sequenceFlow id="Flow_1t0qavy" sourceRef="Activity_1l2i80u" targetRef="Activity_0ujnhjn" />
+    <task id="Activity_1i12ayj" name="报告审核">
+      <incoming>Flow_0llsuhh</incoming>
+      <outgoing>Flow_1smtjlj</outgoing>
+    </task>
+    <sequenceFlow id="Flow_0llsuhh" sourceRef="Activity_0ujnhjn" targetRef="Activity_1i12ayj" />
+    <endEvent id="Event_0nvodu8">
+      <incoming>Flow_1smtjlj</incoming>
+    </endEvent>
+    <sequenceFlow id="Flow_1smtjlj" sourceRef="Activity_1i12ayj" targetRef="Event_0nvodu8" />
+    <sequenceFlow id="Flow_0o3lzvq" sourceRef="Activity_0ujnhjn" targetRef="Activity_05z1dfi" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="Process_1">
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_Id" bpmnElement="SequenceFlow_Id">
+        <omgdi:waypoint x="186" y="218" />
+        <omgdi:waypoint x="260" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00wn7rp_di" bpmnElement="Flow_00wn7rp">
+        <omgdi:waypoint x="360" y="218" />
+        <omgdi:waypoint x="440" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_124i5zd_di" bpmnElement="Flow_124i5zd">
+        <omgdi:waypoint x="540" y="218" />
+        <omgdi:waypoint x="620" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05os3y9_di" bpmnElement="Flow_05os3y9">
+        <omgdi:waypoint x="720" y="218" />
+        <omgdi:waypoint x="800" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ee0957_di" bpmnElement="Flow_1ee0957">
+        <omgdi:waypoint x="900" y="218" />
+        <omgdi:waypoint x="980" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14ujqqk_di" bpmnElement="Flow_14ujqqk">
+        <omgdi:waypoint x="1080" y="218" />
+        <omgdi:waypoint x="1160" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18qrqrp_di" bpmnElement="Flow_18qrqrp">
+        <omgdi:waypoint x="1260" y="218" />
+        <omgdi:waypoint x="1340" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mp28o8_di" bpmnElement="Flow_1mp28o8">
+        <omgdi:waypoint x="1260" y="218" />
+        <omgdi:waypoint x="1300" y="218" />
+        <omgdi:waypoint x="1300" y="330" />
+        <omgdi:waypoint x="1340" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11ytzwh_di" bpmnElement="Flow_11ytzwh">
+        <omgdi:waypoint x="1390" y="258" />
+        <omgdi:waypoint x="1390" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xxs3m0_di" bpmnElement="Flow_0xxs3m0">
+        <omgdi:waypoint x="1440" y="330" />
+        <omgdi:waypoint x="1520" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t0qavy_di" bpmnElement="Flow_1t0qavy">
+        <omgdi:waypoint x="1620" y="330" />
+        <omgdi:waypoint x="1700" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0llsuhh_di" bpmnElement="Flow_0llsuhh">
+        <omgdi:waypoint x="1800" y="330" />
+        <omgdi:waypoint x="1880" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1smtjlj_di" bpmnElement="Flow_1smtjlj">
+        <omgdi:waypoint x="1980" y="330" />
+        <omgdi:waypoint x="2062" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o3lzvq_di" bpmnElement="Flow_0o3lzvq">
+        <omgdi:waypoint x="1750" y="370" />
+        <omgdi:waypoint x="1750" y="430" />
+        <omgdi:waypoint x="1390" y="430" />
+        <omgdi:waypoint x="1390" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <omgdc:Bounds x="150" y="200" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="146" y="243" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_Id" bpmnElement="UserTask_Id">
+        <omgdc:Bounds x="260" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b5u0kk_di" bpmnElement="Activity_1b5u0kk">
+        <omgdc:Bounds x="440" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19nurrm_di" bpmnElement="Activity_19nurrm">
+        <omgdc:Bounds x="620" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vkclnp_di" bpmnElement="Activity_0vkclnp">
+        <omgdc:Bounds x="800" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1viymg4_di" bpmnElement="Activity_1viymg4">
+        <omgdc:Bounds x="980" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05wa52t_di" bpmnElement="Activity_05wa52t">
+        <omgdc:Bounds x="1160" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09yrdgc_di" bpmnElement="Activity_09yrdgc">
+        <omgdc:Bounds x="1340" y="178" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05z1dfi_di" bpmnElement="Activity_05z1dfi">
+        <omgdc:Bounds x="1340" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1l2i80u_di" bpmnElement="Activity_1l2i80u">
+        <omgdc:Bounds x="1520" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ujnhjn_di" bpmnElement="Activity_0ujnhjn">
+        <omgdc:Bounds x="1700" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1i12ayj_di" bpmnElement="Activity_1i12ayj">
+        <omgdc:Bounds x="1880" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nvodu8_di" bpmnElement="Event_0nvodu8">
+        <omgdc:Bounds x="2062" y="312" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>`;
 export const xmlstr = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
     xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -621,8 +872,4 @@ export const xmlstr = `<?xml version="1.0" encoding="UTF-8"?>
             </bpmndi:BPMNShape>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>
-</definitions>`
-
-
-
-
+</definitions>`;

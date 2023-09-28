@@ -34,10 +34,9 @@ const IndexModel = {
   state: {
     reportTempleName: '',
     processXml: '',
-    processFormData:{},
-    processRecordId:'',
+    processFormData: {},
+    processRecordId: '',
     bpmnModeler: null,
-    classFlowId:''
   },
   effects: {
     *fetchParamsSetList({ payload }, { call }) {

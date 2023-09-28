@@ -147,6 +147,22 @@ const UserTaskProps = ({ element }) => {
       }
     });
   };
+  const changeField = (e: any) => {
+    const value = e.target.value;
+    element['color'] = value;
+    let properties = {};
+    properties['color'] = value;
+    onChangeColor(value);
+    const modeling = bpmnModeler.get('modeling');
+    modeling.updateProperties(element, properties);
+  };
+  const onChangeColor = (color: any) => {
+    const modeling = bpmnModeler.get('modeling');
+    modeling.setColor(element, {
+      fill: null,
+      stroke: color,
+    });
+  };
   return (
     <>
       <div className={styles.header}>节点设置</div>
@@ -157,19 +173,22 @@ const UserTaskProps = ({ element }) => {
         <Form.Item name="nameNode" label="名称">
           <Input />
         </Form.Item>
-        <Form.Item label="分配个人" name="findUserType">
+        {/* <Form.Item label="分配个人" name="findUserType">
           <Select defaultValue="lucy" onChange={handleChange}>
             <Option value="jack">Jack</Option>
             <Option value="lucy">Lucy</Option>
             <Option value="Yiminghe">yiminghe</Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="分配人" name="users">
           <Select onChange={handleChange} mode="multiple">
             {userList?.map((item) => {
               return <Option value={item.id}>{item.name}</Option>;
             })}
           </Select>
+        </Form.Item>
+        <Form.Item label="节点颜色">
+          <Input type="color" onChange={changeField} />
         </Form.Item>
       </Form>
     </>

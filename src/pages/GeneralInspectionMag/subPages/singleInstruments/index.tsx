@@ -426,7 +426,6 @@ const SingleInstrument = () => {
         <Form.Item name="reportUnitId" label="报告单元">
           <Select
             placeholder="请选择报告单元"
-            autoComplete="off"
             allowClear
             onChange={reportUnitChange}
           >
@@ -440,23 +439,16 @@ const SingleInstrument = () => {
           </Select>
         </Form.Item>
 
-        <div id="instrId">
-          <Form.Item name="instrId" label="检测仪器">
-            <Select
-              onChange={instrChange}
-              placeholder="请选择检测仪器"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('instrId')}
-            >
-              {reportUnitInstrList?.map((item, index) => (
-                <Option value={item.id} key={index}>
-                  {item.instrName}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </div>
+        <Form.Item name="instrId" label="检测仪器">
+          <Select onChange={instrChange} placeholder="请选择检测仪器" allowClear>
+            {reportUnitInstrList?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.instrName}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
         <Form.Item name="labDate" rules={[{ required: true, message: '请选择检验日期' }]}>
           <DatePicker
             format="YYYY-MM-DD"
@@ -465,24 +457,20 @@ const SingleInstrument = () => {
             onChange={labDateChange}
           />
         </Form.Item>
-        <div id="executor">
-          <Form.Item name="executor" label="执行人">
-            <Select
-              placeholder="请选择执行人"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('executor')}
-              onChange={executorChange}
-            >
-              {executorList.length > 0 &&
-                executorList.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+        <Form.Item name="executor" label="执行人">
+          <Select
+            placeholder="请选择执行人"
+            allowClear
+            onChange={executorChange}
+          >
+            {executorList.length > 0 &&
+              executorList.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
       </Form>
     );
   };

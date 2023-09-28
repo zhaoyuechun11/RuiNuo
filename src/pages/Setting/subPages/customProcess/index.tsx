@@ -113,7 +113,6 @@ const CustomProcess = () => {
     });
   };
   const saveBpmn = () => {
-    
     if (processRecordId) {
       flowchartUpdate({
         flowXml: processXml,
@@ -124,6 +123,13 @@ const CustomProcess = () => {
         if (res.code === 200) {
           message.success('修改成功!');
           history.push('/setting/processMange');
+          dispatch({
+            type: 'Setting/save',
+            payload: {
+              type: 'processRecordId',
+              dataSource: '',
+            },
+          });
         }
       });
       return;

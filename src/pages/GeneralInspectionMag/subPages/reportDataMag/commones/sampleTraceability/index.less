@@ -1,0 +1,132 @@
+.form_tim {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  &:nth-child(1) {
+    margin-top: 10px;
+  }
+}
+.tip {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0px 10px 0px;
+  .item {
+    display: flex;
+    align-items: center;
+    & > div:nth-child(1) {
+      width: 20px;
+      height: 10px;
+    }
+    & > span:nth-child(2) {
+      margin: 0 5px;
+      font-size: 12px;
+    }
+    .susitem {
+      border: 1px solid green;
+    }
+    .proitem {
+      border: 1px solid rgb(30, 144, 255);
+    }
+    .unitem {
+      border: 1px solid #cecece;
+    }
+  }
+}
+/*流程高亮*/
+.djs-visual {
+  cursor: pointer;
+}
+.djs-visual > rect {
+  stroke: #cecece !important;
+}
+.highlight .djs-visual > :nth-child(1) {
+  //   fill: rgba(0, 80, 0, 0.4) !important;
+  stroke: green !important;
+}
+
+.highlightFlow .djs-visual > :nth-child(1) {
+  stroke: green !important;
+}
+.highlightIDO .djs-visual > :nth-child(1) {
+  fill: rgba(255, 196, 0, 0.4) !important;
+  stroke: rgb(255, 196, 0) !important;
+}
+.highlightTODO .djs-visual > :nth-child(1) {
+  fill: rgba(255, 255, 255, 0.4) !important;
+  stroke: rgb(30, 144, 255) !important;
+}
+.selected .djs-visual > :nth-child(1) {
+  fill: rgba(93, 120, 217, 0.4) !important;
+  stroke: rgb(151, 219, 253) !important;
+}
+// .djs-connection {
+//   path {
+//     //stroke: blue !important;
+//     stroke-dasharray: 8 !important; //间隔多少像素绘制一次  虚线
+//     marker-end: url(#sequenceflow-arrow-normal) !important;
+//   }
+// }
+.djs-connection {
+  path {
+    stroke: red !important;
+    stroke-dasharray: 8 !important; //间隔多少像素绘制一次  虚线
+    marker-end: url(#sequenceflow-arrow-activities) !important;
+  }
+}
+.tipBox {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #cecece;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px #cecece;
+}
+.log_content {
+  border: 1px solid #cecece;
+  border-bottom: none;
+}
+.header {
+  margin: 5px;
+  font-weight: 500;
+  font-size: 16px;
+}
+.flex_content {
+  display: flex;
+  & > :nth-child(1),
+  & > :nth-child(3) {
+    width: 80px;
+    padding-left: 10px;
+    color: #000;
+    font-weight: 500;
+    background-color: #efeaea;
+    border-right: 1px solid #cecece;
+    border-bottom: 1px solid #cecece;
+  }
+  & > :nth-child(2) {
+    width: 60px;
+    padding-left: 5px;
+    border-right: 1px solid #cecece;
+    border-bottom: 1px solid #cecece;
+  }
+  & > :nth-child(4) {
+    width: 60px;
+    padding-left: 5px;
+    border-bottom: 1px solid #cecece;
+  }
+}
+.action_content {
+  display: flex;
+  border-bottom: 1px solid #cecece;
+  & > :nth-child(1) {
+    width: 80px;
+    padding-left: 10px;
+    color: #000;
+    background-color: #efeaea;
+    border-right: 1px solid #cecece;
+  }
+  & > :last-child {
+    padding-left: 5px;
+  }
+}
+a.bjs-powered-by {
+  display: none;
+}

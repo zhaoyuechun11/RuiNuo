@@ -19,7 +19,7 @@ const UserTaskProps = ({ element }) => {
     if (!element) {
       return;
     }
-
+    console.log(element)
     element.type === 'bpmn:UserTask';
     const businessObject = element.businessObject;
     form.setFieldsValue({ nameNode: businessObject?.name, id: element.id || '' });

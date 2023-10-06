@@ -260,6 +260,38 @@ export default {
             },
           ],
         },
+        {
+          path: '/reportMag',
+          name: 'reportMag',
+          routes: [
+            {
+              path: '/reportMag/reportReview',
+              component: '@/pages/ReportMag/subPages/reportReview',
+              title: '报告单审核',
+            },
+            {
+              path: '/reportMag/reportCompreQuery',
+              component: '@/pages/ReportMag/subPages/reportCompreQuery',
+              title: '报告综合查询',
+            },
+            {
+              path: '/reportMag/reportPrintByHospital',
+              component: '@/pages/ReportMag/subPages/reportPrintByHospital',
+              title: '报告按医院打印',
+            },
+          ],
+        },
+        {
+          path: '/experTaskNavigation',
+          name: 'experTaskNavigation',
+          routes: [
+            {
+              path: '/experTaskNavigation/task',
+              component: '@/pages/ExperTaskNavigation/subPages/task',
+              title: '实验任务导航',
+            },
+          ],
+        },
       ],
     },
   ],

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector, useLocation } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Icon,  } from '@/components';
-import { Form, Input, message, Select, Tabs ,Table} from 'antd';
+import { Button, Icon } from '@/components';
+import { Form, Input, message, Select, Tabs, Table } from 'antd';
 import { main, transformTree } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
 import { reportUnitDelete } from '../../models/server';
@@ -175,23 +175,17 @@ const ReportingUnit = () => {
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
-        <div id="labClassId">
-          <Form.Item name="labClassId">
-            <Select
-              placeholder="请选择专业类别"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
-            >
-              {majorGroupData.length > 0 &&
-                majorGroupData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.className}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+        <Form.Item name="labClassId">
+          <Select placeholder="请选择专业类别" allowClear>
+            {majorGroupData.length > 0 &&
+              majorGroupData.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.className}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
+
         <Form.Item name="reportUnitCode">
           <Input
             placeholder="请输入报告单元code值"

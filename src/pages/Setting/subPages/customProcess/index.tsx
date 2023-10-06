@@ -145,6 +145,7 @@ const CustomProcess = () => {
     getFlowchart({ id }).then((res: any) => {
       if (res.code === 200) {
         bpmnModeler.importXML(res.data);
+  
       }
     });
   };

@@ -246,6 +246,7 @@ const SampleTraceability = () => {
     let overlays = bpmnViewer.get('overlays');
     eventBus.on('element.hover', (e) => {
       if (e.element.type === 'bpmn:UserTask') {
+     
         // this.detailInfo = this.nodeDetail[e.element.id];
         //悬浮框不能直接调用,因为这样调用的话popoverEl.innerHTML一直获取的是上一条数据，因为每次在调用这个方法的时候其实popover标签的变量还没有渲染
         //this.genNodeDetailBox(this.nodeDetail[e.element.id], e, overlays);

@@ -240,13 +240,26 @@ const RightContent = () => {
         </Form.Item>
         <Form.Item name="execBy">
           <Select allowClear placeholder="检验技师" style={{ width: 120 }}>
-            {personList.map((item) => {
-              return (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              );
-            })}
+            {personList.map(
+              (item: {
+                id: React.Key | null | undefined;
+                name:
+                  | string
+                  | number
+                  | boolean
+                  | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+                  | Iterable<React.ReactNode>
+                  | React.ReactPortal
+                  | null
+                  | undefined;
+              }) => {
+                return (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                );
+              },
+            )}
           </Select>
         </Form.Item>
         <Form.Item name="reqItemIds">
@@ -892,23 +905,15 @@ const RightContent = () => {
           <Form form={extendForm} layout="vertical">
             <Row>
               <Col span={8}>
-                <div id="hospitalId">
-                  <Form.Item name="hospitalId" label="送检单位">
-                    <Select
-                      placeholder="请选择送检单位"
-                      autoComplete="off"
-                      allowClear
-                      getPopupContainer={() => document.getElementById('hospitalId')}
-                      onChange={hospitalChange}
-                    >
-                      {hospitalList?.map((item, index) => (
-                        <Option value={item.id} key={index}>
-                          {item.hospitalName}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
+                <Form.Item name="hospitalId" label="送检单位">
+                  <Select placeholder="请选择送检单位" allowClear onChange={hospitalChange}>
+                    {hospitalList?.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.hospitalName}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
               </Col>
               <Col span={8}>
                 <div id="source">

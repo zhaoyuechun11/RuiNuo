@@ -2,71 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Tabs, Table, Form, Input } from 'antd';
 import { useParams } from 'umi';
 import { BackButton } from '@/components';
-import { xmls } from '@utils';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
 import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 import { append as svgAppend, attr as svgAttr, create as svgCreate } from 'tiny-svg';
 import { query as domQuery } from 'min-dom';
 import './index.less';
+import { xmlBySampleBarcode, historicActivity } from '../../../../models/server';
 const { TabPane } = Tabs;
-const value = {
-  highLine: ['SequenceFlow_Id', 'Flow_00wn7rp', 'Flow_124i5zd'],
-  highPoint: ['StartEvent_1', 'UserTask_Id', 'Activity_1b5u0kk'],
-  ido: [],
-  waitingToDo: ['Activity_19nurrm'],
-};
 const SampleTraceability = () => {
   const params = useParams();
   const [bpmnViewer, setBpmnViewer] = useState(null);
   const [form] = Form.useForm();
   useEffect(() => {
     if (bpmnViewer) {
-      addMarker();
-      setNodeColor();
-      bindEvents();
-      const marker = svgCreate('marker');
-      const markerActivities = svgCreate('marker');
-
-      svgAttr(marker, {
-        id: 'sequenceflow-arrow-normal',
-        viewBox: '0 0 20 20',
-        refX: '11',
-        refY: '10',
-        markerWidth: '10',
-        markerHeight: '10',
-        orient: 'auto',
-      });
-
-      svgAttr(markerActivities, {
-        id: 'sequenceflow-arrow-activities',
-        viewBox: '0 0 20 20',
-        refX: '11',
-        refY: '10',
-        markerWidth: '10',
-        markerHeight: '10',
-        orient: 'auto',
-      });
-
-      const path = svgCreate('path');
-      const pathActivities = svgCreate('path');
-
-      svgAttr(path, {
-        d: 'M 1 5 L 11 10 L 1 15 Z',
-        style:
-          ' stroke-width: 1px; stroke-linecap: round; stroke-dasharray: 10000, 1; stroke: #cccccc;fill:#ccc;',
-      });
-      svgAttr(pathActivities, {
-        d: 'M 1 5 L 11 10 L 1 15 Z',
-        style:
-          ' stroke-width: 1px; stroke-linecap: round; stroke-dasharray: 10000, 1; stroke: #fdb039;fill:#fdb039;',
-      });
-
-      const defs = domQuery('defs');
-      svgAppend(marker, path);
-      svgAppend(defs, marker);
-      svgAppend(markerActivities, pathActivities);
-      svgAppend(defs, markerActivities);
+      //getXml();
+      // setNodeColor();
+      // bindEvents();
     }
   }, [bpmnViewer]);
   useEffect(() => {
@@ -124,13 +76,13 @@ const SampleTraceability = () => {
       align: 'center',
     },
     {
-      title: '节点前',
+      title: '前节点',
       dataIndex: 'age',
       key: 'age',
       align: 'center',
     },
     {
-      title: '节点后',
+      title: '后节点',
       dataIndex: 'address',
       key: 'address',
       align: 'center',
@@ -180,22 +132,53 @@ const SampleTraceability = () => {
         ZoomScrollModule,
       ],
     });
-
-    bpmnViewer.importXML(xmls, (error: any) => {
-      if (error) {
-      } else {
-        let canvas = bpmnViewer.get('canvas');
-        canvas.zoom('fit-viewport', 'auto');
-        setBpmnViewer(bpmnViewer);
-      }
-    });
+    setBpmnViewer(bpmnViewer);
   };
   const setNodeColor = () => {
     const elementRegistry = bpmnViewer.get('elementRegistry').getAll();
+    // console.log(elementRegistry[0].businessObject.flowElements);
     let canvas = bpmnViewer.get('canvas');
     canvas.addMarker(elementRegistry[3].id, 'highlight_defalut');
+    let elementData = [];
+    let text = [
+      {
+        id: 'sid-79e4bfb1-e83f-42df-b997-dd3006930f28',
+        name: '开始节点',
+        source: null,
+        targe: null,
+        startTime: '2023-09-28 19:50:40',
+        endTime: '2023-09-28 19:50:39',
+        duration: 1,
+      },
+      {
+        id: 'cf1',
+        name: '一个节点',
+        source: null,
+        targe: null,
+        startTime: '2023-09-28 19:50:40',
+        endTime: '2023-09-28 19:50:39',
+        duration: 1,
+      },
+    ];
+    for (let i = 0; i < elementRegistry[0].businessObject.flowElements.length; i++) {
+      if (elementRegistry[0].businessObject.flowElements[i].$type === 'bpmn:SequenceFlow') {
+        elementData.push(elementRegistry[0].businessObject.flowElements[i]);
+      }
+    }
+    for (let i = 0; i < elementData.length; i++) {
+      elementData[i].sourceRef.id;
+      elementData[i].targetRef.id;
+      for (let y = 0; y < text.length; y++) {
+        if (elementData[i].sourceRef.id === text[y].id) {
+          elementData[i].startTime = text[y].startTime;
+          elementData[i].endTime = text[y].endTime;
+          elementData[i].duration = text[y].duration;
+        }
+      }
+    }
+    console.log(elementData);
   };
-  const addMarker = () => {
+  const addMarker = (line, point) => {
     let canvas = bpmnViewer.get('canvas');
     // 需要高亮的节点id
     // const value = {
@@ -205,29 +188,29 @@ const SampleTraceability = () => {
     //   waitingToDo: ['Activity_19nurrm'],
     // };
     // 高亮线
-    value.highLine.forEach((e) => {
+    line.forEach((e) => {
       if (e) {
         canvas.addMarker(e, 'highlightFlow');
       }
     });
     // 高亮任务
-    value.highPoint.forEach((e) => {
+    point.forEach((e) => {
       if (e) {
         canvas.addMarker(e, 'highlight');
       }
     });
-    // 高亮我执行过的任务
-    value.ido.forEach((e) => {
-      if (e) {
-        canvas.addMarker(e, 'highlightIDO');
-      }
-    });
-    // 高亮下一个任务
-    value.waitingToDo.forEach((e) => {
-      if (e) {
-        canvas.addMarker(e, 'highlightTODO');
-      }
-    });
+    // // 高亮我执行过的任务
+    // value.ido.forEach((e) => {
+    //   if (e) {
+    //     canvas.addMarker(e, 'highlightIDO');
+    //   }
+    // });
+    // // 高亮下一个任务
+    // value.waitingToDo.forEach((e) => {
+    //   if (e) {
+    //     canvas.addMarker(e, 'highlightTODO');
+    //   }
+    // });
   };
   const genNodeDetailBox = (e, overlays) => {
     let tempDiv = document.createElement('div');
@@ -246,7 +229,6 @@ const SampleTraceability = () => {
     let overlays = bpmnViewer.get('overlays');
     eventBus.on('element.hover', (e) => {
       if (e.element.type === 'bpmn:UserTask') {
-     
         // this.detailInfo = this.nodeDetail[e.element.id];
         //悬浮框不能直接调用,因为这样调用的话popoverEl.innerHTML一直获取的是上一条数据，因为每次在调用这个方法的时候其实popover标签的变量还没有渲染
         //this.genNodeDetailBox(this.nodeDetail[e.element.id], e, overlays);
@@ -280,12 +262,87 @@ const SampleTraceability = () => {
       overlays.clear();
     });
   };
-  const searchHandle = (changedValues: any, allValues: undefined) => {};
+  const changeLineAndArrowColor = () => {
+    const marker = svgCreate('marker');
+    const markerActivities = svgCreate('marker');
+
+    svgAttr(marker, {
+      id: 'sequenceflow-arrow-normal',
+      viewBox: '0 0 20 20',
+      refX: '11',
+      refY: '10',
+      markerWidth: '10',
+      markerHeight: '10',
+      orient: 'auto',
+    });
+
+    svgAttr(markerActivities, {
+      id: 'sequenceflow-arrow-activities',
+      viewBox: '0 0 20 20',
+      refX: '11',
+      refY: '10',
+      markerWidth: '10',
+      markerHeight: '10',
+      orient: 'auto',
+    });
+
+    const path = svgCreate('path');
+    const pathActivities = svgCreate('path');
+
+    svgAttr(path, {
+      d: 'M 1 5 L 11 10 L 1 15 Z',
+      style:
+        ' stroke-width: 1px; stroke-linecap: round; stroke-dasharray: 10000, 1; stroke: #cccccc;fill:#ccc;',
+    });
+    svgAttr(pathActivities, {
+      d: 'M 1 5 L 11 10 L 1 15 Z',
+      style:
+        ' stroke-width: 1px; stroke-linecap: round; stroke-dasharray: 10000, 1; stroke: #fdb039;fill:#fdb039;',
+    });
+
+    const defs = domQuery('defs');
+    svgAppend(marker, path);
+    svgAppend(defs, marker);
+    svgAppend(markerActivities, pathActivities);
+    svgAppend(defs, markerActivities);
+  };
+  const getXml = (params) => {
+    xmlBySampleBarcode(params).then((res) => {
+      if (res.code === 200) {
+        bpmnViewer.importXML(res.data.flowXml, (error: any) => {
+          if (error) {
+          } else {
+            let canvas = bpmnViewer.get('canvas');
+            canvas.zoom('fit-viewport', 'auto');
+            changeLineAndArrowColor();
+            getHighPoint();
+          }
+        });
+      }
+    });
+  };
+  const searchHandle = (changedValues: any, allValues: undefined) => {
+    getXml(changedValues);
+  };
+  const getHighPoint = () => {
+    historicActivity({ sampleBarcode: '20231007662023990004' }).then((res) => {
+      if (res.code === 200) {
+        let sequenceFlowResult = res.data
+          .filter((item) => item.activityType === 'sequenceFlow')
+          .map((item) => item.id);
+        let pointResult = res.data
+          .filter((item) => item.activityType !== 'sequenceFlow')
+          .map((item) => item.id);
+        addMarker(sequenceFlowResult, pointResult);
+        setNodeColor();
+      }
+    });
+  };
   const renderForm = () => {
     return (
       <Form onValuesChange={searchHandle} layout="inline" form={form}>
         <Form.Item name="sampleBarcode">
-          <Input placeholder="请输入样本条码" />
+          <Input placeholder="请输入样本条码" allowClear />
         </Form.Item>
       </Form>
     );

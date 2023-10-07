@@ -12,7 +12,8 @@ const env = {
     api_pdf: 'https://h.hire66.com', //预览pdf链接
     api_pdf_windows: 'https://bc.hire66.com/onlinePreview', //预览pdf链接
     apiurl_website: 'https://dwww.hire66.com/', //  配置官网链接
-    apiurl_web: 'http://211.149.238.180:8080/rnlims',
+    //apiurl_web: 'http://211.149.238.180:8080/rnlims',
+      apiurl_web:'http://cpolar.featherlet.cn/'
   },
 
   production: {

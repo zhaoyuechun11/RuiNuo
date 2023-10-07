@@ -132,3 +132,9 @@ export function firstAudit(params) {
 export function secondAudit(params) {
   return axios('lab/reportMain/secondAudit', 'post', params);
 }
+export function xmlBySampleBarcode(params) {
+  return axios('lab/reqMainSplit/getFlowXmlBySampleBarcode', 'get', params);
+}
+export function historicActivity(params) {
+  return axios('lab/reqMainSplit/getHistoricActivity', 'get', params);
+}

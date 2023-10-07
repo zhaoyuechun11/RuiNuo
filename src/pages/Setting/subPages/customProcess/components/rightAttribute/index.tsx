@@ -83,42 +83,6 @@ const RightAttribute = () => {
   };
   const getShape = (id) => {
     var elementRegistry = bpmnModeler?.get('elementRegistry');
-    console.log(Object.keys(elementRegistry._elements));
-    let startGoid = '';
-    let firstNode = '';
-    for (let i = 0; i < Object.keys(elementRegistry._elements).length; i++) {
-      console.log(elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element);
-      if (
-        elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.type ===
-        'bpmn:StartEvent'
-      ) {
-        console.log(
-          elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.outgoing[0]
-            .id,
-        );
-        startGoid =
-          elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.outgoing[0]
-            .id;
-      }
-      if (
-        startGoid ===
-        elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.id
-      ) {
-        console.log(
-          elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.target.id,
-        );
-        firstNode =
-          elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.target.id;
-        console.log(elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element);
-      }
-      // console.log(
-      //   elementRegistry._elements[Object.keys(elementRegistry._elements)[i]].element.id,
-      //   firstNode,
-      // );
-    }
-
-    console.log(elementRegistry._elements.UserTask_Id);
-    debugger;
     return elementRegistry.get(id);
   };
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Tabs, Table, Form, Input } from 'antd';
-import { useParams } from 'umi';
+import { useParams, useSelector } from 'umi';
 import { BackButton } from '@/components';
 import BpmnViewer from 'bpmn-js/lib/Viewer';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
@@ -8,119 +8,112 @@ import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 import { append as svgAppend, attr as svgAttr, create as svgCreate } from 'tiny-svg';
 import { query as domQuery } from 'min-dom';
 import './index.less';
-import { xmlBySampleBarcode, historicActivity } from '../../../../models/server';
+import { xmlBySampleBarcode, historicActivity, logList } from '../../../../models/server';
 const { TabPane } = Tabs;
 const SampleTraceability = () => {
   const params = useParams();
   const [bpmnViewer, setBpmnViewer] = useState(null);
   const [form] = Form.useForm();
+  const [log, setLog] = useState([]);
+  const [TATList, setTATList] = useState([]);
+  const [documentationSum, setDocumentationSum] = useState(0);
+  const [sumDurationInMillis, setSumDurationInMillis] = useState(0);
+  const { instrAndRecordId } = useSelector((state: any) => state.generalInspectionMag);
   useEffect(() => {
-    if (bpmnViewer) {
-      //getXml();
-      // setNodeColor();
-      // bindEvents();
+    if (instrAndRecordId.sampleBarcode) {
+      getXml({ sampleBarcode: instrAndRecordId.sampleBarcode });
+      getLogList({ sampleBarcode: instrAndRecordId.sampleBarcode });
     }
-  }, [bpmnViewer]);
+  }, [instrAndRecordId]);
   useEffect(() => {
     initBpmn();
   }, []);
   const columns = [
     {
       title: '节点代码',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'nodeCode',
+      key: 'nodeCode',
       align: 'center',
     },
     {
       title: '节点名称',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'nodeName',
+      key: 'nodeName',
       align: 'center',
     },
     {
       title: '执行人',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'operatorName',
+      key: 'operatorName',
       align: 'center',
     },
     {
       title: '执行时间',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'operateTime',
+      dataIndex: 'operateTime',
       align: 'center',
     },
     {
       title: '是否延迟',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'delayFlag',
+      key: 'delayFlag',
       align: 'center',
+      render: (text) => {
+        return <span>{text ? '是' : '否'}</span>;
+      },
     },
     {
       title: '延迟时间',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'delayTime',
+      dataIndex: 'delayTime',
       align: 'center',
     },
     {
       title: '操作内容',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'remark',
+      dataIndex: 'remark',
       align: 'center',
     },
   ];
   const columns1 = [
     {
       title: '序号',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'index',
+      key: 'index',
       align: 'center',
     },
     {
       title: '前节点',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'sourceRef',
+      key: 'sourceRef',
       align: 'center',
+      render: (text) => {
+        return <span>{text.name}</span>;
+      },
     },
     {
       title: '后节点',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'targetRef',
+      key: 'targetRef',
       align: 'center',
+      render: (text) => {
+        return <span>{text.name}</span>;
+      },
     },
     {
       title: '实际流转用时',
-      key: 'tags',
-      dataIndex: 'tags',
+      key: 'targetRef',
+      dataIndex: 'targetRef',
       align: 'center',
+      render: (text) => {
+        return <span>{text.durationInMillis}</span>;
+      },
     },
     {
       title: '计划流转用时',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'documentation',
+      key: 'documentation',
       align: 'center',
-    },
-  ];
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New ',
-      tags: ['nice'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney ',
-      tags: ['cool'],
     },
   ];
   const initBpmn = () => {
@@ -134,49 +127,52 @@ const SampleTraceability = () => {
     });
     setBpmnViewer(bpmnViewer);
   };
-  const setNodeColor = () => {
+  const setNodeColor = (val) => {
     const elementRegistry = bpmnViewer.get('elementRegistry').getAll();
-    // console.log(elementRegistry[0].businessObject.flowElements);
-    let canvas = bpmnViewer.get('canvas');
-    canvas.addMarker(elementRegistry[3].id, 'highlight_defalut');
+    console.log(elementRegistry);
+    //let canvas = bpmnViewer.get('canvas');
+    //canvas.addMarker(elementRegistry[3].id, 'highlight_defalut');
     let elementData = [];
-    let text = [
-      {
-        id: 'sid-79e4bfb1-e83f-42df-b997-dd3006930f28',
-        name: '开始节点',
-        source: null,
-        targe: null,
-        startTime: '2023-09-28 19:50:40',
-        endTime: '2023-09-28 19:50:39',
-        duration: 1,
-      },
-      {
-        id: 'cf1',
-        name: '一个节点',
-        source: null,
-        targe: null,
-        startTime: '2023-09-28 19:50:40',
-        endTime: '2023-09-28 19:50:39',
-        duration: 1,
-      },
-    ];
     for (let i = 0; i < elementRegistry[0].businessObject.flowElements.length; i++) {
       if (elementRegistry[0].businessObject.flowElements[i].$type === 'bpmn:SequenceFlow') {
         elementData.push(elementRegistry[0].businessObject.flowElements[i]);
       }
     }
     for (let i = 0; i < elementData.length; i++) {
-      elementData[i].sourceRef.id;
-      elementData[i].targetRef.id;
-      for (let y = 0; y < text.length; y++) {
-        if (elementData[i].sourceRef.id === text[y].id) {
-          elementData[i].startTime = text[y].startTime;
-          elementData[i].endTime = text[y].endTime;
-          elementData[i].duration = text[y].duration;
+      for (let y = 0; y < val.length; y++) {
+        if (elementData[i].sourceRef.id === val[y].id) {
+          elementData[i].sourceRef.documentation = val[y].documentation;
+          elementData[i].sourceRef.durationInMillis = val[y].durationInMillis;
         }
+        if (elementData[i].id === val[y].id) {
+          elementData[i].documentation = val[y].documentation;
+          elementData[i].durationInMillis = val[y].durationInMillis;
+        }
+        if (elementData[i].targetRef.id === val[y].id) {
+          elementData[i].targetRef.documentation = val[y].documentation;
+          elementData[i].targetRef.durationInMillis = val[y].durationInMillis;
+        }
+        elementData[i].index = i;
       }
     }
-    console.log(elementData);
+    const sum = elementData
+      .map((item) => item.documentation)
+      .filter((item) => item !== undefined)
+      .map((item) => Number(item))
+      .reduce(function (prev, cur, index, arr) {
+        return prev + cur;
+      });
+    const sumResult = elementData
+      .map((item) => item.targetRef?.durationInMillis)
+      .filter((item) => item !== undefined)
+      .map((item) => Number(item))
+      .reduce(function (prev, cur, index, arr) {
+        return prev + cur;
+      }, 0);
+    console.log(elementData, sumDurationInMillis);
+    setSumDurationInMillis(sumResult);
+    setDocumentationSum(sum);
+    setTATList(elementData);
   };
   const addMarker = (line, point) => {
     let canvas = bpmnViewer.get('canvas');
@@ -315,7 +311,7 @@ const SampleTraceability = () => {
             let canvas = bpmnViewer.get('canvas');
             canvas.zoom('fit-viewport', 'auto');
             changeLineAndArrowColor();
-            getHighPoint();
+            getHighPoint(params);
           }
         });
       }
@@ -323,9 +319,10 @@ const SampleTraceability = () => {
   };
   const searchHandle = (changedValues: any, allValues: undefined) => {
     getXml(changedValues);
+    getLogList(changedValues);
   };
-  const getHighPoint = () => {
-    historicActivity({ sampleBarcode: '20231007662023990004' }).then((res) => {
+  const getHighPoint = (params: any) => {
+    historicActivity(params).then((res) => {
       if (res.code === 200) {
         let sequenceFlowResult = res.data
           .filter((item) => item.activityType === 'sequenceFlow')
@@ -334,7 +331,14 @@ const SampleTraceability = () => {
           .filter((item) => item.activityType !== 'sequenceFlow')
           .map((item) => item.id);
         addMarker(sequenceFlowResult, pointResult);
-        setNodeColor();
+        setNodeColor(res.data);
+      }
+    });
+  };
+  const getLogList = (params) => {
+    logList(params).then((res) => {
+      if (res.code === 200) {
+        setLog(res.data);
       }
     });
   };
@@ -433,10 +437,15 @@ const SampleTraceability = () => {
       </div>
       <Tabs defaultActiveKey="1" style={{ marginTop: '10vh' }}>
         <TabPane tab="样本流转日志信息" key="1">
-          <Table columns={columns} dataSource={data} size="small" />
+          <Table columns={columns} dataSource={log} size="small" />
         </TabPane>
         <TabPane tab="样本流转TAT分析" key="2">
-          <Table columns={columns1} dataSource={[]} size="small" />
+          <div className="header_title">
+            <div>样本总流转用时:{sumDurationInMillis}</div>{' '}
+            <div>样本计划流转用时:{documentationSum}</div>
+            <div>流转效率:{sumDurationInMillis / documentationSum}</div>
+          </div>
+          <Table columns={columns1} dataSource={TATList} size="small" />
         </TabPane>
       </Tabs>
     </>

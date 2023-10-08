@@ -19,7 +19,7 @@ const UserTaskProps = ({ element }) => {
     if (!element) {
       return;
     }
-    console.log(element)
+    console.log(element);
     element.type === 'bpmn:UserTask';
     const businessObject = element.businessObject;
     form.setFieldsValue({ nameNode: businessObject?.name, id: element.id || '' });
@@ -83,7 +83,7 @@ const UserTaskProps = ({ element }) => {
       createOrUpdateCustomProperties('id', changedValues.id);
     }
     if (changedValues.users) {
-      modeling.updateProperties(element, { users: changedValues.users });
+      modeling.updateProperties(element, { 'flowable:candidateUsers': changedValues.users });
     }
   };
   const getPropertieByName = (customProperties: any, name: any) => {

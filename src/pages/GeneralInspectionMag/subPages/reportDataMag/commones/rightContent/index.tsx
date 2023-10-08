@@ -515,6 +515,7 @@ const RightContent = () => {
               let paramsVal = {
                 id: res.data.records[res.data.records.length - 1]?.id,
                 instrId: form.getFieldValue('instrId'),
+                sampleBarcode: res.data.records[res.data.records.length - 1]?.sampleBarcode,
               };
               dispatch({
                 type: 'generalInspectionMag/save',
@@ -790,8 +791,11 @@ const RightContent = () => {
       });
     }
     setClickRow(record.id);
-    let idParams = { id: record.id, instrId: form.getFieldValue('instrId') };
-
+    let idParams = {
+      id: record.id,
+      instrId: form.getFieldValue('instrId'),
+      sampleBarcode: record.sampleBarcode,
+    };
     dispatch({
       type: 'generalInspectionMag/save',
       payload: {

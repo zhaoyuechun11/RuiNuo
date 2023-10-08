@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input } from 'antd';
 import bpmnHelper from '../../js/helper/BpmnHelper';
+import BpmnModeler from 'bpmn-js/lib/Modeler';
 import { useSelector } from 'umi';
 const { TextArea } = Input;
 const SequenceFlowProps = ({ element }) => {
@@ -22,6 +23,7 @@ const SequenceFlowProps = ({ element }) => {
       modeling.updateProperties(element, {
         name: changedValues.maxTime,
       });
+      bpmnHelper.updateDocumentation(bpmnModeler, element, changedValues.maxTime);
     }
     if (changedValues.tempCondition) {
       var conditionExpression = element.businessObject.$model.create('bpmn:FormalExpression', {

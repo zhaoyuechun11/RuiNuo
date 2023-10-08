@@ -138,3 +138,6 @@ export function xmlBySampleBarcode(params) {
 export function historicActivity(params) {
   return axios('lab/reqMainSplit/getHistoricActivity', 'get', params);
 }
+export function logList(params) {
+  return axios('lab/flowOperateLog/list', 'get', params);
+}

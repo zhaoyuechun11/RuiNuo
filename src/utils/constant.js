@@ -2180,6 +2180,14 @@ export const menu = [
             selIcon: 'T8-shezhi-xuanzhong',
             children: [],
           },
+          {
+            key: 'roleMange',
+            url: '/setting/reportTemplateModel',
+            name: '报告模版模块管理',
+            icon: 'T8-shezhi-weixuanzhong',
+            selIcon: 'T8-shezhi-xuanzhong',
+            children: [],
+          },
         ],
       },
       {
@@ -2206,6 +2214,13 @@ export const menu = [
             children: [],
           },
         ],
+      },
+      {
+        key: 'department',
+        url: '/setting/department',
+        name: '部门管理',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
       },
     ],
   },

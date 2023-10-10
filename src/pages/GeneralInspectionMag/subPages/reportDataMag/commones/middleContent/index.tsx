@@ -89,7 +89,7 @@ const MiddleContent = () => {
     var result = reg.test(str);
     console.log(result);
 
-    if (reportUnit) {
+    if (reportUnit!=='undefined'&&reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);
 
       getList({ reportUnitName: newReportUnit.children });
@@ -114,7 +114,7 @@ const MiddleContent = () => {
     }
   }, [instrAndRecordId]);
   useEffect(() => {
-    if (reportUnit) {
+    if (reportUnit!=='undefined'&&reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);
 
       getList({ reportUnitName: newReportUnit.children });
@@ -267,7 +267,7 @@ const MiddleContent = () => {
       payload: {
         ...params,
         callback: (res: { code: number; data: React.SetStateAction<never[]> }) => {
-          if (res.code === 200) {
+          if (res?.code === 200) {
             setList(res.data);
           }
         },

@@ -32,45 +32,47 @@
     }
   }
 }
-/*流程高亮*/
-.djs-visual {
-  cursor: pointer;
-}
-.djs-visual > rect {
-  stroke: #cecece !important;
-}
-.highlight .djs-visual > :nth-child(1) {
-  //   fill: rgba(0, 80, 0, 0.4) !important;
-  stroke: green !important;
-}
+.container {
+  /*流程高亮*/
+  .djs-visual {
+    cursor: pointer;
+  }
+  .djs-visual > rect {
+    stroke: #cecece !important;
+  }
+  .highlight .djs-visual > :nth-child(1) {
+    //   fill: rgba(0, 80, 0, 0.4) !important;
+    stroke: green !important;
+  }
 
-.highlightFlow .djs-visual > :nth-child(1) {
-  stroke: green !important;
-}
-.highlightIDO .djs-visual > :nth-child(1) {
-  fill: rgba(255, 196, 0, 0.4) !important;
-  stroke: rgb(255, 196, 0) !important;
-}
-.highlightTODO .djs-visual > :nth-child(1) {
-  fill: rgba(255, 255, 255, 0.4) !important;
-  stroke: rgb(30, 144, 255) !important;
-}
-.selected .djs-visual > :nth-child(1) {
-  fill: rgba(93, 120, 217, 0.4) !important;
-  stroke: rgb(151, 219, 253) !important;
-}
-// .djs-connection {
-//   path {
-//     //stroke: blue !important;
-//     stroke-dasharray: 8 !important; //间隔多少像素绘制一次  虚线
-//     marker-end: url(#sequenceflow-arrow-normal) !important;
-//   }
-// }
-.djs-connection {
-  path {
-    stroke: red !important;
-    stroke-dasharray: 8 !important; //间隔多少像素绘制一次  虚线
-    marker-end: url(#sequenceflow-arrow-activities) !important;
+  .highlightFlow .djs-visual > :nth-child(1) {
+    stroke: green !important;
+  }
+  .highlightIDO .djs-visual > :nth-child(1) {
+    fill: rgba(255, 196, 0, 0.4) !important;
+    stroke: rgb(255, 196, 0) !important;
+  }
+  .highlightTODO .djs-visual > :nth-child(1) {
+    fill: rgba(255, 255, 255, 0.4) !important;
+    stroke: rgb(30, 144, 255) !important;
+  }
+  // .selected .djs-visual > :nth-child(1) {
+  //   fill: rgba(93, 120, 217, 0.4) !important;
+  //   stroke: rgb(151, 219, 253) !important;
+  // }
+  // .djs-connection {
+  //   path {
+  //     //stroke: blue !important;
+  //     stroke-dasharray: 8 !important; //间隔多少像素绘制一次  虚线
+  //     marker-end: url(#sequenceflow-arrow-normal) !important;
+  //   }
+  // }
+  .djs-connection {
+    path {
+      stroke: red !important;
+      stroke-dasharray: 8 !important; //间隔多少像素绘制一次  虚线
+      marker-end: url(#sequenceflow-arrow-activities) !important;
+    }
   }
 }
 .tipBox {

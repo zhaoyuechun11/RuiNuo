@@ -52,7 +52,7 @@ const CustomProcess = () => {
       <BackButton />
       <Row>
         <Col span={24}>
-          <div id="canvas" className="container" />
+          <div id="canvas"  />
         </Col>
       </Row>
     </>

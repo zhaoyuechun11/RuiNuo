@@ -71,6 +71,8 @@ const ApplicationFormModel = ({ type = 1 }) => {
           ? 'Setting/updateReportDataDefault'
           : type === 3
           ? 'Setting/updateReportDataDetailDefault'
+          : type === 5
+          ? 'Setting/reportListDefaultUpdate'
           : 'Setting/reportListDefaultUpdate',
       payload: {
         id,
@@ -95,6 +97,8 @@ const ApplicationFormModel = ({ type = 1 }) => {
           ? 'Setting/reportMainDataPage'
           : type === 3
           ? 'Setting/reportMainDataDetailPage'
+          : type === 5
+          ? 'Setting/reportMainDataListPage'
           : 'Setting/reportMainDataListPage',
       payload: {
         ...params,
@@ -175,7 +179,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
               modalRef.current.show();
             }}
           >
-            <PlusOutlined style={{ marginRight: 4 }}/>
+            <PlusOutlined style={{ marginRight: 4 }} />
             新增
           </Button>
         </div>
@@ -183,10 +187,6 @@ const ApplicationFormModel = ({ type = 1 }) => {
       <Table
         columns={Columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
         handleTableChange={onTableChange}
         loading={loading}
         pagination={{

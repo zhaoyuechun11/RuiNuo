@@ -11,7 +11,7 @@ const AliasEdit = ({ cRef, refresh }) => {
 
   useImperativeHandle(cRef, () => ({
     show: (val) => {
-      form.setFieldsValue({ cname: val.cname });
+      form.setFieldsValue({ cname: val.name });
       permisCurrentRow.current = val;
       modalRef.current.show();
     },
@@ -33,7 +33,7 @@ const AliasEdit = ({ cRef, refresh }) => {
     });
     return;
   };
-  const onFinishFailed = (error) => {};
+
   return (
     <Dialog
       title={`${'编辑别名'}`}
@@ -45,16 +45,9 @@ const AliasEdit = ({ cRef, refresh }) => {
       }}
     >
       <div style={{ width: '100%' }}>
-        <Form
-          form={form}
-          name="basic"
-          layout="vertical"
-          //   className={s.addRegistrationFrom}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item label="名称" name="cname" rules={[{ required: true, message: '请输入别名' }]}>
-            <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入名称" />
+            <Input placeholder="请输入名称" />
           </Form.Item>
         </Form>
       </div>

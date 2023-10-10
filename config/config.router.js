@@ -31,11 +31,6 @@ export default {
           path: '/setting',
           name: 'setting',
           routes: [
-            // {
-            //   path: '/setting/index',
-            //   component: '@/pages/Setting',
-            //   title: '设置页面',
-            // },
             {
               path: '/setting/roleMange',
               component: '@/pages/Setting/subPages/roleMange',
@@ -76,7 +71,7 @@ export default {
             {
               path: '/setting/sampleFieldCustom/:id/:type',
               component: '@/pages/Setting/subPages/sampleFieldCustom',
-              title: '自定义申请单字段',
+              title: '自定义字段',
             },
             {
               path: '/setting/geneInsRepModel',
@@ -94,9 +89,14 @@ export default {
               title: '普检报告数据列表模块管理',
             },
             {
+              path: '/setting/reportTemplateModel',
+              component: '@/pages/Setting/subPages/reportTemplateModel',
+              title: '报告模版导出模块管理',
+            },
+            {
               path: '/setting/batchInputTemplate',
               component: '@/pages/Setting/subPages/batchInputTemplate',
-              title: '批录入模版',
+              title: '批录入方式维护',
             },
             {
               path: '/Setting/batchInputTemplateDetail/:id',
@@ -116,7 +116,7 @@ export default {
             {
               path: '/setting/updateCustomProcess/:id',
               component: '@/pages/Setting/subPages/updateCustomProcess',
-              title: '修改流程',
+              title: '查看流程',
             },
             {
               path: '/setting/processMange',
@@ -126,7 +126,12 @@ export default {
             {
               path: '/setting/processClassification',
               component: '@/pages/Setting/subPages/processClassification',
-              title: '流程分类',
+              title: '适用流程对照',
+            },
+            {
+              path: '/setting/department',
+              component: '@/pages/Setting/subPages/department',
+              title: '部门管理',
             },
           ],
         },

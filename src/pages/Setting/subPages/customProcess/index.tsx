@@ -160,7 +160,7 @@ const CustomProcess = () => {
       </div>
       <Row>
         <Col span={18}>
-          <div id="canvas" className="container" />
+          <div id="canvas" className="container_canvas" />
           <div className="properties-panel"></div>
         </Col>
         <Col span={6}>

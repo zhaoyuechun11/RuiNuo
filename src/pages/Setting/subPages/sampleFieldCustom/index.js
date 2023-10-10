@@ -152,6 +152,8 @@ const Index = () => {
           ? 'Setting/reportMainDataOperateList'
           : paramsUrl.type === '3'
           ? 'sampleFieldCustom/reportDataDetailOperateList'
+          : paramsUrl.type === '5'
+          ? 'sampleFieldCustom/fetchReportLis'
           : 'sampleFieldCustom/fetchReportLis',
       payload: {
         moduleId: paramsUrl.id,

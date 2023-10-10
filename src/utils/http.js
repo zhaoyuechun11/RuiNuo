@@ -242,6 +242,7 @@ function axiosBase(url, type, params) {
       }
     })
     .catch((err) => {
+      //debugger
       return Promise.reject(err);
       if (err.message) {
         return Promise.reject(err);

@@ -13,8 +13,9 @@ const LeftContent = () => {
   );
   const reportUnit = localStorage.getItem('reportUnit');
   useEffect(() => {
-    if (reportUnit) {
+    if (reportUnit !== 'undefined' && reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);
+      debugger;
       getList({ reportUnitName: newReportUnit.children });
     } else {
       getList({ reportUnitName: '' });

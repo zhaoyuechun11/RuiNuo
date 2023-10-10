@@ -56,6 +56,8 @@ const EditOrAddModal = ({ Ref, refresh, type }) => {
               ? 'Setting/addReportMainData'
               : type === 3
               ? 'Setting/addReportMainDataDetail'
+              : type === 5
+              ? 'Setting/reportListModalAdd'
               : 'Setting/reportListModalAdd',
           payload: {
             ...value,

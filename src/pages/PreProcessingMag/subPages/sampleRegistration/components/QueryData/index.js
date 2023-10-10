@@ -115,6 +115,13 @@ const QueryData = ({ queryData }) => {
         setSearchList1(list1);
         setSearchList2(list2);
         queryData && form.setFieldsValue(queryData);
+        dispatch({
+          type: 'preProcessingMag/save',
+          payload: {
+            type:'search',
+            dataSource: list2,
+          },
+        });
       })
       .catch(() => {});
   };

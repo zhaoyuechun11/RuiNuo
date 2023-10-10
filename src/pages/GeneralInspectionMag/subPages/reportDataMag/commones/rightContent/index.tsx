@@ -90,7 +90,7 @@ const RightContent = () => {
     getDictList({ type: 'FT' });
     getReportUnitList();
     const reportUnit = localStorage.getItem('reportUnit');
-    if (reportUnit) {
+    if (reportUnit!=='undefined'&&reportUnit) {
       const newReportUnit = JSON.parse(reportUnit);
       form.setFieldsValue({ reportUnitCode: newReportUnit.value });
       getReportUnitReqItem(newReportUnit.key);
@@ -422,7 +422,7 @@ const RightContent = () => {
   };
   const getReportUnitReqItem = (reportUnitId: any) => {
     reportUnitReqItem({ reportUnitId }).then((res) => {
-      if (res.code === 200) {
+      if (res?.code === 200) {
         setReportUnitReqItemList(res.data);
       }
     });
@@ -502,7 +502,7 @@ const RightContent = () => {
           code: number;
           data: { records: React.SetStateAction<never[]>; total: React.SetStateAction<number> };
         }) => {
-          if (res.code === 200) {
+          if (res?.code === 200) {
             const result = res.data.records.map((item) => {
               return {
                 ...item,

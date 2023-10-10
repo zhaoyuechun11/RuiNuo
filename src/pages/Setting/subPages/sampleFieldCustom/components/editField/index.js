@@ -6,7 +6,7 @@ import { useDispatch } from 'umi';
 import moment from 'moment';
 import { Dialog } from '@components';
 import style from '../addField/index.less';
-import { updateField, getArea } from '../../models/server';
+import {  getArea } from '../../models/server';
 
 const Index = ({ editFieldRef, refresh, from }) => {
   const [loading, setLoading] = useState(false);

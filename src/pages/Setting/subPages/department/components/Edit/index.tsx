@@ -1,10 +1,11 @@
 import React, { useRef, useImperativeHandle, useState } from 'react';
 import { Dialog } from '@components';
 import { Form, Input, message, TreeSelect, Switch, Select } from 'antd';
-import { deptList, deptAdd, deptUpdate } from '../../models/server';
-import { getUserList } from '@/models/server';
+import { deptAdd, deptUpdate } from '../../models/server';
+import { getUserList, deptList } from '@/models/server';
 const { TreeNode } = TreeSelect;
 const { Option } = Select;
+const deptType = ['前处理组', '专业组', '客服部', '物流部', '销售部', '质量管理部'];
 const Edit = ({ cRef, refresh }) => {
   const [form] = Form.useForm();
   const modalRef = useRef();
@@ -54,8 +55,8 @@ const Edit = ({ cRef, refresh }) => {
     }
     modalRef.current.hide();
   };
-  const renderUserTreeNodes = (data) =>
-    data.map((item) => {
+  const renderUserTreeNodes = (data: any) =>
+    data.map((item: any) => {
       if (item.children) {
         return (
           <TreeNode
@@ -86,13 +87,13 @@ const Edit = ({ cRef, refresh }) => {
       }
     });
   };
-  const onChange = (val) => {
+  const onChange = (val: React.SetStateAction<undefined>) => {
     setPid(val);
   };
   const isDisableChange = (e: any) => {
     setDisable(e);
   };
-  const handleChange = (e) => {};
+
   const getUser = () => {
     getUserList().then((res: any) => {
       if (res.code === 200) {
@@ -140,9 +141,16 @@ const Edit = ({ cRef, refresh }) => {
           <Input placeholder="请输入联系电话" />
         </Form.Item>
         <Form.Item label="部门负责人" name="deptMaster">
-          <Select onChange={handleChange}>
+          <Select>
             {userList?.map((item) => {
               return <Option value={item.id}>{item.name}</Option>;
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item label="部门类别" name="deptType">
+          <Select>
+            {deptType?.map((item) => {
+              return <Option value={item}>{item}</Option>;
             })}
           </Select>
         </Form.Item>

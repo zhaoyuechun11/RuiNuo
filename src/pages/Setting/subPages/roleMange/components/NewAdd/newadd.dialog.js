@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Dialog from '@components/Dialog';
-import { message, Form, Input, Select } from 'antd';
+import { message, Form, Input, Select, TreeSelect } from 'antd';
 import UploadImgWithCrop from '@components/UploadImg/UploadImgWithCrop';
 import isFunction from 'lodash/isFunction';
 import debounce from 'lodash/debounce';
 import { connect } from 'umi';
 import { userAdd, userUpdate, getList } from '../../models/server';
+import { deptList } from '@/models/server';
 import styles from './index.less';
 
 const layout = {
@@ -13,7 +14,8 @@ const layout = {
   wrapperCol: { span: 20 },
 };
 const FormItem = Form.Item;
-
+const { Option } = Select;
+const { TreeNode } = TreeSelect;
 @connect(({ role, loading }) => ({
   role,
   addLoading: loading.effects['role/addRole'],
@@ -26,6 +28,8 @@ class NewaddRoleDialog extends Component {
       value: undefined,
       uploadedImage: {},
       roleList: [],
+      departParentList: [],
+      pid: '',
     };
     this.onOk = debounce(this.onOk.bind(this), 200);
     this.onBeforeShow = debounce(this.onBeforeShow.bind(this), 100);
@@ -46,11 +50,11 @@ class NewaddRoleDialog extends Component {
   };
   onBeforeShow = () => {
     let { type = '' } = this.props;
-
     this.setState({
       loading: false,
     });
     this.list();
+    this.getList();
     if (type === 'edit') {
       let form = this.formRef.current;
       form.setFieldsValue({
@@ -122,10 +126,44 @@ class NewaddRoleDialog extends Component {
       callback([new Error('请输入手机号')]);
     }
   };
+  onChange = (val) => {
+    this.setState({ pid: val });
+  };
+  renderUserTreeNodes = (data) =>
+    data.map((item) => {
+      if (item.children) {
+        return (
+          <TreeNode
+            checkable
+            dataRef={item}
+            title={item.deptName}
+            key={item.id + ''}
+            value={item.id}
+          >
+            {this.renderUserTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return (
+        <TreeNode
+          checkable
+          dataRef={item}
+          key={item.id + ''}
+          title={item.deptName}
+          value={item.id}
+        />
+      );
+    });
+  getList = () => {
+    deptList().then((res) => {
+      if (res.code === 200) {
+        this.setState({ departParentList: res.data });
+      }
+    });
+  };
   render() {
     let { addLoading = false, type = '' } = this.props;
-
-    let { loading } = this.state;
+    let { loading, pid, departParentList } = this.state;
     // const { getFieldProps } = this.formRef.current;
     // const idCardProps = getFieldProps('idCard', {
     //   validate: [
@@ -177,13 +215,8 @@ class NewaddRoleDialog extends Component {
           <FormItem name="enName" label="英文名称">
             <Input placeholder="请填写英文名称" autoComplete="off" allowClear />
           </FormItem>
-          <FormItem name="roleId" className={styles.role_id} label="选择角色" id="role_id">
-            <Select
-              placeholder="请选择角色"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('role_id')}
-            >
+          <FormItem name="roleId" className={styles.role_id} label="选择角色">
+            <Select placeholder="请选择角色" allowClear>
               {this.state.roleList.length > 0 &&
                 this.state.roleList.map((item) => (
                   <Option value={item.id} key={item.id}>
@@ -192,11 +225,24 @@ class NewaddRoleDialog extends Component {
                 ))}
             </Select>
           </FormItem>
+          <Form.Item name="departmentId" label="部门">
+            <TreeSelect
+              allowClear
+              style={{ width: '100%' }}
+              placeholder="请选择部门"
+              value={pid}
+              showSearch
+              treeNodeFilterProp="title"
+              onChange={this.onChange}
+            >
+              {this.renderUserTreeNodes(departParentList)}
+            </TreeSelect>
+          </Form.Item>
           <FormItem name="name" label="名称">
             <Input placeholder="名称" autoComplete="off" allowClear />
           </FormItem>
           <Form.Item name="headPortrait" label="头像">
-            <UploadImgWithCrop image={this.props.headPortrait}/>
+            <UploadImgWithCrop image={this.props.headPortrait} />
           </Form.Item>
           <FormItem name="sex" label="性别">
             <Select placeholder="请选择性别" autoComplete="off" allowClear>

@@ -38,3 +38,6 @@ export function reportProjectSele(params) {
 export function getUserList(params) {
   return axiosBase('/sys/user/list', 'get', params);
 }
+export async function deptList(params) {
+  return axiosBase(`/basic/dept/list`, 'get', params);
+}

@@ -7,7 +7,7 @@ import {
   preTodayCompleteNum,
   preWaitNum,
 } from '../../../../models/server';
-import { useSelector, history, useDispatch } from 'umi';
+import { useSelector, history } from 'umi';
 const nodeNameList = [
   {
     name: '信息核对',

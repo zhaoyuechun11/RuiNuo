@@ -19,6 +19,9 @@ const HeaderContent = () => {
       payload: {
         callback: (res) => {
           setUserData(res);
+          if (res.departmentType === '前处理组' || res.departmentType === '专业组') {
+            history.push('/experTaskNavigation/task');
+          }
         },
       },
     });

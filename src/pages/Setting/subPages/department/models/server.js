@@ -10,9 +10,7 @@ export async function statusChange(params) {
 export async function deletePermission(params) {
   return axios(`/sys/permission/delete`, 'post', params);
 }
-export async function deptList(params) {
-  return axios(`/basic/dept/list`, 'get', params);
-}
+
 export async function deptAdd(params) {
   return axios(`/basic/dept/add`, 'post', params);
 }

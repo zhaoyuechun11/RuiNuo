@@ -5,11 +5,14 @@ import Pretreatment from './commones/pretreatment';
 import Chemistry from './commones/chemistry';
 import s from './index.less';
 import Immunity from './commones/immunity';
+import { useSelector } from 'umi';
 const { TabPane } = Tabs;
 const Task = () => {
+  const { useDetail } = useSelector((state: any) => state.global);
   return (
     <div className={s.card_container}>
-      <Tabs defaultActiveKey="1" type="card">
+      {useDetail.departmentType === '前处理组' ? <Pretreatment /> : <Immunity />}
+      {/* <Tabs defaultActiveKey="1" type="card">
         <TabPane tab="前处理任务汇总" key="1">
           <Pretreatment />
         </TabPane>
@@ -19,7 +22,7 @@ const Task = () => {
         <TabPane tab="普通检验流程(免疫)" key="3">
           <Immunity />
         </TabPane>
-      </Tabs>
+      </Tabs> */}
     </div>
   );
 };

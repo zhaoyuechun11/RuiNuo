@@ -41,3 +41,6 @@ export function getUserList(params) {
 export async function deptList(params) {
   return axiosBase(`/basic/dept/list`, 'get', params);
 }
+export async function getMainOrder(params) {
+  return axiosBase(`/lab/reqMainOrder`, 'get', params);
+}

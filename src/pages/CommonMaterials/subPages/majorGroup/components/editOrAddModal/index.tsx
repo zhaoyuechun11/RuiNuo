@@ -129,11 +129,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               name="barcodeContent"
               rules={[{ required: true, message: '请选择条码号内容(01样本条码，02病理编号)' }]}
             >
-              <Select
-                placeholder="请选择条码号内容(01样本条码，02病理编号)"
-                autoComplete="off"
-                allowClear
-              >
+              <Select placeholder="请选择条码号内容(01样本条码，02病理编号)" allowClear>
                 <Option value={`01`} key={1}>
                   01
                 </Option>
@@ -180,7 +176,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               name="sampleIdResetRule"
               rules={[{ required: true, message: '请选择样本号重置规则' }]}
             >
-              <Select placeholder="请选择样本号重置规则" autoComplete="off" allowClear>
+              <Select placeholder="请选择样本号重置规则" allowClear>
                 <Option value={`yy`} key={1}>
                   yy年
                 </Option>
@@ -278,7 +274,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           </Col> */}
           <Col span={12}>
             <Form.Item name="labClassManageId" label="管理分类">
-              <Select placeholder="请选择管理分类" autoComplete="off" allowClear>
+              <Select placeholder="请选择管理分类" allowClear>
                 {list.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>
@@ -307,7 +303,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
             <Form.Item name="isSampleIdAsBarcode" label="是否样本号用作样本条码号">
               <Select
                 placeholder="请选择是否样本号用作样本条码号"
-                autoComplete="off"
                 allowClear
                 onChange={sampleIdAsBarcodeChange}
               >

@@ -10,7 +10,7 @@ import { query as domQuery } from 'min-dom';
 import './index.less';
 import { xmlBySampleBarcode, historicActivity, logList } from '../../../../models/server';
 const { TabPane } = Tabs;
-const SampleTraceability = () => {
+const SampleTraceability = ({ from = '', sampleBarcode = {} }) => {
   const params = useParams();
   const [bpmnViewer, setBpmnViewer] = useState(null);
   const [form] = Form.useForm();
@@ -20,11 +20,17 @@ const SampleTraceability = () => {
   const [sumDurationInMillis, setSumDurationInMillis] = useState(0);
   const { instrAndRecordId } = useSelector((state: any) => state.generalInspectionMag);
   useEffect(() => {
-    if (instrAndRecordId.sampleBarcode) {
+    if (instrAndRecordId.sampleBarcode && bpmnViewer) {
       getXml({ sampleBarcode: instrAndRecordId.sampleBarcode });
       getLogList({ sampleBarcode: instrAndRecordId.sampleBarcode });
     }
-  }, [instrAndRecordId]);
+  }, [instrAndRecordId, bpmnViewer]);
+  useEffect(() => {
+    if (sampleBarcode && bpmnViewer && from !== '') {
+      getXml({ sampleBarcode: sampleBarcode });
+      getLogList({ sampleBarcode: sampleBarcode });
+    }
+  }, [sampleBarcode, bpmnViewer]);
   useEffect(() => {
     initBpmn();
   }, []);
@@ -355,7 +361,7 @@ const SampleTraceability = () => {
     <>
       {params?.id && <BackButton />}
       <div className="form_tim">
-        {renderForm()}
+        {from === '' && renderForm()}
         <div className="tip">
           <div className="item">
             <div className="susitem" />

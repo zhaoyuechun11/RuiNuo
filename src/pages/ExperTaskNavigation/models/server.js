@@ -23,3 +23,6 @@ export function proTodayCompleteNum(params) {
 export function proWaitNum(params) {
   return axios('/other/taskNavigation/proWaitNum', 'get', params);
 }
+export function detailList(params) {
+  return axios('/lab/reqMainSplit/detailListPage', 'get', params);
+}

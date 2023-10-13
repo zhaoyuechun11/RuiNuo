@@ -36,9 +36,7 @@ const Pretreatment = () => {
     getPreTodayCompleteNum();
     getPreWaitNum();
   }, []);
-  useEffect(() => {
-    console.log(nodeNameList);
-  }, []);
+
   const getList = () => {
     getNodeList().then((res: any) => {
       if (res.code === 200) {
@@ -139,7 +137,7 @@ const Pretreatment = () => {
       with: 100,
     },
     {
-      title: '超报告周期任务',
+      title: '节点超周期',
       dataIndex: 'overdueNum',
       key: 'overdueNum',
       align: 'center',
@@ -152,23 +150,31 @@ const Pretreatment = () => {
       render: (record: any) => {
         console.log(record);
         return (
-          <div>
-            <Button
-              onClick={() => {
-                if (record.route) {
-                  history.push(record.route);
-                } else {
-                  message.warning('没配置相关路由,请先去配置!');
-                }
-              }}
-            >
-              执行任务
-            </Button>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button onClick={() => goTask(record)}>执行任务</Button>
           </div>
         );
       },
     },
   ];
+  const goTask = (val) => {
+    switch (val.id) {
+      case 1:
+        console.log('信息核对');
+        break;
+      case 2:
+        console.log('样本签收');
+        break;
+      case 3:
+        history.push('/preProcessingMag/sampleSortingt');
+        break;
+      case 4:
+        history.push('/preProcessingMag/sampleHandover');
+      default:
+        console.log('I like all foods');
+        break;
+    }
+  };
   return <Table dataSource={list} columns={columns} size="small" title={() => '前处理任务汇总'} />;
 };
 export default Pretreatment;

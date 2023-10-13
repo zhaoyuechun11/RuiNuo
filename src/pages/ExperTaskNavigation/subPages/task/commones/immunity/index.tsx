@@ -12,7 +12,7 @@ import {
 } from '../../../../models/server';
 const { TabPane } = Tabs;
 import s from '../../index.less';
-import { useSelector } from 'umi';
+import { useSelector, history } from 'umi';
 
 const Immunity = () => {
   const [waitNum, setWaitNum] = useState([]);
@@ -208,45 +208,55 @@ const Immunity = () => {
       title: '专业类别',
       dataIndex: 'className',
       key: 'className',
+      align: 'center',
     },
     {
       title: '流程节点',
       dataIndex: 'name',
       key: 'name',
+      align: 'center',
     },
     {
       title: '当前待处理',
       dataIndex: 'num',
       key: 'num',
+      align: 'center',
     },
     {
       title: '节点超周期',
       dataIndex: 'overdueNum',
       key: 'overdueNum',
+      align: 'center',
     },
     {
       title: '今日已完成',
       dataIndex: 'todayCompleteNum',
       key: 'todayCompleteNum',
+      align: 'center',
     },
     {
       title: '操作',
       key: 'operation',
-      width: 100,
+      width: 150,
+      align: 'center',
       render: (record: any) => {
-        getButton(record);
+        return getButton(record);
       },
     },
   ];
   const getButton = (record) => {
-    if (record.users.includes(useDetail.id)) {
-      return <Button onClick={performTasks}>执行任务</Button>;
+    if (!record.users.includes(useDetail.id)) {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Button onClick={() => performTasks(record)}>执行任务</Button>
+        </div>
+      );
     }
   };
   const performTasks = (record) => {
-    if (!record.users?.includes(useDetail.id)) {
-      message.warning('没有该权限哦！请先分配权限!');
-    }
+    history.push(
+      `/experTaskNavigation/batchTask/${record.classId}/${record.id}/${record.flowProDefId}/${record.route}`,
+    );
   };
   const tabsChange = (e, xml, index) => {
     console.log(list);

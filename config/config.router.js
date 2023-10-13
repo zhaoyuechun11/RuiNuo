@@ -295,6 +295,11 @@ export default {
               component: '@/pages/ExperTaskNavigation/subPages/task',
               title: '实验任务导航',
             },
+            {
+              path: '/experTaskNavigation/batchTask/:classId/:nodeId/:flowId/:route',
+              component: '@/pages/ExperTaskNavigation/subPages/batchTask',
+              title: '任务批处理',
+            },
           ],
         },
       ],

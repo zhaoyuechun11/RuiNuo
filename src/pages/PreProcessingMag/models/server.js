@@ -18,9 +18,7 @@ export function moduleList(params) {
 export function getArea(params) {
   return axiosBase('/basic/area/getAll', 'get', params);
 }
-export function getMainOrder(params) {
-  return axiosBase('/lab/reqMainOrder', 'get', params);
-}
+
 export function getDictList(params) {
   return axiosBase('/basic/dict/getList', 'get', params);
 }

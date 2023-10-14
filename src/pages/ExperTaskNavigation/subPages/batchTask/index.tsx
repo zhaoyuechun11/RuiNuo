@@ -32,6 +32,7 @@ const BatchTask = () => {
       fixed: 'left',
       width: 180,
       align: 'center',
+      sorter: true,
     },
     {
       title: '样本条码',
@@ -39,6 +40,7 @@ const BatchTask = () => {
       key: 'sampleBarcode',
       width: 190,
       align: 'center',
+      sorter: true,
     },
     {
       title: '样本编号',
@@ -46,6 +48,7 @@ const BatchTask = () => {
       key: 'sampleNo',
       width: 190,
       align: 'center',
+      sorter: true,
     },
     {
       title: '专业类别',
@@ -74,6 +77,9 @@ const BatchTask = () => {
       key: 'nextNodeName',
       width: 120,
       align: 'center',
+      render: (text: any) => {
+        return <span style={{ color: 'red', fontWeight: '500' }}>{text} </span>;
+      },
     },
     {
       title: '急诊',
@@ -146,7 +152,7 @@ const BatchTask = () => {
       title: '操作',
       fixed: 'right',
       align: 'center',
-      width: 250,
+      width: 180,
       render: (record) => {
         return (
           <div className={styles.action_btn}>
@@ -231,7 +237,9 @@ const BatchTask = () => {
           </Button>
           {/* <Button>自定义列</Button> */}
         </div>
-        <div>当前待处理任务总数:{total}</div>
+        <div style={{ fontSize: '20px' }}>
+          当前待处理任务总数: <span style={{ fontSize: '25px', color: 'red' }}>{total}</span>
+        </div>
       </div>
       <Table
         dataSource={list}

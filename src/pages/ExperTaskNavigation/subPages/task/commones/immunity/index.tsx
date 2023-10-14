@@ -221,6 +221,9 @@ const Immunity = () => {
       dataIndex: 'num',
       key: 'num',
       align: 'center',
+      render: (text) => {
+        return <span style={{ fontSize: 25, color: 'red' }}>{text}</span>;
+      },
     },
     {
       title: '节点超周期',

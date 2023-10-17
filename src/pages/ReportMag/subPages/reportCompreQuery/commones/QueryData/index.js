@@ -5,8 +5,8 @@ import { Card, Button } from '@/components';
 import { useDispatch } from 'umi';
 import style from './index.less';
 import { debounce } from 'lodash';
-import { getQueryData } from '../../../../models/server';
-import { getHospitalList, getDoctorList } from '@/models/server';
+
+import { getHospitalList, getDoctorList, getQueryData } from '@/models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
 
 const { RangePicker } = DatePicker;
@@ -91,7 +91,6 @@ const QueryData = ({ queryData }) => {
   const getCustomSearch = () => {
     getQueryData()
       .then((res) => {
-        debugger;
         const list =
           res.data && res.data.assemblyInfo.json
             ? JSON.parse(res.data.assemblyInfo.json)
@@ -392,9 +391,9 @@ const QueryData = ({ queryData }) => {
           onValuesChange={onValuesChangeHandler}
         >
           <div className={style.queryContainer}>
-            {searchList1.map((item) => {
+            {/* {searchList1.map((item) => {
               return getSearchContent(item);
-            })}
+            })} */}
           </div>
           {searchList2.length > 0 && (
             <Popover

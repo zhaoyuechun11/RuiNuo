@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Form, DatePicker, Select, Input, Row, Col, Button, Popover, Table, Checkbox } from 'antd';
 import { useSelector } from 'umi';
+
 const { RangePicker } = DatePicker;
 const InputGroup = Input.Group;
 const { Option } = Select;
@@ -15,6 +16,7 @@ import {
 import RightContent from '../reportReview/commones/rightContent';
 import s from '../reportReview/index.less';
 import ResultTable from './commones/resultTable';
+import QueryData from './commones/QueryData';
 const ReportCompreQuery = () => {
   const [form] = Form.useForm();
   const [extendForm] = Form.useForm();
@@ -30,6 +32,50 @@ const ReportCompreQuery = () => {
   const [sampleTypeList, setSampleTypeList] = useState([]);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [list, setList] = useState([
+    {
+      id: 1,
+      fieldH1: 'A04',
+      fieldH3: '002',
+      fieldH4: '测试',
+      fieldH5: '61183d0:液氨球罐液位、压力是否按时巡检。',
+      fieldH6: 'test',
+      fieldH7: '危险源002',
+      content: [
+        {
+          id: '016d200dbbf79b',
+          name: '环保检查3',
+        },
+        {
+          id: '100c2',
+          name: '液氨球罐液位、压力是否按时巡检。',
+        },
+        {
+          id: '27c4668',
+          name: '环保检查2',
+        },
+      ],
+    },
+    {
+      id: 2,
+      fieldH1: 'F4',
+      fieldH3: '002',
+      fieldH4: '测试',
+      fieldH5: 'ebec9a743d0:液氨球罐液位、压力是否按时巡检。',
+      fieldH6: 'test',
+      fieldH7: '危险源002',
+      content: [
+        {
+          id: '016d5af79b',
+          name: '环保检查3',
+        },
+        {
+          id: '106c2',
+          name: '液氨球罐液位、压力是否按时巡检。',
+        },
+      ],
+    },
+  ]);
   const modalResultTable = useRef();
   useEffect(() => {
     getReportUnitList();
@@ -40,64 +86,71 @@ const ReportCompreQuery = () => {
     hospital();
     majorGroupList();
   }, []);
+  // const columns = [
+  //   {
+  //     title: '报告单元',
+  //     dataIndex: 'name',
+  //     fixed: 'left',
+  //   },
+  //   {
+  //     title: '姓名',
+  //     dataIndex: 'age',
+  //   },
+  //   {
+  //     title: '性别',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '年龄',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '报告日期',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '样本号',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '样本条码',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '送检单位',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '送检医生',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '送检科室',
+  //     dataIndex: 'address',
+  //   },
+  //   {
+  //     title: '采样时间',
+  //     dataIndex: 'address',
+  //     width: 200,
+  //   },
+  //   {
+  //     title: '前处理签收时间',
+  //     dataIndex: 'address',
+  //     width: 200,
+  //   },
+  //   {
+  //     title: '操作',
+  //     key: 'operation',
+  //     fixed: 'right',
+  //     width: 100,
+  //     render: () => <a>申请单</a>,
+  //   },
+  // ];
   const columns = [
     {
       title: '报告单元',
       dataIndex: 'name',
       fixed: 'left',
-    },
-    {
-      title: '姓名',
-      dataIndex: 'age',
-    },
-    {
-      title: '性别',
-      dataIndex: 'address',
-    },
-    {
-      title: '年龄',
-      dataIndex: 'address',
-    },
-    {
-      title: '报告日期',
-      dataIndex: 'address',
-    },
-    {
-      title: '样本号',
-      dataIndex: 'address',
-    },
-    {
-      title: '样本条码',
-      dataIndex: 'address',
-    },
-    {
-      title: '送检单位',
-      dataIndex: 'address',
-    },
-    {
-      title: '送检医生',
-      dataIndex: 'address',
-    },
-    {
-      title: '送检科室',
-      dataIndex: 'address',
-    },
-    {
-      title: '采样时间',
-      dataIndex: 'address',
-      width: 200,
-    },
-    {
-      title: '前处理签收时间',
-      dataIndex: 'address',
-      width: 200,
-    },
-    {
-      title: '操作',
-      key: 'operation',
-      fixed: 'right',
-      width: 100,
-      render: () => <a>申请单</a>,
     },
   ];
   const searchHandle = () => {};
@@ -183,6 +236,7 @@ const ReportCompreQuery = () => {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
   const popover_content = () => {
     return (
       <div>
@@ -526,27 +580,116 @@ const ReportCompreQuery = () => {
       </Form>
     );
   };
+  const expandedRowRender = (record) => {
+    const columns = [
+      {
+        title: 'id',
+        dataIndex: 'id',
+        key: 'id',
+        colSpan: 0,
+        render: () => {
+          return { props: { colSpan: 0 } };
+        },
+      },
+      {
+        title: '序号',
+        dataIndex: 'index',
+        key: 'index',
+        render: (text, record, index) => `${index + 1}`,
+      },
+      { title: '排查内容', dataIndex: 'name', key: 'name' },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+        render: () => (
+          <div>
+            <a>编辑</a>
+            <a>删除</a>
+          </div>
+        ),
+      },
+    ];
+
+    return <Table columns={columns} dataSource={record.content2} />;
+  };
+  const onExpandedRowsChange = (record) => {
+    debugger;
+  };
+  const onExpand = (expanded, record) => {
+    let result = list.map((item) => {
+      if (item.id === record.id) {
+        return {
+          content2: [
+            {
+              id: '016d5af79b',
+              name: '环保检查3',
+            },
+          ],
+          ...item,
+        };
+      } else {
+        return {
+          ...item,
+        };
+      }
+    });
+    setList(result);
+
+  };
   return (
     <>
       {renderForm()}
+      <QueryData />
       <Row gutter={12}>
         <Col span={12} className={s.col_01}>
-          <Button type="primary" size="small">
+          {/* <Button type="primary" size="small">
             打印
           </Button>
           <Button type="primary" size="small" style={{ margin: '5px' }}>
             导出PDF
-          </Button>
+          </Button> */}
 
-          <Button type="primary" size="small" onClick={() => modalResultTable.current.show()}>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => modalResultTable.current.show()}
+            style={{ margin: '0px 0px 5px 0px' }}
+          >
             导出结果表
           </Button>
-          <Table
+          {/* <Table
             rowSelection={rowSelection}
             columns={columns}
             dataSource={[]}
             size="small"
             scroll={{ x: 1300 }}
+          /> */}
+          <Table
+            dataSource={list}
+            rowKey={(record) => record.id}
+            onExpand={(expanded, record) => onExpand(expanded, record)}
+            onExpandedRowsChange={(record) => onExpandedRowsChange(record)}
+            expandedRowRender={(record) => expandedRowRender(record)}
+            columns={[
+              { dataIndex: 'id', title: 'id', sorter: true, width: 200, key: 'id' },
+              { dataIndex: 'fieldH1', title: '名称1', sorter: true, width: 200, key: 'fieldH1' },
+              { dataIndex: 'fieldH2', title: '名称2', sorter: true, width: 200, key: 'fieldH2' },
+              { dataIndex: 'fieldH3', title: '名称3', sorter: true, width: 200, key: 'fieldH3' },
+              { dataIndex: 'fieldH4', title: '名称4', sorter: true, width: 200, key: 'fieldH4' },
+              { dataIndex: 'fieldH7', title: '名称5', sorter: true, width: 200, key: 'fieldH7' },
+              {
+                title: '操作',
+                key: 'operation',
+                render: () => (
+                  <div>
+                    <a>编辑</a>
+                    <a>删除</a>
+                  </div>
+                ),
+              },
+            ]}
+            size="small"
           />
         </Col>
         <Col span={12} className={s.col_02}>

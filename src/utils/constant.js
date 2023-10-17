@@ -585,13 +585,6 @@ export const menu = [
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
-      {
-        key: 'setting',
-        url: '/experTaskNavigation/batchTask',
-        name: '任务批处理',
-        icon: 'T8-shezhi-weixuanzhong',
-        selIcon: 'T8-shezhi-xuanzhong',
-      },
     ],
   },
   {

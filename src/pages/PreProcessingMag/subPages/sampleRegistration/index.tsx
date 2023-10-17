@@ -11,7 +11,7 @@ import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 import { downLoad } from '@/utils';
 let passProps = {};
 const SampleRegistration = () => {
-  const { queryData, pageNum, search } = useSelector((state: any) => state.preProcessingMag);
+  const { queryData, pageNum } = useSelector((state: any) => state.preProcessingMag);
   const setRef = useRef();
   const dispatch = useDispatch();
   const [selectedColumns, setSelectedColumns] = useState([]);

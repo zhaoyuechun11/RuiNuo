@@ -16,12 +16,12 @@ import { Button, Icon } from '@/components';
 import { useDispatch, useSelector } from 'umi';
 
 import {
-  getHospitalList,
   sampleHandoverSave,
   recipientList,
   labClassByUser,
   preTransferNum,
 } from '../../models/server';
+import { getHospitalList } from '@/models/server';
 import { duplicatesAndNum } from '@/utils';
 import styles from './index.less';
 import Password from './components/Password';

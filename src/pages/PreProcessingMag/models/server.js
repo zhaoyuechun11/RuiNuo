@@ -22,12 +22,7 @@ export function getArea(params) {
 export function getDictList(params) {
   return axiosBase('/basic/dict/getList', 'get', params);
 }
-export function getHospitalList(params) {
-  return axiosBase('basic/hospital/getList', 'get', params);
-}
-export function getDoctorList(params) {
-  return axiosBase('basic/doctor/getList', 'get', params);
-}
+
 export function enterAdd(params) {
   return axiosBase('lab/reqMainOrder/add', 'post', params);
 }

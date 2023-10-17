@@ -44,3 +44,9 @@ export async function deptList(params) {
 export async function getMainOrder(params) {
   return axiosBase(`/lab/reqMainOrder`, 'get', params);
 }
+export function getQueryData(params) {
+  return axiosBase('sys/queryAssembly/reqMainEnterDetail', 'get', params);
+}
+export function saveCustomQuery(params) {
+  return axiosBase('sys/queryAssembly/updateReqMainEnter', 'post', params);
+}

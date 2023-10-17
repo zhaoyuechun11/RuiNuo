@@ -24,6 +24,17 @@ const ApplyFormModal = ({ Ref }) => {
   };
   return (
     <Dialog ref={dialogRef} width={864} title="申请单">
+      <div className={styles.picture}>
+        <Row gutter={16}>
+          {detailData.materials?.map((item) => {
+            return (
+              <Col className="gutter-row" span={8}>
+                <Image src={item.filePath} style={{ width: 20, height: 20 }} />
+              </Col>
+            );
+          })}
+        </Row>
+      </div>
       <div className={styles.wrap}>
         <div className={styles.box}>
           <div className={styles.title}>送检样本申请单</div>
@@ -201,17 +212,6 @@ const ApplyFormModal = ({ Ref }) => {
               </Row>
             );
           })}
-        </div>
-        <div className={styles.picture}>
-          <Row gutter={16}>
-            {detailData.materials?.map((item) => {
-              return (
-                <Col className="gutter-row" span={8}>
-                  <Image src={item.filePath} style={{ width: 20, height: 20 }} />
-                </Col>
-              );
-            })}
-          </Row>
         </div>
       </div>
     </Dialog>

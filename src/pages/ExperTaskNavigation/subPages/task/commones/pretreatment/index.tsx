@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, message } from 'antd';
+import { Table } from 'antd';
 import { Button } from '@/components';
 import {
   getNodeList,
@@ -107,6 +107,7 @@ const Pretreatment = () => {
             map.set(item.id, item);
           }
         }
+      
         let value = [...map.values()].filter((item) => nodeResult.includes(item.id));
         setTimeout(() => {
           setList(value);
@@ -148,7 +149,7 @@ const Pretreatment = () => {
       align: 'center',
       with: 100,
       render: (record: any) => {
-        console.log(record);
+       
         return (
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Button onClick={() => goTask(record)}>执行任务</Button>
@@ -159,8 +160,8 @@ const Pretreatment = () => {
   ];
   const goTask = (val) => {
     switch (val.id) {
-      case 1:
-        console.log('信息核对');
+      case 0:
+        history.push('/preProcessingMag/applicationForm');
         break;
       case 2:
         console.log('样本签收');

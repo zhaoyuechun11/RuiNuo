@@ -26,3 +26,6 @@ export function proWaitNum(params) {
 export function detailList(params) {
   return axios('/lab/reqMainSplit/detailListPage', 'get', params);
 }
+export function proReportOverdueNum(params) {
+  return axios('/other/taskNavigation/proReportOverdueNum', 'get', params);
+}

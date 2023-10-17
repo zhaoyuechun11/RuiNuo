@@ -8,11 +8,10 @@ import {
   moduleList,
   getArea,
   getDictList,
-  getHospitalList,
-  getDoctorList,
   enterAdd,
   reqMainOrderUpdate,
 } from '../../../../models/server';
+import { getHospitalList, getDoctorList } from '@/models/server';
 import moment from 'moment';
 import Applying from './components/Applying';
 import styles from './index.less';

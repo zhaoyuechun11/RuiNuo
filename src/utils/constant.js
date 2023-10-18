@@ -98,16 +98,6 @@ export const PILITICAL_CLIMATE = ['党员', '团员', '群众', '其他'];
 //婚姻状态列表
 // export const MARRIAGE_STUATS = ['未婚', '已婚', '离异', '丧偶', '分居'];
 
-//户口性质
-// export const CENSUS_REGISTER = [
-//   '本地城镇',
-//   '本地农村',
-//   '外地城镇（省内）',
-//   '外地农村（省内）',
-//   '外地城镇（省外)',
-//   '外地农村（省外）',
-// ];
-
 //紧急联系人关系
 // export const EMERGENEY_CONTACT = ['父母', '配偶', '子女', '亲属', '朋友', '同事', '其他'];
 
@@ -391,7 +381,7 @@ export const menu = [
       {
         name: '申请单查询',
         icon: null,
-        url: '/home',
+        url: '/applicationFormMsg/applyFormSearch',
         children: [],
         key: '21',
       },
@@ -2246,7 +2236,7 @@ const applyDate = { label: '申请日期', value: 'applyDate', weight: 6, type: 
 const receiveDate = { label: '物流接收日期', value: 'receiveDate', weight: 6, type: 4 };
 const preReceiveDate = { label: '前处理接收时间', value: 'preReceiveDate', weight: 6, type: 4 };
 const createDate = { label: '登记日期', value: 'createDate', weight: 6, type: 4 };
-// 候选人-列表搜索自定义
+// 样本登记-列表搜索自定义
 export const EXPORT_OPTIONS_FOR_SEARCH = [
   NAME,
   SEX,
@@ -2269,4 +2259,66 @@ export const EXPORT_OPTIONS_FOR_SEARCH = [
   receiveDate,
   preReceiveDate,
   createDate,
+];
+//申请单查询-列表搜索自定义
+const hospitalCodeNum = { label: '医院条码号', value: 'hospitalBarcode', weight: 6, type: 1 };
+const patientID = { label: '病人ID', value: 'patientId', weight: 6, type: 1 };
+const patientNo = { label: '门诊/住院号', value: 'patientNo', weight: 6, type: 1 };
+const patientType = { label: '病人类型', value: 'source', weight: 6, type: 3 };
+const enName = { label: '英文名', value: 'enName', weight: 6, type: 3 };
+const sampleTypeName = { label: '样本类型', value: 'sampleTypeName', weight: 6, type: 3 };
+const saleManId = { label: '销售员', value: 'saleManId', weight: 6, type: 3 };
+const agentName = { label: '代理商', value: 'agentName', weight: 6, type: 3 };
+const isPaymentReceived = { label: '收费标记', value: 'isPaymentReceived', weight: 6, type: 3 };
+const payMode = { label: '收费标记', value: 'payMode', weight: 6, type: 3 };
+const paymentOrderNo = { label: '付款单号', value: 'paymentOrderNo', weight: 6, type: 1 };
+const transportBy = { label: '运送人', value: 'transportBy', weight: 6, type: 1 };
+const creatEr = { label: '登记人', value: 'creatEr', weight: 6, type: 1 };
+const passportNo = { label: '护照号', value: 'passportNo', weight: 6, type: 1 };
+const nationality = { label: '国籍', value: 'nationality', weight: 6, type: 1 };
+const remark = { label: '备注', value: 'remark', weight: 6, type: 1 };
+const address = { label: '地址', value: 'address', weight: 6, type: 1 };
+const sampleBarcode = { label: '样本条码', value: 'sampleBarcode', weight: 6, type: 1 };
+const sampleNo = { label: '样本编号', value: 'sampleNo', weight: 6, type: 1 };
+const currentNode = { label: '检测状态', value: 'currentNode', weight: 6, type: 1 };
+const isEmer = { label: '急诊标记', value: 'isEmer', weight: 6, type: 1 };
+const reportDelayFlag = { label: '延迟标记', value: 'reportDelayFlag', weight: 6, type: 1 };
+const bloodFlag = { label: '分血标记', value: 'bloodFlag', weight: 6, type: 1 };
+const giveUpCheckFlag = { label: '弃检标记', value: 'giveUpCheckFlag', weight: 6, type: 1 };
+export const APPLY_FORM_FOR_SEARCH = [
+  hospitalCodeNum,
+  patientID,
+  patientNo,
+  bedNo,
+  patientType,
+  enName,
+  age,
+  ageUnit,
+  sampleTypeName,
+  saleManId,
+  agentName,
+  isPaymentReceived,
+  payMode,
+  paymentOrderNo,
+  diagnosis,
+  transportBy,
+  creatEr,
+  applyDate,
+  collectDate,
+  receiveDate,
+  createDate,
+  telphoneNo,
+  idCardNo,
+  passportNo,
+  nation,
+  nationality,
+  remark,
+  address,
+  sampleBarcode,
+  sampleNo,
+  currentNode,
+  isEmer,
+  reportDelayFlag,
+  bloodFlag,
+  giveUpCheckFlag,
 ];

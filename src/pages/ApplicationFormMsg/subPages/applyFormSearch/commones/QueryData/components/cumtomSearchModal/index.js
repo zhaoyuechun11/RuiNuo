@@ -5,8 +5,8 @@ import { Dialog } from '@components';
 import { CloseCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import style from './index.less';
-import { EXPORT_OPTIONS_FOR_SEARCH } from '@utils/constant';
-import { saveCustomQuery } from '@/models/server';
+import { APPLY_FORM_FOR_SEARCH } from '@utils/constant';
+import { saveApplayFormCustomQuery } from '@/models/server';
 const CheckboxGroup = Checkbox.Group;
 
 class CustomSearchModal extends Component {
@@ -17,7 +17,7 @@ class CustomSearchModal extends Component {
       exportVisible: false, // 是否显示弹窗
       checkAll: true, // 是否全选
       optionsLength: 0, // 所有选项的长度
-      columnOptions: EXPORT_OPTIONS_FOR_SEARCH,
+      columnOptions: APPLY_FORM_FOR_SEARCH,
       // defaultChecked: CHECKED_LIST_FOR_SEARCH,
       // columnOptions: [],
       defaultChecked: [],
@@ -116,7 +116,7 @@ class CustomSearchModal extends Component {
       return { key: item.value, name: item.label, type: item.type };
     });
 
-    saveCustomQuery({
+    saveApplayFormCustomQuery({
       assemblyInfo: { json: JSON.stringify(mapResult) },
     }).then((res) => {
       if (res.code == 200) {

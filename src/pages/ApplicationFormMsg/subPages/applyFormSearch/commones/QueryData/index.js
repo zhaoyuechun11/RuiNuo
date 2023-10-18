@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import React, { useState, useEffect, useRef } from 'react';
 import { Form, Select, Input, DatePicker, Popover, Row, Col, Checkbox } from 'antd';
-import { Card, Button } from '@/components';
+import { Button } from '@/components';
 import { useDispatch, useSelector } from 'umi';
 import style from './index.less';
 import { debounce } from 'lodash';
@@ -9,9 +9,10 @@ import { debounce } from 'lodash';
 import {
   getHospitalList,
   getDoctorList,
-  getQueryData,
+  getApplayFormQueryData,
   reportUnitList,
   reportUnitReqItem,
+  majorGroup,
 } from '@/models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
 
@@ -23,9 +24,6 @@ const QueryData = ({ queryData }) => {
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const cumtomRef = useRef();
-
-  // const [searchList, setSearchList] = useState([]);
-  // const [searchList1, setSearchList1] = useState([]);
   const [searchList2, setSearchList2] = useState([]);
   const [checkedList, setCheckedList] = useState([]);
   const [leftCheckList, setLeftCheckList] = useState([]);
@@ -39,8 +37,10 @@ const QueryData = ({ queryData }) => {
   const [reportUnit, setReportUnit] = useState([]);
   const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
   const { useDetail } = useSelector((state) => state.global);
+  const [majorGroupData, setMajorGroupData] = useState([]);
   useEffect(() => {
     getCustomSearch();
+    majorGroupList();
     dicVal({ type: 'SX' });
     dicVal({ type: 'FT' });
     dicVal({ type: 'NATION' });
@@ -119,7 +119,7 @@ const QueryData = ({ queryData }) => {
     }
   };
   const getCustomSearch = () => {
-    getQueryData()
+    getApplayFormQueryData()
       .then((res) => {
         const list =
           res.data && res.data.assemblyInfo.json ? JSON.parse(res.data.assemblyInfo.json) : [];
@@ -302,6 +302,13 @@ const QueryData = ({ queryData }) => {
       </Select>
     );
   };
+  const majorGroupList = () => {
+    majorGroup().then((res) => {
+      if (res.code === 200) {
+        setMajorGroupData(res.data);
+      }
+    });
+  };
   const getSearchContent = (item) => {
     switch (item.type) {
       case '1':
@@ -410,21 +417,8 @@ const QueryData = ({ queryData }) => {
               <RangePicker
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
-                placeholder={['前处理接收开始时间', '前处理接收结束时间']}
+                placeholder={['创建开始时间', '创建结束时间']}
               />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="reportUnitCode">
-              <Select allowClear onChange={reportUnitChange} placeholder="报告单元">
-                {reportUnit?.map((item) => {
-                  return (
-                    <Option value={item.reportUnitCode} key={item.id}>
-                      {item.reportUnitName}
-                    </Option>
-                  );
-                })}
-              </Select>
             </Form.Item>
           </Col>
           <Col span={6}>
@@ -452,43 +446,9 @@ const QueryData = ({ queryData }) => {
             </InputGroup>
           </Col>
           <Col span={6}>
-            <Form.Item name="reqItemIds">
-              <Select
-                allowClear
-                // onChange={checkChange}
-                placeholder="检验目的"
-                mode="multiple"
-              >
-                {reportUnitReqItemList?.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.reqItemName}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={12}>
-          <Col span={6}>
-            <Form.Item name="labDate">
-              <RangePicker
-                showTime={{ format: 'HH:mm' }}
-                format="YYYY-MM-DD HH:mm"
-                placeholder={['检验日期开始时间', '检验日期结束时间']}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="sampleBarcode">
-              <Input placeholder="请输入样本条码" />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
             <Form.Item name="hospitalId">
               <Select placeholder="请选择送检单位" allowClear>
-                {hospital?.map((item,index) => {
+                {hospital?.map((item, index) => {
                   return (
                     <Option value={item.id} key={index}>
                       {item.hospitalName}
@@ -499,42 +459,16 @@ const QueryData = ({ queryData }) => {
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Row gutter={8}>
-              <Col span={6}>
-                <Form.Item name="hospitalId">
-                  <Select placeholder="请选择报告状态" allowClear>
-                    {/* {hospitalList?.map(
-                      (
-                        item: {
-                          id: any;
-                          hospitalName: any;
-                        },
-                        index: React.Key | null | undefined,
-                      ) => (
-                        <Option value={item.id} key={index}>
-                          {item.hospitalName}
-                        </Option>
-                      ),
-                    )} */}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={18}>
-                <Checkbox.Group style={{ width: '100%' }}>
-                  <Row>
-                    <Col span={7}>
-                      <Checkbox value="A">急诊</Checkbox>
-                    </Col>
-                    <Col span={9}>
-                      <Checkbox value="B">超周期</Checkbox>
-                    </Col>
-                    <Col span={8}>
-                      <Checkbox value="C">复查</Checkbox>
-                    </Col>
-                  </Row>
-                </Checkbox.Group>
-              </Col>
-            </Row>
+            <Form.Item name="labClassId">
+              <Select placeholder="请选择专业类别" allowClear>
+                {majorGroupData.length > 0 &&
+                  majorGroupData.map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.className}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
           </Col>
         </Row>
         <Row gutter={12}>
@@ -543,13 +477,13 @@ const QueryData = ({ queryData }) => {
               <RangePicker
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
-                placeholder={['审核开始时间', '审核结束时间']}
+                placeholder={['接收开始时间', '接收结束时间']}
               />
             </Form.Item>
           </Col>
           <Col span={6}>
             <Form.Item name="sampleBarcode">
-              <Input placeholder="请输入样本编号" />
+              <Input placeholder="请输入收样条码" />
             </Form.Item>
           </Col>
           <Col span={6}>
@@ -571,7 +505,7 @@ const QueryData = ({ queryData }) => {
               <Col span={12}>
                 <Form.Item name="sendDoctorId">
                   <Select placeholder="请选择送检医生" allowClear>
-                    {doctorList?.map((item,index) => (
+                    {doctorList?.map((item, index) => (
                       <Option value={item.id} key={index}>
                         {item.name}
                       </Option>
@@ -581,6 +515,26 @@ const QueryData = ({ queryData }) => {
               </Col>
             </Row>
           </Col>
+          <Col span={6}>
+            <Form.Item name="reqItemIds">
+              <Select
+                allowClear
+                // onChange={checkChange}
+                placeholder="检验目的"
+                mode="multiple"
+              >
+                {reportUnitReqItemList?.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.reqItemName}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={12}>
           <Col span={6} style={{ display: 'flex', height: '30px' }}>
             <Button type="primary" onClick={seach} size="small">
               查询

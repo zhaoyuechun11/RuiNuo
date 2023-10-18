@@ -106,7 +106,7 @@ class CustomSearchModal extends Component {
   // 恢复默认
   reset = () => {
     this.setState({
-      checkedList: CHECKED_LIST_FOR_SEARCH,
+      checkedList: [],
     });
   };
   // 导出弹窗点击确认

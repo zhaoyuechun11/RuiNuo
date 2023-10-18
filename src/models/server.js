@@ -50,3 +50,9 @@ export function getQueryData(params) {
 export function saveCustomQuery(params) {
   return axiosBase('sys/queryAssembly/updateReqMainEnter', 'post', params);
 }
+export function getApplayFormQueryData(params) {
+  return axiosBase('sys/queryAssembly/reqMainComprehensiveQueryDetail', 'get', params);
+}
+export function saveApplayFormCustomQuery(params) {
+  return axiosBase('sys/queryAssembly/updateReqMainComprehensiveQuery', 'post', params);
+}

@@ -266,6 +266,17 @@ export default {
           ],
         },
         {
+          path: '/applicationFormMsg',
+          name: 'applicationFormMsg',
+          routes: [
+            {
+              path: '/applicationFormMsg/applyFormSearch',
+              component: '@/pages/ApplicationFormMsg/subPages/applyFormSearch',
+              title: '申请单查询',
+            },
+          ],
+        },
+        {
           path: '/reportMag',
           name: 'reportMag',
           routes: [

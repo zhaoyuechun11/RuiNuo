@@ -114,6 +114,7 @@ const SampleRegistration = () => {
       type: 'preProcessingMag/getCustomHeader',
       payload: {
         callback: (res: { code: number; data: any[] }) => {
+          debugger;
           if (res.code === 200) {
             const selectedFields = res.data.filter(
               (item: Record<string, any>) => item?.isListDisplay == true,

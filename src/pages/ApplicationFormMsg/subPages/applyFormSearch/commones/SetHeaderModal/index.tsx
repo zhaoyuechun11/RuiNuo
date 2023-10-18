@@ -1,5 +1,12 @@
-import React, { Fragment, useState, useRef, useEffect, useImperativeHandle } from 'react';
-import { Checkbox, Row, Col } from 'antd';
+import React, {
+  Component,
+  Fragment,
+  useState,
+  useRef,
+  useEffect,
+  useImperativeHandle,
+} from 'react';
+import { Checkbox, Modal, Row, Col } from 'antd';
 import { Dialog } from '@components';
 import { CloseCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -30,6 +37,7 @@ const SetHeaderModal = ({ refs, ...props }) => {
     let ids = columnChecked.map((item) => {
       return item.id;
     });
+
     setCheckedList(ids);
     let listSeqs = columnChecked.map((item) => {
       return item.listSeq;

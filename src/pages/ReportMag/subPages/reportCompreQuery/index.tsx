@@ -316,7 +316,7 @@ const ReportCompreQuery = () => {
             </Row>
             <Row gutter={12}>
               <Col span={6}>
-                <Form.Item name="sampleBarcode">
+                <Form.Item name="patientNo">
                   <Input placeholder="请输入门诊/住院号" />
                 </Form.Item>
               </Col>
@@ -358,228 +358,229 @@ const ReportCompreQuery = () => {
       </div>
     );
   };
-  const renderForm = () => {
-    return (
-      <Form form={form} onValuesChange={searchHandle}>
-        <Row gutter={12}>
-          <Col span={6}>
-            <Form.Item name="labDate">
-              <RangePicker
-                showTime={{ format: 'HH:mm' }}
-                format="YYYY-MM-DD HH:mm"
-                placeholder={['前处理接收开始时间', '前处理接收结束时间']}
-                onChange={labDateChange}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="reportUnitCode">
-              <Select allowClear onChange={reportUnitChange} placeholder="报告单元">
-                {reportUnit?.map((item) => {
-                  return (
-                    <Option value={item.reportUnitCode} key={item.id}>
-                      {item.reportUnitName}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <InputGroup>
-              <Row gutter={8}>
-                <Col span={12}>
-                  <Form.Item name="sampleBarcode">
-                    <Input placeholder="请输入姓名" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item name="sex">
-                    <Select placeholder="请选择性别" allowClear>
-                      {sex.map((item) => {
-                        return (
-                          <Option value={item.id} key={item.id}>
-                            {item.dictValue}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </InputGroup>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="reqItemIds">
-              <Select
-                allowClear
-                // onChange={checkChange}
-                placeholder="检验目的"
-                mode="multiple"
-              >
-                {reportUnitReqItemList?.map((item) => {
-                  return (
-                    <Option value={item.id} key={item.id}>
-                      {item.reqItemName}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={12}>
-          <Col span={6}>
-            <Form.Item name="labDate">
-              <RangePicker
-                showTime={{ format: 'HH:mm' }}
-                format="YYYY-MM-DD HH:mm"
-                placeholder={['检验日期开始时间', '检验日期结束时间']}
-                onChange={labDateChange}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="sampleBarcode">
-              <Input placeholder="请输入样本条码" />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="hospitalId">
-              <Select placeholder="请选择送检单位" allowClear onChange={hospitalChange}>
-                {hospitalList?.map(
-                  (
-                    item: {
-                      id: any;
-                      hospitalName: any;
-                    },
-                    index: React.Key | null | undefined,
-                  ) => (
-                    <Option value={item.id} key={index}>
-                      {item.hospitalName}
-                    </Option>
-                  ),
-                )}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Row gutter={8}>
-              <Col span={6}>
-                <Form.Item name="hospitalId">
-                  <Select placeholder="请选择报告状态" allowClear>
-                    {/* {hospitalList?.map(
-                      (
-                        item: {
-                          id: any;
-                          hospitalName: any;
-                        },
-                        index: React.Key | null | undefined,
-                      ) => (
-                        <Option value={item.id} key={index}>
-                          {item.hospitalName}
-                        </Option>
-                      ),
-                    )} */}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={18}>
-                <Checkbox.Group style={{ width: '100%' }}>
-                  <Row>
-                    <Col span={7}>
-                      <Checkbox value="A">急诊</Checkbox>
-                    </Col>
-                    <Col span={9}>
-                      <Checkbox value="B">超周期</Checkbox>
-                    </Col>
-                    <Col span={8}>
-                      <Checkbox value="C">复查</Checkbox>
-                    </Col>
-                  </Row>
-                </Checkbox.Group>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row gutter={12}>
-          <Col span={6}>
-            <Form.Item name="labDate">
-              <RangePicker
-                showTime={{ format: 'HH:mm' }}
-                format="YYYY-MM-DD HH:mm"
-                placeholder={['审核开始时间', '审核结束时间']}
-                onChange={labDateChange}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Form.Item name="sampleBarcode">
-              <Input placeholder="请输入样本编号" />
-            </Form.Item>
-          </Col>
-          <Col span={6}>
-            <Row gutter={8}>
-              <Col span={12}>
-                {' '}
-                <Form.Item name="sendDeptId">
-                  <Select placeholder="请选择送检科室" allowClear>
-                    {department.map(
-                      (item: { id: React.Key | null | undefined; dictValue: any }) => {
-                        return (
-                          <Option value={item.id} key={item.id}>
-                            {item.dictValue}
-                          </Option>
-                        );
-                      },
-                    )}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item name="sendDoctorId">
-                  <Select placeholder="请选择送检医生" allowClear>
-                    {doctorList?.map(
-                      (
-                        item: {
-                          id: any;
-                          name: any;
-                        },
-                        index: React.Key | null | undefined,
-                      ) => (
-                        <Option value={item.id} key={index}>
-                          {item.name}
-                        </Option>
-                      ),
-                    )}
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Col>
-          <Col span={6}>
-            <Button type="primary" onClick={seach} size="small">
-              查询
-            </Button>
-            <Button type="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
-              重置
-            </Button>
-            <Popover
-              content={popover_content}
-              placement="bottomRight"
-              trigger="click"
-              open={popoverVisible}
-              onOpenChange={(val) => setPopoverVisible(val)}
-            >
-              <Button type="primary" size="small">
-                扩展
-              </Button>
-            </Popover>
-          </Col>
-        </Row>
-      </Form>
-    );
-  };
+  // const renderForm = () => {
+  //   return (
+  //     <Form form={form} onValuesChange={searchHandle}>
+  //       <Row gutter={12}>
+  //         <Col span={6}>
+  //           <Form.Item name="labDate">
+  //             <RangePicker
+  //               showTime={{ format: 'HH:mm' }}
+  //               format="YYYY-MM-DD HH:mm"
+  //               placeholder={['前处理接收开始时间', '前处理接收结束时间']}
+  //               onChange={labDateChange}
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Form.Item name="reportUnitCode">
+  //             <Select allowClear onChange={reportUnitChange} placeholder="报告单元">
+  //               {reportUnit?.map((item) => {
+  //                 return (
+  //                   <Option value={item.reportUnitCode} key={item.id}>
+  //                     {item.reportUnitName}
+  //                   </Option>
+  //                 );
+  //               })}
+  //             </Select>
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <InputGroup>
+  //             <Row gutter={8}>
+  //               <Col span={12}>
+  //                 <Form.Item name="sampleBarcode">
+  //                   <Input placeholder="请输入姓名" />
+  //                 </Form.Item>
+  //               </Col>
+  //               <Col span={12}>
+  //                 <Form.Item name="sex">
+  //                   <Select placeholder="请选择性别" allowClear>
+  //                     {sex.map((item) => {
+  //                       return (
+  //                         <Option value={item.id} key={item.id}>
+  //                           {item.dictValue}
+  //                         </Option>
+  //                       );
+  //                     })}
+  //                   </Select>
+  //                 </Form.Item>
+  //               </Col>
+  //             </Row>
+  //           </InputGroup>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Form.Item name="reqItemIds">
+  //             <Select
+  //               allowClear
+  //               // onChange={checkChange}
+  //               placeholder="检验目的"
+  //               mode="multiple"
+  //             >
+  //               {reportUnitReqItemList?.map((item) => {
+  //                 return (
+  //                   <Option value={item.id} key={item.id}>
+  //                     {item.reqItemName}
+  //                   </Option>
+  //                 );
+  //               })}
+  //             </Select>
+  //           </Form.Item>
+  //         </Col>
+  //       </Row>
+  //       <Row gutter={12}>
+  //         <Col span={6}>
+  //           <Form.Item name="labDate">
+  //             <RangePicker
+  //               showTime={{ format: 'HH:mm' }}
+  //               format="YYYY-MM-DD HH:mm"
+  //               placeholder={['检验日期开始时间', '检验日期结束时间']}
+  //               onChange={labDateChange}
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Form.Item name="sampleBarcode">
+  //             <Input placeholder="请输入样本条码" />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Form.Item name="hospitalId">
+  //             <Select placeholder="请选择送检单位" allowClear onChange={hospitalChange}>
+  //               {hospitalList?.map(
+  //                 (
+  //                   item: {
+  //                     id: any;
+  //                     hospitalName: any;
+  //                   },
+  //                   index: React.Key | null | undefined,
+  //                 ) => (
+  //                   <Option value={item.id} key={index}>
+  //                     {item.hospitalName}
+  //                   </Option>
+  //                 ),
+  //               )}
+  //             </Select>
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Row gutter={8}>
+  //             <Col span={6}>
+  //               <Form.Item name="hospitalId">
+  //                 <Select placeholder="请选择报告状态" allowClear>
+  //                   {/* {hospitalList?.map(
+  //                     (
+  //                       item: {
+  //                         id: any;
+  //                         hospitalName: any;
+  //                       },
+  //                       index: React.Key | null | undefined,
+  //                     ) => (
+  //                       <Option value={item.id} key={index}>
+  //                         {item.hospitalName}
+  //                       </Option>
+  //                     ),
+  //                   )} */}
+  //                 </Select>
+  //               </Form.Item>
+  //             </Col>
+  //             <Col span={18}>
+  //               <Checkbox.Group style={{ width: '100%' }}>
+  //                 <Row>
+  //                   <Col span={7}>
+  //                     <Checkbox value="A">急诊</Checkbox>
+  //                   </Col>
+  //                   <Col span={9}>
+  //                     <Checkbox value="B">超周期</Checkbox>
+  //                   </Col>
+  //                   <Col span={8}>
+  //                     <Checkbox value="C">复查</Checkbox>
+  //                   </Col>
+  //                 </Row>
+  //               </Checkbox.Group>
+  //             </Col>
+  //           </Row>
+  //         </Col>
+  //       </Row>
+  //       <Row gutter={12}>
+  //         <Col span={6}>
+  //           <Form.Item name="labDate">
+  //             <RangePicker
+  //               showTime={{ format: 'HH:mm' }}
+  //               format="YYYY-MM-DD HH:mm"
+  //               placeholder={['审核开始时间', '审核结束时间']}
+  //               onChange={labDateChange}
+  //             />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Form.Item name="sampleBarcode">
+  //             <Input placeholder="请输入样本编号" />
+  //           </Form.Item>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Row gutter={8}>
+  //             <Col span={12}>
+  //               {' '}
+  //               <Form.Item name="sendDeptId">
+  //                 <Select placeholder="请选择送检科室" allowClear>
+  //                   {department.map(
+  //                     (item: { id: React.Key | null | undefined; dictValue: any }) => {
+  //                       return (
+  //                         <Option value={item.id} key={item.id}>
+  //                           {item.dictValue}
+  //                         </Option>
+  //                       );
+  //                     },
+  //                   )}
+  //                 </Select>
+  //               </Form.Item>
+  //             </Col>
+  //             <Col span={12}>
+  //               <Form.Item name="sendDoctorId">
+  //                 <Select placeholder="请选择送检医生" allowClear>
+  //                   {doctorList?.map(
+  //                     (
+  //                       item: {
+  //                         id: any;
+  //                         name: any;
+  //                       },
+  //                       index: React.Key | null | undefined,
+  //                     ) => (
+  //                       <Option value={item.id} key={index}>
+  //                         {item.name}
+  //                       </Option>
+  //                     ),
+  //                   )}
+  //                 </Select>
+  //               </Form.Item>
+  //             </Col>
+  //           </Row>
+  //         </Col>
+  //         <Col span={6}>
+  //           <Button type="primary" onClick={seach} size="small">
+  //             查询
+  //           </Button>
+  //           <Button type="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
+  //             重置
+  //           </Button>
+  //           <QueryData />
+  //           {/* <Popover
+  //             content={popover_content}
+  //             placement="bottomRight"
+  //             trigger="click"
+  //             open={popoverVisible}
+  //             onOpenChange={(val) => setPopoverVisible(val)}
+  //           >
+  //             <Button type="primary" size="small">
+  //               扩展
+  //             </Button>
+  //           </Popover> */}
+  //         </Col>
+  //       </Row>
+  //     </Form>
+  //   );
+  // };
   const expandedRowRender = (record) => {
     const columns = [
       {
@@ -611,7 +612,7 @@ const ReportCompreQuery = () => {
       },
     ];
 
-    return <Table columns={columns} dataSource={record.content2} />;
+    return <Table columns={columns} dataSource={record.children} />;
   };
   const onExpandedRowsChange = (record) => {
     debugger;
@@ -620,7 +621,7 @@ const ReportCompreQuery = () => {
     let result = list.map((item) => {
       if (item.id === record.id) {
         return {
-          content2: [
+          children: [
             {
               id: '016d5af79b',
               name: '环保检查3',
@@ -635,12 +636,11 @@ const ReportCompreQuery = () => {
       }
     });
     setList(result);
-
   };
   return (
     <>
-      {renderForm()}
       <QueryData />
+
       <Row gutter={12}>
         <Col span={12} className={s.col_01}>
           {/* <Button type="primary" size="small">

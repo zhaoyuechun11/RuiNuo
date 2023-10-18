@@ -63,7 +63,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
+   
     >
       <Form form={form} {...layout}>
         <Form.Item

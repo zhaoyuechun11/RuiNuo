@@ -64,7 +64,7 @@ const OriginApplyForm = () => {
       };
     });
 
-   const columns = [
+    const columns = [
       ...firstColumm,
       ...newSelectedColumns,
       {
@@ -74,12 +74,7 @@ const OriginApplyForm = () => {
         align: 'center',
         width: 180,
         render: (text, record) => (
-          <Button
-            style={{ margin: '0 8px' }}
-            onClick={() => {
-           
-            }}
-          >
+          <Button style={{ margin: '0 8px' }} onClick={() => {}}>
             明细
           </Button>
         ),

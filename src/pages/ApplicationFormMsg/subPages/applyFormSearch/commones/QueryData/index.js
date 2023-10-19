@@ -1,25 +1,35 @@
 /* eslint-disable global-require */
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Select, Input, DatePicker, Popover, Row, Col, Checkbox } from 'antd';
+import { Form, Select, Input, DatePicker, Popover, Row, Col } from 'antd';
 import { Button } from '@/components';
 import { useDispatch, useSelector } from 'umi';
+import { downLoad } from '@/utils';
 import style from './index.less';
-import { debounce } from 'lodash';
-
 import {
   getHospitalList,
   getDoctorList,
   getApplayFormQueryData,
-  reportUnitList,
-  reportUnitReqItem,
+  getNodeList,
   majorGroup,
+  getReqItemList,
 } from '@/models/server';
+import { getOriginOrderExport, professionOrderExport } from '../../../../models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
-
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const InputGroup = Input.Group;
-const QueryData = ({ queryData }) => {
+const markData = [
+  {
+    id: 0,
+    name: '否',
+  },
+  {
+    id: 1,
+    name: '是',
+  },
+];
+
+const QueryData = () => {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [form] = Form.useForm();
@@ -34,18 +44,26 @@ const QueryData = ({ queryData }) => {
   const [nation, setNation] = useState([]);
   const [ageUnit, setAgeUnit] = useState([]);
   const [department, setDepartment] = useState([]);
-  const [reportUnit, setReportUnit] = useState([]);
-  const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
+  const [nodeList, setNodeList] = useState([]);
+  const [reqItemList, setReqItemList] = useState([]);
   const { useDetail } = useSelector((state) => state.global);
   const [majorGroupData, setMajorGroupData] = useState([]);
+  const [sampleTypeList, setSampleTypeList] = useState([]);
+  const { queryParams, originOrderExoprtColumm, professionExoprtColumm } = useSelector(
+    (state) => state.applicationFormMsg,
+  );
+
   useEffect(() => {
     getCustomSearch();
     majorGroupList();
+    getReqItem();
+    getNodeListData();
     dicVal({ type: 'SX' });
     dicVal({ type: 'FT' });
     dicVal({ type: 'NATION' });
     dicVal({ type: 'AU' });
     dicVal({ type: 'DP' });
+    dicVal({ type: 'BT' });
     hospitalList();
   }, []);
 
@@ -71,32 +89,28 @@ const QueryData = ({ queryData }) => {
             if (params.type === 'DP') {
               setDepartment(res.data);
             }
+            if (params.type === 'BT') {
+              setSampleTypeList(res.data);
+            }
           }
         },
       },
     });
   };
-  const getReportUnitList = () => {
-    reportUnitList({ userId: useDetail.id }).then((res) => {
+
+  const getReqItem = () => {
+    getReqItemList().then((res) => {
       if (res.code === 200) {
-        setReportUnit(res.data);
-        if (res.data.length > 0) {
-          getReportUnitReqItem(res.data[0].id);
-        }
+        setReqItemList(res.data);
       }
     });
   };
-  const getReportUnitReqItem = (reportUnitId) => {
-    reportUnitReqItem({ reportUnitId }).then((res) => {
+  const getNodeListData = () => {
+    getNodeList().then((res) => {
       if (res.code === 200) {
-        setReportUnitReqItemList(res.data);
+        setNodeList(res.data);
       }
     });
-  };
-  const reportUnitChange = () => {
-    if (e) {
-      getReportUnitReqItem(option.key);
-    }
   };
   const hospitalList = () => {
     getHospitalList().then((res) => {
@@ -123,47 +137,29 @@ const QueryData = ({ queryData }) => {
       .then((res) => {
         const list =
           res.data && res.data.assemblyInfo.json ? JSON.parse(res.data.assemblyInfo.json) : [];
-
         const result = list.map((item) => {
           return { value: item.key, label: item.name, type: item.type };
         });
-
         const result2 = list.map((item) => {
           return `${item.key},${item.name},${item.type}`;
         });
         setLeftCheckList(result2);
         setCheckedList(result);
         setSearchList2(list);
-        queryData && form.setFieldsValue(queryData);
-        dispatch({
-          type: 'preProcessingMag/save',
-          payload: {
-            type: 'search',
-            dataSource: list,
-          },
-        });
       })
       .catch(() => {});
   };
-
-  useEffect(() => {
-    queryData && form.setFieldsValue(queryData);
-    !queryData && form.setFieldsValue({});
-  }, [queryData]);
 
   // 改变保存在model里面的数据
   const changeModelData = (type, value) => {
     return new Promise((resolve, reject) => {
       dispatch({
-        type: 'preProcessingMag/save',
+        type: 'applicationFormMsg/save',
         payload: {
           type,
           dataSource: value,
         },
       });
-      setTimeout(() => {
-        resolve();
-      }, 500);
     });
   };
 
@@ -173,8 +169,12 @@ const QueryData = ({ queryData }) => {
     changeModelData('queryData', {});
     form.resetFields();
   };
-  const seach = () => {};
-  const reset = () => {};
+  const seach = () => {
+    handleQuery();
+  };
+  const reset = () => {
+    form.resetFields();
+  };
   const handleQuery = () => {
     const formValues = form.getFieldsValue();
     console.log(formValues);
@@ -182,14 +182,6 @@ const QueryData = ({ queryData }) => {
     changeModelData('pageNum', 1);
     const params = {
       ...formValues,
-      birthdateStart:
-        formValues.birthdateStart && formValues.birthdateStart[0]
-          ? formValues.birthdateStart[0].format('YYYY-MM-DD HH:mm:ss')
-          : '',
-      birthdateEnd:
-        formValues.birthdateStart && formValues.birthdateStart[1]
-          ? formValues.birthdateStart[1].format('YYYY-MM-DD HH:mm:ss')
-          : '',
       collectDateStart:
         formValues.collectDateStart && formValues.collectDateStart[0]
           ? formValues.collectDateStart[0].format('YYYY-MM-DD HH:mm:ss')
@@ -232,14 +224,35 @@ const QueryData = ({ queryData }) => {
           : '',
     };
 
-    changeModelData('queryData', params);
+    changeModelData('queryParams', params);
   };
+  const exportOriginOrder = () => {
+    originOrderExoprtColumm.pop();
+    let customExportFields = originOrderExoprtColumm.join(',');
+    let params = {
+      ...queryParams,
+      fields: customExportFields,
+    };
 
-  const onValuesChangeHandler = debounce((changedValues, allValues) => {
-    // 更多筛选弹窗显示时停止自动查询
-    if (visible) return;
-    handleQuery();
-  }, 1500);
+    getOriginOrderExport(params).then((res) => {
+      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
+      const href = URL.createObjectURL(blob);
+      downLoad(href, '原始单');
+    });
+  };
+  const exportProfessionOrder = () => {
+    professionExoprtColumm.pop;
+    let customExportFields = professionExoprtColumm.join(',');
+    let params = {
+      ...queryParams,
+      fields: customExportFields,
+    };
+    professionOrderExport(params).then((res) => {
+      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
+      const href = URL.createObjectURL(blob);
+      downLoad(href, '专业组单');
+    });
+  };
   const dataType3Form = (stru) => {
     return (
       <Select
@@ -252,6 +265,7 @@ const QueryData = ({ queryData }) => {
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
+        mode={`${stru.key === 'sampleTypeName' ? 'multiple' : ''}`}
         style={{ width: 254 }}
       >
         {stru.key === 'sex'
@@ -296,6 +310,28 @@ const QueryData = ({ queryData }) => {
           ? department?.map((item, index) => (
               <Option value={item.id} key={index}>
                 {item.dictValue}
+              </Option>
+            ))
+          : stru.key === 'sampleTypeName'
+          ? sampleTypeList?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.dictValue}
+              </Option>
+            ))
+          : stru.key === 'currentNode'
+          ? nodeList?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.name}
+              </Option>
+            ))
+          : stru.key === 'isEmer' ||
+            stru.key === 'giveUpCheckFlag' ||
+            stru.key === 'bloodFlag' ||
+            stru.key === 'reportDelayFlag' ||
+            stru.key === 'isPaymentReceived'
+          ? markData?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.name}
               </Option>
             ))
           : null}
@@ -410,10 +446,10 @@ const QueryData = ({ queryData }) => {
 
   return (
     <>
-      <Form form={form} onValuesChange={onValuesChangeHandler}>
+      <Form form={form}>
         <Row gutter={12}>
           <Col span={6}>
-            <Form.Item name="labDate">
+            <Form.Item name="createDateStart">
               <RangePicker
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
@@ -425,7 +461,7 @@ const QueryData = ({ queryData }) => {
             <InputGroup>
               <Row gutter={8}>
                 <Col span={12}>
-                  <Form.Item name="sampleBarcode">
+                  <Form.Item name="patientName">
                     <Input placeholder="请输入姓名" />
                   </Form.Item>
                 </Col>
@@ -473,7 +509,7 @@ const QueryData = ({ queryData }) => {
         </Row>
         <Row gutter={12}>
           <Col span={6}>
-            <Form.Item name="labDate">
+            <Form.Item name="preReceiveDateStart">
               <RangePicker
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
@@ -482,7 +518,7 @@ const QueryData = ({ queryData }) => {
             </Form.Item>
           </Col>
           <Col span={6}>
-            <Form.Item name="sampleBarcode">
+            <Form.Item name="receiveBarcode">
               <Input placeholder="请输入收样条码" />
             </Form.Item>
           </Col>
@@ -523,7 +559,7 @@ const QueryData = ({ queryData }) => {
                 placeholder="检验目的"
                 mode="multiple"
               >
-                {reportUnitReqItemList?.map((item) => {
+                {reqItemList?.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>
                       {item.reqItemName}
@@ -535,14 +571,24 @@ const QueryData = ({ queryData }) => {
           </Col>
         </Row>
         <Row gutter={12}>
-          <Col span={6} style={{ display: 'flex', height: '30px' }}>
+          <Col span={9} style={{ display: 'flex', height: '30px' }}>
             <Button type="primary" onClick={seach} size="small">
               查询
             </Button>
             <Button type="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
               重置
             </Button>
-
+            <Button type="primary" onClick={exportOriginOrder} size="small">
+              导出原始单
+            </Button>
+            <Button
+              type="primary"
+              onClick={exportProfessionOrder}
+              size="small"
+              style={{ margin: '0 5px' }}
+            >
+              导出专业组单
+            </Button>
             {searchList2.length > 0 && (
               <Popover
                 content={popover_content}

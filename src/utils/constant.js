@@ -2261,30 +2261,30 @@ export const EXPORT_OPTIONS_FOR_SEARCH = [
   createDate,
 ];
 //申请单查询-列表搜索自定义
-const hospitalCodeNum = { label: '医院条码号', value: 'hospitalBarcode', weight: 6, type: 1 };
-const patientID = { label: '病人ID', value: 'patientId', weight: 6, type: 1 };
-const patientNo = { label: '门诊/住院号', value: 'patientNo', weight: 6, type: 1 };
-const patientType = { label: '病人类型', value: 'source', weight: 6, type: 3 };
-const enName = { label: '英文名', value: 'enName', weight: 6, type: 3 };
-const sampleTypeName = { label: '样本类型', value: 'sampleTypeName', weight: 6, type: 3 };
-const saleManId = { label: '销售员', value: 'saleManId', weight: 6, type: 3 };
-const agentName = { label: '代理商', value: 'agentName', weight: 6, type: 3 };
-const isPaymentReceived = { label: '收费标记', value: 'isPaymentReceived', weight: 6, type: 3 };
-const payMode = { label: '收费标记', value: 'payMode', weight: 6, type: 3 };
-const paymentOrderNo = { label: '付款单号', value: 'paymentOrderNo', weight: 6, type: 1 };
-const transportBy = { label: '运送人', value: 'transportBy', weight: 6, type: 1 };
-const creatEr = { label: '登记人', value: 'creatEr', weight: 6, type: 1 };
-const passportNo = { label: '护照号', value: 'passportNo', weight: 6, type: 1 };
-const nationality = { label: '国籍', value: 'nationality', weight: 6, type: 1 };
-const remark = { label: '备注', value: 'remark', weight: 6, type: 1 };
-const address = { label: '地址', value: 'address', weight: 6, type: 1 };
-const sampleBarcode = { label: '样本条码', value: 'sampleBarcode', weight: 6, type: 1 };
-const sampleNo = { label: '样本编号', value: 'sampleNo', weight: 6, type: 1 };
-const currentNode = { label: '检测状态', value: 'currentNode', weight: 6, type: 1 };
-const isEmer = { label: '急诊标记', value: 'isEmer', weight: 6, type: 1 };
-const reportDelayFlag = { label: '延迟标记', value: 'reportDelayFlag', weight: 6, type: 1 };
-const bloodFlag = { label: '分血标记', value: 'bloodFlag', weight: 6, type: 1 };
-const giveUpCheckFlag = { label: '弃检标记', value: 'giveUpCheckFlag', weight: 6, type: 1 };
+const hospitalCodeNum = { label: '医院条码号', value: 'hospitalBarcode', type: 1 };
+const patientID = { label: '病人ID', value: 'patientId', type: 1 };
+const patientNo = { label: '门诊/住院号', value: 'patientNo', type: 1 };
+const patientType = { label: '病人类型', value: 'source', type: 3 };
+const enName = { label: '英文名', value: 'enName', type: 1 };
+const sampleTypeName = { label: '样本类型', value: 'sampleTypeName', type: 3 };
+const saleManId = { label: '销售员', value: 'saleManId', type: 1 };
+const agentName = { label: '代理商', value: 'agentName', type: 1 };
+const isPaymentReceived = { label: '收费标记', value: 'isPaymentReceived', type: 3 };
+const payMode = { label: '支付类别', value: 'payMode', type: 3 };
+const paymentOrderNo = { label: '付款单号', value: 'paymentOrderNo', type: 1 };
+const transportBy = { label: '运送人', value: 'transportBy', type: 1 };
+const creatEr = { label: '登记人', value: 'creatEr', type: 1 };
+const passportNo = { label: '护照号', value: 'passportNo', type: 1 };
+const nationality = { label: '国籍', value: 'nationality', type: 1 };
+const remark = { label: '备注', value: 'remark', type: 1 };
+const address = { label: '地址', value: 'address', type: 1 };
+const sampleBarcode = { label: '样本条码', value: 'sampleBarcode', type: 1 };
+const sampleNo = { label: '样本编号', value: 'sampleNo', type: 1 };
+const currentNode = { label: '检测状态', value: 'currentNode', type: 3};
+const isEmer = { label: '急诊标记', value: 'isEmer', type: 3 };
+const reportDelayFlag = { label: '延迟标记', value: 'reportDelayFlag', type: 3 };
+const bloodFlag = { label: '分血标记', value: 'bloodFlag', type: 3 };
+const giveUpCheckFlag = { label: '弃检标记', value: 'giveUpCheckFlag', type: 3 };
 export const APPLY_FORM_FOR_SEARCH = [
   hospitalCodeNum,
   patientID,
@@ -2306,7 +2306,6 @@ export const APPLY_FORM_FOR_SEARCH = [
   applyDate,
   collectDate,
   receiveDate,
-  createDate,
   telphoneNo,
   idCardNo,
   passportNo,

@@ -33,6 +33,7 @@ const SetHeaderModal = ({ refs, ...props }) => {
   useEffect(() => {
     setCheckedList(columnChecked);
   }, []);
+
   useEffect(() => {
     let ids = columnChecked.map((item) => {
       return item.id;
@@ -178,7 +179,23 @@ const SetHeaderModal = ({ refs, ...props }) => {
                   {columnOptions.map((item, index) => {
                     return (
                       <Col span={6} key={item.name}>
-                        <Checkbox disabled={item.is_disabled == 1} value={item.id}>
+                        <Checkbox
+                          value={item.id}
+                          disabled={
+                            item.key === 'id' ||
+                            item.key === 'receiveBarcode' ||
+                            item.key === 'hospitalName' ||
+                            item.key === 'sendDoctorName' ||
+                            item.key === 'patientName' ||
+                            item.key === 'sexName' ||
+                            item.key === 'age' ||
+                            item.key === 'ageUnitName' ||
+                            item.key === 'sampleType' ||
+                            item.key === 'reqItemName' ||
+                            item.key === 'collectDate' ||
+                            item.key === 'receiveDate'
+                          }
+                        >
                           {item.name}
                         </Checkbox>
                       </Col>
@@ -205,7 +222,7 @@ const SetHeaderModal = ({ refs, ...props }) => {
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {rightCheckedList.map((item, index) => {
-                        if (index === 0 || index === 1) {
+                        if (index === 0 || index === 1 || index === 2) {
                           return (
                             <div key={index}>
                               <div

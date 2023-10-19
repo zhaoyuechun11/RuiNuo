@@ -56,3 +56,9 @@ export function getApplayFormQueryData(params) {
 export function saveApplayFormCustomQuery(params) {
   return axiosBase('sys/queryAssembly/updateReqMainComprehensiveQuery', 'post', params);
 }
+export function getReqItemList(params) {
+  return axiosBase('/basic/reqItem/getList', 'get', params);
+}
+export function getNodeList(params) {
+  return axiosBase('/basic/operationNode/list', 'get', params);
+}

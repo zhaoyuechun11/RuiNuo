@@ -1119,7 +1119,7 @@ const RightContent = () => {
         rowSelection={rowSelection}
         rowClassName={getRowClassName}
         rowKey={(record) => record.key}
-        onChange={onTableChange}
+        onChange={()=>onTableChange}
         pagination={{
           current: pageNum,
           pageSize: pageSize,

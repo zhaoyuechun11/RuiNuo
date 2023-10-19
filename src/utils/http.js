@@ -139,7 +139,11 @@ function axiosBase(url, type, params) {
   let axiosMain;
   if (type.toUpperCase() === 'GET') {
     console.log('url', url.split('/').pop());
-    if (url.split('/').pop() !== 'export') {
+    if (
+      url.split('/').pop() !== 'export' &&
+      url !== '/lab/reqMainOrder/comprehensiveQueryOrderExport' &&
+      url !== '/lab/reqMainOrder/comprehensiveQuerySplitExport'
+    ) {
       axiosMain = axios.get(url, {
         params: params,
         headers: {

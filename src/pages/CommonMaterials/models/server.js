@@ -32,7 +32,6 @@ export function getBinds(params) {
   return axios('/basic/reqItemTask/getBinds', 'get', params);
 }
 export function getBindsList(params) {
-  //return axios('/basic/reqItem/getList', 'get', params);
   return axios('/basic/reqItem/getDifferentProfessionList', 'get', params);
 }
 export function addBind(params) {

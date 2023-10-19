@@ -307,6 +307,7 @@ export const getConfigPinyin = (value) => {
   return allValue;
 };
 export const downLoad = (href, fileName) => {
+  debugger;
   const a = document.createElement('a');
   a.download = `${fileName}.xls`;
   a.style.display = 'none';

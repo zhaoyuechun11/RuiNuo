@@ -11,6 +11,7 @@ import {
   getQuerySplitNum,
 } from '../../../../models/server';
 import SetHeaderModal from '../SetHeaderModal';
+import SourceModal from '@/pages/ExperTaskNavigation/subPages/batchTask/commones/sourceModal';
 
 const OriginApplyForm = () => {
   const [beforeOrderTableHeader, setBeforeOrderTableHeader] = useState([]);
@@ -25,6 +26,7 @@ const OriginApplyForm = () => {
   const [total, setTotal] = useState(0);
   const [professionalGroup, setProfessionalGroup] = useState(0);
   const setRef = useRef();
+  const sourceModal = useRef();
   const dispatch = useDispatch();
   const { queryParams, pageNum } = useSelector((state: any) => state.applicationFormMsg);
   useEffect(() => {
@@ -224,7 +226,7 @@ const OriginApplyForm = () => {
           align: 'center',
           width: 180,
           render: (text: string, record: Record<string, any>) => (
-            <Dropdown overlay={menu}>
+            <Dropdown overlay={() => menu(record)}>
               <a>
                 More <DownOutlined />
               </a>
@@ -234,12 +236,12 @@ const OriginApplyForm = () => {
         const allColumn = [...firstColumm, ...Columns, lastColumn];
         const professionExoprtColumm = allColumn.map((item) => item.dataIndex);
         dispatch({
-            type: 'applicationFormMsg/save',
-            payload: {
-              type: 'professionExoprtColumm',
-              dataSource: professionExoprtColumm,
-            },
-          });
+          type: 'applicationFormMsg/save',
+          payload: {
+            type: 'professionExoprtColumm',
+            dataSource: professionExoprtColumm,
+          },
+        });
         setAfterOrderTableHeader(allColumn);
       }
     });
@@ -279,12 +281,15 @@ const OriginApplyForm = () => {
       }
     });
   };
-  const menu = (
-    <Menu>
-      <Menu.Item>溯源</Menu.Item>
-      <Menu.Item>交接</Menu.Item>
-    </Menu>
-  );
+  const menu = (record: any) => {
+    return (
+      <Menu>
+        <Menu.Item onClick={() => sourceModal.current.show(record)}>溯源</Menu.Item>
+        <Menu.Item>交接</Menu.Item>
+      </Menu>
+    );
+  };
+
   const expandedRowRender = (record) => {
     const data = record.childTableContent;
     return (
@@ -344,6 +349,7 @@ const OriginApplyForm = () => {
         columnChecked={selectedColumns}
         handleChangeColumn={changeColumn}
       />
+      <SourceModal Ref={sourceModal} />
     </>
   );
 };

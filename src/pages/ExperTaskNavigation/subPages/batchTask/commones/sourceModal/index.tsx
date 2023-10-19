@@ -1,5 +1,4 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { Row, Col, Image } from 'antd';
 import { Dialog } from '@components';
 import SampleTraceability from '@/pages/GeneralInspectionMag/subPages/reportDataMag/commones/sampleTraceability';
 const SourceModal = ({ Ref }) => {

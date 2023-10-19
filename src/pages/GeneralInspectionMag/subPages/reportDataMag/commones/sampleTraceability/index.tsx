@@ -311,7 +311,7 @@ const SampleTraceability = ({ from = '', sampleBarcode = {} }) => {
   const getXml = (params) => {
     xmlBySampleBarcode(params).then((res) => {
       if (res.code === 200) {
-        bpmnViewer.importXML(res.data.flowXml, (error: any) => {
+        bpmnViewer.importXML(res.data?.flowXml, (error: any) => {
           if (error) {
           } else {
             let canvas = bpmnViewer.get('canvas');

@@ -3,12 +3,16 @@ import { Row, Col, Image } from 'antd';
 import { Dialog } from '@components';
 import { getMainOrder } from '@/models/server';
 import styles from './index.less';
-const ApplyFormModal = ({ Ref }) => {
+const ApplyFormModal = ({ Ref, from = '' }) => {
   const dialogRef = useRef();
   const [detailData, setDetail] = useState({});
   useImperativeHandle(Ref, () => ({
     show: (record: any) => {
-      detail(record.mainId);
+      if (from) {
+        detail(record.id);
+      } else {
+        detail(record.mainId);
+      }
       dialogRef.current && dialogRef.current.show();
     },
     hide: () => {
@@ -22,8 +26,9 @@ const ApplyFormModal = ({ Ref }) => {
       }
     });
   };
+
   return (
-    <Dialog ref={dialogRef} width={864} title="申请单">
+    <Dialog ref={dialogRef} width={864} title="申请单" from="applyForm" closable={false}>
       <div className={styles.picture}>
         <Row gutter={16}>
           {detailData.materials?.map((item) => {

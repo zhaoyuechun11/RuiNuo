@@ -75,7 +75,6 @@ const QueryData = () => {
   const [sampleTypeList, setSampleTypeList] = useState([]);
   const [sampleState, setSampleState] = useState([]);
   const [instrListData, setInstrListData] = useState([]);
-
   useEffect(() => {
     getCustomSearch();
     dicVal({ type: 'SX' });
@@ -131,7 +130,6 @@ const QueryData = () => {
       }
     });
   };
-
   const getInstrList = () => {
     instrList().then((res) => {
       if (res.code === 200) {
@@ -156,7 +154,7 @@ const QueryData = () => {
       }
     });
   };
-  const reportUnitChange = () => {
+  const reportUnitChange = (e) => {
     if (e) {
       getReportUnitReqItem(option.key);
     }
@@ -197,6 +195,14 @@ const QueryData = () => {
         setLeftCheckList(result2);
         setCheckedList(result);
         setSearchList2(list);
+
+        dispatch({
+          type: 'preProcessingMag/save',
+          payload: {
+            type: 'search',
+            dataSource: list,
+          },
+        });
       })
       .catch(() => {});
   };
@@ -217,18 +223,20 @@ const QueryData = () => {
   // 点击清空
   const tapClear = () => {
     changeModelData('pageNum', 1);
-    changeModelData('queryDataReportCompre', {});
+    changeModelData('queryDataByHosPrint', {});
     form.resetFields();
   };
   const seach = () => {
     handleQuery();
   };
   const reset = () => {
-    changeModelData('queryDataReportCompre', {});
     form.resetFields();
+    changeModelData('queryDataByHosPrint', {});
   };
   const handleQuery = () => {
     const formValues = form.getFieldsValue();
+    console.log(formValues);
+
     changeModelData('pageNum', 1);
     const params = {
       ...formValues,
@@ -298,7 +306,7 @@ const QueryData = () => {
           : '',
     };
 
-    changeModelData('queryDataReportCompre', params);
+    changeModelData('queryDataByHosPrint', params);
   };
 
   const dataType3Form = (stru) => {

@@ -12,6 +12,7 @@ import {
 } from '../../../../models/server';
 import SetHeaderModal from '../SetHeaderModal';
 import SourceModal from '@/pages/ExperTaskNavigation/subPages/batchTask/commones/sourceModal';
+import ApplyFormModal from '@/pages/ExperTaskNavigation/subPages/batchTask/commones/applyFormModal';
 
 const OriginApplyForm = () => {
   const [beforeOrderTableHeader, setBeforeOrderTableHeader] = useState([]);
@@ -27,6 +28,7 @@ const OriginApplyForm = () => {
   const [professionalGroup, setProfessionalGroup] = useState(0);
   const setRef = useRef();
   const sourceModal = useRef();
+  const applyFormRef = useRef();
   const dispatch = useDispatch();
   const { queryParams, pageNum } = useSelector((state: any) => state.applicationFormMsg);
   useEffect(() => {
@@ -177,7 +179,7 @@ const OriginApplyForm = () => {
       width: 180,
       render: (text: string, record: Record<string, any>) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button>预览</Button>
+          <Button onClick={() => applyFormRef.current.show(record)}>预览</Button>
           <Button>交接</Button>
         </div>
       ),
@@ -350,6 +352,7 @@ const OriginApplyForm = () => {
         handleChangeColumn={changeColumn}
       />
       <SourceModal Ref={sourceModal} />
+      <ApplyFormModal Ref={applyFormRef} from="originApplyForm" />
     </>
   );
 };

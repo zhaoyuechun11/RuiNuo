@@ -351,7 +351,6 @@ const ApplyReportPC = () => {
   const getInstrList = () => {
     transferInstrList().then((res) => {
       if (res.code === 200) {
-        //setInstrList(res.data);
         dispatch({
           type: 'commonMaterials/save',
           payload: {

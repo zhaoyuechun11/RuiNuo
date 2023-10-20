@@ -142,7 +142,8 @@ function axiosBase(url, type, params) {
     if (
       url.split('/').pop() !== 'export' &&
       url !== '/lab/reqMainOrder/comprehensiveQueryOrderExport' &&
-      url !== '/lab/reqMainOrder/comprehensiveQuerySplitExport'
+      url !== '/lab/reqMainOrder/comprehensiveQuerySplitExport' &&
+      url !== 'lab/reportMain/reportComprehensiveQueryExport'
     ) {
       axiosMain = axios.get(url, {
         params: params,

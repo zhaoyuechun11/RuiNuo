@@ -135,3 +135,12 @@ export function suitFlowCondUpdate(params) {
 export function suitFlowCondDelete(params) {
   return axiosBase('basic/suitFlowCond/delete', 'post', params);
 }
+export function reportComQueryListPage(params) {
+  return axiosBase('sys/module/reportMainComprehensiveQueryPage', 'get', params);
+}
+export function reportComQueryListPageAdd(params) {
+  return axiosBase('/sys/module/addReportMainComprehensiveQuery', 'post', params);
+}
+export function reportComQueryListPageDefault(params) {
+  return axiosBase('/sys/module/updateReportMainComprehensiveQueryDefault', 'post', params);
+}

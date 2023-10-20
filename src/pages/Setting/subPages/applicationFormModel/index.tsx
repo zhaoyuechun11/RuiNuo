@@ -72,7 +72,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
           : type === 3
           ? 'Setting/updateReportDataDetailDefault'
           : type === 5
-          ? 'Setting/reportListDefaultUpdate'
+          ? 'Setting/fetchReportComQueryDefault'
           : 'Setting/reportListDefaultUpdate',
       payload: {
         id,
@@ -98,7 +98,7 @@ const ApplicationFormModel = ({ type = 1 }) => {
           : type === 3
           ? 'Setting/reportMainDataDetailPage'
           : type === 5
-          ? 'Setting/reportMainDataListPage'
+          ? 'Setting/fetchReportComQueryList'
           : 'Setting/reportMainDataListPage',
       payload: {
         ...params,

@@ -36,6 +36,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
     },
   }));
   const onOk = () => {
+    debugger
     form.validateFields().then((value) => {
       if (id) {
         updateInstr({ id: id, ...value }).then((res: { code: number; }) => {

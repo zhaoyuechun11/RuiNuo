@@ -62,3 +62,6 @@ export function getReqItemList(params) {
 export function getNodeList(params) {
   return axiosBase('/basic/operationNode/list', 'get', params);
 }
+export function instrList(params) {
+  return axiosBase('/basic/instr/getList', 'get', params);
+}

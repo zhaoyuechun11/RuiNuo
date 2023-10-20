@@ -2280,7 +2280,7 @@ const remark = { label: '备注', value: 'remark', type: 1 };
 const address = { label: '地址', value: 'address', type: 1 };
 const sampleBarcode = { label: '样本条码', value: 'sampleBarcode', type: 1 };
 const sampleNo = { label: '样本编号', value: 'sampleNo', type: 1 };
-const currentNode = { label: '检测状态', value: 'currentNode', type: 3};
+const currentNode = { label: '检测状态', value: 'currentNode', type: 3 };
 const isEmer = { label: '急诊标记', value: 'isEmer', type: 3 };
 const reportDelayFlag = { label: '延迟标记', value: 'reportDelayFlag', type: 3 };
 const bloodFlag = { label: '分血标记', value: 'bloodFlag', type: 3 };
@@ -2320,4 +2320,42 @@ export const APPLY_FORM_FOR_SEARCH = [
   reportDelayFlag,
   bloodFlag,
   giveUpCheckFlag,
+];
+const auditStatus = { label: '审核状态', value: 'auditStatus', type: 3 };
+const explainContent = { label: '建议解释', value: 'explainContent', type: 1 };
+const hospitalPathologyNo = { label: '送检单位原病理号', value: 'hospitalPathologyNo', type: 1 };
+const instrId = { label: '检验仪器', value: 'instrId', type: 3 };
+const lastAuditBy = { label: '终审人', value: 'lastAuditBy', type: 3 };
+const lastAuditDate = { label: '终审时间', value: 'lastAuditDate', type: 4 };
+const lastPrintDate = { label: '打印时间', value: 'lastPrintDate', type: 4 };
+const printFlag = { label: '是否打印', value: 'printFlag', type: 3 };
+const publishFlag = { label: '是否发布', value: 'publishFlag', type: 3 };
+const resultModifyFlag = { label: '结果修改标记', value: 'resultModifyFlag', type: 3 };
+const sampleStateId = { label: '样本性状', value: 'sampleStateId', type: 3 };
+const sampleTypeId = { label: '样本类型', value: 'sampleTypeId', type: 3 };
+const splitId = { label: '收样条码', value: 'splitId', type: 1 };
+const telPhoneNo = { label: '电话', value: 'telPhoneNo', type: 1 };
+export const REPORT_FORM_FOR_SEARCH = [
+  applyDate,
+  auditStatus,
+  bedNo,
+  collectDate,
+  createDate,
+  explainContent,
+  resultModifyFlag,
+  hospitalPathologyNo,
+  idCardNo,
+  instrId,
+  lastAuditBy,
+  lastAuditDate,
+  remark,
+  lastPrintDate,
+  patientNo,
+  patientID,
+  printFlag,
+  publishFlag,
+  sampleStateId,
+  sampleTypeId,
+  splitId,
+  telPhoneNo,
 ];

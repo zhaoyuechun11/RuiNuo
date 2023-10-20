@@ -27,6 +27,7 @@ class IcDialog extends Component {
     }
   }
   onOk() {
+    debugger
     let props = this.props;
     let onOk = props.onOk;
     if (props.loading) {
@@ -116,7 +117,7 @@ class IcDialog extends Component {
             </div>
           ) : null
         }
-        closeIcon={<CloseCircleOutlined />}
+        closeIcon={props.from !== 'applyForm' && <CloseCircleOutlined />}
         className={`${styles['ic-dialog-modal']} ${className}`}
       >
         {loading ? (

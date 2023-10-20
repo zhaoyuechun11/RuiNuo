@@ -57,7 +57,7 @@ const EditOrAddModal = ({ Ref, refresh, type }) => {
               : type === 3
               ? 'Setting/addReportMainDataDetail'
               : type === 5
-              ? 'Setting/reportListModalAdd'
+              ? 'Setting/fetchReportComQueryAdd'
               : 'Setting/reportListModalAdd',
           payload: {
             ...value,
@@ -89,7 +89,7 @@ const EditOrAddModal = ({ Ref, refresh, type }) => {
     >
       <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
         <Form.Item label="模块名" name="name">
-          <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入模块名" />
+          <Input placeholder="请输入模块名" />
         </Form.Item>
       </Form>
     </Dialog>

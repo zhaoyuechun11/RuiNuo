@@ -1,7 +1,10 @@
 import isFunction from 'lodash/isFunction';
 const reportMag = {
   namespace: 'reportMag',
-  state: {},
+  state: {
+    queryDataByHosPrint: {},
+    queryDataReportCompre: {},
+  },
   effects: {},
   reducers: {
     save(state, { payload: { type, dataSource } }) {

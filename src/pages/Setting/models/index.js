@@ -27,6 +27,9 @@ import {
   wordEntryUpdate,
   wordEntryDelete,
   wordEntryChange,
+  reportComQueryListPage,
+  reportComQueryListPageAdd,
+  reportComQueryListPageDefault,
 } from './server';
 import isFunction from 'lodash/isFunction';
 const IndexModel = {
@@ -177,6 +180,21 @@ const IndexModel = {
     *fetchWordEntryChange({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(wordEntryChange, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReportComQueryList({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportComQueryListPage, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReportComQueryAdd({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportComQueryListPageAdd, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchReportComQueryDefault({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(reportComQueryListPageDefault, { ...params });
       isFunction(callback) && callback(response);
     },
   },

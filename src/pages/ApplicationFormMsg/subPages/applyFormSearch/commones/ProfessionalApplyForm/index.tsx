@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Table } from 'antd';
+import { Button } from '@/components';
 import { useDispatch, useSelector } from 'umi';
 import {
   afterOrderList,
   getMainEnterNotAuth,
   getProfessionalApplyForm,
 } from '../../../../models/server';
-
+import SourceModal from '@/pages/ExperTaskNavigation/subPages/batchTask/commones/sourceModal';
 const ProfessionalApplyForm = () => {
   const { queryParams, pageNum } = useSelector((state: any) => state.applicationFormMsg);
   const [afterOrderTableHeader, setAfterOrderTableHeader] = useState([]);
@@ -17,6 +18,7 @@ const ProfessionalApplyForm = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const dispatch = useDispatch();
+  const sourceModal = useRef();
   useEffect(() => {
     getNoAuthList();
   }, []);
@@ -113,9 +115,12 @@ const ProfessionalApplyForm = () => {
           dataIndex: 'action',
           fixed: 'right',
           align: 'center',
-          width: 180,
+          width: 110,
           render: (text: string, record: Record<string, any>) => (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>3333</div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button onClick={() => sourceModal.current.show(record)}>溯源</Button>
+              <Button style={{ marginLeft: '10px' }}>交接</Button>
+            </div>
           ),
         };
         const allColumn = [...firstColumm, ...Columns, lastColumn];
@@ -148,21 +153,29 @@ const ProfessionalApplyForm = () => {
     setPageSize(size);
   };
   return (
-    <Table
-      rowKey={(record) => record.id}
-      columns={afterOrderTableHeader}
-      dataSource={list}
-      scroll={{ x: 3000 }}
-      size="small"
-      onChange={onTableChange}
-      pagination={{
-        current: pageNum,
-        pageSize: pageSize,
-        total,
-        onChange: pageChange,
-        showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
-      }}
-    />
+    <>
+      <Table
+        rowKey={(record) => record.id}
+        columns={afterOrderTableHeader}
+        dataSource={list}
+        scroll={{ x: 3000 }}
+        size="small"
+        onChange={onTableChange}
+        pagination={{
+          current: pageNum,
+          pageSize: pageSize,
+          total,
+          onChange: pageChange,
+          showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
+        }}
+        footer={() => (
+          <div>
+            <span>专业组单数:{total}</span>
+          </div>
+        )}
+      />
+      <SourceModal Ref={sourceModal} />
+    </>
   );
 };
 export default ProfessionalApplyForm;

@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Tabs } from 'antd';
-
 import QueryData from './commones/QueryData';
 import OriginApplyForm from './commones/OriginApplyForm';
 import ProfessionalApplyForm from './commones/ProfessionalApplyForm';
 const { TabPane } = Tabs;
 const ApplyFormSearch = () => {
-  useEffect(() => {}, []);
-
   return (
     <>
       <QueryData />

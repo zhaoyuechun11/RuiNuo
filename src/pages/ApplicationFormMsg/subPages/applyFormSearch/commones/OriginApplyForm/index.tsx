@@ -199,28 +199,50 @@ const OriginApplyForm = () => {
   const getAfterOrderList = () => {
     afterOrderList().then((res: any) => {
       if (res.code === 200) {
-        res.data.push(...noAuthList);
-        const firstColumm = res.data.splice(0, 1).map((column) => {
-          return {
-            title: column.name,
-            dataIndex: column.key,
-            responsive: ['xl', 'xxl'],
-            align: 'center',
-            fixed: 'left',
-            width: 100,
-            render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-          };
-        });
-        const Columns = res.data.map((column: any) => {
-          return {
-            title: column.name,
-            dataIndex: column.key,
-            width: 100,
-            responsive: ['xl', 'xxl'],
-            align: 'center',
-            render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-          };
-        });
+        //res.data.push(...noAuthList);
+        const firstColumm = {
+          title: '子单id',
+          dataIndex: 'splitId',
+          responsive: ['xl', 'xxl'],
+          align: 'center',
+          fixed: 'left',
+          width: 100,
+          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+        };
+
+        const Columns = res.data
+          .map((column: any) => {
+            if (
+              column.key === 'sampleBarcode' ||
+              column.key === 'splitId' ||
+              column.key === 'labClassName' ||
+              column.key === 'reqItemName' ||
+              column.key === 'currentNodeName' ||
+              column.key === 'nextNodeName' ||
+              column.key === 'patientName' ||
+              column.key === 'sexName' ||
+              column.key === 'age' ||
+              column.key === 'ageUnitName' ||
+              column.key === 'sampleType' ||
+              column.key === 'isEmer' ||
+              column.key === 'reportDelayFlag' ||
+              column.key === 'bloodFlag' ||
+              column.key === 'giveUpCheckFlag' ||
+              column.key === 'preReceiveDate' ||
+              column.key === 'bloodEr' ||
+              column.key === 'bloodDate'
+            ) {
+              return {
+                title: column.name,
+                dataIndex: column.key,
+                width: 100,
+                responsive: ['xl', 'xxl'],
+                align: 'center',
+                render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+              };
+            }
+          })
+          .filter(Boolean);
         const lastColumn = {
           title: '操作',
           dataIndex: 'action',
@@ -235,8 +257,9 @@ const OriginApplyForm = () => {
             </Dropdown>
           ),
         };
-        const allColumn = [...firstColumm, ...Columns, lastColumn];
-        const professionExoprtColumm = allColumn.map((item) => item.dataIndex);
+        const allColumn = [firstColumm, ...Columns, lastColumn];
+      
+        const professionExoprtColumm = allColumn.map((item) => item?.dataIndex);
         dispatch({
           type: 'applicationFormMsg/save',
           payload: {
@@ -301,6 +324,7 @@ const OriginApplyForm = () => {
         dataSource={data}
         pagination={false}
         scroll={{ x: 300 }}
+        // showHeader={false}
       />
     );
   };

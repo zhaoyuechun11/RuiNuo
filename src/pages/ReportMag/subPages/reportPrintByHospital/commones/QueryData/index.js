@@ -515,8 +515,9 @@ const QueryData = () => {
           <Col span={6}>
             <Form.Item name="preReceiveDateStart">
               <RangePicker
-                showTime={{ format: 'HH:mm' }}
-                format="YYYY-MM-DD HH:mm"
+                // showTime={{ format: 'HH:mm' }}
+                showTime
+                // format="YYYY-MM-DD HH:mm"
                 placeholder={['前处理接收开始时间', '前处理接收结束时间']}
               />
             </Form.Item>

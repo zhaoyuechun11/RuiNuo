@@ -15,6 +15,7 @@ const env = {
     // apiurl_web: 'http://cpolar.featherlet.cn',
     apiurl_web: 'http://211.149.238.180:8080/rnlims',
     //apiurl_web: 'http://cpolar.featherlet.cn/',
+    //apiurl_web: 'http://araml.natapp1.cc/',
   },
 
   production: {

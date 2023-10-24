@@ -229,7 +229,12 @@ export default {
             {
               path: '/preProcessingMag/sampleHandover',
               component: '@/pages/PreProcessingMag/subPages/sampleHandover',
-              title: '分血管理',
+              title: '样本交接',
+            },
+            {
+              path: '/preProcessingMag/sampleReceipt',
+              component: '@/pages/PreProcessingMag/subPages/sampleReceipt',
+              title: '样本签收',
             },
           ],
         },

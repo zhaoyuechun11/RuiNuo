@@ -150,20 +150,10 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/preProcessingMag/sampleReceipt',
         name: '样本签收',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
-        children: [
-          {
-            key: 'setting',
-            url: '/preProcessingMag/sampleReceipt',
-            name: '单个签收页面',
-            icon: 'T8-shezhi-weixuanzhong',
-            selIcon: 'T8-shezhi-xuanzhong',
-            children: [],
-          },
-        ],
       },
       {
         key: 'setting',

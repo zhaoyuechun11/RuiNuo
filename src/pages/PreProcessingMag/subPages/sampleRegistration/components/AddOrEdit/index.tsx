@@ -389,10 +389,10 @@ const AddOrEdit = () => {
   const shouldUpdate = (value, prevValue, prevValues) => {
     debugger;
   };
-  const onValuesChange = (changedValues, allValues) => {
-    console.log(form.getFieldsValue());
-    debugger;
-  };
+  // const onValuesChange = (changedValues, allValues) => {
+  //   console.log(form.getFieldsValue());
+  //   debugger;
+  // };
   return (
     <div>
       <BackButton />
@@ -416,7 +416,7 @@ const AddOrEdit = () => {
         colon={false}
         form={form}
         onFinish={onFinish}
-        onValuesChange={onValuesChange}
+        // onValuesChange={onValuesChange}
         // onFinishFailed={onFinishFailed}
         // className={s.addSingle}
       >

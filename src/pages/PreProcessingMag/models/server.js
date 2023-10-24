@@ -26,6 +26,9 @@ export function getDictList(params) {
 export function enterAdd(params) {
   return axiosBase('lab/reqMainOrder/add', 'post', params);
 }
+export async function getMainOrder(params) {
+  return axiosBase(`/lab/reqMainOrder`, 'get', params);
+}
 export function reqMainOrder(params) {
   return axiosBase('lab/reqMainOrder/page', 'get', params);
 }

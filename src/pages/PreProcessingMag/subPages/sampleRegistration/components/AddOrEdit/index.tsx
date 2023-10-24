@@ -183,7 +183,7 @@ const AddOrEdit = () => {
         moduleId: id,
         callback: (res) => {
           setFieldList(res.data);
-          getMainOrderDetail(params?.id);
+          getMainOrderDetail(Number(params?.id));
         },
       },
     });
@@ -386,6 +386,13 @@ const AddOrEdit = () => {
       </Select>
     );
   };
+  const shouldUpdate = (value, prevValue, prevValues) => {
+    debugger;
+  };
+  const onValuesChange = (changedValues, allValues) => {
+    console.log(form.getFieldsValue());
+    debugger;
+  };
   return (
     <div>
       <BackButton />
@@ -409,6 +416,7 @@ const AddOrEdit = () => {
         colon={false}
         form={form}
         onFinish={onFinish}
+        onValuesChange={onValuesChange}
         // onFinishFailed={onFinishFailed}
         // className={s.addSingle}
       >
@@ -450,6 +458,7 @@ const AddOrEdit = () => {
                       message: `请输入${stru.name}`,
                     },
                   ]}
+                  normalize={shouldUpdate}
                 >
                   {(stru.dataType === 1 && (
                     <Input type="text" placeholder={`请输入${stru.name}`} autoComplete="off" />

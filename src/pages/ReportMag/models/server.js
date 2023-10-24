@@ -18,5 +18,11 @@ export function getReportListByHos(params) {
   return axiosBase('lab/reportMain/getReportCommon', 'get', params);
 }
 export function reportCompQueryExport(params) {
-    return axiosBase('lab/reportMain/reportComprehensiveQueryExport', 'get', params);
-  }
+  return axiosBase('lab/reportMain/reportComprehensiveQueryExport', 'get', params);
+}
+export function reportMainHospitalQuery(params) {
+  return axiosBase('sys/queryAssembly/reportMainHospital', 'get', params);
+}
+export function reportMainHospitalSave(params) {
+  return axiosBase('/sys/queryAssembly/updateReportMainHospital', 'post', params);
+}

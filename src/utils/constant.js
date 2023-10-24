@@ -1928,7 +1928,7 @@ export const menu = [
       {
         key: 'roleMange',
         url: '用户及权限设置',
-        name: '业务流程设置',
+        name: '用户及权限设置',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
         children: [

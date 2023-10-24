@@ -171,7 +171,7 @@ const ReportPrintByHospital = () => {
   const getByHospitalGetReport = (params: any) => {
     byHospitalGetReport(params).then((res: any) => {
       if (res.code === 200) {
-        const result = res.data.map((item: any) => {
+        const result = res.data.records.map((item: any) => {
           return {
             ...item,
             key: Number(item.hospitalId),

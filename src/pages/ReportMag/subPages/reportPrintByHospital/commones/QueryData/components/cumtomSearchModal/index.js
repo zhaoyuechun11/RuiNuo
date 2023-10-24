@@ -6,7 +6,7 @@ import { CloseCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import style from './index.less';
 import { REPORT_FORM_FOR_SEARCH } from '@utils/constant';
-import { reportOrderQuerySave } from '../../../../../../models/server';
+import { reportMainHospitalSave } from '../../../../../../models/server';
 const CheckboxGroup = Checkbox.Group;
 
 class CustomSearchModal extends Component {
@@ -115,7 +115,7 @@ class CustomSearchModal extends Component {
     const mapResult = this.state.checkedList.map((item) => {
       return { key: item.value, name: item.label, type: item.type };
     });
-    reportOrderQuerySave({
+    reportMainHospitalSave({
       assemblyInfo: { json: JSON.stringify(mapResult) },
     }).then((res) => {
       if (res.code == 200) {

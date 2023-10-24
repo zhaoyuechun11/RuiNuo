@@ -13,7 +13,7 @@ import {
   getUserList,
   instrList,
 } from '@/models/server';
-import { reportOrderQuery } from '../../../../models/server';
+import { reportMainHospitalQuery } from '../../../../models/server';
 import CumtomSearchModal from './components/cumtomSearchModal';
 
 const { RangePicker } = DatePicker;
@@ -156,7 +156,7 @@ const QueryData = () => {
   };
   const reportUnitChange = (e) => {
     if (e) {
-      getReportUnitReqItem(option.key);
+      getReportUnitReqItem(e);
     }
   };
   const hospitalList = () => {
@@ -180,7 +180,7 @@ const QueryData = () => {
     }
   };
   const getCustomSearch = () => {
-    reportOrderQuery()
+    reportMainHospitalQuery()
       .then((res) => {
         const list =
           res.data && res.data.assemblyInfo.json ? JSON.parse(res.data.assemblyInfo.json) : [];
@@ -527,7 +527,7 @@ const QueryData = () => {
               <Select allowClear onChange={reportUnitChange} placeholder="报告单元">
                 {reportUnit?.map((item) => {
                   return (
-                    <Option value={item.reportUnitCode} key={item.id}>
+                    <Option value={item.id} key={item.id}>
                       {item.reportUnitName}
                     </Option>
                   );

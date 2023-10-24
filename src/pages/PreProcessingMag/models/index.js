@@ -16,6 +16,7 @@ import {
   scanBlood,
   scanSampleHandover,
   sampleHandover,
+  getMainOrder
 } from './server';
 
 const preProcessingMag = {
@@ -80,7 +81,12 @@ const preProcessingMag = {
         isFunction(callback) && callback(res);
       }
     },
-
+    *getMainOrder({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(getMainOrder, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
     *feactApplicationForm({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(getApplicationForm, params);
       if (res.code * 1 === 200) {

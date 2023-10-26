@@ -396,7 +396,7 @@ const AddOrEdit = () => {
   const onFieldsChange = (props, changedValues, allValues) => {
     console.log(form.getFieldsValue());
     console.log('mainOrderDetail', mainOrderDetail);
-    debugger;
+    //debugger;
   };
   return (
     <div>

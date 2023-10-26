@@ -30,32 +30,33 @@ const SetHeaderModal = ({ refs, ...props }) => {
       dialog.current && dialog.current.hide();
     },
   }));
-  useEffect(() => {
-    setCheckedList(columnChecked);
-  }, []);
 
   useEffect(() => {
     let ids = columnChecked.map((item) => {
       return item.id;
     });
-
     setCheckedList(ids);
     let listSeqs = columnChecked.map((item) => {
       return item.listSeq;
     });
-
-    let sortResult = listSeqs.sort(function (a, b) {
-      return a - b;
-    });
+    let sortResult = listSeqs
+      .sort(function (a, b) {
+        return a - b;
+      })
+      .filter((item) => item !== undefined);
     let rightResult = [];
-    sortResult.map((item) => {
-      columnChecked.map((checkItem) => {
-        if (checkItem.listSeq === item) {
-          rightResult.push(checkItem);
-        }
+    if (sortResult.length > 0) {
+      sortResult.map((item) => {
+        columnChecked.map((checkItem) => {
+          if (checkItem.listSeq === item) {
+            rightResult.push(checkItem);
+          }
+        });
       });
-    });
-    setRightCheckedList(rightResult);
+      setRightCheckedList(rightResult);
+    } else {
+      setRightCheckedList(columnChecked);
+    }
   }, [columnChecked]);
   // 显示弹窗
   const onShowExportModal = () => {
@@ -190,10 +191,11 @@ const SetHeaderModal = ({ refs, ...props }) => {
                             item.key === 'sexName' ||
                             item.key === 'age' ||
                             item.key === 'ageUnitName' ||
-                            item.key === 'sampleType' ||
-                            item.key === 'reqItemName' ||
-                            item.key === 'collectDate' ||
-                            item.key === 'receiveDate'
+                            item.key === 'sampleCount' ||
+                            item.key === 'labClassCount' ||
+                            item.key === 'isPaymentReceived' ||
+                            item.key === 'createDate' ||
+                            item.key === 'reqItemName'
                           }
                         >
                           {item.name}
@@ -222,7 +224,19 @@ const SetHeaderModal = ({ refs, ...props }) => {
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {rightCheckedList.map((item, index) => {
-                        if (index === 0 || index === 1 || index === 2) {
+                        if (
+                          index === 0 ||
+                          index === 1 ||
+                          index === 2 ||
+                          index === 3 ||
+                          index === 4 ||
+                          index === 5 ||
+                          index === 6 ||
+                          index === 7 ||
+                          index === 8 ||
+                          index === 9 ||
+                          index === 10
+                        ) {
                           return (
                             <div key={index}>
                               <div

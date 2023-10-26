@@ -16,7 +16,8 @@ import {
   scanBlood,
   scanSampleHandover,
   sampleHandover,
-  getMainOrder
+  getMainOrder,
+  singleReceiptTabHeader,
 } from './server';
 
 const preProcessingMag = {
@@ -31,6 +32,7 @@ const preProcessingMag = {
     scanSampleHandoverData: [],
     duplicatesNameAndNum: [],
     profilePicture: [],
+    scanSignData: [],
   },
 
   effects: {
@@ -143,6 +145,12 @@ const preProcessingMag = {
     },
     *fetchSampleHandover({ payload: { callback, ...params } }, { put, call }) {
       const res = yield call(sampleHandover, params);
+      if (res.code * 1 === 200) {
+        isFunction(callback) && callback(res);
+      }
+    },
+    *fetchSingleReceiptTabHeader({ payload: { callback, ...params } }, { put, call }) {
+      const res = yield call(singleReceiptTabHeader, params);
       if (res.code * 1 === 200) {
         isFunction(callback) && callback(res);
       }

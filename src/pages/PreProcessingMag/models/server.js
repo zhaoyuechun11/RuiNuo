@@ -114,3 +114,18 @@ export function preTransferNum(params) {
 export function preSortNum(params) {
   return axiosBase('lab/reqMainSplit/preSortNum', 'get', params);
 }
+export function singleReceiptTabHeader(params) {
+  return axiosBase('/sys/assembly/reqMainSignForList', 'get', params);
+}
+export function signForSingle(params) {
+  return axiosBase('lab/reqMainOrder/reqMainOrderSignForSingle', 'get', params);
+}
+export function signForPageQuery(params) {
+  return axiosBase('lab/reqMainOrder/reqMainOrderSignForPage', 'get', params);
+}
+export function mainLogList(params) {
+  return axiosBase('lab/flowOperateLog/mainList', 'get', params);
+}
+export function batchSign(params) {
+  return axiosBase('/lab/reqMainOrder/signFor', 'post', params);
+}

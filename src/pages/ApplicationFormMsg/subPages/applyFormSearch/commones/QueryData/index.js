@@ -525,7 +525,6 @@ const QueryData = () => {
           <Col span={6}>
             <Row gutter={8}>
               <Col span={12}>
-                {' '}
                 <Form.Item name="sendDeptId">
                   <Select placeholder="请选择送检科室" allowClear>
                     {department.map((item) => {

@@ -122,7 +122,6 @@ const SampleSorting = () => {
     {
       title: '收样条码',
       dataIndex: 'receiveBarcode',
-      width: 100,
       fixed: 'left',
       ellipsis: true,
       align: 'center',
@@ -131,82 +130,69 @@ const SampleSorting = () => {
     {
       title: '急诊',
       dataIndex: 'isEmer',
-      width: 100,
       align: 'center',
     },
     {
       title: '申请号',
       dataIndex: 'subId',
-      width: 100,
       ellipsis: true,
       align: 'center',
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
-      width: 100,
       align: 'center',
     },
     {
       title: '性别',
       dataIndex: 'sexName',
-      width: 100,
       align: 'center',
     },
     {
       title: '年龄',
       dataIndex: 'age',
-      width: 100,
       align: 'center',
     },
     {
       title: '专业类别',
       dataIndex: 'labClassName',
-      width: 100,
       align: 'center',
     },
     {
       title: '样本编号',
       dataIndex: 'sampleNo',
-      width: 100,
       ellipsis: true,
       align: 'center',
     },
     {
       title: '样本类型',
       dataIndex: 'sampleType',
-      width: 100,
       align: 'center',
     },
     {
       title: '检测项目',
       dataIndex: 'reqItemName',
-      width: 100,
       ellipsis: true,
       align: 'center',
     },
     {
       title: '检测状态',
       dataIndex: 'detectionStatus',
-      width: 100,
       align: 'center',
     },
     {
       title: '送检单位',
       dataIndex: 'hospitalName',
-      width: 100,
       align: 'center',
     },
     {
       title: '是否含外送项',
       dataIndex: 'isOut',
-      width: 130,
       align: 'center',
     },
     {
       title: '分血标记',
       dataIndex: 'bloodFlag',
-      width: 100,
       align: 'center',
       render: (text) => {
         <span className={styles.bloodFlag}>{text}</span>;
@@ -215,19 +201,16 @@ const SampleSorting = () => {
     {
       title: '备注',
       dataIndex: 'remark',
-      width: 100,
       align: 'center',
     },
     {
       title: '分拣人',
       dataIndex: 'preSortBy',
-      width: 100,
       align: 'center',
     },
     {
       title: '分拣时间',
       dataIndex: 'preSortDate',
-      width: 200,
       ellipsis: true,
       align: 'center',
     },
@@ -235,14 +218,12 @@ const SampleSorting = () => {
     {
       title: '采样时间',
       dataIndex: 'collectDate',
-      width: 200,
       ellipsis: true,
       align: 'center',
     },
     {
       title: '前处理接收时间',
       dataIndex: 'preReceiveDate',
-      width: 200,
       align: 'center',
     },
     {
@@ -370,40 +351,26 @@ const SampleSorting = () => {
           </Select>
         </Form.Item>
 
-        <div id="hospitalId">
-          <Form.Item name="hospitalId">
-            <Select
-              placeholder="请选择送检单位"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('hospitalId')}
-            >
-              {hospital?.map((item, index) => (
-                <Option value={item.id} key={index}>
-                  {item.hospitalName}
+        <Form.Item name="hospitalId">
+          <Select placeholder="请选择送检单位" allowClear>
+            {hospital?.map((item, index) => (
+              <Option value={item.id} key={index}>
+                {item.hospitalName}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="labClassId">
+          <Select placeholder="请选择项目类别" allowClear>
+            {majorGroupData.length > 0 &&
+              majorGroupData.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.className}
                 </Option>
               ))}
-            </Select>
-          </Form.Item>
-        </div>
-
-        <div id="labClassId">
-          <Form.Item name="labClassId">
-            <Select
-              placeholder="请选择项目类别"
-              autoComplete="off"
-              allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
-            >
-              {majorGroupData.length > 0 &&
-                majorGroupData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.className}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+          </Select>
+        </Form.Item>
       </Form>
     );
   };
@@ -479,7 +446,7 @@ const SampleSorting = () => {
             columns={columns}
             className={styles.table_box}
             dataSource={scanSortData}
-            scroll={{ x: 'calc(700px + 50%)' }}
+            scroll={{ x: 'max-content' }}
             footer={() =>
               scanSortData.length > 0 && (
                 <div>

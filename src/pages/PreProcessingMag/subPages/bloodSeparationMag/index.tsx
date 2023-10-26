@@ -53,7 +53,6 @@ const BloodSeparationMag = () => {
     {
       title: '签收条码',
       dataIndex: 'receiveBarcode',
-      width: 150,
       fixed: 'left',
       align: 'center',
     },
@@ -61,56 +60,47 @@ const BloodSeparationMag = () => {
     {
       title: '申请号',
       dataIndex: 'subId',
-      width: 150,
       align: 'center',
     },
     {
       title: '专业类别',
       dataIndex: 'labClassName',
-      width: 100,
       align: 'center',
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
-      width: 100,
       align: 'center',
       ellipsis: true,
     },
     {
       title: '性别',
       dataIndex: 'sexName',
-      width: 100,
       align: 'center',
     },
     {
       title: '样本类型',
       dataIndex: 'sampleType',
-      width: 100,
       align: 'center',
     },
     {
       title: '检测状态',
       dataIndex: 'detectionStatus',
-      width: 100,
       align: 'center',
     },
     {
       title: '分拣时间',
       dataIndex: 'preSortDate',
-      width: 200,
       align: 'center',
     },
     {
       title: '分血人',
       dataIndex: 'bloodBy',
-      width: 100,
       align: 'center',
     },
     {
       title: '分血时间',
       dataIndex: 'bloodDate',
-      width: 200,
       align: 'center',
     },
   ];
@@ -291,7 +281,7 @@ const BloodSeparationMag = () => {
           rowSelection={rowSelection}
           columns={columns}
           dataSource={scanBloodData}
-          scroll={{ x: 'calc(700px + 50%)' }}
+          scroll={{ x: 'max-content' }}
         />
       </TabPane>
       <TabPane tab="查询分血" key={2}>
@@ -308,7 +298,7 @@ const BloodSeparationMag = () => {
           rowSelection={rowSelectionWaitBlood}
           columns={columns}
           dataSource={waitBloodList}
-          scroll={{ x: 'calc(700px + 50%)' }}
+          scroll={{ x: 'max-content' }}
           pagination={{
             current: pageNum,
             pageSize: pageSize,
@@ -322,7 +312,7 @@ const BloodSeparationMag = () => {
           title={() => '已分血列表'}
           columns={columns}
           dataSource={finishBloodList}
-          scroll={{ x: 'calc(700px + 50%)' }}
+          scroll={{ x: 'max-content' }}
           pagination={{
             current: finishPageNum,
             pageSize: finishPageSize,

@@ -193,6 +193,7 @@ const ReportPrintByHospital = () => {
   const reportListByHos = (params: any) => {
     getReportListByHos(params).then((res: any) => {
       if (res.code === 200) {
+        debugger;
         const result = res.data.records.map((item: any) => {
           return {
             ...item,

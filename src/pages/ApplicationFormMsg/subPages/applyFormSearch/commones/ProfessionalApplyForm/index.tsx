@@ -58,14 +58,13 @@ const ProfessionalApplyForm = () => {
     afterOrderList().then((res: any) => {
       if (res.code === 200) {
         res.data.push(...noAuthList);
-        const firstColumm = res.data.splice(0, 1).map((column) => {
+        const firstColumm = res.data.splice(0, 1).map((column: any) => {
           return {
             title: column.name,
             dataIndex: column.key,
             responsive: ['xl', 'xxl'],
             align: 'center',
             fixed: 'left',
-            width: 100,
             sorter: true,
             render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
           };
@@ -75,7 +74,6 @@ const ProfessionalApplyForm = () => {
             return {
               title: column.name,
               dataIndex: column.key,
-              width: 100,
               responsive: ['xl', 'xxl'],
               align: 'center',
               sorter:
@@ -101,7 +99,6 @@ const ProfessionalApplyForm = () => {
             return {
               title: column.name,
               dataIndex: column.key,
-              width: 100,
               responsive: ['xl', 'xxl'],
               align: 'center',
               key: column.key,
@@ -115,7 +112,7 @@ const ProfessionalApplyForm = () => {
           dataIndex: 'action',
           fixed: 'right',
           align: 'center',
-          width: 110,
+          width: 120,
           render: (text: string, record: Record<string, any>) => (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button onClick={() => sourceModal.current.show(record)}>溯源</Button>
@@ -133,10 +130,6 @@ const ProfessionalApplyForm = () => {
     filters: Record<string, unknown>,
     sorter: Record<string, string>,
   ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-
     if (sorter.field !== 'reqItemName' && sorter.field !== 'sampleType') {
       setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
       setSort(sorter.field + 'Desc');
@@ -158,7 +151,7 @@ const ProfessionalApplyForm = () => {
         rowKey={(record) => record.id}
         columns={afterOrderTableHeader}
         dataSource={list}
-        scroll={{ x: 3000 }}
+        scroll={{ x: 'max-content' }}
         size="small"
         onChange={onTableChange}
         pagination={{

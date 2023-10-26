@@ -1,17 +1,10 @@
 import React from 'react';
 import { Table } from 'antd';
-
-const SampleView = ( data, props ) => {
-  const {
-    columns,
-    page = 1,
-    onChangePage,
-  } = props;
-  console.log('data', data);
+const SampleView = (data: any) => {
   return (
     <div>
       <Table
-       size={'small'}
+        size={'small'}
         scroll={{ x: 'max-content' }}
         rowKey={'id'}
         columns={data.columns}
@@ -19,8 +12,8 @@ const SampleView = ( data, props ) => {
         pagination={{
           showQuickJumper: true,
           total: data.data.count,
-          pageSize: 10,
-          current: data.data.page,
+          pageSize: data.data.pageSize,
+          current: data.data.pageNum,
           onChange: data.onChangePage,
         }}
       />

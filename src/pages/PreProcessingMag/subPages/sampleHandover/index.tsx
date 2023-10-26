@@ -196,7 +196,6 @@ const SampleHandover = () => {
       {
         title: '收样条码',
         dataIndex: 'receiveBarcode',
-        width: 100,
         fixed: 'left',
         ellipsis: true,
         align: 'center',
@@ -205,105 +204,88 @@ const SampleHandover = () => {
       {
         title: '申请号',
         dataIndex: 'subId',
-        width: 100,
         ellipsis: true,
       },
       {
         title: '姓名',
         dataIndex: 'patientName',
-        width: 100,
         align: 'center',
         ellipsis: true,
       },
       {
         title: '性别',
         dataIndex: 'sexName',
-        width: 100,
         align: 'center',
       },
       {
         title: '年龄',
         dataIndex: 'age',
-        width: 100,
         align: 'center',
       },
       {
         title: '专业类别',
         dataIndex: 'labClassName',
-        width: 100,
         align: 'center',
       },
       {
         title: '样本编号',
         dataIndex: 'sampleNo',
-        width: 150,
         align: 'center',
       },
       {
         title: '样本类型',
         dataIndex: 'sampleType',
-        width: 100,
         align: 'center',
       },
       {
         title: '检测项目',
         dataIndex: 'reqItemName',
-        width: 100,
         ellipsis: true,
         align: 'center',
       },
       {
         title: '检测状态',
         dataIndex: 'detectionStatus',
-        width: 100,
         align: 'center',
       },
       {
         title: '运检单位',
         dataIndex: 'hospitalName',
-        width: 100,
         align: 'center',
       },
       {
         title: '接收人',
         dataIndex: 'labReceiveBy',
-        width: 100,
         align: 'center',
       },
 
       {
         title: '移交人',
         dataIndex: 'preTransferBy',
-        width: 100,
         align: 'center',
       },
       {
         title: '移交时间',
         dataIndex: 'preTransferDate',
-        width: 200,
         align: 'center',
       },
       {
         title: '分拣时间',
         dataIndex: 'preSortDate',
-        width: 200,
         align: 'center',
       },
       {
         title: '分拣人',
         dataIndex: 'preSortBy',
-        width: 100,
       },
       {
         title: '采样时间',
         dataIndex: 'collectDate',
-        width: 200,
         align: 'center',
       },
       {
         title: '前处理接收时间',
         dataIndex: 'preReceiveDate',
-        width: 200,
         align: 'center',
       },
       {
@@ -673,7 +655,7 @@ const SampleHandover = () => {
             }
             columns={getColumns(1)}
             dataSource={scanSampleHandoverData}
-            scroll={{ x: 'calc(700px + 50%)' }}
+            scroll={{ x: 'max-content' }}
             size={'small'}
           />
         </TabPane>
@@ -684,7 +666,6 @@ const SampleHandover = () => {
               <Form.Item name="receiver">
                 <Select
                   placeholder="请选择接收人"
-                  autoComplete="off"
                   allowClear
                   onChange={receiverChangeBatch}
                   value={receiverVal}
@@ -719,7 +700,7 @@ const SampleHandover = () => {
             rowSelection={rowSelectionSort}
             columns={getColumns(2)}
             dataSource={sampleHandover}
-            scroll={{ x: 'calc(700px + 50%)' }}
+            scroll={{ x: 'max-content' }}
             className={styles.scanTable}
             footer={() =>
               preTransferNumData?.map((item) => {

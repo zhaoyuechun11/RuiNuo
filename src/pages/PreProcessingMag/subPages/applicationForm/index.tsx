@@ -73,7 +73,7 @@ const applicationForm = () => {
         render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
       };
     });
-    const newSelectedColumns = tableFieldResult.map((column) => {
+    const midColumns = tableFieldResult.map((column) => {
       return {
         title: column.name,
         dataIndex: selectedField(column.key),
@@ -85,7 +85,7 @@ const applicationForm = () => {
 
     columns = [
       ...firstColumm,
-      ...newSelectedColumns,
+      ...midColumns,
       {
         title: '操作',
         dataIndex: 'action',
@@ -105,7 +105,7 @@ const applicationForm = () => {
       },
     ];
   }, [selectedColumns]);
-  const detail = (id) => {
+  const detail = (id:any) => {
     getMainOrder({ id }).then((res) => {
       if (res.code === 200) {
         setDetailData(res.data);
@@ -295,7 +295,7 @@ const applicationForm = () => {
         </Tooltip>
       </div>
       <Table
-        scroll={{ x: 1300 }}
+        scroll={{ x: 'max-content' }}
         unit="个"
         columns={columns}
         selectedRowKeys={selectedRows.map((i) => i.id)}

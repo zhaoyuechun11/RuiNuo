@@ -229,7 +229,6 @@ const AddApply = ({ refs }) => {
         return (
           <Select
             placeholder="请选择默认值"
-            autoComplete="off"
             allowClear
             value={text}
             onChange={(e) => defaultValChange(e, record)}
@@ -498,22 +497,16 @@ const AddApply = ({ refs }) => {
             </TabPane>
             <TabPane tab="Tab 2" key="2">
               <Form onValuesChange={handleSearch} layout="inline" form={form}>
-                <div id="hospitalId">
-                  <Form.Item name="hospitalId">
-                    <Select
-                      placeholder="请选择送检单位"
-                      autoComplete="off"
-                      allowClear
-                      getPopupContainer={() => document.getElementById('hospitalId')}
-                    >
-                      {hospital?.map((item, index) => (
-                        <Option value={item.id} key={index}>
-                          {item.hospitalName}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
+                <Form.Item name="hospitalId">
+                  <Select placeholder="请选择送检单位" allowClear>
+                    {hospital?.map((item, index) => (
+                      <Option value={item.id} key={index}>
+                        {item.hospitalName}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+
                 <Form.Item name="name">
                   <Input
                     placeholder="请输入医院套餐名称"
@@ -531,30 +524,6 @@ const AddApply = ({ refs }) => {
             新增
           </Button>
         </div>
-        {/* <Table
-          unit="个"
-          columns={columns}
-          selectedRowKeys={selectedRows.map(item=>item.key)}
-          data={list}
-          pagination={{ current: pageNum, total: total }}
-          onChange={handleStandardTableChange}
-          onSelectRow={handleSelectRows}
-          isRowSelection={true}
-          rowKey="key"
-          locale={{
-            emptyText: (
-              <div>
-                <img
-                  width="115px"
-                  height="99px"
-                  src={require('@assets/images/empty/table_empty.png')}
-                  alt=""
-                />
-                <div>暂无数据</div>
-              </div>
-            ),
-          }}
-        /> */}
         <Table rowSelection={rowSelection} columns={columns} dataSource={list} />
       </Dialog>
       <ReportItems refs={reportItemsRef} />

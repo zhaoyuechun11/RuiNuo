@@ -112,7 +112,6 @@ const OriginApplyForm = () => {
       return {
         title: column.name,
         dataIndex: column.key,
-        width: 100,
         sorter: true,
         responsive: ['xl', 'xxl'],
         align: 'center',
@@ -125,7 +124,6 @@ const OriginApplyForm = () => {
         return {
           title: column.name,
           dataIndex: column.key,
-          width: 100,
           responsive: ['xl', 'xxl'],
           align: 'center',
           sorter:
@@ -152,7 +150,6 @@ const OriginApplyForm = () => {
         return {
           title: column.name,
           dataIndex: column.key,
-          width: 100,
           responsive: ['xl', 'xxl'],
           align: 'center',
           key: column.key,
@@ -165,7 +162,6 @@ const OriginApplyForm = () => {
       return {
         title: column.name,
         dataIndex: column.key,
-        width: 100,
         responsive: ['xl', 'xxl'],
         align: 'center',
         render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
@@ -176,7 +172,6 @@ const OriginApplyForm = () => {
       dataIndex: 'action',
       fixed: 'right',
       align: 'center',
-      width: 180,
       render: (text: string, record: Record<string, any>) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <Button onClick={() => applyFormRef.current.show(record)}>预览</Button>
@@ -206,7 +201,6 @@ const OriginApplyForm = () => {
           responsive: ['xl', 'xxl'],
           align: 'center',
           fixed: 'left',
-          width: 100,
           render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
         };
 
@@ -235,7 +229,6 @@ const OriginApplyForm = () => {
               return {
                 title: column.name,
                 dataIndex: column.key,
-                width: 100,
                 responsive: ['xl', 'xxl'],
                 align: 'center',
                 render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
@@ -258,7 +251,7 @@ const OriginApplyForm = () => {
           ),
         };
         const allColumn = [firstColumm, ...Columns, lastColumn];
-      
+
         const professionExoprtColumm = allColumn.map((item) => item?.dataIndex);
         dispatch({
           type: 'applicationFormMsg/save',
@@ -276,10 +269,6 @@ const OriginApplyForm = () => {
     filters: Record<string, unknown>,
     sorter: Record<string, string>,
   ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-
     if (sorter.field !== 'reqItemName' && sorter.field !== 'sampleType') {
       setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
       setSort(sorter.field + 'Desc');
@@ -323,7 +312,7 @@ const OriginApplyForm = () => {
         columns={afterOrderTableHeader}
         dataSource={data}
         pagination={false}
-        scroll={{ x: 300 }}
+        scroll={{ x: 'max-content' }}
         // showHeader={false}
       />
     );
@@ -359,7 +348,7 @@ const OriginApplyForm = () => {
         columns={beforeOrderTableHeader}
         expandedRowRender={expandedRowRender}
         dataSource={list}
-        scroll={{ x: 'calc(700px + 50%)' }}
+        scroll={{ x: 'max-content' }}
         onChange={onTableChange}
         pagination={{
           current: pageNum,

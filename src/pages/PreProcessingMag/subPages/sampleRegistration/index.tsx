@@ -16,7 +16,7 @@ const SampleRegistration = () => {
   const dispatch = useDispatch();
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [columnOptionsList, setColumnOptionsList] = useState([]);
-  const [data, setData] = useState({ count: 0, list: [], page: 1 });
+  const [data, setData] = useState({ count: 0, list: [], pageNum: 1, pageSize: 10 });
   const [pageSize, setPageSize] = useState(10);
   const importRef = useRef();
   const searchVal = useRef();
@@ -27,8 +27,35 @@ const SampleRegistration = () => {
     reqMainOrderList();
   }, [pageNum, queryData]);
 
-  useEffect(() => {
-    let listSeqs = selectedColumns.map((item) => {
+  useEffect(() => {}, [selectedColumns]);
+  const deleteCurrentItem = (ids: any) => {
+    reqMainOrderDelete({ ids: [ids] }).then((res) => {
+      if (res.code === 200) {
+        message.success('删除成功');
+        reqMainOrderList();
+      }
+    });
+  };
+
+  const getCustomHeader = () => {
+    dispatch({
+      type: 'preProcessingMag/getCustomHeader',
+      payload: {
+        callback: (res: { code: number; data: any[] }) => {
+          if (res.code === 200) {
+            const selectedFields = res.data.filter(
+              (item: Record<string, any>) => item?.isListDisplay == true,
+            );
+            setSelectedColumns(selectedFields);
+            setColumnOptionsList(res.data);
+            selectedColummHandle(selectedFields);
+          }
+        },
+      },
+    });
+  };
+  const selectedColummHandle = (selectedColumns: any) => {
+    let listSeqs = selectedColumns.map((item: any) => {
       return item.listSeq;
     });
 
@@ -54,7 +81,7 @@ const SampleRegistration = () => {
       };
     });
 
-    const newSelectedColumns = tableFieldResult.map((column) => {
+    const midColumns = tableFieldResult.map((column) => {
       return {
         title: column.name,
         dataIndex: selectedField(column.key),
@@ -67,7 +94,7 @@ const SampleRegistration = () => {
     passProps = {
       columns: [
         ...firstColumm,
-        ...newSelectedColumns,
+        ...midColumns,
         {
           title: '操作',
           dataIndex: 'action',
@@ -99,33 +126,8 @@ const SampleRegistration = () => {
       ],
       onChangePage,
     };
-  }, [selectedColumns]);
-  const deleteCurrentItem = (ids) => {
-    reqMainOrderDelete({ ids: [ids] }).then((res) => {
-      if (res.code === 200) {
-        message.success('删除成功');
-        reqMainOrderList();
-      }
-    });
   };
 
-  const getCustomHeader = () => {
-    dispatch({
-      type: 'preProcessingMag/getCustomHeader',
-      payload: {
-        callback: (res: { code: number; data: any[] }) => {
-          debugger;
-          if (res.code === 200) {
-            const selectedFields = res.data.filter(
-              (item: Record<string, any>) => item?.isListDisplay == true,
-            );
-            setSelectedColumns(selectedFields);
-            setColumnOptionsList(res.data);
-          }
-        },
-      },
-    });
-  };
   const changeColumn = (ids: any) => {
     dispatch({
       type: 'preProcessingMag/saveCustomHeader',
@@ -145,7 +147,7 @@ const SampleRegistration = () => {
         pageSize,
         ...queryData,
         callback: (res) => {
-          setData({ list: res.data.records, count: res.data.total, page: pageNum });
+          setData({ list: res.data.records, count: res.data.total, pageNum, pageSize });
         },
       },
     });

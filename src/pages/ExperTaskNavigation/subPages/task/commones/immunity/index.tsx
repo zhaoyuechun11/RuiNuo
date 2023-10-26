@@ -106,8 +106,8 @@ const Immunity = () => {
 
               list.push({
                 ...res.data[key].elements[y],
-                className: res.data[key].labClassList[i].className,
-                classId: res.data[key].labClassList[i].id,
+                className: res.data[key].labClassList[i]?.className,
+                classId: res.data[key].labClassList[i]?.id,
                 flowProDefId: key,
                 flowXml: res.data[key].flowXml,
                 flowName: res.data[key].flowName,

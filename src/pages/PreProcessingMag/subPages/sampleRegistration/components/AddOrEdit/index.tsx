@@ -34,12 +34,9 @@ const AddOrEdit = () => {
   const [department, setDepartment] = useState([]);
   const [sampleSource, setSampleSource] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
-  const [applyListData, setApplyListData] = useState([]);
-  const [addSample, setAddSample] = useState([]);
-  const [deleteSampleResult, setDeleteSampleResult] = useState([]);
   const addSampleRef = useRef();
   const [isMemory, setIsMemory] = useState(false);
-  const { sampleList, information, applyList } = useSelector(
+  const { sampleList, information, applyList, mainOrderDetail } = useSelector(
     (state: any) => state.preProcessingMag,
   );
   const { useDetail } = useSelector((state: any) => state.global);
@@ -193,8 +190,15 @@ const AddOrEdit = () => {
       type: 'preProcessingMag/getMainOrder',
       payload: {
         id,
-        callback: (res) => {
+        callback: (res: any) => {
           setEnterDetail(res.data);
+          dispatch({
+            type: 'preProcessingMag/save',
+            payload: {
+              type: 'mainOrderDetail',
+              dataSource: res.data,
+            },
+          });
         },
       },
     });
@@ -389,10 +393,11 @@ const AddOrEdit = () => {
   const shouldUpdate = (value, prevValue, prevValues) => {
     debugger;
   };
-  // const onValuesChange = (changedValues, allValues) => {
-  //   console.log(form.getFieldsValue());
-  //   debugger;
-  // };
+  const onFieldsChange = (props, changedValues, allValues) => {
+    console.log(form.getFieldsValue());
+    console.log('mainOrderDetail', mainOrderDetail);
+    debugger;
+  };
   return (
     <div>
       <BackButton />
@@ -417,7 +422,7 @@ const AddOrEdit = () => {
         form={form}
         onFinish={onFinish}
         // onValuesChange={onValuesChange}
-        // onFinishFailed={onFinishFailed}
+        onFieldsChange={onFieldsChange}
         // className={s.addSingle}
       >
         <Row gutter={24}>
@@ -458,7 +463,7 @@ const AddOrEdit = () => {
                       message: `请输入${stru.name}`,
                     },
                   ]}
-                  normalize={shouldUpdate}
+                  // normalize={shouldUpdate}
                 >
                   {(stru.dataType === 1 && (
                     <Input type="text" placeholder={`请输入${stru.name}`} autoComplete="off" />
@@ -554,7 +559,7 @@ const AddOrEdit = () => {
           新增
         </Button>
       </div>
-      <Applying type={1} applyListData={applyListData} setApplyList={setApplyListData} />
+      <Applying type={1} />
       <div className={`${styles.title} ${styles.topVal}`}>
         送检样本列表
         <Button
@@ -567,7 +572,7 @@ const AddOrEdit = () => {
           新增
         </Button>
       </div>
-      <Applying type={2} deleteSampleResult={setDeleteSampleResult} />
+      <Applying type={2} />
       <div className={`${styles.title} ${styles.topVal}`}>
         资料列表
         <Button
@@ -581,8 +586,8 @@ const AddOrEdit = () => {
         </Button>
       </div>
       <Applying type={3} />
-      <AddApply refs={addRef} applyListData={setApplyListData} />
-      <AddSample refs={addSampleRef} getAddSample={setAddSample} />
+      <AddApply refs={addRef} />
+      <AddSample refs={addSampleRef} />
       <AddMaterial refs={materialRef} />
     </div>
   );

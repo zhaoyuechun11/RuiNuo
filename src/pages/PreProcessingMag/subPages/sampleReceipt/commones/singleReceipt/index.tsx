@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'umi';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector, history } from 'umi';
 import { Icon, Button } from '@/components';
 import {
   Table,
@@ -23,6 +23,8 @@ import SetHeaderModal from '../SetHeaderModal';
 
 import LogList from '../logList';
 import ApplyForm from '../applyForm';
+import AbandonedInspection from '../abandonedInspection';
+import DeliveryReceipt from '../deliveryReceipt';
 
 const SingleReceipt = () => {
   const { scanSignData } = useSelector((state: any) => state.preProcessingMag);
@@ -38,7 +40,9 @@ const SingleReceipt = () => {
   const [isExpand, setIsExpand] = useState();
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [mainId, setMainId] = useState();
+  const [subId, setSubId] = useState();
   const [clickRow, setClickRow] = useState(0);
+  const giveUpCheckRef = useRef();
   useEffect(() => {
     getSingleReceiptTabHeader();
   }, []);
@@ -69,7 +73,6 @@ const SingleReceipt = () => {
       return {
         title: column.name,
         dataIndex: column.key,
-        sorter: true,
         responsive: ['xl', 'xxl'],
         align: 'center',
         fixed: 'left',
@@ -77,43 +80,14 @@ const SingleReceipt = () => {
       };
     });
     const Columns = tableFieldResult.map((column: any) => {
-      if (column.key !== 'reqItemName' && column.key !== 'sampleType') {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          sorter:
-            column.key === 'receiveBarcode' ||
-            column.key === 'hospitalName' ||
-            column.key === 'sendDeptName' ||
-            column.key === 'sendDoctorName' ||
-            column.key === 'hospitalBarcode' ||
-            column.key === 'patientId' ||
-            column.key === 'patientNo' ||
-            column.key === 'sourceName' ||
-            column.key === 'patientName' ||
-            column.key === 'sampleTypeIds' ||
-            column.key === 'applyDate' ||
-            column.key === 'collectDate' ||
-            column.key === 'receiveDate' ||
-            column.key === 'createDate'
-              ? true
-              : false,
+      return {
+        title: column.name,
+        dataIndex: column.key,
+        responsive: ['xl', 'xxl'],
+        align: 'center',
 
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      } else {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          key: column.key,
-          sorter: (a, b) => a.column.key.length - b.column.key.length,
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      }
+        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+      };
     });
 
     const lastColumn = {
@@ -123,7 +97,15 @@ const SingleReceipt = () => {
       align: 'center',
       render: (text: string, record: Record<string, any>) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={() => applyFormRef.current.show(record)}>编辑</Button>
+          <Button
+            onClick={() => {
+              history.push(
+                '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+              );
+            }}
+          >
+            编辑
+          </Button>
         </div>
       ),
     };
@@ -174,6 +156,18 @@ const SingleReceipt = () => {
             receiveDate: '2023-11-01 15:00:03',
             childTableContent: [
               {
+                key: 61,
+                sampleBarcode: '123456789012',
+                sampleNo: '',
+                labClassName: '生化',
+                sampleType: '血清',
+                itemName: '丙氨酸氨基转移酶',
+                isEmer: false,
+                bloodFlag: false,
+                preReceiveDate: '2023-10-26 16:17:26',
+              },
+              {
+                key: 62,
                 sampleBarcode: '123456789012',
                 sampleNo: '',
                 labClassName: '生化',
@@ -313,43 +307,13 @@ const SingleReceipt = () => {
       };
     });
     const Columns = tableFieldResult.map((column: any) => {
-      if (column.key !== 'reqItemName' && column.key !== 'sampleType') {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          sorter:
-            column.key === 'receiveBarcode' ||
-            column.key === 'hospitalName' ||
-            column.key === 'sendDeptName' ||
-            column.key === 'sendDoctorName' ||
-            column.key === 'hospitalBarcode' ||
-            column.key === 'patientId' ||
-            column.key === 'patientNo' ||
-            column.key === 'sourceName' ||
-            column.key === 'patientName' ||
-            column.key === 'sampleTypeIds' ||
-            column.key === 'applyDate' ||
-            column.key === 'collectDate' ||
-            column.key === 'receiveDate' ||
-            column.key === 'createDate'
-              ? true
-              : false,
-
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      } else {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          key: column.key,
-          sorter: (a, b) => a.column.key.length - b.column.key.length,
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      }
+      return {
+        title: column.name,
+        dataIndex: column.key,
+        responsive: ['xl', 'xxl'],
+        align: 'center',
+        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+      };
     });
 
     const lastColumn = {
@@ -403,7 +367,9 @@ const SingleReceipt = () => {
         dataIndex: 'action',
         fixed: 'right',
         align: 'center',
-        render: () => <Button onClick={() => applyFormRef.current.show(record)}>拒检</Button>,
+        render: (text, record, index) => (
+          <Button onClick={() => giveUpCheckRef.current.show(text, record, index)}>拒检</Button>
+        ),
       },
     ];
     return (
@@ -413,6 +379,13 @@ const SingleReceipt = () => {
         pagination={false}
         scroll={{ x: 'max-content' }}
         showHeader={false}
+        onRow={(record, index) => {
+          return {
+            onClick: (event) => {
+              setSubId(record.key);
+            },
+          };
+        }}
       />
     );
   };
@@ -434,6 +407,15 @@ const SingleReceipt = () => {
     if (index === clickRow) {
       className = s.blue;
       return className;
+    }
+  };
+  const onExpand = (expanded, record) => {
+    if (!expanded) {
+      let result = expandedRowKeys.filter((key) => key !== record.id);
+      setExpandedRowKeys(result);
+    } else {
+      let id = scanSignData.map((item) => item.id).filter((id) => id === record.id);
+      setExpandedRowKeys(id);
     }
   };
   return (
@@ -483,11 +465,12 @@ const SingleReceipt = () => {
             </div>
           </div>
           <Table
-            className="components-table-demo-nested"
+            className={s.batch_table}
             columns={receiptTableHeader}
             expandedRowRender={expandedRowRender}
             dataSource={scanSignData}
             expandedRowKeys={expandedRowKeys}
+            onExpand={onExpand}
             scroll={{ x: 'max-content' }}
             size="small"
             rowClassName={getRowClassName}
@@ -508,17 +491,23 @@ const SingleReceipt = () => {
           />
         </Col>
         <Col span={10} className={s.border_line}>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="1" className={s.tabs_box}>
             <TabPane tab="原始申请单" key="1">
               <ApplyForm mainId={mainId} />
             </TabPane>
-            <TabPane tab="交接单" key="2"></TabPane>
+            <TabPane tab="交接单" key="2">
+              <DeliveryReceipt mainId={mainId} subId={subId} />
+            </TabPane>
             <TabPane tab="订单流转日志" key="3">
               <LogList mainId={mainId} />
             </TabPane>
           </Tabs>
         </Col>
       </Row>
+      <AbandonedInspection
+        Ref={giveUpCheckRef}
+        refresh={() => getSignForSingle({ ...scanForm.getFieldsValue() })}
+      />
     </>
   );
 };

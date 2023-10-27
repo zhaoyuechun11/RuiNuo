@@ -1,21 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Table,
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  message,
-  Checkbox,
-  Dropdown,
-  Menu,
-  Popconfirm,
-  Row,
-  Col,
-  Tooltip,
-  Tabs,
-} from 'antd';
-import { useDispatch } from 'umi';
+import { Table, Form, Input, DatePicker, Select, message, Row, Col, Tooltip, Tabs } from 'antd';
+import { useDispatch, history } from 'umi';
 import { Icon, Button } from '@/components';
 import { getHospitalList, getReqItemList, dictList } from '@/models/server';
 import { singleReceiptTabHeader, signForPageQuery, batchSign } from '../../../../models/server';
@@ -23,6 +8,7 @@ import s from '../index.less';
 import SetHeaderModal from '../SetHeaderModal';
 import LogList from '../logList';
 import ApplyForm from '../applyForm';
+import DeliveryReceipt from '../deliveryReceipt';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -37,7 +23,6 @@ const BatchReceipt = () => {
   const [columnOptionsList, setColumnOptionsList] = useState([]);
   const [selectedColumns, setSelectedColumns] = useState([]);
   const setRef = useRef();
-  const applyFormRef = useRef();
   const dispatch = useDispatch();
   const [receiptTableHeader, setReceiptTableHeader] = useState([]);
   const [list, setList] = useState([]);
@@ -48,6 +33,8 @@ const BatchReceipt = () => {
     hospital();
     getReportUnitReqItem();
     getDictList();
+    getSingleReceiptTabHeader();
+    batchQuery();
   }, []);
   useEffect(() => {
     let listSeqs = selectedColumns.map((item: any) => {
@@ -130,7 +117,15 @@ const BatchReceipt = () => {
       align: 'center',
       render: (text: string, record: Record<string, any>) => (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={() => applyFormRef.current.show(record)}>编辑</Button>
+          <Button
+            onClick={() => {
+              history.push(
+                '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+              );
+            }}
+          >
+            编辑
+          </Button>
         </div>
       ),
     };
@@ -138,9 +133,7 @@ const BatchReceipt = () => {
 
     setReceiptTableHeader(allColumn);
   }, [selectedColumns]);
-  useEffect(() => {
-    getSingleReceiptTabHeader();
-  }, []);
+
   const handleSearch = (changedValues: any, allValues: undefined) => {};
   const hospital = () => {
     getHospitalList().then((res: any) => {
@@ -314,6 +307,11 @@ const BatchReceipt = () => {
         </Row>
         <Row className={s.row_box}>
           <Col span={10}>
+            <Form.Item name="transferBoxCode">
+              <Input placeholder="请输入运转箱码" autoComplete="off" allowClear />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
             <Form.Item name="sendDeptId">
               <Select placeholder="请选择送检科室" allowClear>
                 {department.map((item) => {
@@ -326,7 +324,7 @@ const BatchReceipt = () => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <Form.Item name="sampleBarcode">
               <Input placeholder="请输入收样条码范围" autoComplete="off" allowClear />
             </Form.Item>
@@ -369,13 +367,13 @@ const BatchReceipt = () => {
       if (res.code === 200) {
         let result = res.data.records.map((item: any) => {
           return {
-            key: item.id,
+            key: item?.id,
             ...item,
           };
         });
         let keys = result.map((item: any) => item.id);
         setList(result);
-        setMainId(res.data.records[0].id);
+        setMainId(res.data.records[0]?.id);
         setTotal(res.data.total);
         setSelectedRowKeysVal(keys);
       }
@@ -475,7 +473,9 @@ const BatchReceipt = () => {
             <TabPane tab="原始申请单" key="1">
               <ApplyForm mainId={mainId} />
             </TabPane>
-            <TabPane tab="交接单" key="2"></TabPane>
+            <TabPane tab="交接单" key="2">
+              <DeliveryReceipt mainId={mainId} subId={''} />
+            </TabPane>
             <TabPane tab="订单流转日志" key="3">
               <LogList mainId={mainId} />
             </TabPane>

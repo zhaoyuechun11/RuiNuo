@@ -129,3 +129,18 @@ export function mainLogList(params) {
 export function batchSign(params) {
   return axiosBase('/lab/reqMainOrder/signFor', 'post', params);
 }
+export function reOrder(params) {
+  return axiosBase('/lab/reqMainOrder/reOrder', 'post', params);
+}
+export function addMainUpdateLog(params) {
+  return axiosBase('/lab/reqTrace/addMainUpdate', 'post', params);
+}
+export function addMainDeleteLog(params) {
+  return axiosBase('/lab/reqTrace/addMainDelete', 'post', params);
+}
+export function giveUpCheck(params) {
+  return axiosBase('/lab/reqMainOrder/giveUpCheck', 'post', params);
+}
+export function deliveryReceiptList(params) {
+  return axiosBase('/lab/deliveryReceipt/page', 'get', params);
+}

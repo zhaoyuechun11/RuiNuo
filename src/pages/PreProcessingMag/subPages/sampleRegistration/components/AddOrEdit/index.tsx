@@ -10,6 +10,8 @@ import {
   getDictList,
   enterAdd,
   reqMainOrderUpdate,
+  reOrder,
+  addMainUpdateLog,
 } from '../../../../models/server';
 import { getHospitalList, getDoctorList } from '@/models/server';
 import moment from 'moment';
@@ -246,14 +248,21 @@ const AddOrEdit = () => {
     for (let i in value.system) {
       if (value.system[i]?._isAMomentObject) {
         value.system[i] = value.system[i].format('YYYY-MM-DD HH:mm:ss');
+        // if (new Date(mainOrderDetail[i]).getTime() !== new Date(value.system[i]).getTime()) {
+        //   value.system[i] =
+        //     mainOrderDetail[i].format('YYYY-MM-DD HH:mm:ss') + '|' + value.system[i];
+        // }
       }
     }
     for (let i in value.extend) {
       if (value.extend[i]?._isAMomentObject) {
         value.extend[i] = value.extend[i].format('YYYY-MM-DD HH:mm:ss');
+        // if (new Date(mainOrderDetail[i]).getTime() !== new Date(value.extend[i]).getTime()) {
+        //   value.extend[i] =
+        //     mainOrderDetail[i].format('YYYY-MM-DD HH:mm:ss') + '|' + value.extend[i];
+        // }
       }
     }
-    console.log('value', value);
     let params = {
       extend: { extendInfo: value.extend },
       sendSamples: sampleList,
@@ -262,6 +271,26 @@ const AddOrEdit = () => {
       ...value.system,
       reqItemPrices,
     };
+    // Object.keys(mainOrderDetail).forEach((key) => {
+    //   console.log('key', key);
+    //   console.log('mainOrderDetail[key]', mainOrderDetail[key]);
+
+    //   if (mainOrderDetail[key]?._isAMomentObject) {
+    //     if (new Date(mainOrderDetail[key]).getTime() !== new Date(value.system[key]).getTime()) {
+    //       console.log(new Date(mainOrderDetail[key]).getTime());
+    //       console.log(new Date(value.system[key]).getTime());
+    //       value.system[key] =
+    //         mainOrderDetail[key].format('YYYY-MM-DD HH:mm:ss') + '|' + value.system[key];
+    //     }
+    //   } else {
+    //     if (mainOrderDetail[key] !== value.system[key]) {
+    //       value.system[key] = mainOrderDetail[key] + '|' + value.system[key];
+    //     }
+    //   }
+    // });
+    console.log('value', value);
+
+    //return;
     if (paramVal.type !== 'edit') {
       enterAdd(params).then((res) => {
         if (res.code === 200) {
@@ -272,7 +301,37 @@ const AddOrEdit = () => {
       reqMainOrderUpdate({ id: Number(paramVal.id), ...params }).then((res) => {
         if (res.code === 200) {
           message.success('修改成功');
-          history.push('/preProcessingMag/sampleRegistration');
+          if (mainOrderDetail.reqItemPrices.length !== applyList.length) {
+            reOrder({ id: Number(paramVal.id) }).then((res) => {
+              if (res.code === 200) {
+                message.success('重新分单成功!');
+              }
+            });
+          } else {
+            let oldReqItem = mainOrderDetail.reqItemPrices.map((item: any) => {
+              return {
+                itemId: item.itemId,
+                sampleTypeId: item.sampleTypeId,
+              };
+            });
+            let newReqItem = reqItemPrices.map((item: any) => {
+              return {
+                itemId: item.itemId,
+                sampleTypeId: item.sampleTypeId,
+              };
+            });
+            var isEqualN = JSON.stringify(oldReqItem) === JSON.stringify(newReqItem);
+            if (!isEqualN) {
+              reOrder({ id: Number(paramVal.id) }).then((res) => {
+                if (res.code === 200) {
+                  message.success('重新分单成功!');
+                }
+              });
+            }
+          }
+
+          //history.push('/preProcessingMag/sampleRegistration');
+          history.goBack();
         }
       });
     }

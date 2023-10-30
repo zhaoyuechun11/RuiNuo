@@ -1,0 +1,21 @@
+.search_box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  & > button:nth-child(2) {
+    margin-left: 40px;
+  }
+  & > button:nth-child(3) {
+    margin: 0 5px;
+  }
+}
+.table_box {
+  :global {
+    .ant-table-title {
+      padding: 0;
+    }
+  }
+  .header {
+    display: flex;
+  }
+}

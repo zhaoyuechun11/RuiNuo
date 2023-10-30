@@ -65,3 +65,6 @@ export function getNodeList(params) {
 export function instrList(params) {
   return axiosBase('/basic/instr/getList', 'get', params);
 }
+export function recipientList(params) {
+  return axiosBase('/sys/user/recipientList', 'get', params);
+}

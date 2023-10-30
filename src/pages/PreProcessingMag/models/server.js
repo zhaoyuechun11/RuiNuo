@@ -99,9 +99,7 @@ export function sampleHandover(params) {
 export function sampleHandoverSave(params) {
   return axiosBase('lab/reqMainSplit/preTransfer', 'post', params);
 }
-export function recipientList(params) {
-  return axiosBase('/sys/user/recipientList', 'get', params);
-}
+
 export function verifyPassword(params) {
   return axiosBase('sys/user/verifyPassword', 'post', params);
 }
@@ -143,4 +141,10 @@ export function giveUpCheck(params) {
 }
 export function deliveryReceiptList(params) {
   return axiosBase('/lab/deliveryReceipt/page', 'get', params);
+}
+export function signFormCustormHeader(params) {
+  return axiosBase('sys/assembly/reqMainSignForQueryList', 'get', params);
+}
+export function reqMainOrderSignForm(params) {
+  return axiosBase('lab/reqMainOrder/reqMainOrderSignForQueryPage', 'get', params);
 }

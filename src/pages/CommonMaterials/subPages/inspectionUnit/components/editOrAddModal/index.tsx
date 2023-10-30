@@ -8,7 +8,7 @@ import {
   getUserList,
   getArea,
 } from '../../../../models/server';
-const {Option} =Select;
+const { Option } = Select;
 const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -228,12 +228,12 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="hospitalName" label="送检单位名称">
-              <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入送检单位名称" />
+              <Input placeholder="请输入送检单位名称" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="hospitalType" label="送检单位类别">
-              <Select placeholder="请选择送检单位类别" autoComplete="off" allowClear>
+              <Select placeholder="请选择送检单位类别" allowClear>
                 <Option value={`1`} key={1}>
                   送检单位
                 </Option>
@@ -250,27 +250,19 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="interfaceCode" label="接口编码">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入接口编码"
-              />
+              <Input maxLength={10} placeholder="请输入接口编码" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="invoiceHead" label="发票抬头">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入发票抬头"
-              />
+              <Input maxLength={10} placeholder="请输入发票抬头" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="isDisable" label="是否禁用">
-              <Select placeholder="请选择是否禁用" autoComplete="off" allowClear>
+              <Select placeholder="请选择是否禁用" allowClear>
                 <Option value={`true`} key={1}>
                   是
                 </Option>
@@ -282,18 +274,14 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           </Col>
           <Col span={12}>
             <Form.Item name="priceRate" label="价格默认扣率">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入价格默认扣率"
-              />
+              <Input maxLength={10} placeholder="请输入价格默认扣率" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="returnTypeId" label="回款类型">
-              <Select placeholder="请选择回款类型" autoComplete="off" allowClear>
+              <Select placeholder="请选择回款类型" allowClear>
                 {returnTypeList.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>
@@ -306,7 +294,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           </Col>
           <Col span={12}>
             <Form.Item name="saleManId" label="销售员">
-              <Select placeholder="请选择销售员" autoComplete="off" allowClear>
+              <Select placeholder="请选择销售员" allowClear>
                 {userList.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>
@@ -321,31 +309,19 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="shortName" label="简称">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入简称"
-              />
+              <Input maxLength={10} placeholder="请输入简称" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="taxNo" label="税号">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入税号"
-              />
+              <Input maxLength={10} placeholder="请输入税号" />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="telPhoneNo" label="电话">
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入电话"
-              />
+              <Input maxLength={10} placeholder="请输入电话" />
             </Form.Item>
           </Col>
           <Col span={12}>

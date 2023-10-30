@@ -53,7 +53,17 @@ const MenuComps: React.FC = (props) => {
     return item.children?.length ? renderChildMenu(item) : renderNoChildMenu(item);
   };
   return (
-    <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      style={{
+        overflow: 'auto',
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+      }}
+    >
       <Menu
         onClick={handleClick}
         style={{ width: '100%', marginTop: '2px' }}

@@ -236,6 +236,11 @@ export default {
               component: '@/pages/PreProcessingMag/subPages/sampleReceipt',
               title: '样本签收',
             },
+            {
+              path: '/preProcessingMag/receiptForm',
+              component: '@/pages/PreProcessingMag/subPages/receiptForm',
+              title: '签收单',
+            },
           ],
         },
         {

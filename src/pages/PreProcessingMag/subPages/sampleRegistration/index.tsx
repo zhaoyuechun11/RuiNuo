@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { history, useDispatch, useSelector } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Icon, Button } from '@/components';
-import { Tooltip, message, Spin } from 'antd';
+import { message } from 'antd';
 import SetHeaderModal from './components/SetHeaderModal';
 import QueryData from './components/QueryData';
 import SampleView from './sampleView';

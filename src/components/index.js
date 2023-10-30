@@ -35,7 +35,7 @@ export { default as Icon } from './Icon';
 // 手机号code
 export { default as PhoneCode } from './PhoneCode';
 
-export { default as HopeSalary } from './HopeSalary';
+
 
 export { default as SortableTable } from './SortableTable';
 

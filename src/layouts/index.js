@@ -21,12 +21,10 @@ class index extends Component {
       pageLoading: true,
     };
   }
-  componentWillMount() {
-
-  }
-//   componentWillUnmount() {
-//     this.setState = ()=>false;
-// }
+  componentWillMount() {}
+  //   componentWillUnmount() {
+  //     this.setState = ()=>false;
+  // }
   componentDidMount() {}
 
   _renderSuccess = () => {
@@ -45,7 +43,7 @@ class index extends Component {
                 // @ts-ignore
                 renderSuccess={this._renderSuccess}
               />
-              <Layout style={{ backgroundColor: '#fff' }} key={2}>
+              <Layout key={2} style={{ marginLeft: 200, backgroundColor: '#fff' }}>
                 <Header />
                 <Content style={{ margin: '15px 16px' }}>{this.props.children}</Content>
               </Layout>

@@ -157,6 +157,13 @@ export const menu = [
       },
       {
         key: 'setting',
+        url: '/preProcessingMag/receiptForm',
+        name: '签收单',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+      },
+      {
+        key: 'setting',
         url: '/preProcessingMag/sampleSortingt',
         name: '样本分检',
         icon: 'T8-shezhi-weixuanzhong',

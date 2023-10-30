@@ -15,13 +15,8 @@ import {
 import { Button, Icon } from '@/components';
 import { useDispatch, useSelector } from 'umi';
 
-import {
-  sampleHandoverSave,
-  recipientList,
-  labClassByUser,
-  preTransferNum,
-} from '../../models/server';
-import { getHospitalList } from '@/models/server';
+import { sampleHandoverSave, labClassByUser, preTransferNum } from '../../models/server';
+import { getHospitalList, recipientList } from '@/models/server';
 import { duplicatesAndNum } from '@/utils';
 import styles from './index.less';
 import Password from './components/Password';
@@ -68,7 +63,6 @@ const SampleHandover = () => {
       setSelectedRowKeysValSort(ids);
     }
     if (isAutoSelecte && objectKeyIsEmpty(paramsVal)) {
-      const ids = sampleHandover.map((item) => item.id);
       setSelectedRowKeysValSort([]);
     }
   }, [sampleHandover]);
@@ -609,12 +603,7 @@ const SampleHandover = () => {
             {renderForm()}
             <Form layout="inline" form={form} className={styles.receiver_form}>
               <Form.Item name="labReceiveBy">
-                <Select
-                  placeholder="请选择接收人"
-                  autoComplete="off"
-                  allowClear
-                  onChange={receiverChange}
-                >
+                <Select placeholder="请选择接收人" allowClear onChange={receiverChange}>
                   {receiverList.length > 0 &&
                     receiverList.map((item) => (
                       <Option value={item.id} key={item.id}>

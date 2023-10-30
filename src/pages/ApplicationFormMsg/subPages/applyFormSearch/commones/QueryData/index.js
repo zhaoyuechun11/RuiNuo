@@ -454,6 +454,7 @@ const QueryData = () => {
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
                 placeholder={['创建开始时间', '创建结束时间']}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>
@@ -514,6 +515,7 @@ const QueryData = () => {
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
                 placeholder={['接收开始时间', '接收结束时间']}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>

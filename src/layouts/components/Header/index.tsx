@@ -52,26 +52,6 @@ const HeaderContent = () => {
     </div>
   );
   return (
-    // <Popover
-    //   placement="bottomRight"
-    //   content={infoMenu}
-    //   overlayClassName={style.headPop}
-    //   trigger="click"
-    //   getPopupContainer={() => document.getElementById('contentHeader')}
-    // >
-    //   <div className={style.header}>
-    //     <div className={style.headerPic}>
-    //       <img
-    //         src={
-    //           localStorage.getItem('operator_pic') ||
-    //           require('@assets/images/commom/header_unknow.png')
-    //         }
-    //       />
-    //     </div>
-    //     <span style={{ whiteSpace: 'nowrap' }}>{localStorage.getItem('operator_name') || ''}</span>
-    //     <CaretDownOutlined style={{ fontSize: '10px', marginLeft: 8, color: '#AEB2BB' }} />
-    //   </div>
-    // </Popover>
     <>
       <Popover content={infoMenu} trigger="click" placement="bottomRight">
         <div className={style.header}>

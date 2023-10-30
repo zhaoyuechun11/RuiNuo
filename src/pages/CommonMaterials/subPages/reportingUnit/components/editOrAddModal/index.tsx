@@ -11,6 +11,7 @@ const layout = {
 const { Option } = Select;
 const EditOrAddModal = ({ Ref, refresh }) => {
   const { labClass } = useSelector((state: any) => state.commonMaterials);
+  debugger;
   const dialogRef = useRef();
   const [form] = Form.useForm();
   const [id, setId] = useState();
@@ -63,7 +64,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-   
     >
       <Form form={form} {...layout}>
         <Form.Item
@@ -83,7 +83,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         <Form.Item label="序列号" name="sn" rules={[{ required: true, message: '请输入序列号' }]}>
           <Input placeholder="请输入序列号" />
         </Form.Item>
-        <div id="labClassId">
+    
           <Form.Item
             name="labClassId"
             label="专业类别"
@@ -91,9 +91,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           >
             <Select
               placeholder="请选择专业类别"
-              autoComplete="off"
               allowClear
-              getPopupContainer={() => document.getElementById('labClassId')}
             >
               {labClass.length > 0 &&
                 labClass.map((item) => (
@@ -103,7 +101,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
                 ))}
             </Select>
           </Form.Item>
-        </div>
+       
         <Form.Item label="备注" name="remark">
           <Input placeholder="请输入备注" />
         </Form.Item>

@@ -13,8 +13,6 @@ const ManageGroup = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
   const modalRef = useRef();
@@ -24,7 +22,7 @@ const ManageGroup = () => {
 
   const manageGroupColumns = [
     {
-      title: 'code值',
+      title: '管理分类代码',
       dataIndex: 'code',
       align: 'center',
     },
@@ -46,7 +44,7 @@ const ManageGroup = () => {
       },
     },
     {
-      title: '名称',
+      title: '管理分类名称',
       dataIndex: 'name',
       align: 'center',
     },
@@ -112,17 +110,6 @@ const ManageGroup = () => {
     const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, []);
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -208,7 +195,6 @@ const ManageGroup = () => {
       <Table
         columns={manageGroupColumns}
         rowKey="id"
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

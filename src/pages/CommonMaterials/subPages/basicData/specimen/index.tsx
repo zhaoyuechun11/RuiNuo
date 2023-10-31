@@ -1,5 +1,5 @@
-import React, {  useEffect, useRef, useState } from 'react';
-import { Spin, Form, Input, message, Switch } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Form, Input, message, Switch } from 'antd';
 import { useDispatch, useSelector, useParams } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, BackButton } from '@/components';
@@ -23,11 +23,7 @@ const Specimen = () => {
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-
   const [statisticsList, setStatisticsList] = useState([]);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
-  const [selectedRows, setSelectedRows] = useState([]);
   const searchVal = useRef();
   const importRef = useRef();
   const [btnPermissions, setBtnPermissions] = useState([]);
@@ -177,18 +173,6 @@ const Specimen = () => {
     setPageNum(page);
     setPageSize(size);
   };
-
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    setSort(sorter.field);
-  };
   const add = () => {
     modalRef.current && modalRef.current.show(null, null, Number(params.id));
   };
@@ -204,11 +188,6 @@ const Specimen = () => {
     importRef.current.show();
   };
   const exportData = () => {
-    // const download_url = `${env.apiurl_web}/basic/dict/export?${stringify({
-    //   parentId: Number(params.id),
-    //   ...searchVal.current,
-    // })}`;
-    // window.open(download_url);
     basicDataExport({ ...searchVal.current, parentId: Number(params.id) }).then((res) => {
       const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
       const href = URL.createObjectURL(blob);
@@ -279,11 +258,6 @@ const Specimen = () => {
       <Table
         columns={Columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
-        // handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
@@ -294,40 +268,6 @@ const Specimen = () => {
         }}
         dataSource={statisticsList}
       ></Table>
-      {/* <Table
-        columns={Columns}
-        unit="个"
-        selectedRows={selectedRows}
-        className={styles.tablePadding}
-        rowClassName={styles.rowStyle}
-        selectedRowKeys={selectedRows.map((i) => i.id)}
-        data={{
-          list: [],
-          pagination: {
-            total,
-            current: pageNum,
-            pageSize: pageSize,
-          },
-        }}
-        locale={{
-          emptyText: (
-            <div style={{ padding: '190px 0 320px' }}>
-              <img
-                src={require('@assets/images/empty/table_empty.png')}
-                alt=""
-                width="115px"
-                height="99px"
-              />
-              <div style={{ marginTop: '20px' }}>暂无数据</div>
-            </div>
-          ),
-        }}
-        // loading={this.props.positionLoading}
-        onSelectRow={handleSelectRows}
-        onChange={handleStandardTableChange}
-        rowKey="id"
-        isRowSelection={true}
-      /> */}
       <EditOrAddModal
         Ref={modalRef}
         refresh={() => getList({ pageNum, pageSize, parentId: Number(params.id) })}

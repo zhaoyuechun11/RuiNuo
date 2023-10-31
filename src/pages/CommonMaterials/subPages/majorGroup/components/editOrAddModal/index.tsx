@@ -162,81 +162,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           </Col>
         </Row>
         <Row gutter={24}>
-          {/* <Col span={12}>
-            <Form.Item
-              label="样本号重置规则"
-              name="sampleIdResetRule"
-              rules={[{ required: true, message: '请选择样本号重置规则' }]}
-            >
-              <Select placeholder="请选择样本号重置规则" allowClear>
-                <Option value={`yy`} key={1}>
-                  yy年
-                </Option>
-                <Option value={`mm`} key={2}>
-                  mm月
-                </Option>
-                <Option value={`dd`} key={3}>
-                  dd日
-                </Option>
-              </Select>
-            </Form.Item>
-          </Col> */}
-          {/* <Col span={12}>
-            <Form.Item label="样本号生成规则">
-              <Row>
-                <Col span={8}>
-                  <Form.Item
-                    name="sampleIdRule0"
-                    style={{ marginBottom: '0' }}
-                    rules={[
-                      {
-                        required: sampleIdAsBarcode ? false : true,
-                        message: '请输入样本号生成规则',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    name="sampleIdRule1"
-                    style={{ marginBottom: '0' }}
-                    rules={[
-                      {
-                        required: sampleIdAsBarcode ? false : true,
-                        message: '请输入样本号生成规则',
-                      },
-                    ]}
-                  >
-                    <Select allowClear>
-                      {sampleRule.map((item, index) => {
-                        return (
-                          <Option value={item} key={index}>
-                            {item}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    name="sampleIdRule2"
-                    style={{ marginBottom: '0' }}
-                    rules={[
-                      {
-                        required: sampleIdAsBarcode ? false : true,
-                        message: '请输入样本号生成规则',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form.Item>
-          </Col> */}
           <Col span={12}>
             <Form.Item name="isSampleIdAsBarcode" label="是否样本号用作样本条码">
               <Select
@@ -342,71 +267,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               </Select>
             </Form.Item>
           </Col>
-          {/* <Col span={12}>
-            <Form.Item label="样本号生成规则">
-              <Row>
-                <Col span={8}>
-                  <Form.Item
-                    name="sampleIdRule0"
-                    style={{ marginBottom: '0' }}
-                    rules={[
-                      {
-                        required: sampleIdAsBarcode ? false : true,
-                        message: '请输入样本号生成规则',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    name="sampleIdRule1"
-                    style={{ marginBottom: '0' }}
-                    rules={[
-                      {
-                        required: sampleIdAsBarcode ? false : true,
-                        message: '请输入样本号生成规则',
-                      },
-                    ]}
-                  >
-                    <Select allowClear>
-                      {sampleRule.map((item, index) => {
-                        return (
-                          <Option value={item} key={index}>
-                            {item}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    name="sampleIdRule2"
-                    style={{ marginBottom: '0' }}
-                    rules={[
-                      {
-                        required: sampleIdAsBarcode ? false : true,
-                        message: '请输入样本号生成规则',
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form.Item>
-          </Col> */}
-          {/* <Col span={12}>
-            <Form.Item label="顺序" name="seq" rules={[{ required: true, message: '请输入顺序' }]}>
-              <Input
-                style={{ backgroundColor: '#ffffff' }}
-                maxLength={10}
-                placeholder="请输入顺序"
-              />
-            </Form.Item>
-          </Col> */}
+
           {/* <Col span={12}>
             <Form.Item
               name="isAutoSampleId"
@@ -449,36 +310,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               <InputNumber min={1} style={{ width: '100%' }} placeholder="请输入流水号长度" />
             </Form.Item>
           </Col>
-        </Row>
-        <Row gutter={24}>
-          {/* <Col span={12}>
-            <Form.Item name="isPrintBarcode" label="是否打印样本条码">
-              <Select placeholder="请选择是否打印样本条码" allowClear>
-                <Option value={true} key={1}>
-                  是
-                </Option>
-                <Option value={false} key={2}>
-                  否
-                </Option>
-              </Select>
-            </Form.Item>
-          </Col> */}
-          {/* <Col span={12}>
-            <Form.Item name="isSampleIdAsBarcode" label="是否样本号用作样本条码号">
-              <Select
-                placeholder="请选择是否样本号用作样本条码号"
-                allowClear
-                onChange={sampleIdAsBarcodeChange}
-              >
-                <Option value={true} key={1}>
-                  是
-                </Option>
-                <Option value={false} key={0}>
-                  否
-                </Option>
-              </Select>
-            </Form.Item>
-          </Col> */}
         </Row>
         <Row gutter={24}>
           <Col span={12}>

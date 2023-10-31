@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, message, Select, Switch } from 'antd';
+import { Form, Input, message, Switch } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, Table, Confirm } from '@/components';
 import styles from '../../../index.less';
 import { useDispatch, useSelector } from 'umi';
 import EditOrAddModal from './components/editOrAddModal';
 import { reportUnitInstrDeleteBind, reportUnitInstrChange } from '../../../../models/server';
-const { Option } = Select;
 const InstrumentList = ({ parent, btnPermissions }) => {
   const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
@@ -24,7 +23,7 @@ const InstrumentList = ({ parent, btnPermissions }) => {
       align: 'center',
     },
     {
-      title: '仪器名字',
+      title: '仪器名称',
       dataIndex: 'instrName',
       align: 'center',
     },
@@ -33,7 +32,7 @@ const InstrumentList = ({ parent, btnPermissions }) => {
       dataIndex: 'isAllItem',
       align: 'center',
       render: (text, record) => {
-        return <Switch onChange={(e) => isAllItemChange(e, record.id)} checked={text} />;
+        return <Switch onChange={() => isAllItemChange(record.id)} checked={text} />;
       },
     },
     {
@@ -60,7 +59,7 @@ const InstrumentList = ({ parent, btnPermissions }) => {
       },
     },
   ];
-  const isAllItemChange = (e, id) => {
+  const isAllItemChange = (id) => {
     reportUnitInstrChange({ id }).then((res) => {
       if (res.code === 200) {
         message.success('改变成功');
@@ -89,17 +88,7 @@ const InstrumentList = ({ parent, btnPermissions }) => {
     }
   }, [pageNum, pageSize, parent]);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
+
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -169,11 +158,6 @@ const InstrumentList = ({ parent, btnPermissions }) => {
       <Table
         columns={Columns}
         rowKey="id"
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

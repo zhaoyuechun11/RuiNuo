@@ -59,45 +59,37 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         dialogRef.current && dialogRef.current.hide();
       }}
       onOk={onOk}
-      //   confirmLoading={submitLoading}
     >
-      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
+      <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
         <Form.Item
           label="字典编码"
           name="dictCode"
           rules={[{ required: true, message: '请输入字典编码' }]}
         >
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入字典编码"
-          />
+          <Input maxLength={10} placeholder="请输入字典编码" />
         </Form.Item>
         <Form.Item
           label="字典值"
           name="dictValue"
           rules={[{ required: true, message: '请输入字典值' }]}
         >
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入字典值" />
-        </Form.Item>
-        <Form.Item label="英文" name="engValue">
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入英文" />
-        </Form.Item>
-        <Form.Item label="对接编码" name="interfaceCode">
-          <Input
-            style={{ backgroundColor: '#ffffff' }}
-            maxLength={10}
-            placeholder="请输入对接编码"
-          />
-        </Form.Item>
-        <Form.Item label="备注" name="remark">
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入备注" />
+          <Input placeholder="请输入字典值" />
         </Form.Item>
         <Form.Item label="顺序" name="seq">
-          <Input style={{ backgroundColor: '#ffffff' }} maxLength={10} placeholder="请输入顺序" />
+          <Input maxLength={10} placeholder="请输入顺序" />
         </Form.Item>
+        <Form.Item label="英文" name="engValue">
+          <Input placeholder="请输入英文" />
+        </Form.Item>
+        <Form.Item label="对接编码" name="interfaceCode">
+          <Input maxLength={10} placeholder="请输入对接编码" />
+        </Form.Item>
+        <Form.Item label="备注" name="remark">
+          <Input maxLength={10} placeholder="请输入备注" />
+        </Form.Item>
+      
         <Form.Item name="isDisable" label="是否禁用">
-          <Select placeholder="请选择是否禁用" autoComplete="off" allowClear>
+          <Select placeholder="请选择是否禁用" allowClear>
             <Option value={true} key={1}>
               是
             </Option>
@@ -107,7 +99,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
           </Select>
         </Form.Item>
         <Form.Item name="iseditable" label="是否可以编辑">
-          <Select placeholder="请选择是否可以编辑" autoComplete="off" allowClear>
+          <Select placeholder="请选择是否可以编辑" allowClear>
             <Option value={true} key={1}>
               是
             </Option>

@@ -34,13 +34,18 @@ const ReportingUnit = () => {
       align: 'center',
     },
     {
+      title: '报告单元代码',
+      dataIndex: 'reportUnitCode',
+      align: 'center',
+    },
+    {
       title: '报告单元名字',
       dataIndex: 'reportUnitName',
       align: 'center',
     },
     {
-      title: '报告单元代码',
-      dataIndex: 'reportUnitCode',
+      title: '专业分类',
+      dataIndex: 'labClassName',
       align: 'center',
     },
     {
@@ -48,11 +53,7 @@ const ReportingUnit = () => {
       dataIndex: 'remark',
       align: 'center',
     },
-    {
-      title: '专业分类名字',
-      dataIndex: 'labClassName',
-      align: 'center',
-    },
+
     {
       title: '操作',
       align: 'center',

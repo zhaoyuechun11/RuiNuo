@@ -1,40 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector, history } from 'umi';
+import { useDispatch, useSelector } from 'umi';
 import { Icon, Button } from '@/components';
-import {
-  Table,
-  Form,
-  Input,
-  message,
-  Checkbox,
-  Dropdown,
-  Menu,
-  Popconfirm,
-  Row,
-  Col,
-  Tooltip,
-  Tabs,
-  Radio,
-} from 'antd';
-import { singleReceiptTabHeader, signForSingle } from '../../../../models/server';
+import { Table, Form, Input, message, Checkbox, Dropdown, Menu, Row, Col, Tabs, Radio } from 'antd';
+import { signForSingle } from '../../../../models/server';
 const { TabPane } = Tabs;
 import s from '../index.less';
-import SetHeaderModal from '../SetHeaderModal';
-
 import LogList from '../logList';
 import ApplyForm from '../applyForm';
 import AbandonedInspection from '../abandonedInspection';
 import DeliveryReceipt from '../deliveryReceipt';
 
-const SingleReceipt = () => {
+const SingleReceipt = ({ receiptTableHeader }) => {
   const { scanSignData } = useSelector((state: any) => state.preProcessingMag);
   const [scanForm] = Form.useForm();
-  const setRef = Form.useForm();
-  const applyFormRef = Form.useForm();
   const dispatch = useDispatch();
-  const [columnOptionsList, setColumnOptionsList] = useState([]);
-  const [selectedColumns, setSelectedColumns] = useState([]);
-  const [receiptTableHeader, setReceiptTableHeader] = useState([]);
   const [radioValue, setRadioValue] = useState(1);
   const [signList, setSignList] = useState([]);
   const [isExpand, setIsExpand] = useState();
@@ -43,76 +22,76 @@ const SingleReceipt = () => {
   const [subId, setSubId] = useState();
   const [clickRow, setClickRow] = useState(0);
   const giveUpCheckRef = useRef();
-  useEffect(() => {
-    getSingleReceiptTabHeader();
-  }, []);
-  useEffect(() => {
-    let listSeqs = selectedColumns.map((item: any) => {
-      return item.listSeq;
-    });
+  // useEffect(() => {
+  //   setSelectedColumns(receiptTableHeader);
+  // }, [receiptTableHeader]);
+  // useEffect(() => {
+  //   let listSeqs = selectedColumns.map((item: any) => {
+  //     return item.listSeq;
+  //   });
 
-    let sortResult = listSeqs
-      .sort(function (a, b) {
-        return a - b;
-      })
-      .filter((item) => item !== undefined);
-    let noSeq = [];
-    noSeq = selectedColumns.filter((item) => item.listSeq == undefined);
-    let tableFieldResult = [];
-    sortResult.map((item) => {
-      selectedColumns.map((checkItem) => {
-        if (checkItem.listSeq == item) {
-          tableFieldResult.push(checkItem);
-        }
-      });
-    });
-    if (noSeq.length > 0) {
-      tableFieldResult.push(...noSeq);
-    }
-    const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
-      return {
-        title: column.name,
-        dataIndex: column.key,
-        responsive: ['xl', 'xxl'],
-        align: 'center',
-        fixed: 'left',
-        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-      };
-    });
-    const Columns = tableFieldResult.map((column: any) => {
-      return {
-        title: column.name,
-        dataIndex: column.key,
-        responsive: ['xl', 'xxl'],
-        align: 'center',
+  //   let sortResult = listSeqs
+  //     .sort(function (a, b) {
+  //       return a - b;
+  //     })
+  //     .filter((item) => item !== undefined);
+  //   let noSeq = [];
+  //   noSeq = selectedColumns.filter((item) => item.listSeq == undefined);
+  //   let tableFieldResult = [];
+  //   sortResult.map((item) => {
+  //     selectedColumns.map((checkItem) => {
+  //       if (checkItem.listSeq == item) {
+  //         tableFieldResult.push(checkItem);
+  //       }
+  //     });
+  //   });
+  //   if (noSeq.length > 0) {
+  //     tableFieldResult.push(...noSeq);
+  //   }
+  //   const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
+  //     return {
+  //       title: column.name,
+  //       dataIndex: column.key,
+  //       responsive: ['xl', 'xxl'],
+  //       align: 'center',
+  //       fixed: 'left',
+  //       render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+  //     };
+  //   });
+  //   const Columns = tableFieldResult.map((column: any) => {
+  //     return {
+  //       title: column.name,
+  //       dataIndex: column.key,
+  //       responsive: ['xl', 'xxl'],
+  //       align: 'center',
 
-        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-      };
-    });
+  //       render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
+  //     };
+  //   });
 
-    const lastColumn = {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      align: 'center',
-      render: (text: string, record: Record<string, any>) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button
-            onClick={() => {
-              history.push(
-                '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
-              );
-            }}
-          >
-            编辑
-          </Button>
-        </div>
-      ),
-    };
-    const allColumn = [...firstColumm, ...Columns, lastColumn];
+  //   const lastColumn = {
+  //     title: '操作',
+  //     dataIndex: 'action',
+  //     fixed: 'right',
+  //     align: 'center',
+  //     render: (text: string, record: Record<string, any>) => (
+  //       <div style={{ display: 'flex', justifyContent: 'center' }}>
+  //         <Button
+  //           onClick={() => {
+  //             history.push(
+  //               '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+  //             );
+  //           }}
+  //         >
+  //           编辑
+  //         </Button>
+  //       </div>
+  //     ),
+  //   };
+  //   const allColumn = [...firstColumm, ...Columns, lastColumn];
 
-    setReceiptTableHeader(allColumn);
-  }, [selectedColumns]);
+  //   setReceiptTableHeader(allColumn);
+  // }, [selectedColumns]);
   useEffect(() => {
     if (signList.length > 0) {
       const mergedArray = [signList, scanSignData].reduce((acc, val) => acc.concat(val), []);
@@ -234,110 +213,8 @@ const SingleReceipt = () => {
       </Menu.Item>
     </Menu>
   );
-  const changeColumn = (ids: any) => {
-    dispatch({
-      type: 'preProcessingMag/saveCustomHeader',
-      payload: {
-        ids,
-        callback: () => {
-          getSingleReceiptTabHeader();
-        },
-      },
-    });
-  };
-  const getSingleReceiptTabHeader = () => {
-    singleReceiptTabHeader().then((res: any) => {
-      console.log('res', res);
-      if (res.code === 200) {
-        const selectedFields = res.data.filter(
-          (item: Record<string, any>) => item?.isListDisplay == true,
-        );
-        setColumnOptionsList(res.data);
-        setSelectedColumns(selectedFields);
-        //setTableHeader(selectedFields);
-      }
-    });
-    // dispatch({
-    //   type: 'preProcessingMag/fetchSingleReceiptTabHeader',
-    //   payload: {
-    //     callback: (res) => {
-    //       //getSingleReceiptTabHeader();
-    //       const selectedFields = res.data.filter(
-    //         (item: Record<string, any>) => item?.isListDisplay == true,
-    //       );
-    //       debugger;
-    //       setColumnOptionsList(res.data);
-    //       setSelectedColumns(selectedFields);
-    //     },
-    //   },
-    // });
-  };
-  const setTableHeader = (selectedColumns: any) => {
-    let listSeqs = selectedColumns.map((item: any) => {
-      return item.listSeq;
-    });
 
-    let sortResult = listSeqs
-      .sort(function (a, b) {
-        return a - b;
-      })
-      .filter((item) => item !== undefined);
-    let noSeq = [];
-    noSeq = selectedColumns.filter((item) => item.listSeq == undefined);
-    let tableFieldResult = [];
-    sortResult.map((item) => {
-      selectedColumns.map((checkItem) => {
-        if (checkItem.listSeq == item) {
-          tableFieldResult.push(checkItem);
-        }
-      });
-    });
-    if (noSeq.length > 0) {
-      tableFieldResult.push(...noSeq);
-    }
-    const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
-      return {
-        title: column.name,
-        dataIndex: column.key,
-        sorter: true,
-        responsive: ['xl', 'xxl'],
-        align: 'center',
-        fixed: 'left',
-        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-      };
-    });
-    const Columns = tableFieldResult.map((column: any) => {
-      return {
-        title: column.name,
-        dataIndex: column.key,
-        responsive: ['xl', 'xxl'],
-        align: 'center',
-        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-      };
-    });
-
-    const lastColumn = {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      align: 'center',
-      render: (text: string, record: Record<string, any>) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={() => applyFormRef.current.show(record)}>编辑</Button>
-        </div>
-      ),
-    };
-    const allColumn = [...firstColumm, ...Columns, lastColumn];
-    dispatch({
-      type: 'preProcessingMag/save',
-      payload: {
-        type: 'receiptTableHeader',
-        dataSource: allColumn,
-      },
-    });
-    setReceiptTableHeader(allColumn);
-  };
-  const expandedRowRender = (record: any, index, indent, expanded) => {
+  const expandedRowRender = (record: any) => {
     const columns = [
       { title: '样本条码', dataIndex: 'sampleBarcode', key: 'sampleBarcode' },
       { title: '样本编号', dataIndex: 'sampleNo', key: 'sampleNo' },
@@ -442,26 +319,6 @@ const SingleReceipt = () => {
               <Button btnType="primary" style={{ margin: '0 5px' }}>
                 交接
               </Button>
-              {/* <Button
-                style={{ margin: '0 5px 0' }}
-                btnType="primary"
-                onClick={() => {
-                  setRef.current.show();
-                }}
-              >
-                自定义表头
-              </Button> */}
-              <Tooltip placement="top" arrowPointAtCenter title="自定义表头">
-                <span
-                  className={s.settings}
-                  onClick={() => {
-                    setRef.current && setRef.current?.show();
-                  }}
-                >
-                  <Icon name="iconhouxuanren-shezhi" style={{ fontSize: 20 }} />
-                </span>
-              </Tooltip>
-              {isExpand}
             </div>
           </div>
           <Table
@@ -481,13 +338,6 @@ const SingleReceipt = () => {
                 },
               };
             }}
-          />
-
-          <SetHeaderModal
-            refs={setRef}
-            columnOptions={columnOptionsList}
-            columnChecked={selectedColumns}
-            handleChangeColumn={changeColumn}
           />
         </Col>
         <Col span={10} className={s.border_line}>

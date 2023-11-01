@@ -573,17 +573,17 @@ const QueryData = () => {
         </Row>
         <Row gutter={12}>
           <Col span={9} style={{ display: 'flex', height: '30px' }}>
-            <Button type="primary" onClick={seach} size="small">
+            <Button btnType="primary" onClick={seach} size="small">
               查询
             </Button>
-            <Button type="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
+            <Button btnType="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
               重置
             </Button>
-            <Button type="primary" onClick={exportOriginOrder} size="small">
+            <Button btnType="primary" onClick={exportOriginOrder} size="small">
               导出原始单
             </Button>
             <Button
-              type="primary"
+              btnType="primary"
               onClick={exportProfessionOrder}
               size="small"
               style={{ margin: '0 5px' }}

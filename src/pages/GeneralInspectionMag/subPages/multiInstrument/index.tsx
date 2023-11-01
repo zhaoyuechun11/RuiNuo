@@ -535,25 +535,21 @@ const MultiInstrument = () => {
           <Col className="gutter-row" span={4}>
             {instrNum?.map((item, index) => {
               return (
-                <div id="executor">
-                  <Form.Item name={`${`executor` + item}`} label="执行人">
-                    <Select
-                      placeholder="请选择执行人"
-                      autoComplete="off"
-                      allowClear
-                      getPopupContainer={() => document.getElementById('executor')}
-                      onChange={executorChange}
-                      defaultValue={useDetail.id}
-                    >
-                      {executorList.length > 0 &&
-                        executorList.map((item) => (
-                          <Option value={item.id} key={item.id}>
-                            {item.name}
-                          </Option>
-                        ))}
-                    </Select>
-                  </Form.Item>
-                </div>
+                <Form.Item name={`${`executor` + item}`} label="执行人">
+                  <Select
+                    placeholder="请选择执行人"
+                    allowClear
+                    onChange={executorChange}
+                    defaultValue={useDetail.id}
+                  >
+                    {executorList.length > 0 &&
+                      executorList.map((item) => (
+                        <Option value={item.id} key={item.id}>
+                          {item.name}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
               );
             })}
           </Col>

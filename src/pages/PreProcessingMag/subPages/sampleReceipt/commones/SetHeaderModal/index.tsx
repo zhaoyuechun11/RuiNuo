@@ -1,12 +1,11 @@
 import React, {
-  Component,
   Fragment,
   useState,
   useRef,
   useEffect,
   useImperativeHandle,
 } from 'react';
-import { Checkbox, Modal, Row, Col } from 'antd';
+import { Checkbox, Row, Col } from 'antd';
 import { Dialog } from '@components';
 import { CloseCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';

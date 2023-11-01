@@ -1,18 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Table, Form, Input, DatePicker, Select, message, Row, Col, Tooltip, Tabs } from 'antd';
-import { useDispatch, history } from 'umi';
-import { Icon, Button } from '@/components';
+import React, { useEffect, useState } from 'react';
+import { Table, Form, Input, DatePicker, Select, message, Row, Col, Tabs } from 'antd';
+import { Button } from '@/components';
 import { getHospitalList, getReqItemList, dictList } from '@/models/server';
-import { singleReceiptTabHeader, signForPageQuery, batchSign } from '../../../../models/server';
+import { signForPageQuery, batchSign } from '../../../../models/server';
 import s from '../index.less';
-import SetHeaderModal from '../SetHeaderModal';
 import LogList from '../logList';
 import ApplyForm from '../applyForm';
 import DeliveryReceipt from '../deliveryReceipt';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { TabPane } = Tabs;
-const BatchReceipt = () => {
+const BatchReceipt = ({ receiptTableHeader }) => {
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -20,11 +18,6 @@ const BatchReceipt = () => {
   const [hospitalList, setHospitalList] = useState([]);
   const [department, setDepartment] = useState([]);
   const [reportUnitReqItemList, setReportUnitReqItemList] = useState([]);
-  const [columnOptionsList, setColumnOptionsList] = useState([]);
-  const [selectedColumns, setSelectedColumns] = useState([]);
-  const setRef = useRef();
-  const dispatch = useDispatch();
-  const [receiptTableHeader, setReceiptTableHeader] = useState([]);
   const [list, setList] = useState([]);
   const [mainId, setMainId] = useState();
   const [clickRow, setClickRow] = useState(0);
@@ -33,108 +26,9 @@ const BatchReceipt = () => {
     hospital();
     getReportUnitReqItem();
     getDictList();
-    getSingleReceiptTabHeader();
     batchQuery();
   }, []);
-  useEffect(() => {
-    let listSeqs = selectedColumns.map((item: any) => {
-      return item.listSeq;
-    });
 
-    let sortResult = listSeqs
-      .sort(function (a, b) {
-        return a - b;
-      })
-      .filter((item) => item !== undefined);
-    let noSeq = [];
-    noSeq = selectedColumns.filter((item) => item.listSeq == undefined);
-    let tableFieldResult = [];
-    sortResult.map((item) => {
-      selectedColumns.map((checkItem) => {
-        if (checkItem.listSeq == item) {
-          tableFieldResult.push(checkItem);
-        }
-      });
-    });
-    if (noSeq.length > 0) {
-      tableFieldResult.push(...noSeq);
-    }
-    const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
-      return {
-        title: column.name,
-        dataIndex: column.key,
-        sorter: true,
-        responsive: ['xl', 'xxl'],
-        align: 'center',
-        fixed: 'left',
-        render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-      };
-    });
-    const Columns = tableFieldResult.map((column: any) => {
-      if (column.key !== 'reqItemName' && column.key !== 'sampleType') {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          sorter:
-            column.key === 'receiveBarcode' ||
-            column.key === 'hospitalName' ||
-            column.key === 'sendDeptName' ||
-            column.key === 'sendDoctorName' ||
-            column.key === 'hospitalBarcode' ||
-            column.key === 'patientId' ||
-            column.key === 'patientNo' ||
-            column.key === 'sourceName' ||
-            column.key === 'patientName' ||
-            column.key === 'sampleTypeIds' ||
-            column.key === 'applyDate' ||
-            column.key === 'collectDate' ||
-            column.key === 'receiveDate' ||
-            column.key === 'createDate'
-              ? true
-              : false,
-
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      } else {
-        return {
-          title: column.name,
-          dataIndex: column.key,
-          responsive: ['xl', 'xxl'],
-          align: 'center',
-          key: column.key,
-          sorter: (a, b) => a.column.key.length - b.column.key.length,
-          render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-        };
-      }
-    });
-
-    const lastColumn = {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      align: 'center',
-      render: (text: string, record: Record<string, any>) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button
-            onClick={() => {
-              history.push(
-                '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
-              );
-            }}
-          >
-            编辑
-          </Button>
-        </div>
-      ),
-    };
-    const allColumn = [...firstColumm, ...Columns, lastColumn];
-
-    setReceiptTableHeader(allColumn);
-  }, [selectedColumns]);
-
-  const handleSearch = (changedValues: any, allValues: undefined) => {};
   const hospital = () => {
     getHospitalList().then((res: any) => {
       if (res.code === 200) {
@@ -150,126 +44,16 @@ const BatchReceipt = () => {
     });
   };
   const getDictList = () => {
-    dictList({ type: 'DP' }).then((res) => {
+    dictList({ type: 'DP' }).then((res: any) => {
       if (res.code === 200) {
         setDepartment(res.data);
       }
     });
   };
-  const changeColumn = (ids: any) => {
-    dispatch({
-      type: 'preProcessingMag/saveCustomHeader',
-      payload: {
-        ids,
-        callback: () => {
-          getSingleReceiptTabHeader();
-        },
-      },
-    });
-  };
-  const getSingleReceiptTabHeader = () => {
-    singleReceiptTabHeader().then((res: any) => {
-      if (res.code === 200) {
-        const selectedFields = res.data.filter(
-          (item: Record<string, any>) => item?.isListDisplay == true,
-        );
 
-        setColumnOptionsList(res.data);
-        setSelectedColumns(selectedFields);
-
-        setTableHeader(selectedFields);
-      }
-    });
-  };
-  const setTableHeader = (selectedColumns: any) => {
-    // let listSeqs = selectedColumns.map((item: any) => {
-    //   return item.listSeq;
-    // });
-    // let sortResult = listSeqs
-    //   .sort(function (a, b) {
-    //     return a - b;
-    //   })
-    //   .filter((item) => item !== undefined);
-    // let noSeq = [];
-    // noSeq = selectedColumns.filter((item) => item.listSeq == undefined);
-    // let tableFieldResult = [];
-    // sortResult.map((item) => {
-    //   selectedColumns.map((checkItem) => {
-    //     if (checkItem.listSeq == item) {
-    //       tableFieldResult.push(checkItem);
-    //     }
-    //   });
-    // });
-    // if (noSeq.length > 0) {
-    //   tableFieldResult.push(...noSeq);
-    // }
-    // const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
-    //   return {
-    //     title: column.name,
-    //     dataIndex: column.key,
-    //     sorter: true,
-    //     responsive: ['xl', 'xxl'],
-    //     align: 'center',
-    //     fixed: 'left',
-    //     render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-    //   };
-    // });
-    // const Columns = tableFieldResult.map((column: any) => {
-    //   if (column.key !== 'reqItemName' && column.key !== 'sampleType') {
-    //     return {
-    //       title: column.name,
-    //       dataIndex: column.key,
-    //       responsive: ['xl', 'xxl'],
-    //       align: 'center',
-    //       sorter:
-    //         column.key === 'receiveBarcode' ||
-    //         column.key === 'hospitalName' ||
-    //         column.key === 'sendDeptName' ||
-    //         column.key === 'sendDoctorName' ||
-    //         column.key === 'hospitalBarcode' ||
-    //         column.key === 'patientId' ||
-    //         column.key === 'patientNo' ||
-    //         column.key === 'sourceName' ||
-    //         column.key === 'patientName' ||
-    //         column.key === 'sampleTypeIds' ||
-    //         column.key === 'applyDate' ||
-    //         column.key === 'collectDate' ||
-    //         column.key === 'receiveDate' ||
-    //         column.key === 'createDate'
-    //           ? true
-    //           : false,
-    //       render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-    //     };
-    //   } else {
-    //     return {
-    //       title: column.name,
-    //       dataIndex: column.key,
-    //       responsive: ['xl', 'xxl'],
-    //       align: 'center',
-    //       key: column.key,
-    //       sorter: (a, b) => a.column.key.length - b.column.key.length,
-    //       render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-    //     };
-    //   }
-    // });
-    // const lastColumn = {
-    //   title: '操作',
-    //   dataIndex: 'action',
-    //   fixed: 'right',
-    //   align: 'center',
-    //   render: (text: string, record: Record<string, any>) => (
-    //     <div style={{ display: 'flex', justifyContent: 'center' }}>
-    //       <Button onClick={() => applyFormRef.current.show(record)}>预览</Button>
-    //       <Button>交接</Button>
-    //     </div>
-    //   ),
-    // };
-    // const allColumn = [...firstColumm, ...Columns, lastColumn];
-    // setReceiptTableHeader(allColumn);
-  };
   const renderForm = () => {
     return (
-      <Form onValuesChange={handleSearch} layout="inline" form={form}>
+      <Form layout="inline" form={form}>
         <Row className={s.row_box}>
           <Col span={10}>
             <Form.Item name="createDateStart">
@@ -432,16 +216,6 @@ const BatchReceipt = () => {
               清空
             </Button>
             <Button btnType="primary">交接</Button>
-            <Tooltip placement="top" arrowPointAtCenter title="自定义表头">
-              <span
-                className={s.settings}
-                onClick={() => {
-                  setRef.current && setRef.current?.show();
-                }}
-              >
-                <Icon name="iconhouxuanren-shezhi" style={{ fontSize: 20 }} />
-              </span>
-            </Tooltip>
           </div>
           <Table
             className={s.batch_table}
@@ -467,7 +241,6 @@ const BatchReceipt = () => {
             }}
           />
         </Col>
-
         <Col span={10} className={s.border_line}>
           <Tabs defaultActiveKey="1" className={s.tabs_box}>
             <TabPane tab="原始申请单" key="1">
@@ -482,12 +255,6 @@ const BatchReceipt = () => {
           </Tabs>
         </Col>
       </Row>
-      <SetHeaderModal
-        refs={setRef}
-        columnOptions={columnOptionsList}
-        columnChecked={selectedColumns}
-        handleChangeColumn={changeColumn}
-      />
     </>
   );
 };

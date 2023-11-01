@@ -149,9 +149,9 @@ const ApplyForm = ({ mainId }) => {
               专业分单号
             </Col>
           </Row>
-          {detailData.reqItemPrices?.map((item) => {
+          {detailData.reqItemPrices?.map((item, index) => {
             return (
-              <Row gutter={16} className={styles.dashed_line}>
+              <Row gutter={16} className={styles.dashed_line} key={index}>
                 <Col className="gutter-row" span={3}>
                   {item.labClassName}
                 </Col>

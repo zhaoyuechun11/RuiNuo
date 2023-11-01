@@ -270,8 +270,18 @@ const OriginApplyForm = () => {
     sorter: Record<string, string>,
   ) => {
     if (sorter.field !== 'reqItemName' && sorter.field !== 'sampleType') {
+      if (sorter.field === 'hospitalName') {
+        setSort('hospitalDesc');
+      } else if (sorter.field === 'sourceName') {
+        setSort('sourceDesc');
+      } else if (sorter.field === 'sendDeptName') {
+        setSort('sendDeptDesc');
+      } else if (sorter.field === 'sendDoctorName') {
+        setSort('sendDoctorDesc');
+      } else {
+        setSort(sorter.field + 'Desc');
+      }
       setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
-      setSort(sorter.field + 'Desc');
     }
   };
   const orginOrderList = (params: any) => {

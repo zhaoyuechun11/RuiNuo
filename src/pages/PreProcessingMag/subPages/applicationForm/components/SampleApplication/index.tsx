@@ -124,7 +124,7 @@ const SampleApplication = ({ data }) => {
         </Row>
         {data.reqItemPrices?.map((item) => {
           return (
-            <Row gutter={16} className={styles.dashed_line}>
+            <Row gutter={16} className={styles.dashed_line} key={item.id}>
               <Col className="gutter-row" span={3}>
                 {item.labClassName}
               </Col>

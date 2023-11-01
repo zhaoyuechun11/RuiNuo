@@ -1,0 +1,39 @@
+.search_bth {
+  display: flex;
+  align-items: center;
+  .operateBtns {
+    display: flex;
+    margin: 10px 0 10px 60px;
+    button:nth-child(1) {
+      padding: 6px 10px;
+    }
+    button:not(:last-child) {
+      margin-right: 16px;
+    }
+  }
+  :global {
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      height: 35px;
+      border-radius: 4px;
+    }
+    .ant-picker-range {
+      height: 35px;
+      border: 1px solid #9d9fa0 !important;
+    }
+  }
+}
+.form_box {
+  padding: 10px;
+  .compact_rignt,
+  .compact_left {
+    width: 49.2%;
+  }
+  .compact_rignt {
+    margin-left: 10px;
+  }
+  :global {
+    .ant-select-selection-item {
+      color: #bfbfbf;
+    }
+  }
+}

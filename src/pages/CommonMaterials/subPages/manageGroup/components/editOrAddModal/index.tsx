@@ -14,6 +14,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   const [record, setRecord] = useState({});
   useImperativeHandle(Ref, () => ({
     show: (record) => {
+      form && form.resetFields();
       dialogRef.current && dialogRef.current.show();
       if (record) {
         form.setFieldsValue({ ...record });
@@ -22,7 +23,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       } else {
         setId(null);
         setRecord({});
-        form && form.resetFields();
       }
     },
     hide: () => {
@@ -61,7 +61,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       }}
       onOk={onOk}
     >
-      <Form form={form} {...layout} style={{paddingTop:'20px'}}>
+      <Form form={form} {...layout} style={{ paddingTop: '20px' }}>
         <Form.Item label="code值" name="code" rules={[{ required: true, message: '请输入code值' }]}>
           <Input placeholder="请输入code值" />
         </Form.Item>

@@ -323,6 +323,18 @@ export default {
             },
           ],
         },
+
+        {
+          path: '/handoverMsg',
+          name: 'handoverMsg',
+          routes: [
+            {
+              path: '/handoverMsg/reportReview',
+              component: '@/pages/HandoverMsg/subPages/handoverRegistration',
+              title: '交接单登记',
+            },
+          ],
+        },
       ],
     },
   ],

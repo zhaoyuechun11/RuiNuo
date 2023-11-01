@@ -27,7 +27,6 @@ const ApplyReportPC = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
   const [sortedInfo, setSortedInfo] = useState({});
   const loading = useSelector((state) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
@@ -51,7 +50,6 @@ const ApplyReportPC = () => {
       fixed: 'left',
       align: 'center',
       key: 'labClassName',
-      width: 150,
       sorter: (a, b) => a.labClassName?.length - b.labClassName?.length,
       sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
@@ -59,7 +57,6 @@ const ApplyReportPC = () => {
       title: '项目编号',
       dataIndex: 'itemCode',
       align: 'center',
-      width: 150,
       key: 'itemCode',
       sorter: (a, b) => a.itemCode?.length - b.itemCode?.length,
       sortOrder: sortedInfo.columnKey === 'itemCode' ? sortedInfo.order : null,
@@ -68,7 +65,6 @@ const ApplyReportPC = () => {
       title: '中文名称',
       dataIndex: 'itemName',
       align: 'center',
-      width: 180,
       key: 'itemName',
       sorter: (a, b) => a.itemName?.length - b.itemName?.length,
       sortOrder: sortedInfo.columnKey === 'itemName' ? sortedInfo.order : null,
@@ -77,14 +73,12 @@ const ApplyReportPC = () => {
       title: '缩写代号',
       dataIndex: 'shortName',
       align: 'center',
-      width: 150,
       key: 'shortName',
     },
     {
       title: '英文名称',
       dataIndex: 'enName',
       align: 'center',
-      width: 150,
       key: 'enName',
       sorter: (a, b) => a.enName.length - b.enName.length,
       sortOrder: sortedInfo.columnKey === 'enName' ? sortedInfo.order : null,
@@ -94,19 +88,16 @@ const ApplyReportPC = () => {
       title: '数据类型',
       dataIndex: 'dataType',
       align: 'center',
-      width: 120,
     },
     {
       title: '数值单位',
       dataIndex: 'unit',
       align: 'center',
-      width: 180,
     },
     {
       title: '小数位',
       dataIndex: 'decimalPlaces',
       align: 'center',
-      width: 150,
       render: (
         text:
           | string
@@ -124,8 +115,7 @@ const ApplyReportPC = () => {
       title: '计算项目',
       dataIndex: 'calculateFlag',
       align: 'center',
-      width: 150,
-      render: (text) => {
+      render: (text: any) => {
         return <span>{text ? '是' : '否'}</span>;
       },
     },
@@ -133,8 +123,7 @@ const ApplyReportPC = () => {
       title: '计算项目是否自动添加',
       dataIndex: 'autoAdd',
       align: 'center',
-      width: 150,
-      render: (text) => {
+      render: (text: any) => {
         return <span>{text ? '是' : '否'}</span>;
       },
     },
@@ -142,14 +131,12 @@ const ApplyReportPC = () => {
       title: '测试方法',
       dataIndex: 'method',
       align: 'center',
-      width: 150,
     },
     {
       title: '临床意义',
       dataIndex: 'significance',
       align: 'center',
-      width: 180,
-      render: (text) => {
+      render: (text: any) => {
         return (
           <div
             dangerouslySetInnerHTML={{
@@ -163,26 +150,22 @@ const ApplyReportPC = () => {
       title: '其他编码1',
       dataIndex: 'extCode1',
       align: 'center',
-      width: 150,
     },
     {
       title: '报告单元',
       dataIndex: 'reportUnitName',
       align: 'center',
-      width: 150,
     },
 
     {
       title: '其他编码2',
       dataIndex: 'extCode2',
       align: 'center',
-      width: 150,
     },
     {
       title: '操作',
       fixed: 'right',
       align: 'center',
-      width: 250,
       render: (record: { id: any }) => {
         return (
           <div className={styles.action_btn}>
@@ -257,7 +240,6 @@ const ApplyReportPC = () => {
     sorter: Record<string, string>,
   ) => {
     setSortedInfo(sorter);
-    setSort(sorter.field);
   };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
@@ -317,18 +299,16 @@ const ApplyReportPC = () => {
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
-        <div id="labClassId">
-          <Form.Item name="labClassId">
-            <Select placeholder="请选择项目类别" allowClear>
-              {majorGroupData.length > 0 &&
-                majorGroupData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.className}
-                  </Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </div>
+        <Form.Item name="labClassId">
+          <Select placeholder="请选择项目类别" allowClear>
+            {majorGroupData.length > 0 &&
+              majorGroupData.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.className}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
         <Form.Item name="code">
           <Input
             placeholder="请输入项目编码"
@@ -438,6 +418,7 @@ const ApplyReportPC = () => {
             },
           };
         }}
+        scroll={{ x: 'max-content' }}
       />
       <EditOrAddModal
         Ref={modalRef}

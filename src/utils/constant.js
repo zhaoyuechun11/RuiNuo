@@ -474,8 +474,8 @@ export const menu = [
     children: [
       {
         key: 'setting',
-        url: '/setting/index',
-        name: '交接登记及处理',
+        url: '/handoverMsg/reportReview',
+        name: '交接单登记',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },

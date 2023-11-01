@@ -219,6 +219,10 @@ const ReceiptForm = () => {
     }
     setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
   };
+  const pageChange = (page: any, pageSize: any) => {
+    setPageNum(page);
+    setPageSize(pageSize);
+  };
   const renderForm = () => {
     return (
       <Form layout="inline" form={form}>
@@ -281,6 +285,13 @@ const ReceiptForm = () => {
             自定义表头
           </div>
         )}
+        pagination={{
+          current: pageNum,
+          pageSize: pageSize,
+          total,
+          onChange: pageChange,
+          showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
+        }}
       />
 
       <SetHeaderModal

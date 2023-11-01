@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Form, Icon, Input, Button } from 'antd';
 const Index = ({}) => {
   const onFinish = (values) => {
     console.log('Received values of form: ', values);

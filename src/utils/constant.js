@@ -474,15 +474,22 @@ export const menu = [
     children: [
       {
         key: 'setting',
-        url: '/handoverMsg/reportReview',
+        url: '/handoverMsg/handoverRegistration',
         name: '交接单登记',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/handoverMsg/handoverProcessCount',
         name: '交接处理统计',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+      },
+      {
+        key: 'setting',
+        url: '/handoverMsg/handoverOrderProcess',
+        name: '交接单处理',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },

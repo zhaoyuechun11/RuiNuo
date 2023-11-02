@@ -163,6 +163,18 @@ const EditOrAddModal = ({ Ref, refresh }) => {
         </Row>
         <Row gutter={24}>
           <Col span={12}>
+            <Form.Item name="isAutoSampleId" label="是否自动生成预制样本号">
+              <Select placeholder="请选择是否自动生成预制样本号" allowClear>
+                <Option value={true} key={1}>
+                  是
+                </Option>
+                <Option value={false} key={2}>
+                  否
+                </Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
             <Form.Item name="isSampleIdAsBarcode" label="是否样本号用作样本条码">
               <Select
                 placeholder="请选择是否样本号用作样本条码"
@@ -234,8 +246,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               </Row>
             </Form.Item>
           </Col>
-        </Row>
-        <Row gutter={24}>
           <Col span={12}>
             <Form.Item
               label="样本号重置规则"
@@ -268,23 +278,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
             </Form.Item>
           </Col>
 
-          {/* <Col span={12}>
-            <Form.Item
-              name="isAutoSampleId"
-              label="是否自动生成预制样本号"
-              rules={[{ required: true, message: '请选择是否自动生成预制样本号' }]}
-            >
-              <Select placeholder="请选择是否自动生成预制样本号" autoComplete="off" allowClear>
-                <Option value={true} key={1}>
-                  是
-                </Option>
-                <Option value={false} key={2}>
-                  否
-                </Option>
-              </Select>
-            </Form.Item>
-          </Col> */}
-
           <Col span={12}>
             <Form.Item
               label="条码号内容(01样本条码，02病理编号)"
@@ -310,8 +303,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
               <InputNumber min={1} style={{ width: '100%' }} placeholder="请输入流水号长度" />
             </Form.Item>
           </Col>
-        </Row>
-        <Row gutter={24}>
           <Col span={12}>
             <Form.Item name="labClassManageId" label="管理分类">
               <Select placeholder="请选择管理分类" allowClear>

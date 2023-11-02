@@ -323,15 +323,24 @@ export default {
             },
           ],
         },
-
         {
           path: '/handoverMsg',
           name: 'handoverMsg',
           routes: [
             {
-              path: '/handoverMsg/reportReview',
+              path: '/handoverMsg/handoverRegistration',
               component: '@/pages/HandoverMsg/subPages/handoverRegistration',
               title: '交接单登记',
+            },
+            {
+              path: '/handoverMsg/handoverProcessCount',
+              component: '@/pages/HandoverMsg/subPages/handoverProcessCount',
+              title: '交接单统计',
+            },
+            {
+              path: '/handoverMsg/handoverOrderProcess',
+              component: '@/pages/HandoverMsg/subPages/handoverOrderProcess',
+              title: '交接单处理',
             },
           ],
         },

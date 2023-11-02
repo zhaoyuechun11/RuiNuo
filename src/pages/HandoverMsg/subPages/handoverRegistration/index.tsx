@@ -5,6 +5,25 @@ import { Button, Icon } from '@/components';
 import styles from '../index.less';
 import EditOrAddModal from './components/editOrAddModal';
 const { RangePicker } = DatePicker;
+const processState = [
+  {
+    name: '未处理',
+    id: 1,
+  },
+  {
+    name: '处理中',
+    id: 2,
+  },
+  {
+    name: '处理完成',
+    id: 3,
+  },
+  {
+    name: '确认完成',
+    id: 4,
+  },
+];
+const { Option } = Select;
 const HandoverRegistration = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
@@ -172,16 +191,20 @@ const HandoverRegistration = () => {
         </Form.Item>
         <Form.Item name="labClassId">
           <Select placeholder="请选择处理状态" allowClear>
-            {/* {majorGroupData.length > 0 &&
-                  majorGroupData.map((item) => (
-                    <Option value={item.id} key={item.id}>
-                      {item.className}
-                    </Option>
-                  ))} */}
+            {processState.length > 0 &&
+              processState.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              ))}
           </Select>
         </Form.Item>
       </Form>
     );
+  };
+  const pageChange = (pageNum: any, pageSize: any) => {
+    setPageNum(pageNum);
+    pageSize(pageSize);
   };
   return (
     <>
@@ -196,7 +219,19 @@ const HandoverRegistration = () => {
           <Button btnType="primary">导出</Button>
         </div>
       </div>
-      <Table dataSource={[]} columns={columns} scroll={{ x: 'max-content' }} size="small" />;
+      <Table
+        dataSource={[]}
+        columns={columns}
+        scroll={{ x: 'max-content' }}
+        size="small"
+        pagination={{
+          current: pageNum,
+          pageSize: pageSize,
+          total,
+          onChange: pageChange,
+          showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
+        }}
+      />
       <EditOrAddModal Ref={addOrEditRef} />
     </>
   );

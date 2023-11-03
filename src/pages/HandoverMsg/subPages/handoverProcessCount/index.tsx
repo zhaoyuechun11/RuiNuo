@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import MixColLine from './components/MixColLine';
+import TabButton from './components/TabButton';
 import { Form, Input, message, Tabs, Select, Table, DatePicker, Card } from 'antd';
 import { Button, Icon } from '@/components';
 import { getData } from './helpers';
 import { chartsConfig } from './constant';
+import s from './index.less';
+
 const { RangePicker } = DatePicker;
-const { Option } = Select;
+
 const data = [
   {
     id: 145006545423331962,
@@ -920,29 +923,13 @@ const data = [
     },
   },
 ];
-const processState = [
-  {
-    name: '未处理',
-    id: 1,
-  },
-  {
-    name: '处理中',
-    id: 2,
-  },
-  {
-    name: '处理完成',
-    id: 3,
-  },
-  {
-    name: '确认完成',
-    id: 4,
-  },
-];
+
 const HandoverProcessCount = () => {
   const [resumeChartData, setResumeChartData] = useState(data);
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+
   const handleSearch = (changedValues: any, allValues: undefined) => {
     const values = {
       pageNum,
@@ -1030,6 +1017,9 @@ const HandoverProcessCount = () => {
     setPageNum(pageNum);
     pageSize(pageSize);
   };
+  const onClickTabButton = (data) => {
+    debugger;
+  };
   return (
     <>
       {renderForm()}
@@ -1046,7 +1036,20 @@ const HandoverProcessCount = () => {
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
       />
-      <Card title="处理统计">
+
+      <Card
+        title="处理统计"
+        extra={
+          <TabButton
+            className={s.tabbutton}
+            dataSource={['招聘中', '停止招聘']}
+            width={89}
+            callback={(data) => {
+              onClickTabButton({ data });
+            }}
+          />
+        }
+      >
         <MixColLine
           lineData={getData(
             resumeChartData,

@@ -220,6 +220,7 @@ const MajorGroup = () => {
   }, [pageNum, pageSize]);
   useEffect(() => {
     const { btn } = main(transformTree(useDetail.permissions), location.pathname);
+    debugger
     setBtnPermissions(btn);
   }, []);
   const onTableChange = (

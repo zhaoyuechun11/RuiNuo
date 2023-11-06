@@ -510,6 +510,7 @@ const QueryData = () => {
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
                 placeholder={['前处理接收开始时间', '前处理接收结束时间']}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>
@@ -576,6 +577,7 @@ const QueryData = () => {
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
                 placeholder={['检验日期开始时间', '检验日期结束时间']}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>
@@ -637,6 +639,7 @@ const QueryData = () => {
                 showTime={{ format: 'HH:mm' }}
                 format="YYYY-MM-DD HH:mm"
                 placeholder={['审核开始时间', '审核结束时间']}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>
@@ -784,10 +787,10 @@ const QueryData = () => {
             </Form.Item>
           </Col>
           <Col span={6} style={{ display: 'flex', height: '30px' }}>
-            <Button type="primary" onClick={seach} size="small">
+            <Button btnType="primary" onClick={seach} size="small">
               查询
             </Button>
-            <Button type="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
+            <Button btnType="primary" onClick={reset} size="small" style={{ margin: '0 5px' }}>
               重置
             </Button>
 

@@ -20,8 +20,6 @@ const insUnitDiscount = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
   const addModal = useRef();
@@ -203,17 +201,6 @@ const insUnitDiscount = () => {
     setBtnPermissions(btn);
   }, []);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -352,7 +339,6 @@ const insUnitDiscount = () => {
         size={'small'}
         columns={Columns}
         rowKey="id"
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

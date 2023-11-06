@@ -22,8 +22,6 @@ const ApplyProjectGroup = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [sortedInfo, setSortedInfo] = useState({});
   const loading = useSelector((state) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
   const modalRef = useRef();
@@ -42,10 +40,8 @@ const ApplyProjectGroup = () => {
       dataIndex: 'labClassName',
       fixed: 'left',
       align: 'center',
-      key: 'labClassName',
       width: 150,
       sorter: (a: any, b: any) => a.labClassName.length - b.labClassName.length,
-      sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
     {
       title: '顺序',
@@ -58,27 +54,21 @@ const ApplyProjectGroup = () => {
       dataIndex: 'priceCode',
       align: 'center',
       width: 150,
-      key: 'priceCode',
       sorter: (a, b) => a.priceCode?.length - b.priceCode?.length,
-      sortOrder: sortedInfo.columnKey === 'priceCode' ? sortedInfo.order : null,
     },
     {
       title: '项目编码',
       dataIndex: 'reqItemCode',
       align: 'center',
       width: 150,
-      key: 'reqItemCode',
       sorter: (a, b) => a.reqItemCode.length - b.reqItemCode.length,
-      sortOrder: sortedInfo.columnKey === 'reqItemCode' ? sortedInfo.order : null,
     },
     {
       title: '项目名称',
       dataIndex: 'reqItemName',
       align: 'center',
       width: 150,
-      key: 'reqItemName',
       sorter: (a, b) => a.reqItemName.length - b.reqItemName.length,
-      sortOrder: sortedInfo.columnKey === 'reqItemName' ? sortedInfo.order : null,
     },
     {
       title: '是否组合套餐',
@@ -103,9 +93,7 @@ const ApplyProjectGroup = () => {
       dataIndex: 'defaultSampleTypeName',
       align: 'center',
       width: 150,
-      key: 'defaultSampleTypeName',
       sorter: (a, b) => a.defaultSampleTypeName.length - b.defaultSampleTypeName.length,
-      sortOrder: sortedInfo.columnKey === 'defaultSampleTypeName' ? sortedInfo.order : null,
     },
     {
       title: '禁用',
@@ -191,7 +179,8 @@ const ApplyProjectGroup = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         modalRef.current.show(record);
                       }}
                     >
@@ -243,19 +232,6 @@ const ApplyProjectGroup = () => {
     setBtnPermissions(btn);
   }, []);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setOrder(sorter);
-    setSortedInfo(sorter);
-    setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -370,7 +346,6 @@ const ApplyProjectGroup = () => {
         size={'small'}
         columns={columns}
         rowKey="id"
-        onChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

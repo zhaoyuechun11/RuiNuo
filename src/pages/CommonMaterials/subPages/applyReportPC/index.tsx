@@ -27,7 +27,6 @@ const ApplyReportPC = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sortedInfo, setSortedInfo] = useState({});
   const loading = useSelector((state) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
   const { instrList } = useSelector((state: any) => state.commonMaterials);
@@ -49,25 +48,19 @@ const ApplyReportPC = () => {
       dataIndex: 'labClassName',
       fixed: 'left',
       align: 'center',
-      key: 'labClassName',
       sorter: (a, b) => a.labClassName?.length - b.labClassName?.length,
-      sortOrder: sortedInfo.columnKey === 'labClassName' ? sortedInfo.order : null,
     },
     {
       title: '项目编号',
       dataIndex: 'itemCode',
       align: 'center',
-      key: 'itemCode',
       sorter: (a, b) => a.itemCode?.length - b.itemCode?.length,
-      sortOrder: sortedInfo.columnKey === 'itemCode' ? sortedInfo.order : null,
     },
     {
       title: '中文名称',
       dataIndex: 'itemName',
       align: 'center',
-      key: 'itemName',
       sorter: (a, b) => a.itemName?.length - b.itemName?.length,
-      sortOrder: sortedInfo.columnKey === 'itemName' ? sortedInfo.order : null,
     },
     {
       title: '缩写代号',
@@ -79,9 +72,7 @@ const ApplyReportPC = () => {
       title: '英文名称',
       dataIndex: 'enName',
       align: 'center',
-      key: 'enName',
       sorter: (a, b) => a.enName.length - b.enName.length,
-      sortOrder: sortedInfo.columnKey === 'enName' ? sortedInfo.order : null,
     },
 
     {
@@ -174,7 +165,8 @@ const ApplyReportPC = () => {
                 <>
                   {item.mark === 'edit' ? (
                     <Button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         modalRef.current.show(record);
                       }}
                     >
@@ -234,13 +226,7 @@ const ApplyReportPC = () => {
     setBtnPermissions(btn);
   }, []);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    setSortedInfo(sorter);
-  };
+
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -398,7 +384,6 @@ const ApplyReportPC = () => {
         size={'small'}
         columns={columns}
         rowKey="id"
-        onChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,

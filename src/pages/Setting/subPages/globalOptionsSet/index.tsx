@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, message, Select, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Table, Icon } from '@/components';
 import { useDispatch, useSelector, useLocation } from 'umi';
-import { downLoad, main } from '@/utils';
+import { downLoad, main, transformTree } from '@/utils';
 import EditOrAddModal from './components/editOrAddModal';
-import styles from './index.less';
+import styles from '../index.less';
 import { dictList, paramsSetExport, paramsSetDelete } from '../../models/server';
 import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
 const { Option } = Select;
@@ -15,8 +15,6 @@ const GlobalOptionsSet = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [sort, setSort] = useState('account_integral');
-  const [order, setOrder] = useState('asc');
   const loading = useSelector((state: any) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
   const addModal = useRef();
@@ -79,7 +77,7 @@ const GlobalOptionsSet = () => {
       dataIndex: 'seq',
       align: 'center',
       width: 150,
-      key: 'code',
+      key: 'seq',
       sorter: (a, b) => a.seq.length - b.seq.length,
     },
     {
@@ -89,13 +87,12 @@ const GlobalOptionsSet = () => {
       fixed: 'right',
       render: (record: { id: any }) => {
         return (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.tabale_operate_box}>
             {btnPermissions?.map((item) => {
               return (
                 <>
                   {item.mark === 'delete' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         deleteBind(record.id);
                       }}
@@ -104,7 +101,6 @@ const GlobalOptionsSet = () => {
                     </Button>
                   ) : item.mark === 'edit' ? (
                     <Button
-                      style={{ margin: '0 8px' }}
                       onClick={() => {
                         addModal.current.show(record, 'edit');
                       }}
@@ -121,43 +117,30 @@ const GlobalOptionsSet = () => {
     },
   ];
 
-  const getList = useCallback(
-    (params: any) => {
-      dispatch({
-        type: 'Setting/fetchParamsSetList',
-        payload: {
-          ...params,
-          callback: (res: ResponseData<{ list: RewardItem[]; count: number }>) => {
-            if (res.code === 200) {
-              setList(res.data.records);
-              setTotal(res.data.total);
-            }
-          },
+  const getList = (params: any) => {
+    dispatch({
+      type: 'Setting/fetchParamsSetList',
+      payload: {
+        ...params,
+        callback: (res: any) => {
+          if (res.code === 200) {
+            setList(res.data.records);
+            setTotal(res.data.total);
+          }
         },
-      });
-    },
-    [dispatch],
-  );
+      },
+    });
+  };
+
   useEffect(() => {
     getList({ pageNum, pageSize });
     getDictList();
   }, [pageNum, pageSize]);
   useEffect(() => {
-    const { btn } = main(useDetail.permissions, location.pathname);
+    const { btn } = main(transformTree(useDetail.permissions), location.pathname);
     setBtnPermissions(btn);
   }, [useDetail]);
 
-  const onTableChange = (
-    pagination: Record<string, unknown>,
-    filters: Record<string, unknown>,
-    sorter: Record<string, string>,
-  ) => {
-    console.log('pagination', pagination);
-    console.log('filters', filters);
-    console.log('sorter', sorter);
-    // setOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
-    // setSort(sorter.field);
-  };
   const pageChange = (page: React.SetStateAction<number>, size: React.SetStateAction<number>) => {
     setPageNum(page);
     setPageSize(size);
@@ -233,46 +216,43 @@ const GlobalOptionsSet = () => {
   };
   return (
     <>
-      <div className={styles.operateBtns}>
-        {btnPermissions?.map((item) => {
-          return (
-            <>
-              {item.mark === 'add' ? (
-                <Button
-                  btnType="primary"
-                  onClick={() => {
-                    addModal.current.show();
-                  }}
-                >
-                  <PlusOutlined style={{ marginRight: 4 }} />
-                  新增
-                </Button>
-              ) : item.mark === 'import' ? (
-                <Button btnType="primary" onClick={importData}>
-                  导入
-                </Button>
-              ) : item.mark === 'export' ? (
-                <Button btnType="primary" onClick={exportData}>
-                  导出
-                </Button>
-              ) : null}
-            </>
-          );
-        })}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <div className={styles.operateBtns}>
+          {btnPermissions?.map((item) => {
+            return (
+              <>
+                {item.mark === 'add' ? (
+                  <Button
+                    btnType="primary"
+                    onClick={() => {
+                      addModal.current.show();
+                    }}
+                  >
+                    <PlusOutlined style={{ marginRight: 4 }} />
+                    新增
+                  </Button>
+                ) : item.mark === 'import' ? (
+                  <Button btnType="primary" onClick={importData}>
+                    导入
+                  </Button>
+                ) : item.mark === 'export' ? (
+                  <Button btnType="primary" onClick={exportData}>
+                    导出
+                  </Button>
+                ) : null}
+              </>
+            );
+          })}
+        </div>
       </div>
-      {renderForm()}
       <Table
         columns={Columns}
         rowKey
-        // onSelectCount={(count, keys) => {
-        //   setSelectedCount(count);
-        //   setSelectedKeys(keys);
-        // }}
-        handleTableChange={onTableChange}
         loading={loading}
         pagination={{
           current: pageNum,
-          pageSize: pageSize,
+          pageSize,
           total,
           onChange: pageChange,
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,

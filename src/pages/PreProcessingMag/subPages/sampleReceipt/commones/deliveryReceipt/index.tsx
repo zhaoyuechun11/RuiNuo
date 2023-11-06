@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table } from 'antd';
+import { Table, Badge } from 'antd';
 import { deliveryReceiptList } from '../../../../models/server';
 const DeliveryReceipt = ({ mainId, subId }) => {
   const [list, setList] = useState([]);
@@ -40,7 +40,15 @@ const DeliveryReceipt = ({ mainId, subId }) => {
       render: (text: any) => {
         return (
           <span>
-            {text === 0 ? '未处理' : text === 1 ? '处理中' : text === 2 ? '已完成' : '已确认'}
+            {text === 0 ? (
+              <Badge status="default" text="未处理" />
+            ) : text === 1 ? (
+              <Badge status="processing" text="处理中" />
+            ) : text === 2 ? (
+              <Badge status="success" text="已完成" />
+            ) : (
+              <Badge status="warning" text="已确认" />
+            )}
           </span>
         );
       },
@@ -83,7 +91,7 @@ const DeliveryReceipt = ({ mainId, subId }) => {
       fixed: 'right',
     },
   ];
-  const pageChange = (page:any, pageSize:any) => {
+  const pageChange = (page: any, pageSize: any) => {
     setPageNum(page);
     setPageSize(pageSize);
   };

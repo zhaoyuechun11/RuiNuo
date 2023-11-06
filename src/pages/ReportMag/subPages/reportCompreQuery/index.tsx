@@ -28,84 +28,70 @@ const ReportCompreQuery = () => {
       dataIndex: 'reportUnitName',
       fixed: 'left',
       align: 'center',
-      width: 100,
     },
     {
       title: '姓名',
       dataIndex: 'patientName',
       aligin: 'center',
-      width: 100,
     },
     {
       title: '性别',
       dataIndex: 'sex',
       align: 'center',
-      width: 100,
     },
     {
       title: '年龄',
       dataIndex: 'age',
       align: 'center',
-      width: 100,
     },
     {
       title: '报告日期',
       dataIndex: 'labDate',
       align: 'center',
-      width: 200,
     },
     {
       title: '样本号',
       dataIndex: 'sampleNo',
       align: 'center',
-      width: 100,
     },
     {
       title: '样本条码',
       dataIndex: 'sampleBarcode',
       align: 'center',
-      width: 180,
     },
     {
       title: '送检单位',
       dataIndex: 'hospitalName',
       align: 'center',
-      width: 100,
     },
     {
       title: '送检医生',
       dataIndex: 'sendDoctor',
       align: 'center',
-      width: 100,
     },
     {
       title: '送检科室',
       dataIndex: 'sendDept',
       align: 'center',
-      width: 100,
     },
     {
       title: '采样时间',
       dataIndex: 'collectDate',
-      width: 200,
       align: 'center',
     },
     {
       title: '前处理签收时间',
       dataIndex: 'preReceiveDate',
-      width: 200,
       align: 'center',
     },
     {
       title: '审核时间',
       dataIndex: 'lastAuditDate',
-      width: 200,
       align: 'center',
     },
     {
       title: '发布日期',
       dataIndex: 'reportPublishDate',
-      width: 200,
       align: 'center',
     },
     {
@@ -153,7 +139,7 @@ const ReportCompreQuery = () => {
           </Button> */}
 
           <Button
-            type="primary"
+            btnType="primary"
             size="small"
             onClick={() => modalResultTable.current.show()}
             style={{ margin: '0px 0px 5px 0px' }}
@@ -165,7 +151,7 @@ const ReportCompreQuery = () => {
             columns={columns}
             dataSource={list}
             size="small"
-            scroll={{ x: 1300 }}
+            scroll={{ x: 'max-content' }}
             pagination={{
               current: pageNum,
               pageSize: pageSize,

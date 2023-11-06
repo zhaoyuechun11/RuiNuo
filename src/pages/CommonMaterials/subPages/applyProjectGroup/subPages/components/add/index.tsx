@@ -105,14 +105,13 @@ const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type })
       }}
       onOk={onOk}
     >
-      <Table
-        columns={columns}
-        rowKey="id"
-        dataSource={[parent]}
-        pagination={false}
-        size="small"
-        className={style.table_box}
-      />
+   
+      <div className={style.tabsTitle}>
+        <span>项目编码:</span>
+        {parent?.reqItemCode}
+        <span style={{ marginLeft: '20px' }}>项目名称:</span>
+        {parent?.reqItemName}
+      </div>
       <Transfer
         dataSource={leftListData}
         showSearch
@@ -122,6 +121,7 @@ const Add = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList, type })
         onSearch={handleSearch}
         render={(item) => (type === 1 ? item.hospitalName : type === 3 ? item.instrName : null)}
         className={style.transfer}
+        listStyle={{ height: '400px' }}
       />
     </Dialog>
   );

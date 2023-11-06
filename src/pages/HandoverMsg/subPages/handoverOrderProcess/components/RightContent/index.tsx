@@ -2,7 +2,18 @@ import React, { Component, useState } from 'react';
 import { useSelector } from 'umi';
 import { Button, Icon } from '@/components';
 import styles from './index.less';
-import { Switch, Form, Input, Select, Dropdown, Menu, Tooltip, Table, DatePicker } from 'antd';
+import {
+  Switch,
+  Form,
+  Input,
+  Select,
+  Dropdown,
+  Menu,
+  Tooltip,
+  Table,
+  DatePicker,
+  Badge,
+} from 'antd';
 const { RangePicker } = DatePicker;
 const getValue = (obj) =>
   Object.keys(obj)
@@ -590,7 +601,19 @@ const RightContent = () => {
       title: '处理状态',
       dataIndex: 'department',
       render: (text, record, index) => {
-        return <div>{text || '--'}</div>;
+        return (
+          <span>
+            {text === 0 ? (
+              <Badge status="default" text="未处理" />
+            ) : text === 1 ? (
+              <Badge status="processing" text="处理中" />
+            ) : text === 2 ? (
+              <Badge status="success" text="已完成" />
+            ) : (
+              <Badge status="warning" text="已确认" />
+            )}
+          </span>
+        );
       },
     },
     {
@@ -721,6 +744,10 @@ const RightContent = () => {
       </Form>
     );
   };
+  const pageChange = (pageNum: any, pageSize: any) => {
+    setPageNum(pageNum);
+    pageSize(pageSize);
+  };
   return (
     <>
       <div className={styles.search_bth}>
@@ -737,6 +764,16 @@ const RightContent = () => {
         dataSource={[]}
         size="small"
         scroll={{ x: 'max-content' }}
+        pagination={{
+          pageSize,
+          current: pageNum,
+          total,
+          onChange: pageChange,
+          showTotal: (total, range) => `共 ${total} 条`,
+          showQuickJumper: true,
+          pageSizeOptions: ['10', '20', '30', '40'],
+          showSizeChanger: true,
+        }}
       ></Table>
     </>
   );

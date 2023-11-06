@@ -3,7 +3,7 @@ export function dictList(params) {
   return axiosBase('/basic/dict/getList', 'get', params);
 }
 export function paramsSetList(params) {
-  return axiosBase('/basic/parameter/page', 'get', params);
+  return axiosBase('/sys/parameter/page', 'get', params);
 }
 export function paramsSetAdd(params) {
   return axiosBase('/basic/parameter/add', 'post', params);

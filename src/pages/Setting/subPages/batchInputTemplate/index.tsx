@@ -65,7 +65,7 @@ const BatchInputTemplate = () => {
       align: 'center',
       render: (record: { id: any }) => {
         return (
-          <div className={styles.action_btn}>
+          <div className={styles.tabale_operate_box}>
             <Button
               onClick={() => {
                 dispatch({
@@ -81,7 +81,6 @@ const BatchInputTemplate = () => {
               明细
             </Button>
             <Button
-              style={{ margin: '0 4px' }}
               onClick={() => {
                 modalRef.current && modalRef.current.show(record);
               }}

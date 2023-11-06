@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Form, Input, message, Tabs, Select, Table, DatePicker } from 'antd';
+import { Form, Input, message, Tabs, Select, Table, DatePicker, Badge } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon } from '@/components';
 import styles from '../index.less';
@@ -52,6 +52,21 @@ const HandoverRegistration = () => {
       title: '处理状态',
       dataIndex: 'age',
       key: 'age',
+      render: (text) => {
+        return (
+          <span>
+            {text === 0 ? (
+              <Badge status="default" text="未处理" />
+            ) : text === 1 ? (
+              <Badge status="processing" text="处理中" />
+            ) : text === 2 ? (
+              <Badge status="success" text="已完成" />
+            ) : (
+              <Badge status="warning" text="已确认" />
+            )}
+          </span>
+        );
+      },
     },
     {
       title: '提交人',

@@ -105,7 +105,7 @@ const EntryMaintenance = () => {
       width: 100,
       render: (record: { id: any }) => {
         return (
-          <div className={styles.action_btn}>
+          <div className={styles.tabale_operate_box}>
             <Button
               onClick={() => {
                 modalRef.current && modalRef.current.show(record);

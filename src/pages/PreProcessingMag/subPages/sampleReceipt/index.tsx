@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Dropdown, Menu } from 'antd';
 import { useDispatch, history } from 'umi';
 import { Button, Icon } from '@/components';
 import SingleReceipt from './commones/singleReceipt';
@@ -7,6 +7,8 @@ import BatchReceipt from './commones/batchReceipt';
 import { useLocation } from 'umi';
 import SetHeaderModal from './commones/SetHeaderModal';
 import { singleReceiptTabHeader } from '../../models/server';
+import styles from './index.less';
+import EditOrAddModal from '@/pages/HandoverMsg/subPages/handoverRegistration/components/editOrAddModal';
 const { TabPane } = Tabs;
 const SampleReceipt = () => {
   const { pathname } = useLocation();
@@ -16,6 +18,7 @@ const SampleReceipt = () => {
   const [selectedColumns, setSelectedColumns] = useState([]);
   const [receiptTableHeader, setReceiptTableHeader] = useState([]);
   const setRef = useRef();
+  const editOrAddModalRef = useRef();
   const onChange = (e: any) => {
     setActiveKey(e);
   };
@@ -99,16 +102,27 @@ const SampleReceipt = () => {
       fixed: 'right',
       align: 'center',
       render: (text: string, record: Record<string, any>) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button
-            onClick={() => {
-              history.push(
-                '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
-              );
-            }}
+        // <div style={{ display: 'flex', justifyContent: 'center' }}>
+        //   <Button
+        //     onClick={() => {
+        //       history.push(
+        //         '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+        //       );
+        //     }}
+        //   >
+        //     编辑
+        //   </Button>
+        // </div>
+        <div id="dropdown" className={styles.dropdown_content}>
+          <Dropdown
+            overlay={() => menu(record)}
+            overlayStyle={{ width: '100px' }}
+            placement="bottomCenter"
           >
-            编辑
-          </Button>
+            <div style={{ cursor: 'pointer' }}>
+              <Icon name="iconmianshirili-gengduo1" nameStyle={{ color: '#007BFF' }} />
+            </div>
+          </Dropdown>
         </div>
       ),
     };
@@ -133,6 +147,27 @@ const SampleReceipt = () => {
       },
     });
   };
+  const menu = (record: any) => (
+    <Menu>
+      <Menu.Item>
+        <span
+          onClick={() => {
+            console.log(record);
+            history.push(
+              '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
+            );
+          }}
+        >
+          编辑
+        </span>
+      </Menu.Item>
+
+      <Menu.Item>
+        <span onClick={() => editOrAddModalRef.current.show(record)}>交接</span>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <>
       <Tabs activeKey={activeKey} onChange={onChange} tabBarExtraContent={tabBar}>
@@ -140,7 +175,7 @@ const SampleReceipt = () => {
           <SingleReceipt receiptTableHeader={receiptTableHeader} />
         </TabPane>
         <TabPane tab="样本批量签收(未)" key="2">
-          <BatchReceipt receiptTableHeader={receiptTableHeader}/>
+          <BatchReceipt receiptTableHeader={receiptTableHeader} />
         </TabPane>
       </Tabs>
       <SetHeaderModal
@@ -149,6 +184,7 @@ const SampleReceipt = () => {
         columnChecked={selectedColumns}
         handleChangeColumn={changeColumn}
       />
+      <EditOrAddModal Ref={editOrAddModalRef} from="sampleReceipt" />
     </>
   );
 };

@@ -65,6 +65,7 @@ const ReceiptForm = () => {
     reqMainOrderSignForm(params).then((res: any) => {
       if (res.code === 200) {
         setList(res.data.records);
+        setTotal(res.total);
       }
     });
   };

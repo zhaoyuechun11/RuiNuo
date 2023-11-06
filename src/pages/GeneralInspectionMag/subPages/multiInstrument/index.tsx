@@ -584,7 +584,7 @@ const MultiInstrument = () => {
         </Popconfirm>
       </div>
       <Table
-        size={'middle'}
+        size={'small'}
         rowSelection={rowSelection}
         columns={columns}
         className={styles.table_box}

@@ -22,7 +22,7 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
   const [targetKeys, setTargetKeys] = useState([]);
 
   useImperativeHandle(Ref, () => ({
-    show: (val:any) => {
+    show: (val: any) => {
       dialogRef.current && dialogRef.current.show();
     },
     hide: () => {
@@ -100,16 +100,14 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
     GetBinds();
   };
   const DifProfessionList = () => {
-    getBindsList().then(
-      (res: { code: number; data: React.SetStateAction<never[]> }) => {
-        if (res.code === 200) {
-          let result = res.data
-            .map((item) => ({ ...item, key: item.id }))
-            .filter((item) => item.id !== parent.id);
-          setTransferData(result);
-        }
-      },
-    );
+    getBindsList().then((res: { code: number; data: React.SetStateAction<never[]> }) => {
+      if (res.code === 200) {
+        let result = res.data
+          .map((item) => ({ ...item, key: item.id }))
+          .filter((item) => item.id !== parent.id);
+        setTransferData(result);
+      }
+    });
     GetBinds();
   };
   const GetBinds = () => {
@@ -129,7 +127,12 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
       }}
       onOk={onOk}
     >
-      <Table columns={columns} rowKey="id" dataSource={[parent]} pagination={false}  className={style.table_box} size='small'/>
+      <div className={style.tabsTitle}>
+        <span>项目编码:</span>
+        {parent?.reqItemCode}
+        <span style={{ marginLeft: '20px' }}>项目名称:</span>
+        {parent?.reqItemName}
+      </div>
       <Form form={form} {...layout} style={{ marginTop: '20px' }}>
         <Form.Item name="comboDescribe" label="明细描述">
           <Input style={{ backgroundColor: '#ffffff' }} placeholder="请输入明细描述" />
@@ -156,6 +159,7 @@ const ComDetailsAdd = ({ Ref, refresh, title, parent }) => {
               onChange={handleChange}
               onSearch={handleSearch}
               render={(item) => item.reqItemName}
+              listStyle={{ height: '400px' }}
             />
           </Form.Item>
         )}

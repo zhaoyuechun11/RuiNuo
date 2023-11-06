@@ -12,7 +12,7 @@ import moment from 'moment';
 const { TextArea } = Input;
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
-const EditOrAddModal = ({ Ref, refresh }) => {
+const EditOrAddModal = ({ Ref, from ='',refresh }) => {
   var now1 = moment().format('YYYY-MM-DD HH:mm:ss');
   const { useDetail } = useSelector((state: any) => state.global);
   const dialogRef = useRef();

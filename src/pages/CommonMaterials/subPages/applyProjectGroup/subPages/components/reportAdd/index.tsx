@@ -23,7 +23,7 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList })
   const [defaultVal, setDefaultVal] = useState();
   const [form] = Form.useForm();
   useImperativeHandle(Ref, () => ({
-    show: (val:any) => {
+    show: (val: any) => {
       dialogRef.current && dialogRef.current.show();
       getList();
       getLeftList();
@@ -140,14 +140,20 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList })
       }}
       onOk={onOk}
     >
-      <Table
+      {/* <Table
         columns={columns}
         rowKey="id"
         dataSource={[parent]}
         pagination={false}
         className={style.table_box} 
         size='small'
-      />
+      /> */}
+      <div className={style.tabsTitle}>
+        <span>项目编码:</span>
+        {parent?.reqItemCode}
+        <span style={{ marginLeft: '20px' }}>项目名称:</span>
+        {parent?.reqItemName}
+      </div>
       <Form form={form} {...layout} style={{ marginTop: '20px' }}>
         <Form.Item label="默认值">
           <Select placeholder="请选择默认值" allowClear onChange={handleChangeSelect}>
@@ -169,9 +175,7 @@ const ReportAdd = ({ Ref, refresh, title, parent, bindsListUrl, add, leftList })
             onChange={handleChange}
             onSearch={handleSearch}
             render={(item) => item.itemName}
-            listStyle={{
-              width: 250,
-            }}
+            listStyle={{ height: '400px' }}
           />
         </Form.Item>
       </Form>

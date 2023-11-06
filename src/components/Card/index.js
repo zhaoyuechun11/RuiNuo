@@ -1,8 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component, Fragment } from 'react';
-import { connect } from 'umi';
 import style1 from './index.less';
-import { NavSwiper } from '@/components';
 import { RightCircleOutlined } from '@ant-design/icons';
 
 class Card extends Component {
@@ -52,28 +50,11 @@ class Card extends Component {
             </div>
           </div>
         ) : null}
-        {/*切换*/}
-        {/* {nav && nav.length > 0 ? (
-          isTalenter ? (
-            <Nav
-              nav={nav}
-              navId={navId}
-              isShowNum={isShowNum}
-              isShowIon={isShowIon}
-              handleChangeNav={handleChangeNav}
-            />
-          ) : (
-            <NavSwiper nav={nav} navId={navId} handleChangeNav={handleChangeNav} />
-          )
-        ) : null} */}
-        {/* <NavSwiper nav={nav} navId={navId} handleChangeNav={handleChangeNav} /> */}
+
         <Fragment>{this.props.children}</Fragment>
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {};
-}
-export default connect(mapStateToProps)(Card);
+export default Card;

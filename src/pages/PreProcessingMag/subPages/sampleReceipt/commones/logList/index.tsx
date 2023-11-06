@@ -15,6 +15,7 @@ const LogList = ({ mainId }) => {
       }
     });
   };
+
   const columns = [
     {
       title: '节点名称',

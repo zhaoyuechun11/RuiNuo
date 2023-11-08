@@ -68,3 +68,6 @@ export function instrList(params) {
 export function recipientList(params) {
   return axiosBase('/sys/user/recipientList', 'get', params);
 }
+export function getArea(params) {
+  return axiosBase('/basic/area/getAll', 'get', params);
+}

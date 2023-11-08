@@ -34,6 +34,9 @@ const ApplyProjectGroup = () => {
   const idRef = useRef();
   const [btnPermissions, setBtnPermissions] = useState([]);
   const [selectIndex, setSelectIndex] = useState(0);
+  const t = (a, b) => {
+    console.log(a.labClassName?.length - b.labClassName?.length);
+  };
   const columns = [
     {
       title: '项目类别',
@@ -41,7 +44,7 @@ const ApplyProjectGroup = () => {
       fixed: 'left',
       align: 'center',
       width: 150,
-      sorter: (a: any, b: any) => a.labClassName.length - b.labClassName.length,
+      sorter: (a, b) => t(a, b),
     },
     {
       title: '顺序',

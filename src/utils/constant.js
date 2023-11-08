@@ -417,7 +417,7 @@ export const menu = [
     children: [
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/customerServiceMsg/consultationRegistration',
         name: '咨询管理登记',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
@@ -425,7 +425,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/customerServiceMsg/consultationFormStatistics',
         name: '咨询统计',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

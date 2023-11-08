@@ -1,10 +1,6 @@
 export { default as Button } from './Button';
 
 export { default as Card } from './Card';
-
-
-export { default as NavSwiper } from './NavSwiper';
-
 export { default as Pageloading } from './Pageloading';
 
 export { default as Table } from './Table';

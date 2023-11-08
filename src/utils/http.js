@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
 // import URL from "./env";
-import global from '../models/global';
+
 import { message } from 'antd';
 import { history } from 'umi';
 axios.defaults.timeout = 600000;
@@ -143,7 +143,9 @@ function axiosBase(url, type, params) {
       url.split('/').pop() !== 'export' &&
       url !== '/lab/reqMainOrder/comprehensiveQueryOrderExport' &&
       url !== '/lab/reqMainOrder/comprehensiveQuerySplitExport' &&
-      url !== 'lab/reportMain/reportComprehensiveQueryExport'
+      url !== 'lab/reportMain/reportComprehensiveQueryExport' &&
+      url !== 'lab/consultRegister/weekStatisticsExport' &&
+      url !== 'lab/consultRegister/monthStatisticsExport'
     ) {
       axiosMain = axios.get(url, {
         params: params,

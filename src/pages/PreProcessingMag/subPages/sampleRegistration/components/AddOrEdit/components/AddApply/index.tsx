@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { Table } from '@common';
 import { Form, Input, Select, Button, Tabs, message } from 'antd';
@@ -294,15 +294,10 @@ const AddApply = ({ refs }) => {
       ...filters,
     };
 
-    //setSelectedRows([]);
-
     setPageNum(pagination.current);
     getList(params);
   };
 
-  const handleSelectRows = (rows) => {
-    setSelectedRows(rows);
-  };
   const handleSearch = (changedValues: any, allValues: undefined) => {
     searchVal.current = allValues;
     const values = {
@@ -468,23 +463,16 @@ const AddApply = ({ refs }) => {
           <Tabs defaultActiveKey="1" style={{ width: '80%' }}>
             <TabPane tab="Tab 1" key="1">
               <Form onValuesChange={handleSearch} layout="inline" form={form}>
-                <div id="labClassId">
-                  <Form.Item name="labClassId">
-                    <Select
-                      placeholder="请选择项目类别"
-                      autoComplete="off"
-                      allowClear
-                      getPopupContainer={() => document.getElementById('labClassId')}
-                    >
-                      {majorGroupData.length > 0 &&
-                        majorGroupData.map((item) => (
-                          <Option value={item.id} key={item.id}>
-                            {item.className}
-                          </Option>
-                        ))}
-                    </Select>
-                  </Form.Item>
-                </div>
+                <Form.Item name="labClassId">
+                  <Select placeholder="请选择项目类别" allowClear>
+                    {majorGroupData.length > 0 &&
+                      majorGroupData.map((item) => (
+                        <Option value={item.id} key={item.id}>
+                          {item.className}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
                 <Form.Item name="name">
                   <Input
                     placeholder="请输入项目名称"

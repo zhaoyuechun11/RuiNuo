@@ -6,8 +6,8 @@ import {
   updateHospital,
   oneLevelTypeModalSel,
   getUserList,
-  getArea,
 } from '../../../../models/server';
+import { getArea } from '@/models/server';
 const { Option } = Select;
 const EditOrAddModal = ({ Ref, refresh }) => {
   const dialogRef = useRef();
@@ -50,7 +50,6 @@ const EditOrAddModal = ({ Ref, refresh }) => {
   }));
   const onOk = () => {
     form.validateFields().then((value) => {
-      debugger;
       if (id) {
         updateHospital({
           id: id,

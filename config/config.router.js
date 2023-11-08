@@ -344,6 +344,27 @@ export default {
             },
           ],
         },
+        {
+          path: '/customerServiceMsg',
+          name: 'customerServiceMsg',
+          routes: [
+            {
+              path: '/customerServiceMsg/consultationRegistration',
+              component: '@/pages/CustomerServiceMsg/subPages/consultationRegistration',
+              title: '咨询管理登记',
+            },
+            {
+              path: '/customerServiceMsg/consultationFormStatistics',
+              component: '@/pages/CustomerServiceMsg/subPages/consultationFormStatistics',
+              title: '咨询统计',
+            },
+            {
+              path: '/handoverMsg/handoverOrderProcess',
+              component: '@/pages/HandoverMsg/subPages/handoverOrderProcess',
+              title: '交接单处理',
+            },
+          ],
+        },
       ],
     },
   ],

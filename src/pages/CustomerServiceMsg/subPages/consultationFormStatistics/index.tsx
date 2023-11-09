@@ -96,7 +96,7 @@ const ConsultationFormStatistics = () => {
       });
       combinationData.push({ ...target });
     });
-
+console.log(combinationData)
     setMonthStatisticsList(combinationData);
   };
   // 判断是否为数字
@@ -135,7 +135,9 @@ const ConsultationFormStatistics = () => {
   };
   const getTableHeader = (val) => {
     let result = Object.keys(val);
-    result.unshift('事件类型');
+    if (result.length > 0) {
+      result.unshift('事件类型');
+    }
     const columns = result.map((item, index) => {
       return {
         title: item,

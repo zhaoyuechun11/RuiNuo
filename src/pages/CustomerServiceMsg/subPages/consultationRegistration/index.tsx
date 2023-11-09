@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Form, Input, message, Tabs, Select, Table, DatePicker, Badge } from 'antd';
+import { Form, Input, message, Select, Table, DatePicker } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon } from '@/components';
 import { downLoad } from '@/utils';

@@ -152,7 +152,6 @@ const SampleReceipt = () => {
       <Menu.Item>
         <span
           onClick={() => {
-            console.log(record);
             history.push(
               '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
             );
@@ -167,6 +166,15 @@ const SampleReceipt = () => {
       </Menu.Item>
     </Menu>
   );
+  const receiptRefresh = () => {
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: activeKey === '2' ? 'receiptRefresh' : 'singleReceiptRefresh',
+        dataSource: true,
+      },
+    });
+  };
 
   return (
     <>
@@ -184,7 +192,7 @@ const SampleReceipt = () => {
         columnChecked={selectedColumns}
         handleChangeColumn={changeColumn}
       />
-      <EditOrAddModal Ref={editOrAddModalRef} from="sampleReceipt" />
+      <EditOrAddModal Ref={editOrAddModalRef} from="sampleReceipt" refresh={receiptRefresh} />
     </>
   );
 };

@@ -33,6 +33,8 @@ const preProcessingMag = {
     duplicatesNameAndNum: [],
     profilePicture: [],
     scanSignData: [],
+    receiptRefresh:false,
+    singleReceiptRefresh:false
   },
 
   effects: {

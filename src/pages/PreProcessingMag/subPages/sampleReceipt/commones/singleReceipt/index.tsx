@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'umi';
+import { useDispatch, useLocation, useSelector } from 'umi';
 import { Icon, Button } from '@/components';
-import { Table, Form, Input, message, Checkbox, Dropdown, Menu, Row, Col, Tabs, Radio } from 'antd';
+import { Table, Form, Input, Checkbox, Dropdown, Menu, Row, Col, Tabs, Radio } from 'antd';
 import { signForSingle } from '../../../../models/server';
 const { TabPane } = Tabs;
 import s from '../index.less';
@@ -11,7 +11,10 @@ import AbandonedInspection from '../abandonedInspection';
 import DeliveryReceipt from '../deliveryReceipt';
 
 const SingleReceipt = ({ receiptTableHeader }) => {
-  const { scanSignData } = useSelector((state: any) => state.preProcessingMag);
+  const { pathname } = useLocation();
+  const { scanSignData, singleReceiptRefresh } = useSelector(
+    (state: any) => state.preProcessingMag,
+  );
   const [scanForm] = Form.useForm();
   const dispatch = useDispatch();
   const [radioValue, setRadioValue] = useState(1);
@@ -22,76 +25,7 @@ const SingleReceipt = ({ receiptTableHeader }) => {
   const [subId, setSubId] = useState();
   const [clickRow, setClickRow] = useState(0);
   const giveUpCheckRef = useRef();
-  // useEffect(() => {
-  //   setSelectedColumns(receiptTableHeader);
-  // }, [receiptTableHeader]);
-  // useEffect(() => {
-  //   let listSeqs = selectedColumns.map((item: any) => {
-  //     return item.listSeq;
-  //   });
 
-  //   let sortResult = listSeqs
-  //     .sort(function (a, b) {
-  //       return a - b;
-  //     })
-  //     .filter((item) => item !== undefined);
-  //   let noSeq = [];
-  //   noSeq = selectedColumns.filter((item) => item.listSeq == undefined);
-  //   let tableFieldResult = [];
-  //   sortResult.map((item) => {
-  //     selectedColumns.map((checkItem) => {
-  //       if (checkItem.listSeq == item) {
-  //         tableFieldResult.push(checkItem);
-  //       }
-  //     });
-  //   });
-  //   if (noSeq.length > 0) {
-  //     tableFieldResult.push(...noSeq);
-  //   }
-  //   const firstColumm = tableFieldResult.splice(0, 1).map((column) => {
-  //     return {
-  //       title: column.name,
-  //       dataIndex: column.key,
-  //       responsive: ['xl', 'xxl'],
-  //       align: 'center',
-  //       fixed: 'left',
-  //       render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-  //     };
-  //   });
-  //   const Columns = tableFieldResult.map((column: any) => {
-  //     return {
-  //       title: column.name,
-  //       dataIndex: column.key,
-  //       responsive: ['xl', 'xxl'],
-  //       align: 'center',
-
-  //       render: (text: string | number) => <span>{text === 0 ? 0 : text || '-'}</span>,
-  //     };
-  //   });
-
-  //   const lastColumn = {
-  //     title: '操作',
-  //     dataIndex: 'action',
-  //     fixed: 'right',
-  //     align: 'center',
-  //     render: (text: string, record: Record<string, any>) => (
-  //       <div style={{ display: 'flex', justifyContent: 'center' }}>
-  //         <Button
-  //           onClick={() => {
-  //             history.push(
-  //               '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
-  //             );
-  //           }}
-  //         >
-  //           编辑
-  //         </Button>
-  //       </div>
-  //     ),
-  //   };
-  //   const allColumn = [...firstColumm, ...Columns, lastColumn];
-
-  //   setReceiptTableHeader(allColumn);
-  // }, [selectedColumns]);
   useEffect(() => {
     if (signList.length > 0) {
       const mergedArray = [signList, scanSignData].reduce((acc, val) => acc.concat(val), []);
@@ -109,59 +43,35 @@ const SingleReceipt = ({ receiptTableHeader }) => {
       }
     }
   }, [signList]);
+  useEffect(() => {
+    if (singleReceiptRefresh) {
+      let params = scanForm.getFieldsValue();
+      getSignForSingle({ ...params });
+    }
+  }, [singleReceiptRefresh]);
+  useEffect(() => {
+    dispatch({
+      type: 'preProcessingMag/save',
+      payload: {
+        type: 'scanSignData',
+        dataSource: [],
+      },
+    });
+  }, [pathname]);
 
   const getSignForSingle = (params) => {
     signForSingle(params).then((res) => {
       if (res.code === 200) {
-        const data = {
-          code: 200,
-          msg: '成功!',
-          success: true,
-          data: {
-            key: 31,
-            id: 31,
-            receiveBarcode: '123456789012',
-            hospitalName: '大法',
-            patientName: '发个',
-            sexName: '男',
-            age: '6岁',
-            reqItemName: '丙氨酸氨基转移酶',
-            sampleCount: 1,
-            labClassCount: 1,
-            createDate: '2023-10-26 15:00:39',
-            sourceName: '门诊',
-            creatEr: '张三',
-            collectDate: '2023-10-29 14:59:51',
-            receiveDate: '2023-11-01 15:00:03',
-            childTableContent: [
-              {
-                key: 61,
-                sampleBarcode: '123456789012',
-                sampleNo: '',
-                labClassName: '生化',
-                sampleType: '血清',
-                itemName: '丙氨酸氨基转移酶',
-                isEmer: false,
-                bloodFlag: false,
-                preReceiveDate: '2023-10-26 16:17:26',
-              },
-              {
-                key: 62,
-                sampleBarcode: '123456789012',
-                sampleNo: '',
-                labClassName: '生化',
-                sampleType: '血清',
-                itemName: '丙氨酸氨基转移酶',
-                isEmer: false,
-                bloodFlag: false,
-                preReceiveDate: '2023-10-26 16:17:26',
-              },
-            ],
-          },
-          status: 200,
-        };
-        setSignList([data.data]);
-        // setSignList([res.data]);
+        setSignList([res.data]);
+        if (singleReceiptRefresh) {
+          dispatch({
+            type: 'preProcessingMag/save',
+            payload: {
+              type: 'singleReceiptRefresh',
+              dataSource: false,
+            },
+          });
+        }
       }
     });
   };
@@ -315,9 +225,6 @@ const SingleReceipt = ({ receiptTableHeader }) => {
               </Dropdown>
               <Button btnType="primary" style={{ margin: '0 5px' }} onClick={clear}>
                 清空
-              </Button>
-              <Button btnType="primary" style={{ margin: '0 5px' }}>
-                交接
               </Button>
             </div>
           </div>

@@ -7,10 +7,13 @@ import s from '../index.less';
 import LogList from '../logList';
 import ApplyForm from '../applyForm';
 import DeliveryReceipt from '../deliveryReceipt';
+import { useSelector, useDispatch } from 'umi';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { TabPane } = Tabs;
 const BatchReceipt = ({ receiptTableHeader }) => {
+  const { receiptRefresh } = useSelector((state: any) => state.preProcessingMag);
+  const dispatch = useDispatch();
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -28,6 +31,11 @@ const BatchReceipt = ({ receiptTableHeader }) => {
     getDictList();
     batchQuery();
   }, []);
+  useEffect(() => {
+    if (receiptRefresh) {
+      batchQuery();
+    }
+  }, [receiptRefresh]);
 
   const hospital = () => {
     getHospitalList().then((res: any) => {
@@ -160,6 +168,15 @@ const BatchReceipt = ({ receiptTableHeader }) => {
         setMainId(res.data.records[0]?.id);
         setTotal(res.data.total);
         setSelectedRowKeysVal(keys);
+        if (receiptRefresh) {
+          dispatch({
+            type: 'preProcessingMag/save',
+            payload: {
+              type: 'receiptRefresh',
+              dataSource: false,
+            },
+          });
+        }
       }
     });
   };
@@ -215,7 +232,7 @@ const BatchReceipt = ({ receiptTableHeader }) => {
             <Button btnType="primary" onClick={clear}>
               清空
             </Button>
-            <Button btnType="primary">交接</Button>
+       
           </div>
           <Table
             className={s.batch_table}

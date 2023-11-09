@@ -12,6 +12,7 @@ import { downLoad } from '@/utils';
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 import styles from '../index.less';
+import s from './index.less';
 
 const ConsultationFormStatistics = () => {
   const [form] = Form.useForm();
@@ -19,9 +20,9 @@ const ConsultationFormStatistics = () => {
   const [monthStatisticsList, setMonthStatisticsList] = useState([]);
   const [monthList, setMonthList] = useState([]);
   const [weekList, setWeekList] = useState([]);
-  const [eventTypeList, setEventTypeList] = useState([]);
   const [monthStatisticsSum, setMonthStatisticsSum] = useState(0);
   const [activeKey, setActiveKey] = useState('1');
+  const [fillZerohandleList, setfFllZerohandleList] = useState([]);
   useEffect(() => {
     if (activeKey === '1') {
       getTableHeader(weekList);
@@ -41,6 +42,18 @@ const ConsultationFormStatistics = () => {
     });
     setMonthStatisticsSum(sum);
   }, [monthStatisticsList]);
+  useEffect(() => {
+    /**未匹配的填充0 */
+    for (let y = 0; y < monthStatisticsList.length; y++) {
+      for (let i = 0; i < tableHeader.length; i++) {
+        if (!Object.keys(monthStatisticsList[y]).includes(tableHeader[i].dataIndex)) {
+          monthStatisticsList[y][tableHeader[i].dataIndex] = 0;
+        }
+      }
+    }
+    setfFllZerohandleList(monthStatisticsList);
+    console.log(tableHeader, monthStatisticsList);
+  }, [tableHeader, monthStatisticsList]);
   const handleSearch = (changedValues: any, allValues: undefined) => {
     const params = {
       finishTimeStart: changedValues.finishTimeStart
@@ -69,7 +82,7 @@ const ConsultationFormStatistics = () => {
   const getDictList = (headerList) => {
     dictList({ type: 'EVENTTYPE' }).then((res) => {
       if (res.code === 200) {
-        setEventTypeList(res.data);
+       
         getMonthList(res.data, headerList);
       }
     });
@@ -96,7 +109,6 @@ const ConsultationFormStatistics = () => {
       });
       combinationData.push({ ...target });
     });
-console.log(combinationData)
     setMonthStatisticsList(combinationData);
   };
   // 判断是否为数字
@@ -141,6 +153,7 @@ console.log(combinationData)
     const columns = result.map((item, index) => {
       return {
         title: item,
+        align: 'center',
         dataIndex: item !== '事件类型' ? 'month' + index : 'type',
       };
     });
@@ -216,10 +229,10 @@ console.log(combinationData)
           </Button>
         </div>
       </div>
-      <Tabs defaultActiveKey="1" onChange={onChangeTab}>
+      <Tabs defaultActiveKey="1" onChange={onChangeTab} className={s.tabs_box}>
         <TabPane tab="周统计" key="1">
           <Table
-            dataSource={monthStatisticsList}
+            dataSource={fillZerohandleList}
             columns={tableHeader}
             pagination={false}
             summary={(pageData) => {
@@ -231,7 +244,9 @@ console.log(combinationData)
                       {monthStatisticsSum.map((item, index) => {
                         let num = index + 1;
                         return (
-                          <Table.Summary.Cell index={1}>{item['month' + num]}</Table.Summary.Cell>
+                          <Table.Summary.Cell index={index}>
+                            {item['month' + num]}
+                          </Table.Summary.Cell>
                         );
                       })}
                     </Table.Summary.Row>
@@ -243,7 +258,7 @@ console.log(combinationData)
         </TabPane>
         <TabPane tab="月统计" key="2">
           <Table
-            dataSource={monthStatisticsList}
+            dataSource={fillZerohandleList}
             columns={tableHeader}
             size="small"
             summary={(pageData) => {
@@ -255,7 +270,9 @@ console.log(combinationData)
                       {monthStatisticsSum.map((item, index) => {
                         let num = index + 1;
                         return (
-                          <Table.Summary.Cell index={1}>{item['month' + num]}</Table.Summary.Cell>
+                          <Table.Summary.Cell index={index}>
+                            {item['month' + num]}
+                          </Table.Summary.Cell>
                         );
                       })}
                     </Table.Summary.Row>

@@ -43,7 +43,7 @@ const ConsultationFormStatistics = () => {
     setMonthStatisticsSum(sum);
   }, [monthStatisticsList]);
   useEffect(() => {
-    /**未匹配的填充0 */
+    /**未匹配的月或周填充对应的字段month和值0 */
     for (let y = 0; y < monthStatisticsList.length; y++) {
       for (let i = 0; i < tableHeader.length; i++) {
         if (!Object.keys(monthStatisticsList[y]).includes(tableHeader[i].dataIndex)) {
@@ -51,10 +51,14 @@ const ConsultationFormStatistics = () => {
         }
       }
     }
+   
     setfFllZerohandleList(monthStatisticsList);
-    console.log(tableHeader, monthStatisticsList);
   }, [tableHeader, monthStatisticsList]);
-  const handleSearch = (changedValues: any, allValues: undefined) => {
+  const handleSearch = (changedValues: any) => {
+    if (!form.getFieldsValue().finishTimeStart) {
+      setfFllZerohandleList([]);
+      return;
+    }
     const params = {
       finishTimeStart: changedValues.finishTimeStart
         ? changedValues.finishTimeStart[0].format('YYYY-MM-DD HH:mm:ss')
@@ -82,12 +86,13 @@ const ConsultationFormStatistics = () => {
   const getDictList = (headerList) => {
     dictList({ type: 'EVENTTYPE' }).then((res) => {
       if (res.code === 200) {
-       
         getMonthList(res.data, headerList);
       }
     });
   };
   const getMonthList = (typeList, headerList) => {
+  
+    /**设置每一周或者每一月对应的字段month和type值 */
     let list = [];
     let result = Object.values(headerList);
     typeList.map((typeItem) => {
@@ -100,11 +105,13 @@ const ConsultationFormStatistics = () => {
         });
       });
     });
-    const groupResult = groupBy(list, 'type');
+
+    const groupResult = groupBy(list, 'type'); //对周或月进行分组
+    /**对每一组的每一条数据对象进行合并 */
     let combinationData = [];
     Object.keys(groupResult).forEach((key) => {
       let target = {};
-      groupResult[key].forEach((item, index) => {
+      groupResult[key].forEach((item) => {
         Object.assign(target, item);
       });
       combinationData.push({ ...target });
@@ -155,6 +162,7 @@ const ConsultationFormStatistics = () => {
         title: item,
         align: 'center',
         dataIndex: item !== '事件类型' ? 'month' + index : 'type',
+        fixed: item == '事件类型' ? true : false,
       };
     });
 
@@ -235,6 +243,7 @@ const ConsultationFormStatistics = () => {
             dataSource={fillZerohandleList}
             columns={tableHeader}
             pagination={false}
+            scroll={{ x: 'max-content' }}
             summary={(pageData) => {
               return (
                 <>

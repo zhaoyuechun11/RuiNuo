@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MixColLine from './components/MixColLine';
 import TabButton from './components/TabButton';
 import { Form, Input, message, Tabs, Select, Table, DatePicker, Card } from 'antd';
 import { Button, Icon } from '@/components';
 import { getData } from './helpers';
 import { chartsConfig } from './constant';
+import {
+  deliveryReceiptMonth,
+  deliveryReceiptWeek,
+  deliveryReceiptList,
+} from '../../models/server';
 import s from './index.less';
 
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 const data = [
   {
@@ -35,8 +41,8 @@ const data = [
         '\u6570\u5b57\u7269\u6d41Web\u6d4b\u8bd5,lcl_cs_job,Pcc,\u4fdd\u5b89\u4e00\u53f7,\u6d4b\u8bd5\u5de5\u7a0b\u5e08,\u7f8e\u5de5,\u6d4b\u8bd5-22,\u9ad8\u7ea7\u67b6\u6784\u5e08,\u4ea7\u54c1\u7ecf\u7406,SEM\u4e13\u5458(J10003)\u3010\u91cd\u5e86\u3011,\u5185\u63a8\u804c\u4f4dkathy,\u524d\u7aef\u67b6\u6784\u5e08,php,\u4ea7\u54c1\u7ecf\u7406\u3010\u91cd\u5e86\u3011,C\u7aef\u4ea7\u54c1\u7ecf\u7406,\u9500\u552e,\u4f1a\u8ba1\u4e8b\u52a1\u5e08\u603b\u5ba1\u5e08,\u6d4b\u8bd5-k,TTH\u8fd0\u7ef4,\u65e0\u80fd\u72c2\u6012,\u65e9\u6559\u8001\u5e08,\u9ad8\u7ea7/\u8d44\u6df1\u6d4b\u8bd5\u5de5\u7a0b\u5e08,\u6d4b\u8bd5,Java,\u82af\u7247\u9ad8\u7ea7\u5de5\u827a\u5de5\u7a0b\u5e084,\u82af\u7247\u9ad8\u7ea7\u5de5\u827a\u5de5\u7a0b\u5e081,jjj,\u5ba2\u670d\u4e3b\u7ba1',
       interviewer_name: '\u9a6c\u68a6\u6708',
       shared_count: 35,
-      feedback_count: 27,
-      pass_count: 17,
+      // feedback_count: 27,
+      // pass_count: 17,
       refuse_count: 4,
       feedback_rate: 77.140000000000001,
       pass_rate: 48.57,
@@ -923,108 +929,274 @@ const data = [
     },
   },
 ];
-
+const type = [
+  {
+    type: '事物',
+  },
+  {
+    type: '特殊要求',
+  },
+  {
+    type: '投诉',
+  },
+];
+const data1 = [
+  {
+    type: '事物',
+    value: 1,
+    x_field: 7,
+  },
+  {
+    type: '特殊要求',
+    value: 1,
+    x_field: 7,
+  },
+  {
+    type: '投诉',
+    value: 1,
+    x_field: 7,
+  },
+  {
+    type: '事物',
+    value: 1,
+    x_field: 8,
+  },
+  {
+    type: '特殊要求',
+    value: 4,
+    x_field: 9,
+  },
+  {
+    type: '投诉',
+    value: 4,
+    x_field: 12,
+  },
+];
+const processState = [
+  {
+    name: '未处理',
+    id: 0,
+  },
+  {
+    name: '处理中',
+    id: 1,
+  },
+  {
+    name: '处理完成',
+    id: 2,
+  },
+  {
+    name: '确认完成',
+    id: 3,
+  },
+];
 const HandoverProcessCount = () => {
-  const [resumeChartData, setResumeChartData] = useState(data);
+  //const [resumeChartData, setResumeChartData] = useState(data);
+  const [monthChartData, setMonthChartData] = useState([]);
+  const [weekChartData, setWeekChartData] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-
+  const [columnKeyMap, setColumnKeyMap] = useState();
+  const [weekActive, setWeekActive] = useState(true);
+  const [list, setList] = useState([]);
+  useEffect(() => {
+    // for (let i = 0; i < type.length; i++) {
+    //   type[i]['typefield' + i] = type[i].type;
+    // }
+    // let newTarget = {};
+    // type.forEach((item) => {
+    //   Object.assign(newTarget, item);
+    // });
+    // for (let i = 0; i < data1.length; i++) {
+    //   for (let y = 0; y < type.length; y++) {
+    //     if (data1[i].type === type[y].type) {
+    //       data1[i]['typefield' + y] = data1[i].num;
+    //     }
+    //   }
+    // }
+    // let result = groupBy(data1, 'month');
+    // let newData = [];
+    // Object.keys(result).forEach((key) => {
+    //   let target = {};
+    //   result[key].forEach((item) => {
+    //     Object.assign(target, item);
+    //   });
+    //   newData.push({ x_fixed: key, count: target });
+    // });
+    // setColumnKeyMap(newTarget);
+    //setResumeChartData(newData);
+    getList({ pageNum, pageSize });
+  }, [pageNum, pageSize]);
+  const groupBy = (objectArray, property) => {
+    return objectArray.reduce(function (acc, obj) {
+      let key = obj[property];
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(obj);
+      return acc;
+    }, {});
+  };
   const handleSearch = (changedValues: any, allValues: undefined) => {
-    const values = {
+    const statiasValues = {
+      startTime: allValues?.startTime ? allValues.startTime[0].format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: allValues?.startTime ? allValues.startTime[1].format('YYYY-MM-DD HH:mm:ss') : '',
+    };
+    getDeliveryReceiptMonth(statiasValues);
+    getDeliveryReceiptWeek(statiasValues);
+    const params = {
       pageNum,
       pageSize,
       ...allValues,
+      ...statiasValues,
     };
-    // getList(values);
+    getList(params);
+  };
+  const getDeliveryReceiptMonth = (params: any) => {
+    deliveryReceiptMonth(params).then((res) => {
+      if (res.code === 200) {
+        const result = res.data.map((item) => {
+          return {
+            type: item.type,
+            value: Number(item.value),
+            x_field: item.x_field,
+          };
+        });
+
+        setMonthChartData(result);
+      }
+    });
+  };
+  const getDeliveryReceiptWeek = (params: any) => {
+    deliveryReceiptWeek(params).then((res) => {
+      if (res.code === 200) {
+        const result = res.data.map((item) => {
+          return {
+            type: item.type,
+            value: Number(item.value),
+            x_field: item.x_field,
+          };
+        });
+        setWeekChartData(result);
+      }
+    });
   };
   const columns = [
     {
       title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      align: 'center',
+    },
+    {
+      title: '提交人',
+      dataIndex: 'submitByName',
+      key: 'submitByName',
+      align: 'center',
+    },
+    {
+      title: '提交部门',
+      dataIndex: 'submitDeptName',
+      key: 'submitDeptName',
+      align: 'center',
+    },
+    {
+      title: '处理类型',
+      dataIndex: 'problemTypeName',
+      key: 'problemTypeName',
+      align: 'center',
+    },
+    {
+      title: '处理部门',
+      dataIndex: 'solveDeptName',
+      key: 'solveDeptName',
+      align: 'center',
+    },
+    {
+      title: '条码',
+      dataIndex: 'receiveBarcode',
+      key: 'receiveBarcode',
+      align: 'center',
+    },
+    {
+      title: '姓名',
       dataIndex: 'name',
       key: 'name',
       align: 'center',
     },
     {
-      title: '提交人',
-      dataIndex: 'age',
-      key: 'age',
-      align: 'center',
-    },
-    {
-      title: '提交部门',
-      dataIndex: 'address',
-      key: 'address',
-      align: 'center',
-    },
-    {
-      title: '处理类型',
-      dataIndex: 'address',
-      key: 'address',
-      align: 'center',
-    },
-    {
-      title: '处理部门',
-      dataIndex: 'address',
-      key: 'address',
-      align: 'center',
-    },
-    {
-      title: '条码',
-      dataIndex: 'address',
-      key: 'address',
-      align: 'center',
-    },
-    {
-      title: '姓名',
-      dataIndex: 'address',
-      key: 'address',
-      align: 'center',
-    },
-    {
       title: '交接内容',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'submitContent',
+      key: 'submitContent',
       align: 'center',
     },
     {
       title: '反馈内容',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'solveContent',
+      key: 'solveContent',
       align: 'center',
     },
     {
       title: '送检单位',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'hospitalName',
+      key: 'hospitalName',
       align: 'center',
     },
   ];
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" style={{ marginBottom: '10px' }}>
-        <Form.Item name="preReceiveDateStart">
+        <Form.Item name="startTime">
           <RangePicker
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm"
             placeholder={['完成开始时间', '完成结束时间']}
           />
         </Form.Item>
+        <Form.Item name="status">
+          <Select placeholder="请选择处理状态" allowClear>
+            {processState.length > 0 &&
+              processState.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
       </Form>
     );
+  };
+  const getList = (params: any) => {
+    deliveryReceiptList(params).then((res) => {
+      if (res.code === 200) {
+        const result = res.data.records.map((item, index) => {
+          return {
+            index: index,
+            ...item,
+          };
+        });
+        setList(result);
+        setTotal(res.data.total);
+      }
+    });
   };
   const pageChange = (pageNum: any, pageSize: any) => {
     setPageNum(pageNum);
     pageSize(pageSize);
   };
-  const onClickTabButton = (data) => {
-    debugger;
+  const onClickTabButton = (data: any) => {
+    if (data.data.name === '按月') {
+      setWeekActive(false);
+      return;
+    }
+    setWeekActive(true);
   };
   return (
     <>
       {renderForm()}
       <Table
-        dataSource={[]}
+        dataSource={list}
         columns={columns}
         scroll={{ x: 'max-content' }}
         size="small"
@@ -1042,7 +1214,7 @@ const HandoverProcessCount = () => {
         extra={
           <TabButton
             className={s.tabbutton}
-            dataSource={['招聘中', '停止招聘']}
+            dataSource={['按周', '按月']}
             width={89}
             callback={(data) => {
               onClickTabButton({ data });
@@ -1051,15 +1223,17 @@ const HandoverProcessCount = () => {
         }
       >
         <MixColLine
-          lineData={getData(
-            resumeChartData,
-            'line',
-            'resume',
-            'name',
-            chartsConfig['resume'].lineKeys,
-          )}
-          columnData={getData(resumeChartData, 'column', 'resume', 'name')}
-          xField={chartsConfig['resume'].xField}
+          // lineData={getData(
+          //   resumeChartData,
+          //   'line',
+          //   'resume',
+          //   'name',
+          //   chartsConfig['resume'].lineKeys,
+          // )}
+
+          //columnData={getData(resumeChartData, 'column', 'resume', 'name')}
+          columnData={weekActive ? weekChartData : monthChartData}
+          xField={'x_field'}
           yField={chartsConfig['resume'].yField}
         />
       </Card>

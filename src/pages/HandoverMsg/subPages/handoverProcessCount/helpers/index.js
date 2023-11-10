@@ -69,6 +69,7 @@ export const getData = (
   primaryKey = 'name',
   lineKeys = [],
 ) => {
+  debugger
   // console.log('chartName===========', chartName);
   let result = [];
 

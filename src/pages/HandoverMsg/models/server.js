@@ -14,3 +14,9 @@ export function deliveryReceiptUpdate(params) {
 export function deliveryReceiptDelete(params) {
   return axiosBase('/lab/deliveryReceipt/delete', 'post', params);
 }
+export function deliveryReceiptMonth(params) {
+  return axiosBase('/lab/deliveryReceipt/getMonthDeliveryReceiptList', 'get', params);
+}
+export function deliveryReceiptWeek(params) {
+    return axiosBase('lab/deliveryReceipt/getWeekDeliveryReceiptList', 'get', params);
+  }

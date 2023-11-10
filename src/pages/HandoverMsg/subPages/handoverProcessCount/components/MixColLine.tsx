@@ -4,7 +4,7 @@ import style from './mixColLine.less';
 
 
 const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
- 
+ debugger
   const getTooltips = (items = [], title = '', person = '') => {
     return `
     <div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${person} ${title}</div>

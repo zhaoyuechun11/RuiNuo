@@ -50,6 +50,12 @@ const HandoverRegistration = () => {
       pageNum,
       pageSize,
       ...allValues,
+      deliveryStartTime: allValues?.deliveryStartTime
+      ? allValues.deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
+      : '',
+    deliveryEndTime: allValues?.deliveryStartTime
+      ? allValues.deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
+      : '',
     };
     getList(values);
   };

@@ -20,8 +20,8 @@ const BaseMenu = ({
       onExpand={(expandedKeys) => {
         isFunction(onExpand) && onExpand({ expandedKeys });
       }}
-      onSelect={(selectedKeys) => {
-        isFunction(onSelect) && onSelect({ selectedKeys });
+      onSelect={(selectedKeys, option) => {
+        isFunction(onSelect, option) && onSelect({ selectedKeys, option });
       }}
       // expandedKeys={306}
       // autoExpandParent={true}

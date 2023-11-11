@@ -46,6 +46,7 @@ const ConsultationFormStatistics = () => {
     /**未匹配的月或周填充对应的字段month和值0 */
     for (let y = 0; y < monthStatisticsList.length; y++) {
       for (let i = 0; i < tableHeader.length; i++) {
+        debugger
         if (!Object.keys(monthStatisticsList[y]).includes(tableHeader[i].dataIndex)) {
           monthStatisticsList[y][tableHeader[i].dataIndex] = 0;
         }

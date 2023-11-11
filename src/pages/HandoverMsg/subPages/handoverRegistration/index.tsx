@@ -3,7 +3,11 @@ import { Form, Input, message, Select, Table, DatePicker, Badge } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon } from '@/components';
 import { downLoad } from '@/utils';
-import { deliveryReceiptList, deliveryReceiptDelete } from '../../models/server';
+import {
+  deliveryReceiptList,
+  deliveryReceiptDelete,
+  deliveryReceiptExport,
+} from '../../models/server';
 import styles from '../index.less';
 import EditOrAddModal from './components/editOrAddModal';
 const { RangePicker } = DatePicker;
@@ -33,9 +37,23 @@ const HandoverRegistration = () => {
   const [list, setList] = useState([]);
   const addOrEditRef = useRef();
   const searchVal = useRef();
+  const [sort, setSort] = useState('');
+  const [order, setOrder] = useState('');
+  const [form] = Form.useForm();
   useEffect(() => {
-    getList({ pageNum, pageSize });
-  }, [pageNum, pageSize]);
+    getList({
+      pageNum,
+      pageSize,
+      [sort]: order,
+      ...form.getFieldsValue(),
+      deliveryStartTime: form.getFieldsValue()?.deliveryStartTime
+        ? form.getFieldsValue().deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      deliveryEndTime: form.getFieldsValue()?.deliveryStartTime
+        ? form.getFieldsValue().deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
+        : '',
+    });
+  }, [pageNum, pageSize, sort, order]);
   const handleSearch = (changedValues: any, allValues: undefined) => {
     searchVal.current = {
       ...allValues,
@@ -51,11 +69,11 @@ const HandoverRegistration = () => {
       pageSize,
       ...allValues,
       deliveryStartTime: allValues?.deliveryStartTime
-      ? allValues.deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
-      : '',
-    deliveryEndTime: allValues?.deliveryStartTime
-      ? allValues.deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
-      : '',
+        ? allValues.deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      deliveryEndTime: allValues?.deliveryStartTime
+        ? allValues.deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
+        : '',
     };
     getList(values);
   };
@@ -262,7 +280,7 @@ const HandoverRegistration = () => {
   };
   const renderForm = () => {
     return (
-      <Form onValuesChange={handleSearch} layout="inline">
+      <Form onValuesChange={handleSearch} layout="inline" form={form}>
         <Form.Item name="deliveryStartTime">
           <RangePicker
             showTime={{ format: 'HH:mm:ss' }}
@@ -296,11 +314,19 @@ const HandoverRegistration = () => {
     setPageSize(pageSize);
   };
   const exportData = () => {
-    consultRegisterExport({ ...searchVal.current, [sort]: order }).then((res) => {
+    deliveryReceiptExport({ ...searchVal.current, [sort]: order }).then((res) => {
       const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
       const href = URL.createObjectURL(blob);
       downLoad(href, '交接管理登记');
     });
+  };
+  const onTableChange = (
+    pagination: Record<string, unknown>,
+    filters: Record<string, unknown>,
+    sorter: Record<string, string>,
+  ) => {
+    setSort(sorter.field + 'Desc');
+    setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
   };
   return (
     <>
@@ -320,6 +346,7 @@ const HandoverRegistration = () => {
       <Table
         dataSource={list}
         columns={columns}
+        onChange={onTableChange}
         scroll={{ x: 'max-content' }}
         size="small"
         pagination={{

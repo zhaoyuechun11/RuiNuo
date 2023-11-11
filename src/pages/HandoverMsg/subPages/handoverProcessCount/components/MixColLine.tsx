@@ -2,9 +2,7 @@ import React from 'react';
 import { DualAxes } from '@ant-design/charts';
 import style from './mixColLine.less';
 
-
 const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
- debugger
   const getTooltips = (items = [], title = '', person = '') => {
     return `
     <div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${person} ${title}</div>
@@ -140,7 +138,7 @@ const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
           暂无数据
         </div>
       ) : (
-        <DualAxes  {...config} {...customConfig} />
+        <DualAxes {...config} {...customConfig} />
       )}
     </div>
   );

@@ -18,5 +18,14 @@ export function deliveryReceiptMonth(params) {
   return axiosBase('/lab/deliveryReceipt/getMonthDeliveryReceiptList', 'get', params);
 }
 export function deliveryReceiptWeek(params) {
-    return axiosBase('lab/deliveryReceipt/getWeekDeliveryReceiptList', 'get', params);
-  }
+  return axiosBase('lab/deliveryReceipt/getWeekDeliveryReceiptList', 'get', params);
+}
+export function deliveryReceiptType(params) {
+  return axiosBase('lab/deliveryReceipt/getDeliveryReceiptType', 'get', params);
+}
+export function deliveryReceiptExport(params) {
+  return axiosBase('/lab/deliveryReceipt/export', 'get', params);
+}
+export function updateDeliveryStatus(params) {
+  return axiosBase('/lab/deliveryReceipt/updateDeliveryStatus', 'post', params);
+}

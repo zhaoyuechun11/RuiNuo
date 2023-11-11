@@ -10,7 +10,7 @@ const SideMenu = (props) => {
   debugger;
   return (
     <Sider className={styles.LeftMenu}>
-      <div className={styles.LeftMenuHead}>公司组织架构1</div>
+      <div className={styles.LeftMenuHead}>全部交接内容</div>
       <Suspense fallback={<PageLoading />}>
         <BaseMenu {...props} mode="inline" />
       </Suspense>

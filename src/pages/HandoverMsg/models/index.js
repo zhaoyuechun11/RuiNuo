@@ -4,6 +4,7 @@ const HandoverMsg = {
   namespace: 'HandoverMsg',
   state: {
     tabButtonData: [],
+    leftMenuParams: {},
   },
   effects: {
     *initTabButton({ payload }, { call, put }) {

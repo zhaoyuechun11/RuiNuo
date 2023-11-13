@@ -4,13 +4,13 @@ import SideMenu from './SideMenu';
 
 const authDepartment = [
   {
-    name: '全部交接',
-    title: '全部交接',
+    name: '全部交接单',
+    title: '全部交接单',
     children: [
       {
         key: '0-0-0',
-        name: '待本部门处理交接',
-        title: '待本部分处理交接',
+        name: '待本部门处理',
+        title: '待本部分处理',
         type: 1,
         children: [
           {
@@ -41,7 +41,7 @@ const authDepartment = [
       },
       {
         key: '0-0-1',
-        title: '待本部分的交接',
+        title: '抄送本部门的',
         type: 2,
         children: [
           {
@@ -72,7 +72,7 @@ const authDepartment = [
       },
       {
         key: 0 - 0 - 2,
-        title: '本部门发起的交接',
+        title: '本部门发起的',
         type: 3,
         children: [
           {
@@ -120,12 +120,13 @@ const LeftMenu = () => {
       };
     }
     if (item.option.selectedNodes[0].type === 2) {
+      debugger;
       params = {
         copyTo: useDetail.departmentId,
         status: item.option.selectedNodes[0].status,
       };
     }
-    if (item.option.selectedNodes[0].type === 2) {
+    if (item.option.selectedNodes[0].type === 3) {
       params = {
         submitDept: useDetail.departmentId,
         status: item.option.selectedNodes[0].status,

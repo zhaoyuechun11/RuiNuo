@@ -145,6 +145,11 @@ export default {
               title: '检验仪器维护',
             },
             {
+              path: '/commonMaterials/instrProjectMaintenance',
+              component: '@/pages/CommonMaterials/subPages/instrProjectMaintenance',
+              title: '仪器项目维护',
+            },
+            {
               path: '/commonMaterials/basicData',
               component: '@/pages/CommonMaterials/subPages/basicData',
               title: '基础资料',

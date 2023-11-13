@@ -1,15 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'umi';
+import { useDispatch, useLocation, useSelector } from 'umi';
 import { Button, Icon } from '@/components';
 import styles from './index.less';
 import {
-  Switch,
   Form,
   Input,
-  Select,
-  Dropdown,
-  Menu,
-  Tooltip,
   Table,
   DatePicker,
   Badge,
@@ -27,6 +22,8 @@ import moment from 'moment';
 const { RangePicker } = DatePicker;
 
 const RightContent = () => {
+  const location = useLocation();
+  const dispatch = useDispatch();
   const loading = useSelector((state: any) => state.loading.global);
   const { leftMenuParams } = useSelector((state: any) => state.HandoverMsg);
   const [pageNum, setPageNum] = useState(1);
@@ -38,8 +35,16 @@ const RightContent = () => {
   const [sort, setSort] = useState('');
   const [order, setOrder] = useState('');
   const searchVal = useRef();
+  // const [time, setTime] = useState([
+  //   moment().day(moment().day() - 6), // 当前时间往前推一周的时间
+  //   moment(),
+  // ]);
+
   const { useDetail } = useSelector((state: any) => state.global);
   useEffect(() => {
+    form.setFieldsValue({
+      deliveryStartTime: [moment().startOf('day').subtract(6, 'days'), moment().endOf('day')],
+    });
     getDeliveryReceiptList({
       pageNum,
       pageSize,
@@ -54,6 +59,15 @@ const RightContent = () => {
       barcodeContent: form.getFieldsValue().barcodeContent,
     });
   }, [pageNum, pageSize, leftMenuParams, sort, order]);
+  useEffect(() => {
+    dispatch({
+      type: 'HandoverMsg/save',
+      payload: {
+        type: 'leftMenuParams',
+        dataSource: {},
+      },
+    });
+  }, [location.pathname]);
   const columns = [
     {
       title: '序号',
@@ -330,6 +344,7 @@ const RightContent = () => {
       }
     });
   };
+
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" form={form}>

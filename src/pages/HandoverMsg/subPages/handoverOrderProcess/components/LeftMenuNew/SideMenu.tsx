@@ -7,7 +7,6 @@ const BaseMenu = React.lazy(() => import('./BseMenu'));
 const { Sider } = Layout;
 
 const SideMenu = (props) => {
-  debugger;
   return (
     <Sider className={styles.LeftMenu}>
       <div className={styles.LeftMenuHead}>全部交接内容</div>

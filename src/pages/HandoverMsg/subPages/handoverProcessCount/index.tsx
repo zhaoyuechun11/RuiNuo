@@ -10,6 +10,7 @@ import {
   deliveryReceiptType,
 } from '../../models/server';
 import s from './index.less';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -41,8 +42,17 @@ const HandoverProcessCount = () => {
   const [weekActive, setWeekActive] = useState(true);
   const [list, setList] = useState([]);
   const [eventType, setEventType] = useState([]);
+  const [form] = Form.useForm();
+
   useEffect(() => {
-    getList({ pageNum, pageSize });
+    form.setFieldsValue({
+      startTime: [moment().startOf('day').subtract(6, 'days'), moment().endOf('day')],
+    });
+    const statiasValues = {
+      startTime: form.getFieldsValue().startTime[0].format('YYYY-MM-DD HH:mm:ss'),
+      endTime: form.getFieldsValue().startTime[1].format('YYYY-MM-DD HH:mm:ss'),
+    };
+    getList({ pageNum, pageSize, ...statiasValues });
   }, [pageNum, pageSize]);
   useEffect(() => {
     let result = weekActive
@@ -177,13 +187,19 @@ const HandoverProcessCount = () => {
       align: 'center',
     },
   ];
+
   const renderForm = () => {
     return (
-      <Form onValuesChange={handleSearch} layout="inline" style={{ marginBottom: '10px' }}>
+      <Form
+        onValuesChange={handleSearch}
+        layout="inline"
+        style={{ marginBottom: '10px' }}
+        form={form}
+      >
         <Form.Item name="startTime">
           <RangePicker
-            showTime={{ format: 'HH:mm' }}
-            format="YYYY-MM-DD HH:mm"
+            showTime={{ format: 'HH:mm:ss' }}
+            format="YYYY-MM-DD HH:mm:ss"
             placeholder={['完成开始时间', '完成结束时间']}
           />
         </Form.Item>
@@ -216,7 +232,7 @@ const HandoverProcessCount = () => {
   };
   const pageChange = (pageNum: any, pageSize: any) => {
     setPageNum(pageNum);
-    pageSize(pageSize);
+    setPageSize(pageSize);
   };
   const onClickTabButton = (data: any) => {
     if (data.data.name === '按月') {

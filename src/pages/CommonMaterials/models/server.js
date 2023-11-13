@@ -404,3 +404,24 @@ export function deleteByLabItem(params) {
 export function deleteByLabItemRef(params) {
   return axios('basic/labItemRef/deleteByLabItem', 'post', params);
 }
+export function getInstrByLabClass(params) {
+  return axios('basic/instr/getListForLabClass', 'get', params);
+}
+export function getInstrReportProject(params) {
+  return axios('/basic/instrItem/page', 'get', params);
+}
+export function getNoBindReqItem(params) {
+  return axios('/basic/labItem/getNotBindListForReqItem', 'get', params);
+}
+export function instrReqItemAdd(params) {
+  return axios('/basic/instrItem/add', 'post', params);
+}
+export function instrReqItemUpdate(params) {
+  return axios('/basic/instrItem/update', 'post', params);
+}
+export function instrReqItemDelete(params) {
+  return axios('/basic/instrItem/delete', 'post', params);
+}
+export function instrReqItemExport(params) {
+  return axios('/basic/instrItem/export', 'get', params);
+}

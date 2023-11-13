@@ -244,11 +244,11 @@ const EditOrAddModal = ({ Ref, from = '', refresh }) => {
           </Form.Item>
           <Form.Item
             name="eventType"
-            label="事件类型"
+            label="事项类型"
             className={s.compact_rignt}
-            rules={[{ required: true, message: '请选择事件类型' }]}
+            rules={[{ required: true, message: '请选择事项类型' }]}
           >
-            <Select placeholder="请选择事件类型" allowClear>
+            <Select placeholder="请选择事项类型" allowClear>
               {eventTypeList.length > 0 &&
                 eventTypeList.map((item) => (
                   <Option value={item.id} key={item.id}>

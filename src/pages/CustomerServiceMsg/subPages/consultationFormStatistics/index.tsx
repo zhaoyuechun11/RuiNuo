@@ -46,7 +46,6 @@ const ConsultationFormStatistics = () => {
     /**未匹配的月或周填充对应的字段month和值0 */
     for (let y = 0; y < monthStatisticsList.length; y++) {
       for (let i = 0; i < tableHeader.length; i++) {
-        debugger
         if (!Object.keys(monthStatisticsList[y]).includes(tableHeader[i].dataIndex)) {
           monthStatisticsList[y][tableHeader[i].dataIndex] = 0;
         }
@@ -156,14 +155,14 @@ const ConsultationFormStatistics = () => {
   const getTableHeader = (val) => {
     let result = Object.keys(val);
     if (result.length > 0) {
-      result.unshift('事件类型');
+      result.unshift('事项类型');
     }
     const columns = result.map((item, index) => {
       return {
         title: item,
         align: 'center',
-        dataIndex: item !== '事件类型' ? 'month' + index : 'type',
-        fixed: item == '事件类型' ? true : false,
+        dataIndex: item !== '事项类型' ? 'month' + index : 'type',
+        fixed: item == '事项类型' ? true : false,
       };
     });
 
@@ -245,6 +244,7 @@ const ConsultationFormStatistics = () => {
             columns={tableHeader}
             pagination={false}
             scroll={{ x: 'max-content' }}
+            size='small'
             summary={(pageData) => {
               return (
                 <>

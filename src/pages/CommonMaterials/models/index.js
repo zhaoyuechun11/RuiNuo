@@ -29,6 +29,7 @@ import {
   reportUnitList,
   reportUnitInstrList,
   reportItemBindsList,
+  getInstrReportProject,
 } from './server';
 
 import isFunction from 'lodash/isFunction';
@@ -37,8 +38,10 @@ const commonMaterials = {
   state: {
     labClass: [],
     instrId: '',
+    majorGroupId: '',
     instrList: [],
-    criticalValueList:[]
+    selectInstrName: '',
+    criticalValueList: [],
   },
   effects: {
     *fetchSecondPage({ payload }, { call }) {
@@ -189,6 +192,11 @@ const commonMaterials = {
     *fetchReportItemBindsList({ payload }, { call }) {
       const { callback, ...params } = payload;
       const response = yield call(reportItemBindsList, { ...params });
+      isFunction(callback) && callback(response);
+    },
+    *fetchGetInstrReportProject({ payload }, { call }) {
+      const { callback, ...params } = payload;
+      const response = yield call(getInstrReportProject, { ...params });
       isFunction(callback) && callback(response);
     },
   },

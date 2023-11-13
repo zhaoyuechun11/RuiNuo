@@ -10,6 +10,8 @@ import {
 } from '../../models/server';
 import styles from '../index.less';
 import EditOrAddModal from './components/editOrAddModal';
+
+import moment from 'moment';
 const { RangePicker } = DatePicker;
 const processState = [
   {
@@ -40,7 +42,11 @@ const HandoverRegistration = () => {
   const [sort, setSort] = useState('');
   const [order, setOrder] = useState('');
   const [form] = Form.useForm();
+
   useEffect(() => {
+    form.setFieldsValue({
+      deliveryStartTime: [moment().startOf('day').subtract(6, 'days'), moment().endOf('day')],
+    });
     getList({
       pageNum,
       pageSize,
@@ -101,10 +107,12 @@ const HandoverRegistration = () => {
       dataIndex: 'index',
       key: 'index',
       fixed: 'left',
+      align: 'center',
     },
     {
       title: '处理状态',
       dataIndex: 'status',
+      align: 'center',
       key: 'status',
       render: (text) => {
         return (
@@ -126,111 +134,138 @@ const HandoverRegistration = () => {
       title: '提交人',
       dataIndex: 'submitByName',
       key: 'submitByName',
+      align: 'center',
     },
     {
       title: '提交部门',
       dataIndex: 'submitDeptName',
       key: 'submitDeptName',
+      align: 'center',
     },
     {
       title: '处理类型',
       dataIndex: 'problemTypeName',
       key: 'problemTypeName',
+      align: 'center',
     },
     {
       title: '处理部门',
       dataIndex: 'solveDeptName',
       key: 'solveDeptName',
+      align: 'center',
     },
     {
       title: '条码',
       dataIndex: 'receiveBarcode',
       key: 'receiveBarcode',
+      align: 'center',
     },
     {
       title: '姓名',
       dataIndex: 'name',
       key: 'name',
+      align: 'center',
     },
     {
       title: '送检单位',
       dataIndex: 'hospitalName',
       key: 'hospitalName',
+      align: 'center',
     },
     {
       title: '交接内容',
       dataIndex: 'submitContent',
       key: 'submitContent',
+      align: 'center',
+      width: 150,
+      render: (text) => {
+        return <span>{text}</span>;
+      },
     },
     {
       title: '反馈内容',
       dataIndex: 'solveContent',
       key: 'solveContent',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
     },
     {
       title: '处理人',
       dataIndex: 'solveByName',
       key: 'solveByName',
+      align: 'center',
     },
     {
       title: '处理开始时间',
       dataIndex: 'solveTime',
       key: 'solveTime',
+      align: 'center',
       sorter: true,
     },
     {
       title: '处理结束时间',
       dataIndex: 'doneTime',
       key: 'doneTime',
+      align: 'center',
       sorter: true,
     },
     {
       title: '抄送部门1',
       dataIndex: 'copyTo1Name',
       key: 'copyTo1Name',
+      align: 'center',
     },
     {
       title: '抄送部门2',
       dataIndex: 'copyTo2Name',
       key: 'copyTo2Name',
+      align: 'center',
     },
     {
       title: '抄送部门3',
       dataIndex: 'copyTo3Name',
       key: 'copyTo3Name',
+      align: 'center',
     },
     {
       title: '紧急',
       dataIndex: 'isEmer',
       key: 'isEmer',
+      align: 'center',
       render: (text: any) => {
         return text ? '是' : '否';
       },
     },
     {
       title: '追加人',
+      align: 'center',
       dataIndex: 'appendByName',
       key: 'appendByName',
     },
     {
       title: '确认人',
+      align: 'center',
       dataIndex: 'confirmByName',
       key: 'confirmByName',
     },
     {
       title: '确认时间',
+      align: 'center',
       dataIndex: 'confirmTime',
       key: 'confirmTime',
       sorter: true,
     },
     {
       title: '提交时间',
+      align: 'center',
       dataIndex: 'submitTime',
       key: 'submitTime',
       sorter: true,
     },
     {
       title: '完成时间',
+      align: 'center',
       dataIndex: 'finishTime',
       key: 'finishTime',
       sorter: true,
@@ -278,6 +313,7 @@ const HandoverRegistration = () => {
       }
     });
   };
+
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline" form={form}>

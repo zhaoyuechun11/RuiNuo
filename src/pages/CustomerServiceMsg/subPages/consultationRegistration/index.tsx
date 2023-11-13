@@ -188,6 +188,7 @@ const ConsultationRegistration = () => {
     },
     {
       title: '操作',
+      align: 'center',
       fixed: 'right',
       render: (record: any) => {
         return (

@@ -5,24 +5,24 @@ import { Button, Icon, Confirm } from '@/components';
 import { Form, Input, message, Tabs, Select, Table } from 'antd';
 import { downLoad, main, transformTree } from '@/utils';
 import {
-  reportProjectExport,
   majorGroup,
-  reportProjectDelete,
   transferInstrList,
-  getInstrByLabClass,
+  instrReqItemDelete,
+  instrReqItemExport,
 } from '../../models/server';
 import styles from '../index.less';
 import s from './index.less';
-import EditOrAddModal from './components/editOrAddModal';
 import BatchImport from '../../commones/batchImport';
 import InstrChannelNum from './subPages/InstrChannelNum';
 import ReferenceValue from './subPages/referenceValue';
 import CriticalValue from './subPages/criticalValue';
 import Formula from './subPages/formula';
 import CommonResults from './subPages/commonResults';
-const { Option } = Select;
+import Bind from './components/bind';
+import Update from './components/update';
+
 const { TabPane } = Tabs;
-const ApplyReportPC = () => {
+const InstrProjectMaintenance = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const [pageNum, setPageNum] = useState(1);
@@ -30,8 +30,11 @@ const ApplyReportPC = () => {
   const [pageSize, setPageSize] = useState(10);
   const loading = useSelector((state) => state.loading.global);
   const { useDetail } = useSelector((state: any) => state.global);
-  const { instrList } = useSelector((state: any) => state.commonMaterials);
+  const { instrList, instrId, majorGroupId, selectInstrName } = useSelector(
+    (state: any) => state.commonMaterials,
+  );
   const modalRef = useRef();
+  const updateModalRef = useRef();
   const searchVal = useRef();
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [currentItem, setCurrentItem] = useState();
@@ -40,18 +43,30 @@ const ApplyReportPC = () => {
   const idRef = useRef();
   const [btnPermissions, setBtnPermissions] = useState([]);
   const [list, setList] = useState([]);
+  const [addInstrNameList, setAddInstrNameList] = useState([]);
   const [selectIndex, setSelectIndex] = useState(0);
-  const [instrListByLabClass, setInstrListByLabClass] = useState([]);
-
   const [activeKey, setActiveKey] = useState('0');
+  // const [selectInstrName, setSelectInstrName] = useState('');
   const columns = [
+    {
+      title: '检验仪器',
+      dataIndex: 'instrName',
+      fixed: 'left',
+      align: 'center',
+    },
+    {
+      title: '报告单元',
+      dataIndex: 'reportUnitName',
+
+      align: 'center',
+    },
     {
       title: '项目类别',
       dataIndex: 'labClassName',
-      fixed: 'left',
       align: 'center',
       sorter: (a, b) => a.labClassName?.length - b.labClassName?.length,
     },
+
     {
       title: '项目编号',
       dataIndex: 'itemCode',
@@ -144,15 +159,41 @@ const ApplyReportPC = () => {
       dataIndex: 'extCode1',
       align: 'center',
     },
-    {
-      title: '报告单元',
-      dataIndex: 'reportUnitName',
-      align: 'center',
-    },
 
     {
       title: '其他编码2',
       dataIndex: 'extCode2',
+      align: 'center',
+    },
+    {
+      title: '打印顺序',
+      dataIndex: 'seq',
+      align: 'center',
+    },
+    {
+      title: '是否质控项目',
+      dataIndex: 'qcFlag',
+      align: 'center',
+      render: (text) => {
+        return text ? '是' : '否';
+      },
+    },
+    {
+      title: '质控项目是否在用',
+      dataIndex: 'qcInuse',
+      align: 'center',
+      render: (text) => {
+        return text ? '是' : '否';
+      },
+    },
+    {
+      title: '最大CV%',
+      dataIndex: 'maxCv',
+      align: 'center',
+    },
+    {
+      title: '质控数据上报代码',
+      dataIndex: 'uploadCode',
       align: 'center',
     },
     {
@@ -162,31 +203,23 @@ const ApplyReportPC = () => {
       render: (record: { id: any }) => {
         return (
           <div className={styles.action_btn}>
-            {btnPermissions?.map((item) => {
-              return (
-                <>
-                  {item.mark === 'edit' ? (
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        modalRef.current.show(record);
-                      }}
-                    >
-                      修改
-                    </Button>
-                  ) : item.mark === 'delete' ? (
-                    <Button
-                      style={{ margin: '0 4px' }}
-                      onClick={() => {
-                        deleteCurrentItem(record.id);
-                      }}
-                    >
-                      删除
-                    </Button>
-                  ) : null}
-                </>
-              );
-            })}
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                updateModalRef.current.show(record);
+              }}
+            >
+              修改
+            </Button>
+
+            <Button
+              style={{ margin: '0 4px' }}
+              onClick={() => {
+                deleteCurrentItem(record.id);
+              }}
+            >
+              删除
+            </Button>
           </div>
         );
       },
@@ -195,7 +228,7 @@ const ApplyReportPC = () => {
 
   const getList = (params: any) => {
     dispatch({
-      type: 'commonMaterials/fetchreRortProjectList',
+      type: 'commonMaterials/fetchGetInstrReportProject',
       payload: {
         ...params,
         callback: (res: {
@@ -212,7 +245,9 @@ const ApplyReportPC = () => {
   };
 
   useEffect(() => {
-    getList({ pageNum, pageSize });
+    if (instrId) {
+      getList({ pageNum, pageSize, instrId });
+    }
     dispatch({
       type: 'commonMaterials/save',
       payload: {
@@ -221,6 +256,12 @@ const ApplyReportPC = () => {
       },
     });
   }, [pageNum, pageSize, location.pathname]);
+  useEffect(() => {
+    const result = list.map((item) => {
+      return { instrName: selectInstrName, ...item };
+    });
+    setAddInstrNameList(result);
+  }, [list]);
   useEffect(() => {
     majorGroupList();
     getInstrList();
@@ -233,15 +274,23 @@ const ApplyReportPC = () => {
     setPageSize(size);
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
-    searchVal.current = allValues;
+    const { instrId, name } = allValues;
+    searchVal.current = { instrId, name };
     const values = {
       pageNum,
       pageSize,
-      ...allValues,
+      instrId,
+      name,
     };
-    getList(values);
+    if (instrId) {
+      getList(values);
+    }
   };
   const add = () => {
+    if (!instrId || !majorGroupId) {
+      message.warning('请先选择仪器和专业哦!');
+      return;
+    }
     modalRef.current && modalRef.current.show();
   };
   const deleteCurrentItem = (id: any) => {
@@ -249,9 +298,9 @@ const ApplyReportPC = () => {
     idRef.current = id;
   };
   const handleConfirmOk = () => {
-    reportProjectDelete({ ids: [idRef.current] }).then((res: { code: number }) => {
+    instrReqItemDelete({ ids: [idRef.current] }).then((res: { code: number }) => {
       if (res.code === 200) {
-        getList({ pageNum, pageSize });
+        getList({ pageNum, pageSize, instrId });
         confirmModalRef.current.hide();
         message.success('删除成功');
       }
@@ -261,7 +310,7 @@ const ApplyReportPC = () => {
     importRef.current.show();
   };
   const exportData = () => {
-    reportProjectExport({ ...searchVal.current }).then((res) => {
+    instrReqItemExport({ ...searchVal.current }).then((res) => {
       const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
       const href = URL.createObjectURL(blob);
       downLoad(href, '报告');
@@ -282,16 +331,7 @@ const ApplyReportPC = () => {
     className = index === selectIndex ? styles.selectedRow : '';
     return className;
   };
-  const majorGroupChange = (e: any) => {
-    getInstrByLabClassList(e);
-  };
-  const getInstrByLabClassList = (val: any) => {
-    getInstrByLabClass({ labClassId: val }).then((res) => {
-      if (res.code === 200) {
-        setInstrListByLabClass(res.data);
-      }
-    });
-  };
+
   const renderForm = () => {
     return (
       <Form onValuesChange={handleSearch} layout="inline">
@@ -305,14 +345,18 @@ const ApplyReportPC = () => {
               ))}
           </Select>
         </Form.Item>
-        <Form.Item name="code">
-          <Input
-            placeholder="请输入项目编码"
-            autoComplete="off"
-            suffix={<Icon name="icongongzuotai-sousuo" />}
-            allowClear
-          />
+        <Form.Item name="instrId" label="检验仪器">
+          <Select placeholder="请选择仪器" allowClear onChange={instrChange}>
+            {instrList.map((item) => {
+              return (
+                <Option value={item.id} key={item.id}>
+                  {item.instrName}
+                </Option>
+              );
+            })}
+          </Select>
         </Form.Item>
+
         <Form.Item name="name">
           <Input
             placeholder="请输入项目名称"
@@ -337,11 +381,27 @@ const ApplyReportPC = () => {
       }
     });
   };
-  const instrChange = (e) => {
+  const instrChange = (e: any, option: any) => {
     dispatch({
       type: 'commonMaterials/save',
       payload: {
         type: 'instrId',
+        dataSource: e,
+      },
+    });
+    dispatch({
+      type: 'commonMaterials/save',
+      payload: {
+        type: 'selectInstrName',
+        dataSource: option?.children,
+      },
+    });
+  };
+  const majorGroupChange = (e: any) => {
+    dispatch({
+      type: 'commonMaterials/save',
+      payload: {
+        type: 'majorGroupId',
         dataSource: e,
       },
     });
@@ -351,7 +411,7 @@ const ApplyReportPC = () => {
       <Form layout="inline" className={styles.search_box}>
         <Form.Item name="instrId" label="检验仪器">
           <Select placeholder="请选择仪器" allowClear onChange={instrChange}>
-            {instrListByLabClass.map((item) => {
+            {instrList.map((item) => {
               return (
                 <Option value={item.id} key={item.id}>
                   {item.instrName}
@@ -372,22 +432,18 @@ const ApplyReportPC = () => {
       <div className={styles.search_bth}>
         {renderForm()}
         <div className={styles.operateBtns}>
-          {btnPermissions.map((item, index) => {
-            return item.mark === 'add' ? (
-              <Button btnType="primary" onClick={add} key={index}>
-                <PlusOutlined style={{ marginRight: 4 }} />
-                新增
-              </Button>
-            ) : item.mark === 'import' ? (
-              <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }} key={index}>
-                导入
-              </Button>
-            ) : item.mark === 'export' ? (
-              <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }} key={index}>
-                导出
-              </Button>
-            ) : null;
-          })}
+          <Button btnType="primary" onClick={add}>
+            <PlusOutlined style={{ marginRight: 4 }} />
+            绑定
+          </Button>
+
+          {/* <Button btnType="primary" onClick={importData} style={{ marginRight: 4 }} key={index}>
+            导入
+          </Button> */}
+
+          <Button btnType="primary" onClick={exportData} style={{ marginRight: 4 }}>
+            导出
+          </Button>
         </div>
       </div>
       <Table
@@ -402,7 +458,7 @@ const ApplyReportPC = () => {
           onChange: pageChange,
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
-        dataSource={list}
+        dataSource={addInstrNameList}
         rowClassName={getRowClassName}
         onRow={(record, index) => {
           return {
@@ -415,11 +471,8 @@ const ApplyReportPC = () => {
         }}
         scroll={{ x: 'max-content' }}
       />
-      <EditOrAddModal
-        Ref={modalRef}
-        majorGroupData={majorGroupData}
-        refresh={() => getList({ pageNum, pageSize })}
-      ></EditOrAddModal>
+      <Bind Ref={modalRef} refresh={() => getList({ pageNum, pageSize, instrId })}></Bind>
+      <Update Ref={updateModalRef} refresh={() => getList({ pageNum, pageSize, instrId })} />
       <BatchImport
         cRef={importRef}
         actionUrl={`${process.env.baseURL}/basic/labItem/importLabItem`}
@@ -435,7 +488,11 @@ const ApplyReportPC = () => {
           <span style={{ marginLeft: '20px' }}>项目代号:</span>
           {currentItem?.shortName || list[0]?.shortName}
         </div>
-        <div>{tabRenderForm()}</div>
+        <div>
+          <span style={{ marginLeft: '20px' }}>检验仪器:</span>
+          {selectInstrName}
+          {/* {tabRenderForm()} */}
+        </div>
       </div>
       <Tabs activeKey={activeKey} onChange={activeKeyChange}>
         <TabPane tab="仪器通道号" key="0">
@@ -470,4 +527,4 @@ const ApplyReportPC = () => {
     </>
   );
 };
-export default ApplyReportPC;
+export default InstrProjectMaintenance;

@@ -418,7 +418,7 @@ export const menu = [
       {
         key: 'setting',
         url: '/customerServiceMsg/consultationRegistration',
-        name: '咨询管理登记',
+        name: '咨询单管理',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],
@@ -426,7 +426,7 @@ export const menu = [
       {
         key: 'setting',
         url: '/customerServiceMsg/consultationFormStatistics',
-        name: '咨询统计',
+        name: '咨询单统计',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
         children: [],
@@ -468,7 +468,7 @@ export const menu = [
   {
     key: 'setting',
     url: '/setting/index',
-    name: '交接管理',
+    name: '交接单管理',
     icon: 'T8-shezhi-weixuanzhong',
     selIcon: 'T8-shezhi-xuanzhong',
     children: [
@@ -481,15 +481,15 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/handoverMsg/handoverProcessCount',
-        name: '交接处理统计',
+        url: '/handoverMsg/handoverOrderProcess',
+        name: '交接单处理',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/handoverMsg/handoverOrderProcess',
-        name: '交接单处理',
+        url: '/handoverMsg/handoverProcessCount',
+        name: '交接单统计',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
@@ -1147,7 +1147,10 @@ export const menu = [
           },
         ],
       },
-
+      {
+        url: '/commonMaterials/instrProjectMaintenance',
+        name: '仪器项目维护',
+      },
       {
         key: 'basicData',
         url: '/commonMaterials/basicData',

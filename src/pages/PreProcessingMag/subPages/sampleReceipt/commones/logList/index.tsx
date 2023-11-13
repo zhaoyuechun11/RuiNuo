@@ -22,6 +22,7 @@ const LogList = ({ mainId }) => {
       dataIndex: 'nodeName',
       key: 'nodeName',
       align: 'center',
+      fixed: 'left',
     },
     {
       title: '节点代码',
@@ -61,6 +62,7 @@ const LogList = ({ mainId }) => {
       key: 'remark',
       dataIndex: 'remark',
       align: 'center',
+      fixed: 'right',
     },
   ];
 

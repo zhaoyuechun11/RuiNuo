@@ -67,9 +67,6 @@ const EditOrAddModal = ({ Ref, from = '', refresh }) => {
         }, 500);
       }
     },
-    hide: () => {
-      dialogRef.current && dialogRef.current.hide();
-    },
   }));
   const onOk = () => {
     form.validateFields().then((value) => {
@@ -168,15 +165,7 @@ const EditOrAddModal = ({ Ref, from = '', refresh }) => {
     });
 
   return (
-    <Dialog
-      ref={dialogRef}
-      width={640}
-      title={id ? '编辑' : '新增'}
-      onCancel={() => {
-        dialogRef.current && dialogRef.current.hide();
-      }}
-      onOk={onOk}
-    >
+    <Dialog ref={dialogRef} width={640} title={id ? '编辑' : '新增'} onOk={onOk}>
       <Form layout="vertical" form={form} className={s.form_box}>
         <Form.Item name="solveDept" label="处理部门">
           <TreeSelect
@@ -203,7 +192,7 @@ const EditOrAddModal = ({ Ref, from = '', refresh }) => {
                   <Form.Item {...field} noStyle className={`formList${index}`}>
                     <TreeSelect
                       allowClear
-                      style={{ width: '90%', marginRight: '8px' }}
+                      style={{ width: '92.5%', marginRight: '8px' }}
                       placeholder="请选择抄送部门"
                       value={pid}
                       showSearch
@@ -247,27 +236,39 @@ const EditOrAddModal = ({ Ref, from = '', refresh }) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item
-          label="客户条码"
-          name="receiveBarcode"
-          rules={[{ required: true, message: '请输入客户条码值' }]}
-        >
-          <Input
-            placeholder="请输入客户条码"
-            onBlur={barcodeBlur}
-            disabled={from == 'sampleReceipt' ? true : false}
-          />
-        </Form.Item>
-        <Form.Item
-          label="客户名称"
-          name="name"
-          rules={[{ required: true, message: '请输入客户名称' }]}
-        >
-          <Input placeholder="请输入名称" disabled={from == 'sampleReceipt' ? true : false} />
-        </Form.Item>
+        <Input.Group compact>
+          <Form.Item
+            label="客户条码"
+            name="receiveBarcode"
+            rules={[{ required: true, message: '请输入客户条码值' }]}
+            className={s.compact_left}
+          >
+            <Input
+              placeholder="请输入客户条码"
+              onBlur={barcodeBlur}
+              disabled={from == 'sampleReceipt' ? true : false}
+            />
+          </Form.Item>
+          <Form.Item
+            className={s.compact_rignt}
+            label="客户名称"
+            name="name"
+            rules={[{ required: true, message: '请输入客户名称' }]}
+          >
+            <Input placeholder="请输入名称" disabled={from == 'sampleReceipt' ? true : false} />
+          </Form.Item>
+        </Input.Group>
         <Form.Item label="交接内容" name="submitContent">
           <TextArea />
         </Form.Item>
+        <Input.Group compact>
+          <Form.Item label="操作部门" name="submitDept" className={s.compact_left}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="操作人" name="submitBy" className={s.compact_rignt}>
+            <Input disabled />
+          </Form.Item>
+        </Input.Group>
         <Input.Group compact>
           <Form.Item name="isEmer" label="是否紧急" className={s.compact_left}>
             <Select placeholder="请选择是否紧急" allowClear>
@@ -277,14 +278,6 @@ const EditOrAddModal = ({ Ref, from = '', refresh }) => {
                 </Option>
               ))}
             </Select>
-          </Form.Item>
-          <Form.Item label="操作人" name="submitBy" className={s.compact_rignt}>
-            <Input disabled />
-          </Form.Item>
-        </Input.Group>
-        <Input.Group compact>
-          <Form.Item label="操作部门" name="submitDept" className={s.compact_left}>
-            <Input disabled />
           </Form.Item>
           <Form.Item label="操作时间" name="submitTime" className={s.compact_rignt}>
             <DatePicker disabled showTime />

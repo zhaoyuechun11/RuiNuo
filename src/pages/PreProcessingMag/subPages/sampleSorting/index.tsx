@@ -500,7 +500,7 @@ const SampleSorting = () => {
             rowSelection={rowSelectionSort}
             columns={columns}
             dataSource={sortList}
-            scroll={{ x: 'calc(700px + 50%)' }}
+            scroll={{ x: 'max-content'}}
             className={styles.table_box}
             footer={() => (
               <div>

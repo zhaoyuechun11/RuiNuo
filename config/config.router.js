@@ -370,6 +370,17 @@ export default {
             },
           ],
         },
+        {
+          path: '/indoorQualityControMsg',
+          name: 'indoorQualityControMsg',
+          routes: [
+            {
+              path: '/indoorQualityControMsg/qualityControlPRJ',
+              component: '@/pages/IndoorQualityControMsg/subPages/qualityControlPRJ',
+              title: '质控项目维护',
+            },
+          ],
+        },
       ],
     },
   ],

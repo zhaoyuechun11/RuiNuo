@@ -590,7 +590,7 @@ export const menu = [
     children: [
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/qualityControlPRJ',
         name: '质控项目定义',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

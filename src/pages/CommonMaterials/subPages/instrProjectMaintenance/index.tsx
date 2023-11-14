@@ -203,14 +203,14 @@ const InstrProjectMaintenance = () => {
       render: (record: { id: any }) => {
         return (
           <div className={styles.action_btn}>
-            <Button
+            {/* <Button
               onClick={(e) => {
                 e.stopPropagation();
                 updateModalRef.current.show(record);
               }}
             >
               修改
-            </Button>
+            </Button> */}
 
             <Button
               style={{ margin: '0 4px' }}
@@ -345,7 +345,7 @@ const InstrProjectMaintenance = () => {
               ))}
           </Select>
         </Form.Item>
-        <Form.Item name="instrId" label="检验仪器">
+        <Form.Item name="instrId">
           <Select placeholder="请选择仪器" allowClear onChange={instrChange}>
             {instrList.map((item) => {
               return (

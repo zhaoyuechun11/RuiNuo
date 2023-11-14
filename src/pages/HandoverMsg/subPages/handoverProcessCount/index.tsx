@@ -43,6 +43,7 @@ const HandoverProcessCount = () => {
   const [list, setList] = useState([]);
   const [eventType, setEventType] = useState([]);
   const [form] = Form.useForm();
+  const [lineData, setLineData] = useState([]);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -59,7 +60,14 @@ const HandoverProcessCount = () => {
       ? groupBy(weekChartData, 'x_field')
       : groupBy(monthChartData, 'x_field');
     let newData = [];
+    let lineDataChart = [];
     Object.keys(result).forEach((key) => {
+      lineDataChart.push({
+        rateName: '反馈率',
+        count: 0,
+        name: key,
+        person: key,
+      });
       let target = {};
       let arry = result[key].map((item) => item.type);
       for (let i = 0; i < eventType.length; i++) {
@@ -74,9 +82,11 @@ const HandoverProcessCount = () => {
           });
         }
       }
+      debugger
+      setLineData(lineDataChart);
       setHandleWeekChartData(newData);
     });
-  }, [weekChartData, eventType, monthChartData]);
+  }, [weekChartData, eventType, monthChartData,weekActive]);
   const groupBy = (objectArray, property) => {
     return objectArray.reduce(function (acc, obj) {
       let key = obj[property];
@@ -114,14 +124,26 @@ const HandoverProcessCount = () => {
   const getDeliveryReceiptMonth = (params: any) => {
     deliveryReceiptMonth(params).then((res) => {
       if (res.code === 200) {
-        setMonthChartData(res.data);
+        const result = res.data.map((item) => {
+          return {
+            name: item.x_field,
+            ...item,
+          };
+        });
+        setMonthChartData(result);
       }
     });
   };
   const getDeliveryReceiptWeek = (params: any) => {
     deliveryReceiptWeek(params).then((res) => {
+      const result = res.data.map((item) => {
+        return {
+          name: item.x_field,
+          ...item,
+        };
+      });
       if (res.code === 200) {
-        setWeekChartData(res.data);
+        setWeekChartData(result);
       }
     });
   };
@@ -272,8 +294,9 @@ const HandoverProcessCount = () => {
         }
       >
         <MixColLine
+          lineData={lineData}
           columnData={weekActive ? handleWeekChartData : monthChartData}
-          xField={'x_field'}
+          // xField={'x_field'}
           yField={chartsConfig['resume'].yField}
         />
       </Card>

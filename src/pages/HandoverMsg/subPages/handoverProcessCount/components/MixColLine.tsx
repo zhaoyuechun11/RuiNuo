@@ -1,8 +1,26 @@
 import React from 'react';
 import { DualAxes } from '@ant-design/charts';
 import style from './mixColLine.less';
+const color = ['#00B4FF', '#FFA533', '#00B852'];
 
-const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
+const MixColLine = ({ lineData = [], columnData = [] }) => {
+  debugger;
+  const customConfig = {
+    xField: 'name',
+    yField: ['count', 'value'],
+  };
+  let legendItem = [];
+  columnData.forEach((item, index) => {
+    legendItem.push({
+      name: item.type,
+      marker: {
+        symbol: 'square',
+        style: {
+          fill: color[index],
+        },
+      },
+    });
+  });
   const getTooltips = (items = [], title = '', person = '') => {
     return `
     <div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;">${person} ${title}</div>
@@ -10,12 +28,19 @@ const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
       ${items
         .map((item) => {
           const { color } = item;
-          const suffix = item.name.endsWith('率') ? '%' : '';
-          return `<li class="g2-tooltip-list-item" data-index="" style="list-style-type: none; padding: 0px; margin: 12px 0px;">
-                  <span class="g2-tooltip-marker" style="background: ${color}; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
-                  <span class="g2-tooltip-name">${item.name}</span>:
-                  <span class="g2-tooltip-value" style="display: inline-block; float: right; margin-left: 30px;">${item.value}${suffix}</span>
-                </li>`;
+          // const suffix = item.name.endsWith('率') ? '%' : '';
+          // return `<li class="g2-tooltip-list-item" data-index="" style="list-style-type: none; padding: 0px; margin: 12px 0px;">
+          //         <span class="g2-tooltip-marker" style="background: ${color}; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
+          //         <span class="g2-tooltip-name">${item.name}</span>:
+          //         <span class="g2-tooltip-value" style="display: inline-block; float: right; margin-left: 30px;">${item.value}${suffix}</span>
+          //       </li>`;
+          return item.name.endsWith('率')
+            ? ''
+            : `<li class="g2-tooltip-list-item" data-index="" style="list-style-type: none; padding: 0px; margin: 12px 0px;">
+                   <span class="g2-tooltip-marker" style="background: ${color}; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
+                   <span class="g2-tooltip-name">${item.name}</span>:
+                  <span class="g2-tooltip-value" style="display: inline-block; float: right; margin-left: 30px;">${item.value}</span>
+                 </li>`;
         })
         .join('')}
     </ul>
@@ -72,6 +97,8 @@ const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
       flipPage: true,
       // 两行分页
       maxRow: 4,
+      custom: true,
+      items: legendItem,
     },
     tooltip: {
       /*       formatter: (datum) => {
@@ -114,7 +141,7 @@ const MixColLine = ({ lineData = [], columnData = [], ...customConfig }) => {
         lineStyle: function lineStyle(_ref) {
           // console.log('lineRef', _ref);
 
-          return { lineWidth: 3 };
+          return { lineWidth: 0 };
         },
       },
       {

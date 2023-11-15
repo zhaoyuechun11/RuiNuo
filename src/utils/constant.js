@@ -597,7 +597,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/qualityControlProduct',
         name: '质控品维护',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

@@ -1,20 +1,16 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { message, Table } from 'antd';
-import { instrReqItemAdd, getNoBindReqItem } from '../../../../models/server';
-import { useSelector } from 'umi';
-import moment from 'moment';
+import { getNotBindQcListForReqItem, controlsItemAdd } from '../../../../../models/server';
 const Bind = ({ Ref, refresh }) => {
-  const { useDetail } = useSelector((state: any) => state.global);
   const dialogRef = useRef();
   const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
   const [list, setList] = useState([]);
-  const [instrId, setInstrId] = useState();
-  var now = moment().format('YYYY-MM-DD');
+  const [qcId, setQcId] = useState();
   useImperativeHandle(Ref, () => ({
-    show: (val: any) => {
-      getList({ labClassId: val?.labClassId, instrId: val?.id });
-      setInstrId(val?.id);
+    show: (labClassId: any, qcId: any) => {
+      getList({ labClassId, qcId });
+      setQcId(qcId)
       dialogRef.current && dialogRef.current.show();
     },
     hide: () => {
@@ -39,14 +35,10 @@ const Bind = ({ Ref, refresh }) => {
     },
   ];
   const onOk = () => {
-    instrReqItemAdd({
-      instrId,
+    controlsItemAdd({
+      qcId,
       itemIds: selectedRowKeysVal,
-      qcFlag: 0,
-      createBy: useDetail.id,
-      createDate: now,
-      qcInuse: 0,
-    }).then((res) => {
+    }).then((res:any) => {
       if (res.code === 200) {
         message.success('绑定成功!');
         dialogRef.current && dialogRef.current.hide();
@@ -56,7 +48,7 @@ const Bind = ({ Ref, refresh }) => {
   };
 
   const getList = (params: any) => {
-    getNoBindReqItem(params).then((res: any) => {
+    getNotBindQcListForReqItem(params).then((res: any) => {
       if (res.code === 200) {
         const result = res.data.map((item) => {
           return {

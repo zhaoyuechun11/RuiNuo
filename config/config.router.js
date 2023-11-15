@@ -379,6 +379,16 @@ export default {
               component: '@/pages/IndoorQualityControMsg/subPages/qualityControlPRJ',
               title: '质控项目维护',
             },
+            {
+              path: '/indoorQualityControMsg/qualityControlProduct',
+              component: '@/pages/IndoorQualityControMsg/subPages/qualityControlProduct',
+              title: '质控品维护',
+            },
+            {
+              path: '/indoorQualityControMsg/specimen/:id/:labClassId',
+              component: '@/pages/IndoorQualityControMsg/subPages/qualityControlProduct/specimen',
+              title: '基础资料',
+            },
           ],
         },
       ],

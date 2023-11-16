@@ -387,7 +387,12 @@ export default {
             {
               path: '/indoorQualityControMsg/specimen/:id/:labClassId',
               component: '@/pages/IndoorQualityControMsg/subPages/qualityControlProduct/specimen',
-              title: '基础资料',
+              title: '适用质控品项目',
+            },
+            {
+              path: '/indoorQualityControMsg/targetValueSetting',
+              component: '@/pages/IndoorQualityControMsg/subPages/targetValueSetting',
+              title: '适用质控品项目',
             },
           ],
         },

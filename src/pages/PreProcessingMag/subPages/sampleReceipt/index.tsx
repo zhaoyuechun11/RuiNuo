@@ -102,17 +102,6 @@ const SampleReceipt = () => {
       fixed: 'right',
       align: 'center',
       render: (text: string, record: Record<string, any>) => (
-        // <div style={{ display: 'flex', justifyContent: 'center' }}>
-        //   <Button
-        //     onClick={() => {
-        //       history.push(
-        //         '/preProcessingMag/sampleRegistration/addOrEdit/' + record.id + '/' + 'edit',
-        //       );
-        //     }}
-        //   >
-        //     编辑
-        //   </Button>
-        // </div>
         <div id="dropdown" className={styles.dropdown_content}>
           <Dropdown
             overlay={() => menu(record)}

@@ -4,16 +4,7 @@ import { message, Form, Select, Input } from 'antd';
 import { controlsItemUpdate } from '../../../../../models/server';
 import { dictList } from '@/models/server';
 const { Option } = Select;
-const qcFlag = [
-  {
-    name: '是',
-    id: 1,
-  },
-  {
-    name: '否',
-    id: 0,
-  },
-];
+
 const reportFlag = [
   {
     id: 1,

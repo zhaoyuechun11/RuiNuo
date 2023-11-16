@@ -604,7 +604,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/targetValueSetting',
         name: '质控靶值设定',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

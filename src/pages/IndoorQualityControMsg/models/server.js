@@ -2,6 +2,10 @@ import axiosBase from '@utils/http';
 export function getInstrByLabClassName(params) {
   return axiosBase('/basic/instr/getListForLabClassIdName', 'get', params);
 }
+export function getListForLabClass(params) {
+  return axiosBase('/basic/instr/getListForLabClass', 'get', params);
+}
+
 export function getNoBindReqItem(params) {
   return axiosBase('/basic/labItem/getNotBindListForReqItem', 'get', params);
 }
@@ -48,5 +52,23 @@ export function controlsItemDelete(params) {
   return axiosBase('/qc/controlsItem/delete', 'post', params);
 }
 export function controlsItemStatusChange(params) {
-    return axiosBase('/qc/controlsItem/change', 'post', params);
-  }
+  return axiosBase('/qc/controlsItem/change', 'post', params);
+}
+export function listByUserForItemTgValue(params) {
+  return axiosBase('basic/labClass/listByUserForItemTgValue', 'get', params);
+}
+export function itemTgValueList(params) {
+  return axiosBase('qc/itemTgValue/page', 'get', params);
+}
+export function itemTgValueAdd(params) {
+  return axiosBase('qc/itemTgValue/add', 'post', params);
+}
+export function itemTgValueUpdate(params) {
+  return axiosBase('qc/itemTgValue/update', 'post', params);
+}
+export function itemTgValueDelete(params) {
+  return axiosBase('qc/itemTgValue/delete', 'post', params);
+}
+export function itemTgValueStop(params) {
+  return axiosBase('qc/itemTgValue/stop', 'post', params);
+}

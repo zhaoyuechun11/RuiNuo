@@ -37,6 +37,7 @@ const QualityControlProduct = () => {
   const [total, setTotal] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const loading = useSelector((state: any) => state.loading.global);
+  const { useDetail } = useSelector((state: any) => state.global);
   const [list, setList] = useState([]);
   const [majorGroupData, setMajorGroupData] = useState([]);
   const [QCLevel, setQCLevel] = useState([]);
@@ -188,7 +189,7 @@ const QualityControlProduct = () => {
     getList(values);
   };
   const majorGroupList = () => {
-    majorGroup().then((res) => {
+    majorGroup({ userId: useDetail.id }).then((res: any) => {
       if (res.code === 200) {
         setMajorGroupData(res.data);
       }

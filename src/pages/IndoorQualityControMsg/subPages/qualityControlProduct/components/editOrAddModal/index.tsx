@@ -43,7 +43,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData, QCLevel, reportFlag }) =
           ...value,
           startDt: value.startDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
           exprieDt: value.exprieDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
-          stopDt: value.exprieDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
+          stopDt: value.stopDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
           stopUser: useDetail.id,
         }).then((res) => {
           if (res.code === 200) {
@@ -57,7 +57,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData, QCLevel, reportFlag }) =
           ...value,
           startDt: value.startDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
           exprieDt: value.exprieDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
-          stopDt: value.exprieDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
+          stopDt: value.stopDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
           stopUser: useDetail.id,
         }).then((res) => {
           if (res.code === 200) {

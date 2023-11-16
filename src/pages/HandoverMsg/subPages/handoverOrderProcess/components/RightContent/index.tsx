@@ -13,8 +13,7 @@ import {
 } from 'antd';
 import {
   deliveryReceiptList,
-  updateDeliveryStatus,
-  deliveryReceiptExport,
+ 
 } from '../../../../models/server';
 import { downLoad } from '@/utils';
 import ReverseHandoverModal from './components/reverseHandoverModal';
@@ -253,57 +252,57 @@ const RightContent = () => {
     },
   ];
   const sureHandle = (record: any) => {
-    var now = moment().format('YYYY-MM-DD HH:mm:ss');
-    updateDeliveryStatus({
-      id: record.id,
-      status: 3,
-      confirmBy: useDetail.id,
-      confirmTime: now,
-      finishTime: now,
-    }).then((res) => {
-      if (res.code === 200) {
-        message.success('接收处理成功!');
-        getDeliveryReceiptList({
-          pageNum,
-          pageSize,
-          [sort]: order,
-          ...leftMenuParams,
-          deliveryStartTime: form.getFieldsValue().deliveryStartTime
-            ? form.getFieldsValue().deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          deliveryEndTime: form.getFieldsValue().deliveryStartTime
-            ? form.getFieldsValue().deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          barcodeContent: form.getFieldsValue().barcodeContent,
-        });
-      }
-    });
+    // var now = moment().format('YYYY-MM-DD HH:mm:ss');
+    // updateDeliveryStatus({
+    //   id: record.id,
+    //   status: 3,
+    //   confirmBy: useDetail.id,
+    //   confirmTime: now,
+    //   finishTime: now,
+    // }).then((res) => {
+    //   if (res.code === 200) {
+    //     message.success('接收处理成功!');
+    //     getDeliveryReceiptList({
+    //       pageNum,
+    //       pageSize,
+    //       [sort]: order,
+    //       ...leftMenuParams,
+    //       deliveryStartTime: form.getFieldsValue().deliveryStartTime
+    //         ? form.getFieldsValue().deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
+    //         : '',
+    //       deliveryEndTime: form.getFieldsValue().deliveryStartTime
+    //         ? form.getFieldsValue().deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
+    //         : '',
+    //       barcodeContent: form.getFieldsValue().barcodeContent,
+    //     });
+    //   }
+    // });
   };
   const confirmHandle = (record: any) => {
-    var now = moment().format('YYYY-MM-DD HH:mm:ss');
-    updateDeliveryStatus({
-      id: record.id,
-      status: 1,
-      solveTime: now,
-      solveBy: useDetail.id,
-    }).then((res) => {
-      if (res.code === 200) {
-        message.success('接收处理成功!');
-        getDeliveryReceiptList({
-          pageNum,
-          pageSize,
-          [sort]: order,
-          ...leftMenuParams,
-          deliveryStartTime: form.getFieldsValue().deliveryStartTime
-            ? form.getFieldsValue().deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          deliveryEndTime: form.getFieldsValue().deliveryStartTime
-            ? form.getFieldsValue().deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          barcodeContent: form.getFieldsValue().barcodeContent,
-        });
-      }
-    });
+    // var now = moment().format('YYYY-MM-DD HH:mm:ss');
+    // updateDeliveryStatus({
+    //   id: record.id,
+    //   status: 1,
+    //   solveTime: now,
+    //   solveBy: useDetail.id,
+    // }).then((res) => {
+    //   if (res.code === 200) {
+    //     message.success('接收处理成功!');
+    //     getDeliveryReceiptList({
+    //       pageNum,
+    //       pageSize,
+    //       [sort]: order,
+    //       ...leftMenuParams,
+    //       deliveryStartTime: form.getFieldsValue().deliveryStartTime
+    //         ? form.getFieldsValue().deliveryStartTime[0].format('YYYY-MM-DD HH:mm:ss')
+    //         : '',
+    //       deliveryEndTime: form.getFieldsValue().deliveryStartTime
+    //         ? form.getFieldsValue().deliveryStartTime[1].format('YYYY-MM-DD HH:mm:ss')
+    //         : '',
+    //       barcodeContent: form.getFieldsValue().barcodeContent,
+    //     });
+    //   }
+    // });
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
     searchVal.current = {
@@ -379,17 +378,17 @@ const RightContent = () => {
     setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
   };
   const exportData = () => {
-    deliveryReceiptExport({
-      ...searchVal.current,
-      pageNum,
-      pageSize,
-      [sort]: order,
-      ...leftMenuParams,
-    }).then((res) => {
-      const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
-      const href = URL.createObjectURL(blob);
-      downLoad(href, '交接单处理');
-    });
+    // deliveryReceiptExport({
+    //   ...searchVal.current,
+    //   pageNum,
+    //   pageSize,
+    //   [sort]: order,
+    //   ...leftMenuParams,
+    // }).then((res) => {
+    //   const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    //   const href = URL.createObjectURL(blob);
+    //   downLoad(href, '交接单处理');
+    // });
   };
   return (
     <>

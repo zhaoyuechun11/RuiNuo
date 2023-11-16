@@ -96,7 +96,7 @@ const EditOrAddModal = ({ Ref, refresh, instrList, parent }) => {
               name="instrId"
               rules={[{ required: true, message: '请选择仪器' }]}
             >
-              <Select placeholder="请选择仪器" autoComplete="off" allowClear>
+              <Select placeholder="请选择仪器" allowClear>
                 {instrList.map((item) => {
                   return (
                     <Option value={item.id} key={item.id}>

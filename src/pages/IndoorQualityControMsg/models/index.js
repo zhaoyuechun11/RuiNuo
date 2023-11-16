@@ -1,9 +1,12 @@
 import { getQCList, QCItemList, controlsItemStatusChange } from './server';
 
 import isFunction from 'lodash/isFunction';
-const indoorQualityControMsg = {
-  namespace: 'indoorQualityControMsg',
-  state: {},
+const IndoorQualityControMsg = {
+  namespace: 'IndoorQualityControMsg',
+  state: {
+    leftMenuParams: {},
+    selectedInstr: {},
+  },
   effects: {
     *fetchQCList({ payload }, { call }) {
       const { callback, ...params } = payload;
@@ -21,5 +24,13 @@ const indoorQualityControMsg = {
       isFunction(callback) && callback(response);
     },
   },
+  reducers: {
+    save(state, { payload: { type, dataSource } }) {
+      return {
+        ...state,
+        [type]: dataSource,
+      };
+    },
+  },
 };
-export default indoorQualityControMsg;
+export default IndoorQualityControMsg;

@@ -1,0 +1,68 @@
+.LeftMenu {
+  padding: 0 16px;
+  overflow-x: scroll;
+  background: #ffffff;
+  border: 1px solid #cecece;
+  border-radius: 8px;
+  // min-height: 800px;
+  // height: 100vh;
+  @media screen and (min-width: 1600px) {
+    min-width: 300px !important;
+  }
+  @media screen and (min-width: 1200px) and (max-width: 1600px) {
+    min-width: 250px !important;
+  }
+  @media screen and (min-width: 992px) and (max-width: 1200px) {
+    min-width: 250px !important;
+  }
+  @media screen and (min-width: 768px) and (max-width: 992px) {
+    min-width: 200px !important;
+  }
+  :global {
+    .ant-menu-inline {
+      border-right: none;
+    }
+    .ant-menu-item {
+      &::after {
+        content: none;
+      }
+    }
+  }
+  .LeftMenuHead {
+    height: 78px;
+    padding-left: 15px;
+    color: #333333;
+    font-weight: SC;
+    font-size: 16px;
+    font-family: PingFang, PingFang-SC;
+    line-height: 78px;
+    text-align: left;
+    border-bottom: 1px solid #e5e5ea;
+  }
+  .Tree {
+    margin-top: 30px;
+    :global {
+      .ant-tree-switcher {
+        height: 48px;
+        color: #007bff;
+        line-height: 48px;
+      }
+      .ant-tree-node-content-wrapper {
+        min-height: 48px;
+        line-height: 48px;
+        background-color: #fff !important;
+        &.ant-tree-node-selected {
+          color: #007bff;
+          font-weight: 500;
+        }
+      }
+      .ant-tree-treenode {
+        height: 48px !important;
+      }
+      .ant-tree-title {
+        display: inline-block;
+        width: 304px;
+      }
+    }
+  }
+}

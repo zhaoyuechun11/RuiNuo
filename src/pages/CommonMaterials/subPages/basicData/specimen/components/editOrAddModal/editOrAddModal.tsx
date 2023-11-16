@@ -55,9 +55,7 @@ const EditOrAddModal = ({ Ref, refresh }) => {
       ref={dialogRef}
       width={640}
       title={type === 'edit' ? '编辑' : '新增'}
-      onCancel={() => {
-        dialogRef.current && dialogRef.current.hide();
-      }}
+     
       onOk={onOk}
     >
       <Form form={form} {...layout} style={{ paddingTop: '20px' }}>

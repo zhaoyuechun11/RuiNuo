@@ -7,8 +7,9 @@ import { Table } from '@/common';
 import { downLoad, transformTree, main } from '@/utils';
 import { deleteBasic, basicDataExport } from '../../../models/server';
 import styles from '../../index.less';
-import EditOrAddModal from './components/editOrAddModal';
+
 import BatchImport from '@/pages/CommonMaterials/commones/batchImport';
+import EditOrAddModal from './components/editOrAddModal/editOrAddModal';
 
 const FormItem = Form.Item;
 

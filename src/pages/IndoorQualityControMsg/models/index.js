@@ -6,6 +6,7 @@ const IndoorQualityControMsg = {
   state: {
     leftMenuParams: {},
     selectedInstr: {},
+    leftMenuParamsRules: {},
   },
   effects: {
     *fetchQCList({ payload }, { call }) {

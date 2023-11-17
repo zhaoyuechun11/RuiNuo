@@ -392,7 +392,12 @@ export default {
             {
               path: '/indoorQualityControMsg/targetValueSetting',
               component: '@/pages/IndoorQualityControMsg/subPages/targetValueSetting',
-              title: '适用质控品项目',
+              title: '质控靶值设定',
+            },
+            {
+              path: '/indoorQualityControMsg/qualityControlRules',
+              component: '@/pages/IndoorQualityControMsg/subPages/qualityControlRules',
+              title: '质控规则设置',
             },
           ],
         },

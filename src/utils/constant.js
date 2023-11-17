@@ -625,15 +625,8 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
-        name: '质控规则(仪器)',
-        icon: 'T8-shezhi-weixuanzhong',
-        selIcon: 'T8-shezhi-xuanzhong',
-      },
-      {
-        key: 'setting',
-        url: '/setting/index',
-        name: '质控规则(项目)',
+        url: '/indoorQualityControMsg/qualityControlRules',
+        name: '质控规则',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },

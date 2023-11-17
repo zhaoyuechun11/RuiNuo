@@ -27,7 +27,7 @@ const RightContent = () => {
     if (leftMenuParams?.labClassId) {
       getInstrListForLabClass({ labClassId: leftMenuParams?.labClassId });
     }
-  }, [pageNum, pageSize, leftMenuParams]);
+  }, []);
   useEffect(() => {
     dispatch({
       type: 'IndoorQualityControMsg/save',

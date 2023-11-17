@@ -72,3 +72,21 @@ export function itemTgValueDelete(params) {
 export function itemTgValueStop(params) {
   return axiosBase('qc/itemTgValue/stop', 'post', params);
 }
+export function getInstrByClassName(params) {
+  return axiosBase('basic/labClass/listLabClassInstr', 'get', params);
+}
+export function getRuleSetingList(params) {
+  return axiosBase('qc/rule/page', 'get', params);
+}
+export function getItemByInstr(params) {
+  return axiosBase('basic/instrItem/getInstrItemList', 'get', params);
+}
+export function ruleSettingAdd(params) {
+  return axiosBase('qc/rule/add', 'post', params);
+}
+export function ruleSettingDelete(params) {
+  return axiosBase('/qc/rule/delete', 'post', params);
+}
+export function ruleSettingUpdate(params) {
+  return axiosBase('qc/rule/update', 'post', params);
+}

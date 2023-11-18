@@ -34,18 +34,18 @@ const RulesBindItem = ({ ruleList=[] }) => {
   const [form] = Form.useForm();
   const [itemList, setItemList] = useState([]);
 
-    useEffect(() => {
-      if (leftMenuParamsRules?.instrId) {
-        getItemList({ instrId: leftMenuParamsRules?.instrId });
-        getList({
-          pageNum,
-          pageSize,
-          instrId: leftMenuParamsRules.instrId,
-          ...form.getFieldsValue(),
-          startDt: form.getFieldsValue().startDt?.format('YYYY-MM-DD'),
-        });
-      }
-    }, [leftMenuParamsRules?.instrId, pageNum, pageSize]);
+    // useEffect(() => {
+    //   if (leftMenuParamsRules?.instrId) {
+    //     getItemList({ instrId: leftMenuParamsRules?.instrId });
+    //     getList({
+    //       pageNum,
+    //       pageSize,
+    //       instrId: leftMenuParamsRules.instrId,
+    //       ...form.getFieldsValue(),
+    //       startDt: form.getFieldsValue().startDt?.format('YYYY-MM-DD'),
+    //     });
+    //   }
+    // }, [leftMenuParamsRules?.instrId, pageNum, pageSize]);
 
   const getList = (params: any) => {
     getRuleSetingList(params).then((res) => {
@@ -195,7 +195,7 @@ const RulesBindItem = ({ ruleList=[] }) => {
         </div>
       </div>
       <Table
-        dataSource={list}
+        dataSource={ruleList}
         columns={columns}
         size="small"
         pagination={{

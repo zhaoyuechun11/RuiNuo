@@ -90,3 +90,21 @@ export function ruleSettingDelete(params) {
 export function ruleSettingUpdate(params) {
   return axiosBase('qc/rule/update', 'post', params);
 }
+export function listWithInstr(params) {
+  return axiosBase('basic/labClass/listWithInstr', 'get', params);
+}
+export function convertRuleList(params) {
+  return axiosBase('qc/convertRule/page', 'get', params);
+}
+export function getQcListForInstr(params) {
+  return axiosBase('basic/labItem/getQcListForInstr', 'get', params);
+}
+export function convertRuleAdd(params) {
+  return axiosBase('qc/convertRule/add', 'post', params);
+}
+export function convertRuleUpdate(params) {
+  return axiosBase('qc/convertRule/update', 'post', params);
+}
+export function convertRuleDelete(params) {
+  return axiosBase('qc/convertRule/delete', 'post', params);
+}

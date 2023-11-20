@@ -5,7 +5,7 @@ import { useDispatch, useSelector, history } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import { majorGroup, dictList } from '@/models/server';
 import { downLoad, main, transformTree } from '@/utils';
-import { QCDelete, QCExport } from '../../models/server';
+import { QCDelete, QCExport, getQCList } from '../../models/server';
 
 import styles from './index.less';
 import EditOrAddModal from './components/editOrAddModal';
@@ -111,7 +111,7 @@ const QualityControlProduct = () => {
       dataIndex: 'stopUserName',
     },
     {
-      title: '是否存在报告依据',
+      title: '报告依据',
       align: 'center',
       dataIndex: 'checkReportFlag',
       render: (text: any) => {
@@ -153,17 +153,11 @@ const QualityControlProduct = () => {
     });
   };
   const getList = (params: any) => {
-    dispatch({
-      type: 'indoorQualityControMsg/fetchQCList',
-      payload: {
-        ...params,
-        callback: (res: any) => {
-          if (res.code === 200) {
-            setList(res.data.records);
-            setTotal(res.data.total);
-          }
-        },
-      },
+    getQCList(params).then((res) => {
+      if (res.code == 200) {
+        setList(res.data.records);
+        setTotal(res.data.total);
+      }
     });
   };
 

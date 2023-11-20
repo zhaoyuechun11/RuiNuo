@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useLocation, useSelector } from 'umi';
+import { useDispatch, useSelector } from 'umi';
 import { Button, Icon } from '@/components';
 import styles from './index.less';
 import { Form, Select, Table, message, Menu, Dropdown } from 'antd';
@@ -9,7 +9,6 @@ import ReverseHandoverModal from './components/reverseHandoverModal';
 import StopTimeModal from './components/stopTimeModal';
 const { Option } = Select;
 const RightContent = () => {
-  const location = useLocation();
   const dispatch = useDispatch();
   const loading = useSelector((state: any) => state.loading.global);
   const { leftMenuParams, selectedInstr } = useSelector(
@@ -23,45 +22,47 @@ const RightContent = () => {
   const reverseHandoverModalRef = useRef();
   const stopTimeModalRef = useRef();
   const [instrList, setInstrList] = useState([]);
+
   useEffect(() => {
     if (leftMenuParams?.labClassId) {
+      form.resetFields();
       getInstrListForLabClass({ labClassId: leftMenuParams?.labClassId });
     }
-  }, []);
+  }, [leftMenuParams?.labClassId]);
   useEffect(() => {
-    dispatch({
-      type: 'IndoorQualityControMsg/save',
-      payload: {
-        type: 'leftMenuParams',
-        dataSource: {},
-      },
-    });
+    if (form.getFieldsValue().instrId && leftMenuParams.itemId) {
+      getList({
+        pageNum,
+        pageSize,
+        ...form.getFieldsValue(),
+        itemId: leftMenuParams.itemId,
+        qcId: leftMenuParams.qcId,
+      });
+      return;
+    }
+    setList([]);
+  }, [leftMenuParams?.itemId, form.getFieldsValue().instrId]);
 
-    dispatch({
-      type: 'IndoorQualityControMsg/save',
-      payload: {
-        type: 'selectedInstr',
-        dataSource: {},
-      },
-    });
-  }, [location.pathname]);
   const getInstrListForLabClass = (params: any) => {
     getListForLabClass(params).then((res: any) => {
       form.setFieldsValue({ instrId: res.data[0].id });
       setInstrList(res.data);
-      getList({
-        pageNum,
-        pageSize,
-        instrId: res.data[0].id,
-        itemId: leftMenuParams.itemId,
-        qcId: leftMenuParams.qcId,
-      });
-
       dispatch({
         type: 'IndoorQualityControMsg/save',
         payload: {
           type: 'selectedInstr',
           dataSource: res.data[0],
+        },
+      });
+      dispatch({
+        type: 'IndoorQualityControMsg/save',
+        payload: {
+          type: 'leftMenuParams',
+          dataSource: {
+            ...leftMenuParams,
+            labClassId: '',
+       
+          },
         },
       });
     });

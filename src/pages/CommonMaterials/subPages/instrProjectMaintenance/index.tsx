@@ -203,14 +203,14 @@ const InstrProjectMaintenance = () => {
       render: (record: { id: any }) => {
         return (
           <div className={styles.action_btn}>
-            {/* <Button
+            <Button
               onClick={(e) => {
                 e.stopPropagation();
                 updateModalRef.current.show(record);
               }}
             >
               修改
-            </Button> */}
+            </Button>
 
             <Button
               style={{ margin: '0 4px' }}

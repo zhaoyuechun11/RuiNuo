@@ -26,7 +26,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData, QCLevel, reportFlag }) =
           exprieDt: moment(record.exprieDt),
           stopDt: moment(record.stopDt),
           stopUser: useDetail.name,
-          checkReportFlag:record.checkReportFlag?1:0
+          checkReportFlag: record.checkReportFlag ? 1 : 0,
         });
         setId(record.id);
       } else {
@@ -187,11 +187,7 @@ const EditOrAddModal = ({ Ref, refresh, majorGroupData, QCLevel, reportFlag }) =
         </Row>
         <Row>
           <Col span={11}>
-            <Form.Item
-              name="stopDt"
-              label="停用日期"
-              rules={[{ required: true, message: '请选择停用日期' }]}
-            >
+            <Form.Item name="stopDt" label="停用日期">
               <DatePicker format="YYYY-MM-DD" placeholder="请选择停用日期" />
             </Form.Item>
           </Col>

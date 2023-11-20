@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, Icon, BackButton } from '@/components';
 
 import { transformTree, main } from '@/utils';
-import { controlsItemDelete } from '../../../models/server';
+import { controlsItemDelete, QCItemList } from '../../../models/server';
 import styles from '../index.less';
 import Bind from './components/bind';
 import Update from './components/update';
@@ -33,17 +33,11 @@ const Specimen = () => {
     setBtnPermissions(btn);
   }, [useDetail]);
   const getList = (param: any) => {
-    dispatch({
-      type: 'indoorQualityControMsg/fetchQCItemList',
-      payload: {
-        ...param,
-        callback: (res: any) => {
-          if (res.code === 200) {
-            setList(res.data.records);
-            setTotal(res.data.total);
-          }
-        },
-      },
+    QCItemList(param).then((res) => {
+      if (res.code === 200) {
+        setList(res.data.records);
+        setTotal(res.data.total);
+      }
     });
   };
   const Columns = [

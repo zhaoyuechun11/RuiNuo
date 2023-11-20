@@ -34,6 +34,8 @@ const RightContent = () => {
   const [columnsItem, setColumnsItem] = useState([]);
   const [activeTab, setActiveTab] = useState([]);
   const [itemList, setItemList] = useState([]);
+  const [sort, setSort] = useState('');
+  const [order, setOrder] = useState('');
   useEffect(() => {
     dispatch({
       type: 'IndoorQualityControMsg/save',
@@ -51,10 +53,10 @@ const RightContent = () => {
         instrId: leftMenuParamsRules.instrId,
         ...form.getFieldsValue(),
         startDt: form.getFieldsValue().startDt?.format('YYYY-MM-DD'),
+        [sort]: order,
       });
     }
-   
-  }, [pageNum, pageSize, leftMenuParamsRules?.instrId]);
+  }, [pageNum, pageSize, leftMenuParamsRules?.instrId, sort, order]);
   const columns = [
     {
       title: '规则ID',
@@ -65,6 +67,7 @@ const RightContent = () => {
       title: '仪器',
       dataIndex: 'instrCode',
       align: 'center',
+      sorter: true,
     },
     {
       title: '规则大类',
@@ -200,6 +203,7 @@ const RightContent = () => {
         title: '项目代号',
         dataIndex: 'itemCode',
         align: 'center',
+        sorter: true,
         render: (text: any) => {
           return text ? text : '-';
         },
@@ -216,12 +220,20 @@ const RightContent = () => {
       </Button>
     </div>
   );
-
+  const onTableChange = (
+    pagination: Record<string, unknown>,
+    filters: Record<string, unknown>,
+    sorter: Record<string, string>,
+  ) => {
+    setSort(sorter.field + 'Desc');
+    setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
+  };
   return (
     <>
       <Tabs defaultActiveKey="1" onChange={changeTab} tabBarExtraContent={tabBar}>
         <TabPane tab="质控规则到仪器" key="1">
           <Table
+            onChange={onTableChange}
             dataSource={list}
             columns={columns}
             size="small"
@@ -237,6 +249,7 @@ const RightContent = () => {
         <TabPane tab="质控规则到项目" key="2">
           {/* <RulesBindItem ruleList={list} /> */}
           <Table
+            onChange={onTableChange}
             dataSource={list}
             columns={columnsItem}
             size="small"

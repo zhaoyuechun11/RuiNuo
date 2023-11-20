@@ -31,7 +31,7 @@ const ReverseHandoverModal = ({ Ref, refresh }) => {
         form.setFieldsValue({
           ...val,
           stopUser: useDetail.name,
-          itemId: leftMenuParams.title.split(' ')[0],
+          itemId: leftMenuParams?.title.split(' ')[0],
           instrId: selectedInstr.instrCode,
           qcId: leftMenuParams.qcId,
           startDt: moment(val.startDt, 'YYYY-MM-DD'),
@@ -43,7 +43,7 @@ const ReverseHandoverModal = ({ Ref, refresh }) => {
       form.setFieldsValue({
         startDt: moment(now1, 'YYYY-MM-DD'),
         stopUser: useDetail.name,
-        itemId: leftMenuParams.title.split(' ')[0],
+        itemId: leftMenuParams.title?.split(' ')[0],
         instrId: selectedInstr.instrCode,
         qcId: leftMenuParams.qcId,
       });
@@ -99,9 +99,10 @@ const ReverseHandoverModal = ({ Ref, refresh }) => {
       stopDt: value.stopDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
       stopUser: useDetail.id,
       instrId: selectedInstr.id,
-      itemId: Number(leftMenuParams.key),
+      itemId: Number(leftMenuParams.itemId),
     };
-    itemTgValueAdd(...params).then((res) => {
+
+    itemTgValueAdd({ ...params }).then((res) => {
       if (res.code === 200) {
         message.success('添加成功!');
         dialogRef.current && dialogRef.current.hide();
@@ -261,11 +262,7 @@ const ReverseHandoverModal = ({ Ref, refresh }) => {
           </Col>
           <Col span={2}></Col>
           <Col span={11}>
-            <Form.Item
-              name="stopDt"
-              label="停用日期"
-              rules={[{ required: true, message: '请选择停用日期' }]}
-            >
+            <Form.Item name="stopDt" label="停用日期">
               <DatePicker format="YYYY-MM-DD" placeholder="请选择停用日期" />
             </Form.Item>
           </Col>

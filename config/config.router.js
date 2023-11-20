@@ -399,6 +399,11 @@ export default {
               component: '@/pages/IndoorQualityControMsg/subPages/qualityControlRules',
               title: '质控规则设置',
             },
+            {
+              path: '/indoorQualityControMsg/QCDataConversionRules',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCDataConversionRules',
+              title: '质控数据转化规则',
+            },
           ],
         },
       ],

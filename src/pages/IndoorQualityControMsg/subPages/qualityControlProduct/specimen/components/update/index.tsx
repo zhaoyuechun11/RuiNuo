@@ -69,7 +69,7 @@ const Update = ({ Ref, refresh }) => {
         </Form.Item>
 
         <Form.Item label="序号" name="seq">
-          <Input placeholder="请输入序号" type="number" />
+          <Input placeholder="请输入序号" type="number" disabled/>
         </Form.Item>
 
         <Form.Item label="允许最大CV %" name="maxCv">

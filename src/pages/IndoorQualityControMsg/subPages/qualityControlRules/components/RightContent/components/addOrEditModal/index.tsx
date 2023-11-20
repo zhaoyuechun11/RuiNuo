@@ -144,7 +144,7 @@ const AddOrEditModal = ({ Ref, refresh, from = '', itemList = [] }) => {
   return (
     <Dialog
       ref={dialogRef}
-      width={564}
+      width={700}
       title={id ? '编辑' : '添加'}
       onOk={() => {
         form.submit();
@@ -221,21 +221,34 @@ const AddOrEditModal = ({ Ref, refresh, from = '', itemList = [] }) => {
         </Row>
 
         <Row>
-          <Col span={11}>
+          <Col span={24}>
             <Form.Item name="qcRule" label="WestGard质控规则">
               <Select placeholder="请选择WestGard质控规则" allowClear mode="multiple">
                 {qcRuleList.length > 0 &&
                   qcRuleList.map((item) => (
                     <Option value={item.id} key={item.id}>
-                      {item.name}
+                     {item.id} {item.name}
                     </Option>
                   ))}
               </Select>
             </Form.Item>
           </Col>
-          <Col span={2}></Col>
-          <Col span={11}>
-            {from === 'rulesItem' && (
+          {/* <Col span={2}></Col>
+          <Col span={11}> */}
+            {/* {from === 'rulesItem' && (
+              <Form.Item name="qcRuleType" label="规则大类">
+                <Select placeholder="请选择规则大类" allowClear>
+                  {qcRuleType.map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            )} */}
+          {/* </Col> */}
+        </Row>
+        {from === 'rulesItem' && (
               <Form.Item name="qcRuleType" label="规则大类">
                 <Select placeholder="请选择规则大类" allowClear>
                   {qcRuleType.map((item) => (
@@ -246,9 +259,6 @@ const AddOrEditModal = ({ Ref, refresh, from = '', itemList = [] }) => {
                 </Select>
               </Form.Item>
             )}
-          </Col>
-        </Row>
-
         {/* <Row>
          <Col span={11}>
             <Form.Item name="labId" label="实验室代号">

@@ -21,16 +21,23 @@ const QualityControlPRJ = () => {
   const [form1] = Form.useForm();
   const confirmModalRef = useRef();
   const idRef = useRef();
+  const [sort, setSort] = useState('');
+  const [order, setOrder] = useState('');
   useEffect(() => {
     majorGroupList();
     getInstrList({});
   }, []);
   useEffect(() => {
     if (currentItem?.id) {
-      console.log(form1.getFieldValue('name'));
-      getList({ pageNum, pageSize, name: form1.getFieldValue('name'), instrId: currentItem?.id });
+      getList({
+        pageNum,
+        pageSize,
+        name: form1.getFieldValue('name'),
+        instrId: currentItem?.id,
+        [sort]: order,
+      });
     }
-  }, [pageNum, pageSize, currentItem]);
+  }, [pageNum, pageSize, currentItem, sort, order]);
   const columns = [
     {
       title: '仪器代号',
@@ -52,13 +59,15 @@ const QualityControlPRJ = () => {
     },
     {
       title: '序号',
-      dataIndex: 'index',
+      dataIndex: 'seq',
       align: 'center',
+      sorter: true,
     },
     {
       title: '项目代码',
       dataIndex: 'itemCode',
       align: 'center',
+      sorter: true,
     },
     {
       title: '项目名称',
@@ -236,6 +245,14 @@ const QualityControlPRJ = () => {
     setPageNum(page);
     setPageSize(size);
   };
+  const onTableChange = (
+    pagination: Record<string, unknown>,
+    filters: Record<string, unknown>,
+    sorter: Record<string, string>,
+  ) => {
+    setSort(sorter.field + 'Desc');
+    setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
+  };
   return (
     <>
       {' '}
@@ -270,6 +287,7 @@ const QualityControlPRJ = () => {
             </div>
           </div>
           <Table
+            onChange={onTableChange}
             scroll={{ x: 'max-content' }}
             dataSource={list}
             columns={QCColumns}

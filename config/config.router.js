@@ -404,6 +404,16 @@ export default {
               component: '@/pages/IndoorQualityControMsg/subPages/QCDataConversionRules',
               title: '质控数据转化规则',
             },
+            {
+              path: '/indoorQualityControMsg/QCDCollectionControl',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCDCollectionControl',
+              title: '质控数据采集对照',
+            },
+            {
+              path: '/indoorQualityControMsg/QCDataMaintenance',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCDataMaintenance',
+              title: '质控数据维护',
+            },
           ],
         },
       ],

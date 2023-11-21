@@ -108,3 +108,18 @@ export function convertRuleUpdate(params) {
 export function convertRuleDelete(params) {
   return axiosBase('qc/convertRule/delete', 'post', params);
 }
+export function dataGatherSetList(params) {
+  return axiosBase('qc/dataGatherSet/page', 'get', params);
+}
+export function getQcListForLabClass(params) {
+  return axiosBase('qc/controls/getListForLabClass', 'get', params);
+}
+export function dataGatherSetAdd(params) {
+  return axiosBase('qc/dataGatherSet/add', 'post', params);
+}
+export function dataGatherSetUpdate(params) {
+  return axiosBase('qc/dataGatherSet/update', 'post', params);
+}
+export function dataGatherSetDelete(params) {
+  return axiosBase('qc/dataGatherSet/delete', 'post', params);
+}

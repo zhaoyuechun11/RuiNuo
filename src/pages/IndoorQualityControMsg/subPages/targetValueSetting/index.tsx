@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useLocation } from 'umi';
 import LeftMenu from './components/LeftMenuNew';
 import RightContent from './components/RightContent';
-import s from './index.less';
+import s from '../index.less';
 const TargetValueSetting = () => {
   const location = useLocation();
   const dispatch = useDispatch();

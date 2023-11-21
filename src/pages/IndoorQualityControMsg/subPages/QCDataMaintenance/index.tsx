@@ -2,7 +2,7 @@ import React from 'react';
 import LeftMenu from './components/LeftMenuNew';
 import RightContent from './components/RightContent';
 import s from '../index.less';
-const TargetValueSetting = () => {
+const QCDataMaintenance = () => {
     return (
         <div className={s.container}>
           <LeftMenu />{' '}
@@ -12,4 +12,4 @@ const TargetValueSetting = () => {
         </div>
       );
 };
-export default TargetValueSetting;
+export default QCDataMaintenance

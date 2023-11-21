@@ -1,7 +1,7 @@
 import React from 'react';
 import LeftMenu from './components/LeftMenuNew';
 import RightContent from './components/RightContent';
-import s from './index.less';
+import s from '../index.less';
 const QCDataConversionRules = () => {
     return (
         <div className={s.container}>

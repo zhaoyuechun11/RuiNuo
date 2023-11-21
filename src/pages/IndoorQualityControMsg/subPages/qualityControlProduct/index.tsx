@@ -44,6 +44,8 @@ const QualityControlProduct = () => {
   const modalRef = useRef();
   const [form] = Form.useForm();
   const searchVal = useRef();
+  const [sort, setSort] = useState('');
+  const [order, setOrder] = useState('');
   const Columns = [
     {
       title: '质控品ID',
@@ -60,21 +62,25 @@ const QualityControlProduct = () => {
       title: '专业类别',
       dataIndex: 'className',
       align: 'center',
+      sorter: true,
     },
     {
       title: '质控品批号',
       dataIndex: 'batchNo',
       align: 'center',
+      sorter: true,
     },
     {
       title: '质控水平',
       dataIndex: 'qcLevelName',
       align: 'center',
+      sorter: true,
     },
     {
       title: '启用日期',
       dataIndex: 'startDt',
       align: 'center',
+      sorter: true,
       render: (text: any) => {
         return <span>{text.slice(0, 10)}</span>;
       },
@@ -114,6 +120,7 @@ const QualityControlProduct = () => {
       title: '报告依据',
       align: 'center',
       dataIndex: 'checkReportFlag',
+      sorter: true,
       render: (text: any) => {
         return <span>{text ? '是' : '否'}</span>;
       },
@@ -162,8 +169,8 @@ const QualityControlProduct = () => {
   };
 
   useEffect(() => {
-    getList({ pageNum, pageSize });
-  }, [pageNum, pageSize]);
+    getList({ pageNum, pageSize, [sort]: order, ...form.getFieldsValue() });
+  }, [pageNum, pageSize, sort, order]);
   useEffect(() => {
     majorGroupList();
     getDictList();
@@ -263,6 +270,15 @@ const QualityControlProduct = () => {
       downLoad(href, '质控品');
     });
   };
+
+  const onTableChange = (
+    pagination: Record<string, unknown>,
+    filters: Record<string, unknown>,
+    sorter: Record<string, string>,
+  ) => {
+    setSort(sorter.field + 'Desc');
+    setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
+  };
   return (
     <>
       <div className={styles.search_bth}>
@@ -283,6 +299,7 @@ const QualityControlProduct = () => {
         columns={Columns}
         rowKey="id"
         loading={loading}
+        onChange={onTableChange}
         pagination={{
           current: pageNum,
           pageSize: pageSize,

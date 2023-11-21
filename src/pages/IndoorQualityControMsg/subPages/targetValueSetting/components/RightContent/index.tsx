@@ -22,6 +22,8 @@ const RightContent = () => {
   const reverseHandoverModalRef = useRef();
   const stopTimeModalRef = useRef();
   const [instrList, setInstrList] = useState([]);
+  const [sort, setSort] = useState('');
+  const [order, setOrder] = useState('');
 
   useEffect(() => {
     if (leftMenuParams?.labClassId) {
@@ -37,11 +39,12 @@ const RightContent = () => {
         ...form.getFieldsValue(),
         itemId: leftMenuParams.itemId,
         qcId: leftMenuParams.qcId,
+        [sort]: order,
       });
       return;
     }
     setList([]);
-  }, [leftMenuParams?.itemId, form.getFieldsValue().instrId]);
+  }, [leftMenuParams?.itemId, form.getFieldsValue().instrId, sort, order]);
 
   const getInstrListForLabClass = (params: any) => {
     getListForLabClass(params).then((res: any) => {
@@ -61,7 +64,6 @@ const RightContent = () => {
           dataSource: {
             ...leftMenuParams,
             labClassId: '',
-       
           },
         },
       });
@@ -88,6 +90,7 @@ const RightContent = () => {
       title: '启用时间',
       dataIndex: 'startDt',
       align: 'center',
+      sorter: true,
       render: (text: any) => {
         return text ? text.slice(0, 11) : '';
       },
@@ -166,6 +169,7 @@ const RightContent = () => {
       title: '停用时间',
       dataIndex: 'stopDt',
       align: 'center',
+      sorter: true,
       render: (text: any) => {
         return text ? text.slice(0, 11) : '';
       },
@@ -282,7 +286,10 @@ const RightContent = () => {
     pagination: Record<string, unknown>,
     filters: Record<string, unknown>,
     sorter: Record<string, string>,
-  ) => {};
+  ) => {
+    setSort(sorter.field + 'Desc');
+    setOrder(sorter.order === 'ascend' ? 'ASC' : 'DESC');
+  };
   const add = () => {
     reverseHandoverModalRef.current.show();
   };

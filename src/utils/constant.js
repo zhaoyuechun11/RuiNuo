@@ -616,17 +616,18 @@ export const menu = [
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
+
       {
         key: 'setting',
-        url: '/setting/index',
-        name: '质控常见文字描述',
+        url: '/indoorQualityControMsg/qualityControlRules',
+        name: '质控规则',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/indoorQualityControMsg/qualityControlRules',
-        name: '质控规则',
+        url: '/indoorQualityControMsg/QCDCollectionControl',
+        name: '质控数据采集对照',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
@@ -639,8 +640,8 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
-        name: '仪器数据维护',
+        url: '/indoorQualityControMsg/QCDataMaintenance',
+        name: '质控数据维护',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },

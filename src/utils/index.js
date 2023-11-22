@@ -874,3 +874,45 @@ export const xmlstr = `<?xml version="1.0" encoding="UTF-8"?>
         </bpmndi:BPMNPlane>
     </bpmndi:BPMNDiagram>
 </definitions>`;
+//  递归函数
+export const Fn = (data) => {
+  // 使用forEach遍历，添加新的属性
+  // data.forEach((item, i) => {
+  //     if (item.children) {
+  //         // 调用递归函数
+  //         Fn(item.children)
+  //     }
+  //     data[i].key = `${i}`
+  // })
+
+  // 使用map遍历,生成新的数组
+  data = data.map((item, index) => {
+    if (item.children) {
+      let t = item.children.map((child, cIndex) => {
+        if (child.children) {
+          let result = child.children.map((thirdItem, thirdIndex) => {
+            return {
+              ...thirdItem,
+              key: `${index}-${cIndex}-${thirdIndex}`,
+              itemId:thirdItem.key
+            };
+          });
+
+          return {
+            ...child,
+            key: `${index}-${cIndex}`,
+            children: result,
+            qcId: child.key,
+          };
+        }
+      });
+      return {
+        ...item, // 如果想在原数组添加属性
+        key: `${index}`,
+        children: t,
+        labClassId: item.key,
+      };
+    }
+  });
+  return data;
+};

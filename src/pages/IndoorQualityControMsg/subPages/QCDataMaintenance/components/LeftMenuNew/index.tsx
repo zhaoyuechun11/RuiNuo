@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'umi';
 import SideMenu from './SideMenu';
-import { listWithInstr } from '../../../../models/server';
+import { listByUserForItemTgValue } from '../../../../models/server';
 const LeftMenu = () => {
   const [list, setList] = useState([]);
   const dispatch = useDispatch();
@@ -12,6 +12,7 @@ const LeftMenu = () => {
     getList();
   }, []);
   const onSelect = ({ selectedKeys, option }) => {
+    debugger;
     setSelectedKeys(selectedKeys);
     dispatch({
       type: 'IndoorQualityControMsg/save',
@@ -25,47 +26,19 @@ const LeftMenu = () => {
     let { expandedKeys = [] } = item;
     localStorage.setItem('defaultOpenKeys', JSON.stringify(expandedKeys));
   };
-  //  递归函数
-  const Fn = (data) => {
-    // 使用forEach遍历，添加新的属性
-    // data.forEach((item, i) => {
-    //     if (item.children) {
-    //         // 调用递归函数
-    //         Fn(item.children)
-    //     }
-    //     data[i].key = `${i}`
-    // })
-
-    // 使用map遍历,生成新的数组
-    data = data.map((item, index) => {
-      if (item.children) {
-        let t = item.children.map((child, cIndex) => {
-          return {
-            ...child,
-            key: `${index}-${cIndex}`,
-          };
-        });
-        return {
-          ...item, // 如果想在原数组添加属性
-          key: `${index}`,
-          children: t,
-          labClassId: item.key,
-        };
-      }
-    });
-    return data;
-  };
   const getList = () => {
-    listWithInstr().then((res) => {
+    listByUserForItemTgValue().then((res) => {
       if (res.code === 200) {
-        const result = Fn(res.data);
-        const keys = [result[0].key, result[0].children[0].key];
+        const result = res.data;
+        const keys = [result[0]?.key, result[0].children[0]?.key];
         const leftMenuParams = {
-          labClassId: result[0].labClassId,
-          instrId: result[0].children[0].id,
+          labClassId: result[0]?.key,
+          qcId: result[0].children[0]?.key,
+          batchNo: result[0].children[0]?.batchNo,
+          qcLevelName: result[0].children[0]?.qcLevelName,
         };
         setDefaultOpenKeys(keys);
-        setSelectedKeys(result[0].children[0].key);
+        setSelectedKeys(String(result[0].children[0].key));
         setList(result);
         dispatch({
           type: 'IndoorQualityControMsg/save',

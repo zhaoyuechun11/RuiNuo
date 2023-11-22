@@ -36,15 +36,15 @@ const RightContent = () => {
   const [itemList, setItemList] = useState([]);
   const [sort, setSort] = useState('');
   const [order, setOrder] = useState('');
-  useEffect(() => {
-    dispatch({
-      type: 'IndoorQualityControMsg/save',
-      payload: {
-        type: 'leftMenuParamsRules',
-        dataSource: {},
-      },
-    });
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'IndoorQualityControMsg/save',
+  //     payload: {
+  //       type: 'leftMenuParamsRules',
+  //       dataSource: {},
+  //     },
+  //   });
+  // }, [location.pathname]);
   useEffect(() => {
     if (leftMenuParamsRules?.instrId) {
       getList({
@@ -134,6 +134,7 @@ const RightContent = () => {
       if (res.code === 200) {
         setList(res.data.records);
         setTotal(res.data.total);
+       
       }
     });
   };

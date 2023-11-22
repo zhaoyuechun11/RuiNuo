@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'umi';
+import { Fn } from '@utils';
 import SideMenu from './SideMenu';
 import { listByUserForItemTgValue } from '../../../../models/server';
 const LeftMenu = () => {
@@ -28,16 +29,16 @@ const LeftMenu = () => {
   const getList = () => {
     listByUserForItemTgValue().then((res) => {
       if (res.code === 200) {
-        const result = res.data;
+        const result = Fn(res.data);
         const keys = [
           result[0]?.key,
           result[0].children[0]?.key,
           result[0].children[0].children[0]?.key,
         ];
         const leftMenuParams = {
-          labClassId: result[0]?.key,
-          qcId: result[0].children[0]?.key,
-          itemId: result[0].children[0].children[0]?.key,
+          labClassId: result[0]?.labClassId,
+          qcId: result[0].children[0]?.qcId,
+          itemId: result[0].children[0].children[0]?.itemId,
           title:
             result[0].children[0].children[0]?.itemCode +
             ' ' +

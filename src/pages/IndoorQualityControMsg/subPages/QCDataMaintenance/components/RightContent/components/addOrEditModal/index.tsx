@@ -4,22 +4,24 @@ import { Dialog } from '@components';
 import { useSelector } from 'umi';
 
 import {
-  dataGatherSetAdd,
-  dataGatherSetUpdate,
-  getQcListForLabClass,
+  dataMaintenanceAdd,
+  dataMaintenanceUpdate,
+  getNotBindQcDataListForReqItem,
+  modifyLogAdd,
 } from '../../../../../../models/server';
 import { EditableCell, EditableRow } from '../editableRow';
 import styles from './index.less';
 import moment from 'moment';
 const { Option } = Select;
+const { TextArea } = Input;
 const accumulateFlag = [
   {
     id: 1,
-    name: '是',
+    name: '采用',
   },
   {
     id: 0,
-    name: '否',
+    name: '无效',
   },
 ];
 const drawDesignsFlag = [
@@ -33,45 +35,90 @@ const drawDesignsFlag = [
   },
 ];
 const AddOrEditModal = ({ Ref, refresh }) => {
-  const { collectionControl } = useSelector((state: any) => state.IndoorQualityControMsg);
+  const { dataMaintenance, dataMaintenanceInstr } = useSelector(
+    (state: any) => state.IndoorQualityControMsg,
+  );
   const dialogRef = useRef();
   const [form] = Form.useForm();
-  const [id, setId] = useState(1);
+  const [id, setId] = useState();
   const [qcList, setQcList] = useState([]);
-  const [selecteQq, setSelecteQq] = useState({});
+  const [record, setRecord] = useState({});
+
   var now1 = moment().format('YYYY-MM-DD');
+  var now2 = moment().format('YYYY-MM-DD HH:ss:mm');
   useImperativeHandle(Ref, () => ({
     show: (val: any) => {
-      getQcListForLabClassId({ labClassId: collectionControl.labClassId });
       form.resetFields();
-      form.setFieldsValue({ labDate: moment(now1, 'YYYY-MM-DD') });
+      form.setFieldsValue({
+        qcDate: moment(now1, 'YYYY-MM-DD'),
+        resultDt: moment(now2, 'YYYY-MM-DD HH:ss:mm'),
+      });
+      getQcDataList({ qcId: dataMaintenance.qcId, instrId: dataMaintenanceInstr.id, qcDate: now1 });
       dialogRef.current && dialogRef.current.show();
-      //setId(val?.id);
-      //setSelecteQq({ qcLevelName: val.qcLevelName, batchNo: val.batchNo });
+      setId(val?.id);
+      setRecord(val);
       if (val) {
         form.setFieldsValue({
           ...val,
+          qcDate: moment(val.qcDate, 'YYYY-MM-DD'),
+          resultDt: moment(val.resultDt, 'YYYY-MM-DD HH:ss:mm'),
+          inuseFlag: val.inuseFlag ? 1 : 0,
+          drawFlag: val.drawFlag ? 1 : 0,
         });
       }
     },
   }));
 
   const onFinish = (value: any) => {
-    let params = {
-      ...value,
-    };
+    debugger;
     if (id) {
-      dataGatherSetUpdate({ id, ...params }).then((res) => {
+      const { displayValue, drawFlag, inuseFlag, resultDt } = value;
+      dataMaintenanceUpdate({
+        id,
+        displayValue,
+        drawFlag,
+        inuseFlag,
+        resultDt: resultDt.format('YYYY-MM-DD HH:ss:mm'),
+      }).then((res) => {
         if (res.code === 200) {
           message.success('修改成功!');
           dialogRef.current && dialogRef.current.hide();
           refresh();
+          const { instrId, itemId, qcId, qcDate, qcValueSign, displayValue, calculateValue } =
+            record;
+          const logParams = {
+            modifyReason: value.modifyReason,
+            oldDisplayValue: displayValue,
+            oldCalculateValue: calculateValue,
+            newCalculateValue: Number(value?.displayValue)?.toFixed(3),
+            newDisplayValue: Number(value?.displayValue)?.toFixed(4),
+            instrId,
+            itemId,
+            qcId,
+            qcDate,
+            qcValueSign,
+          };
+          modifyLog(logParams);
         }
       });
       return;
     }
+    const result = qcList
+      .filter((item) => item.displayValue !== '' && item.displayValue !== undefined)
+      .map((item) => {
+        return {
+          itemId: item.id,
+          displayValue: item.displayValue,
+        };
+      });
 
-    dataGatherSetAdd({ ...params, instrId: collectionControl.instrId }).then((res) => {
+    let params = {
+      qcId: dataMaintenance.qcId,
+      instrId: dataMaintenanceInstr.id,
+      qcDate: value.qcDate.format('YYYY-MM-DD'),
+      items: result,
+    };
+    dataMaintenanceAdd({ ...params }).then((res) => {
       if (res.code === 200) {
         message.success('添加成功!');
         dialogRef.current && dialogRef.current.hide();
@@ -79,46 +126,35 @@ const AddOrEditModal = ({ Ref, refresh }) => {
       }
     });
   };
-  const getQcListForLabClassId = (params: any) => {
-    getQcListForLabClass(params).then((res) => {
+  const modifyLog = (params: any) => {
+    modifyLogAdd(params).then((res: any) => {
+      if (res.code === 200) {
+        message.success('添加日志成功!');
+      }
+    });
+  };
+  const getQcDataList = (params: any) => {
+    getNotBindQcDataListForReqItem(params).then((res) => {
       if (res.code === 200) {
         setQcList(res.data);
       }
     });
   };
-  const qcChange = (val) => {
-    const result = qcList.filter((item) => (item.id = val));
-    setSelecteQq(result[0]);
-  };
-  const [dataSource, setDataSource] = useState([
-    {
-      key: '0',
-      name: '',
-      age: '32',
-      address: 'London, Park Lane no. 0',
-    },
-    {
-      key: '1',
-      name: '',
-      age: '32',
-      address: 'London, Park Lane no. 1',
-    },
-  ]);
 
   const defaultColumns = [
     {
       title: '项目代号',
-      dataIndex: 'age',
+      dataIndex: 'itemCode',
       align: 'center',
     },
     {
       title: '项目名称',
-      dataIndex: 'address',
+      dataIndex: 'itemName',
       align: 'center',
     },
     {
       title: '显示结果',
-      dataIndex: 'name',
+      dataIndex: 'displayValue',
       width: '30%',
       align: 'center',
       editable: true,
@@ -126,14 +162,14 @@ const AddOrEditModal = ({ Ref, refresh }) => {
   ];
 
   const handleSave = (row) => {
-    const newData = [...dataSource];
+    const newData = [...qcList];
     const index = newData.findIndex((item) => row.key === item.key);
     const item = newData[index];
     newData.splice(index, 1, {
       ...item,
       ...row,
     });
-    setDataSource(newData);
+    setQcList(newData);
   };
   const components = {
     body: {
@@ -169,26 +205,30 @@ const AddOrEditModal = ({ Ref, refresh }) => {
         <Row>
           <Col span={11}>
             <Form.Item label="质控品批号">
-              <Input disabled value={selecteQq?.batchNo} />
+              <Input disabled value={dataMaintenance?.batchNo} />
             </Form.Item>
           </Col>
 
           <Col span={2}></Col>
           <Col span={11}>
             <Form.Item label="质控品水平">
-              <Input disabled value={selecteQq?.qcLevelName} />
+              <Input disabled value={dataMaintenance?.qcLevelName} />
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col span={11}>
-            <Form.Item name="sampleNo" label="仪器代号">
-              <Input disabled />
+            <Form.Item label="仪器代号">
+              <Input disabled value={dataMaintenanceInstr?.instrCode} />
             </Form.Item>
           </Col>
           <Col span={2}></Col>
           <Col span={11}>
-            <Form.Item name="labDate" label="质控日期">
+            <Form.Item
+              name="qcDate"
+              label="质控日期"
+              rules={[{ required: true, message: '请选择质控日期' }]}
+            >
               <DatePicker format="YYYY-MM-DD" placeholder="请选择质控日期" />
             </Form.Item>
           </Col>
@@ -197,34 +237,38 @@ const AddOrEditModal = ({ Ref, refresh }) => {
           <>
             <Row>
               <Col span={11}>
-                <Form.Item name="sampleNo" label="项目代号">
-                  <Input disabled />
+                <Form.Item label="项目代号">
+                  <Input disabled value={record.itemCode} />
                 </Form.Item>
               </Col>
               <Col span={2}></Col>
               <Col span={11}>
-                <Form.Item name="labDate" label="项目名称">
-                  <Input disabled />
+                <Form.Item label="项目名称">
+                  <Input disabled value={record.itemName} />
                 </Form.Item>
               </Col>
             </Row>
             <Row>
               <Col span={11}>
-                <Form.Item name="sampleNo" label="质控结果">
-                  <Input />
+                <Form.Item name="displayValue" label="质控结果">
+                  <Input type="number" />
                 </Form.Item>
               </Col>
               <Col span={2}></Col>
               <Col span={11}>
-                <Form.Item name="labDate" label="结果录入时间">
+                <Form.Item
+                  name="resultDt"
+                  label="结果录入时间"
+                  rules={[{ required: true, message: '请选择结果录入时间' }]}
+                >
                   <DatePicker format="YYYY-MM-DD HH:ss:mm" placeholder="请选择结果录入时间" />
                 </Form.Item>
               </Col>
             </Row>
             <Row>
               <Col span={11}>
-                <Form.Item name="sampleNo" label="累积标志">
-                  <Select placeholder="请选择累积标志" allowClear >
+                <Form.Item name="inuseFlag" label="累积标志">
+                  <Select placeholder="请选择累积标志" allowClear>
                     {accumulateFlag.map((item) => (
                       <Option value={item.id} key={item.id}>
                         {item.name}
@@ -235,14 +279,21 @@ const AddOrEditModal = ({ Ref, refresh }) => {
               </Col>
               <Col span={2}></Col>
               <Col span={11}>
-                <Form.Item name="" label="画图标志">
-                  <Select placeholder="请选择画图标志" allowClear >
+                <Form.Item name="drawFlag" label="画图标志">
+                  <Select placeholder="请选择画图标志" allowClear>
                     {drawDesignsFlag.map((item) => (
                       <Option value={item.id} key={item.id}>
                         {item.name}
                       </Option>
                     ))}
                   </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Form.Item name="modifyReason" label="修改原因">
+                  <TextArea></TextArea>
                 </Form.Item>
               </Col>
             </Row>
@@ -254,10 +305,12 @@ const AddOrEditModal = ({ Ref, refresh }) => {
         <Table
           className={styles.table_box}
           components={components}
+          size="small"
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={dataSource}
+          dataSource={qcList}
           columns={columns}
+          pagination={false}
         />
       )}
     </Dialog>

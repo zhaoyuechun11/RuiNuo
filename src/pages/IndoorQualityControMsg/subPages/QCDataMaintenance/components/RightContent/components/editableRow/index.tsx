@@ -57,14 +57,14 @@ export const EditableCell = ({
           margin: 0,
         }}
         name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: `${title} is required.`,
+        //   },
+        // ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input ref={inputRef} onPressEnter={save} onBlur={save} type='number'/>
       </Form.Item>
     ) : (
       <div

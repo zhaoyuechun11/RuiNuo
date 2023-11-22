@@ -14,11 +14,14 @@ const BaseMenu = ({ menuData, onSelect, onExpand, defaultOpenKeys, defaultSelect
             {item.children.map((child) => {
               return (
                 <TreeNode
-                  title={child.instrName}
+                  title={`${child.venDonName} 批号:${child.batchNo} 水平:${
+                    child.qcLevelName
+                  } 启用日期:${child.startDt.slice(0, 11)}`}
                   key={child.key}
-                  instrId={child.id}
-                  labClassId={child.labClassId}
-                  instrCode={child.instrCode}
+                  labClassId={item.key}
+                  qcId={child.key}
+                  batchNo={child.batchNo}
+                  qcLevelName={child.qcLevelName}
                 ></TreeNode>
               );
             })}

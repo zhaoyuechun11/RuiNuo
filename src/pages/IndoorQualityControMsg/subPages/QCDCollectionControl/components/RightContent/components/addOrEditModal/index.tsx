@@ -24,7 +24,7 @@ const AddOrEditModal = ({ Ref, refresh }) => {
       form.resetFields();
       dialogRef.current && dialogRef.current.show();
       setId(val?.id);
-      setSelecteQq({ qcLevelName: val.qcLevelName, batchNo: val.batchNo });
+      setSelecteQq({ qcLevelName: val?.qcLevelName, batchNo: val?.batchNo });
       if (val) {
         form.setFieldsValue({
           ...val,

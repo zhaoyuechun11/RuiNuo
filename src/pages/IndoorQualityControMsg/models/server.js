@@ -123,3 +123,21 @@ export function dataGatherSetUpdate(params) {
 export function dataGatherSetDelete(params) {
   return axiosBase('qc/dataGatherSet/delete', 'post', params);
 }
+export function dataMaintenanceAdd(params) {
+  return axiosBase('qc/data/add', 'post', params);
+}
+export function getNotBindQcDataListForReqItem(params) {
+  return axiosBase('basic/labItem/getNotBindQcDataListForReqItem', 'get', params);
+}
+export function dataMaintenanceUpdate(params) {
+  return axiosBase('qc/data/update', 'post', params);
+}
+export function dataMaintenanceList(params) {
+  return axiosBase('qc/data/page', 'get', params);
+}
+export function modifyLogAdd(params) {
+  return axiosBase('qc/modifyLog/add', 'post', params);
+}
+export function dataMaintenanceDelete(params) {
+  return axiosBase('qc/data/delete', 'post', params);
+}

@@ -48,7 +48,8 @@ const RightContent = () => {
 
   const getInstrListForLabClass = (params: any) => {
     getListForLabClass(params).then((res: any) => {
-      form.setFieldsValue({ instrId: res.data[0].id });
+ 
+      form.setFieldsValue({ instrId: res.data[0]?.id });
       setInstrList(res.data);
       dispatch({
         type: 'IndoorQualityControMsg/save',

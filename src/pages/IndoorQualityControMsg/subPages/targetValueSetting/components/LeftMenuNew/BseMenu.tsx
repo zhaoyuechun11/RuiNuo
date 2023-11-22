@@ -18,8 +18,8 @@ const BaseMenu = ({ menuData, onSelect, onExpand, defaultOpenKeys, defaultSelect
                     child.qcLevelName
                   } 启用日期:${child.startDt.slice(0, 11)}`}
                   key={child.key}
-                  labClassId={item.key}
-                  qcId={child.key}
+                  labClassId={item.labClassId}
+                  qcId={child.qcId}
                   itemId=""
                 >
                   {child.children.map((third) => {
@@ -27,9 +27,9 @@ const BaseMenu = ({ menuData, onSelect, onExpand, defaultOpenKeys, defaultSelect
                       <TreeNode
                         title={`${third.itemCode} ${third.itemName}`}
                         key={third.key}
-                        labClassId={item.key}
-                        qcId={child.key}
-                        itemId={third.key}
+                        labClassId={item.labClassId}
+                        qcId={child.qcId}
+                        itemId={third.itemId}
                       ></TreeNode>
                     );
                   })}

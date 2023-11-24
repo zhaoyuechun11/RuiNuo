@@ -6,7 +6,7 @@ import { useSelector } from 'umi';
 import {
   dataMaintenanceAdd,
   dataMaintenanceUpdate,
-  getNotBindQcDataListForReqItem,
+  getQcListForInstr,
   modifyLogAdd,
 } from '../../../../../../models/server';
 import { EditableCell, EditableRow } from '../editableRow';
@@ -134,7 +134,7 @@ const AddOrEditModal = ({ Ref, refresh }) => {
     });
   };
   const getQcDataList = (params: any) => {
-    getNotBindQcDataListForReqItem(params).then((res) => {
+    getQcListForInstr(params).then((res) => {
       if (res.code === 200) {
         setQcList(res.data);
       }

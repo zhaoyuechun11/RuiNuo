@@ -414,6 +414,21 @@ export default {
               component: '@/pages/IndoorQualityControMsg/subPages/QCDataMaintenance',
               title: '质控数据维护',
             },
+            {
+              path: '/indoorQualityControMsg/QCDataQuery',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCDataQuery',
+              title: '质控数据查询',
+            },
+            {
+              path: '/indoorQualityControMsg/QCModificationLogQuery',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCModificationLogQuery',
+              title: '质控修改日志查询',
+            },
+            {
+              path: '/indoorQualityControMsg/QCMonthSumStatistics',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCMonthSumStatistics',
+              title: '质控月汇统计',
+            },
           ],
         },
       ],

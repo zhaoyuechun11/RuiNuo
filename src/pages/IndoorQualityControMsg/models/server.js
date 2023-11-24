@@ -141,3 +141,21 @@ export function modifyLogAdd(params) {
 export function dataMaintenanceDelete(params) {
   return axiosBase('qc/data/delete', 'post', params);
 }
+export function qcDataQueryList(params) {
+  return axiosBase('qc/data/pageList', 'get', params);
+}
+export function getQcListForLabClas(params) {
+  return axiosBase('qc/controls/getListForLabClass', 'get', params);
+}
+export function modifyLogList(params) {
+  return axiosBase('qc/modifyLog/page', 'get', params);
+}
+export function getQcListDataForInstr(params) {
+  return axiosBase('/qc/controls/getListForInstr', 'get', params);
+}
+export function monthStatisticsDetail(params) {
+  return axiosBase('qc/data/monthStatisticsDetail', 'get', params);
+}
+export function monthStatistics(params) {
+  return axiosBase('qc/data/monthStatistics', 'get', params);
+}

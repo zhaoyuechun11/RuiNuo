@@ -21,7 +21,7 @@ const accumulateFlag = [
   },
   {
     id: 0,
-    name: '累计',
+    name: '不累计',
   },
 ];
 const drawDesignsFlag = [
@@ -59,7 +59,7 @@ const controlStatus = [
   },
   {
     id: 1,
-    name: '在空',
+    name: '在控',
   },
   {
     id: 0,
@@ -123,14 +123,14 @@ const QCMonthSumStatistics = () => {
               key1 === 'x'
                 ? 'X'
                 : key1 === 'sd'
-                ? 's'
+                ? 'SD'
                 : key1 === 'cv'
-                ? 'cv%'
+                ? 'CV%'
                 : key1 === 'monthX'
                 ? '本月X'
                 : key1 === 'monthSd'
-                ? '本月s'
-                : '本月cv%',
+                ? '本月SD'
+                : '本月CV%',
 
             [key]: value1,
           });
@@ -218,9 +218,10 @@ const QCMonthSumStatistics = () => {
     Object.entries(val).forEach(([key, value]) => {
       Object.entries(value).forEach(([key1, value1]) => {
         value1.forEach((val, index2) => {
+          let index=index2+1
           list.push({
             [key]: val,
-            type: key1 + '(' + index2 + ')',
+            type: key1 + '(' + index + ')',
             groupKey: key,
             serialNum: index2,
           });
@@ -264,9 +265,9 @@ const QCMonthSumStatistics = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item name="qcId" label="质控ID/质控品水平/质控品批号">
+        <Form.Item name="qcId" label="质控品ID+质控水平+质控品批号+启用日期">
           <Select
-            placeholder="请选择质控ID/质控品水平/质控品批号"
+            placeholder="请选择质控ID+质控水平+质控品批号+启用日期"
             allowClear
             onChange={qcListChange}
           >

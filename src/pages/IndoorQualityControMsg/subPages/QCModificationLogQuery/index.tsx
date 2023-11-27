@@ -37,7 +37,13 @@ const QCModificationLogQuery = () => {
       sorter: true,
     },
     {
-      title: '报告项目',
+      title: '项目代号',
+      dataIndex: 'itemCode',
+      align: 'center',
+      sorter: true,
+    },
+    {
+      title: '项目名称',
       dataIndex: 'itemName',
       align: 'center',
       sorter: true,
@@ -78,7 +84,7 @@ const QCModificationLogQuery = () => {
       align: 'center',
     },
     {
-      title: '旧展示值',
+      title: '旧显示值',
       dataIndex: 'oldDisplayValue',
       align: 'center',
     },
@@ -88,7 +94,7 @@ const QCModificationLogQuery = () => {
       align: 'center',
     },
     {
-      title: '新展示值',
+      title: '新显示值',
       dataIndex: 'newDisplayValue',
       align: 'center',
     },
@@ -185,17 +191,6 @@ const QCModificationLogQuery = () => {
         : '',
       modifyDtEnd: allValues?.modifyDtStart ? allValues.modifyDtStart[1].format('YYYY-MM-DD') : '',
     };
-    if (allValues.qcLevel) {
-      const result = qcList.filter((item) => item.id == allValues.qcLevel);
-
-      getList({
-        ...values,
-        batchNo: result[0].batchNo,
-        qcLevel: result[0].qcLevel,
-        qcId: result[0].id,
-      });
-      return;
-    }
 
     getList(values);
   };
@@ -245,7 +240,7 @@ const QCModificationLogQuery = () => {
             allowClear
           />
         </Form.Item>
-        <Form.Item name="qcLevel" label="质控ID/质控品水平/质控品批号">
+        <Form.Item name="qcId" label="质控ID/质控品水平/质控品批号">
           <Select placeholder="请选择质控ID/质控品水平/质控品批号" allowClear>
             {qcList.length > 0 &&
               qcList.map((item) => (

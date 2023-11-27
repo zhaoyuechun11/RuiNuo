@@ -31,7 +31,6 @@ const LeftMenu = () => {
     listWithInstr().then((res) => {
       if (res.code === 200) {
         const result = Fn(res.data);
-
         const keys = [result[0].key, result[0].children[0].key];
         const leftMenuParamsDCRules = {
           labClassId: result[0].labClassId,

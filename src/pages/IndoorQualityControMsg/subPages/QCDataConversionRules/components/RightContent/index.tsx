@@ -146,7 +146,7 @@ const RightContent = () => {
   };
   return (
     <>
-      <Button btnType="primary" onClick={add}>
+      <Button btnType="primary" onClick={add} style={{ marginBottom: '10px' }}>
         添加
       </Button>
       <Table

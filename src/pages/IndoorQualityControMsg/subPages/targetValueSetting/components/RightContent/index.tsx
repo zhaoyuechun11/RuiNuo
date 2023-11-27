@@ -48,7 +48,6 @@ const RightContent = () => {
 
   const getInstrListForLabClass = (params: any) => {
     getListForLabClass(params).then((res: any) => {
- 
       form.setFieldsValue({ instrId: res.data[0]?.id });
       setInstrList(res.data);
       dispatch({
@@ -72,16 +71,17 @@ const RightContent = () => {
   };
   const columns = [
     {
-      title: '仪器名称',
-      dataIndex: 'instrName',
-      fixed: 'left',
-      align: 'center',
-    },
-    {
       title: '靶值ID',
       dataIndex: 'id',
       align: 'center',
+      fixed: 'left',
     },
+    {
+      title: '仪器代号',
+      dataIndex: 'instrName',
+      align: 'center',
+    },
+
     {
       title: '项目代号',
       dataIndex: 'itemCode',

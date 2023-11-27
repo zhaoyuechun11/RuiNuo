@@ -125,6 +125,11 @@ const QCDataQuery = () => {
       sorter: true,
     },
     {
+      title: '结果标识',
+      dataIndex: 'qcValueSign',
+      align: 'center',
+    },
+    {
       title: '显示结果',
       dataIndex: 'displayValue',
       align: 'center',
@@ -250,11 +255,6 @@ const QCDataQuery = () => {
       align: 'center',
     },
     {
-      title: '结果标识',
-      dataIndex: 'qcValueSign',
-      align: 'center',
-    },
-    {
       title: '质控品名称',
       dataIndex: 'qcName',
       align: 'center',
@@ -334,7 +334,6 @@ const QCDataQuery = () => {
     setPageSize(size);
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
-    debugger;
     let values = {
       pageNum,
       pageSize,
@@ -342,17 +341,6 @@ const QCDataQuery = () => {
       qcDateStart: allValues?.qcDateStart ? allValues.qcDateStart[0].format('YYYY-MM-DD') : '',
       qcDateStartEnd: allValues?.qcDateStart ? allValues.qcDateStart[1].format('YYYY-MM-DD') : '',
     };
-    if (allValues.qcLevel) {
-      const result = qcList.filter((item) => item.id == allValues.qcLevel);
-
-      getList({
-        ...values,
-        batchNo: result[0].batchNo,
-        qcLevel: result[0].qcLevel,
-        qcId: result[0].id,
-      });
-      return;
-    }
 
     getList(values);
   };
@@ -395,8 +383,8 @@ const QCDataQuery = () => {
             allowClear
           />
         </Form.Item>
-        <Form.Item name="qcLevel" label="质控ID/质控品水平/质控品批号">
-          <Select placeholder="请选择质控ID/质控品水平/质控品批号" allowClear>
+        <Form.Item name="qcId" label="质控品ID+质控水平+质控品批号">
+          <Select placeholder="请选择质控品ID+质控水平+质控品批号" allowClear>
             {qcList.length > 0 &&
               qcList.map((item) => (
                 <Option value={item.id} key={item.id}>

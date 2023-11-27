@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Table, DatePicker, Select } from 'antd';
+import { Form, Table, DatePicker, Select, Button } from 'antd';
 import {
   getQcListDataForInstr,
   monthStatisticsDetail,
@@ -10,6 +10,8 @@ import { instrList } from '@/models/server';
 import styles from './index.less';
 import moment from 'moment';
 const { Option } = Select;
+const { MonthPicker } = DatePicker;
+
 const accumulateFlag = [
   {
     id: '',
@@ -100,16 +102,14 @@ const QCMonthSumStatistics = () => {
   useEffect(() => {
     if (instr.length > 0 && qcList.length > 0) {
       getMonthStatisticsDetail({
-        instrId: instr[0]?.id,
+        ...form.getFieldsValue(),
         qcDate: form.getFieldsValue().qcDate.format('YYYY-MM'),
-        qcId: qcList[0]?.id,
       });
       getMonthStatistics({
-        instrId: instr[0]?.id,
+        ...form.getFieldsValue(),
         qcDate: form.getFieldsValue().qcDate.format('YYYY-MM'),
-        qcId: qcList[0]?.id,
       });
-      getQcListForInstrData({ instrId: instr[0]?.id });
+      getQcListForInstrData({ instrId: form.getFieldsValue().instrId });
     }
   }, [instr, qcList]);
   const handleUpperhalfData = (val) => {
@@ -168,8 +168,8 @@ const QCMonthSumStatistics = () => {
   const getQcList = (params: any) => {
     getQcListDataForInstr(params).then((res) => {
       if (res.code === 200) {
-        form.setFieldsValue({ qcId: res.data[0].id });
-        setBatchNo(res.data[0].batchNo);
+        form.setFieldsValue({ qcId: res.data[0]?.id });
+        setBatchNo(res.data[0]?.batchNo);
         setQcList(res.data);
       }
     });
@@ -218,7 +218,7 @@ const QCMonthSumStatistics = () => {
     Object.entries(val).forEach(([key, value]) => {
       Object.entries(value).forEach(([key1, value1]) => {
         value1.forEach((val, index2) => {
-          let index=index2+1
+          let index = index2 + 1;
           list.push({
             [key]: val,
             type: key1 + '(' + index + ')',
@@ -229,8 +229,8 @@ const QCMonthSumStatistics = () => {
       });
     });
 
-    var mergedArray = list.reduce(function (result, obj) {
-      var target = result.find(function (item) {
+    var mergedArray = list.reduce((result, obj) => {
+      var target = result.find((item) => {
         return item.serialNum === obj.serialNum && item.type == obj.type;
       });
 
@@ -251,7 +251,7 @@ const QCMonthSumStatistics = () => {
     return (
       <Form onValuesChange={handleSearch} form={form} layout="vertical" className={styles.form_box}>
         <Form.Item name="qcDate" label="质控月份">
-          <DatePicker showTime={{ format: 'YYYY-MM' }} format="YYYY-MM" />
+          <MonthPicker format="YYYY-MM" />
         </Form.Item>
         <Form.Item label="仪器" name="instrId">
           <Select placeholder="请选择仪器" allowClear onChange={instrChange}>
@@ -319,18 +319,39 @@ const QCMonthSumStatistics = () => {
     );
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
+    // getMonthStatisticsDetail({
+    //   ...allValues,
+    //   qcDate: form.getFieldsValue().qcDate.format('YYYY-MM'),
+    // });
+    // getMonthStatistics({
+    //   ...allValues,
+    //   qcDate: form.getFieldsValue().qcDate.format('YYYY-MM'),
+    // });
+  };
+  const search = () => {
     getMonthStatisticsDetail({
-      ...allValues,
+      ...form.getFieldsValue(),
       qcDate: form.getFieldsValue().qcDate.format('YYYY-MM'),
     });
     getMonthStatistics({
-      ...allValues,
+      ...form.getFieldsValue(),
       qcDate: form.getFieldsValue().qcDate.format('YYYY-MM'),
     });
   };
+  // const clear = () => {
+  //   form.resetFields();
+  // };
   return (
     <>
-      {renderForm()}{' '}
+      <div className={styles.search_bth}>
+        {renderForm()}
+        <Button type="primary" onClick={search}>
+          查询
+        </Button>
+        {/* <Button type="primary" onClick={clear}>
+          清空
+        </Button> */}
+      </div>
       <Table
         size={'small'}
         columns={qcHeader}

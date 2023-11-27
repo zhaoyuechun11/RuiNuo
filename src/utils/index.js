@@ -889,22 +889,22 @@ export const Fn = (data) => {
   data = data.map((item, index) => {
     if (item.children) {
       let t = item.children.map((child, cIndex) => {
+        let result = [];
         if (child.children) {
-          let result = child.children.map((thirdItem, thirdIndex) => {
+          result = child.children.map((thirdItem, thirdIndex) => {
             return {
               ...thirdItem,
               key: `${index}-${cIndex}-${thirdIndex}`,
-              itemId:thirdItem.key
+              itemId: thirdItem.key,
             };
           });
-
-          return {
-            ...child,
-            key: `${index}-${cIndex}`,
-            children: result,
-            qcId: child.key,
-          };
         }
+        return {
+          ...child,
+          key: `${index}-${cIndex}`,
+          children: result,
+          qcId: child.key,
+        };
       });
       return {
         ...item, // 如果想在原数组添加属性

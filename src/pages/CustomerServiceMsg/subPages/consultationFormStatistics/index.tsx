@@ -143,7 +143,7 @@ const ConsultationFormStatistics = () => {
     return obj;
   };
   const groupBy = (objectArray, property) => {
-    return objectArray.reduce(function (acc, obj) {
+    return objectArray.reduce( (acc, obj)=> {
       let key = obj[property];
       if (!acc[key]) {
         acc[key] = [];

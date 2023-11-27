@@ -12,6 +12,8 @@ import AddOrEditModal from './components/addOrEditModal';
 import moment from 'moment';
 
 const { Option } = Select;
+const { MonthPicker } = DatePicker;
+
 const RightContent = () => {
   const { dataMaintenance, dataMaintenanceInstr } = useSelector(
     (state: any) => state.IndoorQualityControMsg,
@@ -230,7 +232,6 @@ const RightContent = () => {
       if (res.code === 200) {
         setList(res.data.records);
         setTotal(res.data.total);
-       
       }
     });
   };
@@ -276,7 +277,6 @@ const RightContent = () => {
   };
   const handleSearch = (changedValues: any, allValues: undefined) => {
     if (allValues.instrId) {
-      debugger;
       const result = instrList.filter((item) => item.id == allValues.instrId);
       dispatch({
         type: 'IndoorQualityControMsg/save',
@@ -311,7 +311,7 @@ const RightContent = () => {
           </Select>
         </Form.Item>
         <Form.Item name="qcDate">
-          <DatePicker format="YYYY-MM" placeholder="请选择质控月份" />
+          <MonthPicker  placeholder="请选择质控月份" />
         </Form.Item>
         <Form.Item name="name">
           <Input placeholder="请输入项目代号和名称" allowClear />

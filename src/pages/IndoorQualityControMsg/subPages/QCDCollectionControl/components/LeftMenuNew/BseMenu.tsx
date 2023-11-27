@@ -12,12 +12,13 @@ const BaseMenu = ({ menuData, onSelect, onExpand, defaultOpenKeys, defaultSelect
         return (
           <TreeNode title={item.className} key={item.key}>
             {item.children.map((child) => {
+             
               return (
                 <TreeNode
                   title={child.instrName}
                   key={child.key}
                   instrId={child.id}
-                  labClassId={child.labClassId}
+                  labClassId={item.labClassId}
                   instrCode={child.instrCode}
                 ></TreeNode>
               );

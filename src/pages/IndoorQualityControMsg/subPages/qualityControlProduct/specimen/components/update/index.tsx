@@ -27,7 +27,7 @@ const Update = ({ Ref, refresh }) => {
       getList({ type: 'QCVENDOR' });
       form.resetFields();
       setId(val.id);
-      form.setFieldsValue({ ...val, checkReportFlag: val.checkReportFlag ? 1 : 0, });
+      form.setFieldsValue({ ...val, checkReportFlag: val.checkReportFlag ? 1 : 0 });
       dialogRef.current && dialogRef.current.show();
     },
   }));
@@ -57,6 +57,9 @@ const Update = ({ Ref, refresh }) => {
   return (
     <Dialog ref={dialogRef} width={640} title={'修改'} onOk={onOk}>
       <Form form={form} layout={'vertical'} style={{ padding: '20px' }}>
+        <Form.Item label="序号" name="seq">
+          <Input placeholder="请输入序号" type="number" disabled />
+        </Form.Item>
         <Form.Item name="checkReportFlag" label="是否存在报告依据">
           <Select placeholder="请选择是否存在报告依据" allowClear>
             {reportFlag.length > 0 &&
@@ -68,12 +71,8 @@ const Update = ({ Ref, refresh }) => {
           </Select>
         </Form.Item>
 
-        <Form.Item label="序号" name="seq">
-          <Input placeholder="请输入序号" type="number" disabled/>
-        </Form.Item>
-
         <Form.Item label="允许最大CV %" name="maxCv">
-          <Input placeholder="请输入允许最大CV %" />
+          <Input placeholder="请输入允许最大CV %" type='number'/>
         </Form.Item>
         <Form.Item name="reagentManufacturerId" label="试剂厂商">
           <Select placeholder="请选择试剂厂商" allowClear>

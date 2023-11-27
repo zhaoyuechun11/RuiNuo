@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Form, Popconfirm, message } from 'antd';
+import { Table,  Popconfirm, message } from 'antd';
 import { useDispatch, useSelector } from 'umi';
 import { Button } from '@/components';
 import { dataGatherSetList, dataGatherSetDelete } from '../../../../models/server';
@@ -11,7 +11,7 @@ const RightContent = () => {
   const [pageNum, setPageNum] = useState(1);
   const [total, setTotal] = useState(0);
   const [list, setList] = useState([]);
-  const [form] = Form.useForm();
+
   const dispatch = useDispatch();
   const modalRef = useRef();
   const [sort, setSort] = useState('');
@@ -133,7 +133,7 @@ const RightContent = () => {
   };
   return (
     <>
-      <Button btnType="primary" onClick={add}>
+      <Button btnType="primary" onClick={add} className={styles.add_btn}>
         添加
       </Button>
       <Table

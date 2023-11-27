@@ -21,6 +21,7 @@ const AddOrEditModal = ({ Ref, refresh }) => {
   useImperativeHandle(Ref, () => ({
     show: (val: any) => {
       getQcListForLabClassId({ labClassId: collectionControl.labClassId });
+      debugger
       form.resetFields();
       dialogRef.current && dialogRef.current.show();
       setId(val?.id);

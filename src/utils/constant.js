@@ -668,7 +668,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/QCAnalysisWestguard',
         name: '质控分析(Westguard图)',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

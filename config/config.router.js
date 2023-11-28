@@ -429,6 +429,11 @@ export default {
               component: '@/pages/IndoorQualityControMsg/subPages/QCMonthSumStatistics',
               title: '质控月汇统计',
             },
+            {
+              path: '/indoorQualityControMsg/QCAnalysisWestguard',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCAnalysisWestguard',
+              title: '质控分析westguard',
+            },
           ],
         },
       ],

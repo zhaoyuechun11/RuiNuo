@@ -916,3 +916,14 @@ export const Fn = (data) => {
   });
   return data;
 };
+/**给树结构增加key */
+export const addKeyToTree = (tree, parentKey = '') => {
+  for (let i = 0; i < tree.length; i++) {
+    const node = tree[i];
+    const key = parentKey === '' ? i : parentKey + '-' + i;
+    node.key = key;
+    if (node.children) {
+      addKeyToTree(node.children, key);
+    }
+  }
+};

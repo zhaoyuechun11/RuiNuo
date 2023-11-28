@@ -30,6 +30,7 @@ const LeftMenu = () => {
     listByUserForItemTgValue().then((res) => {
       if (res.code === 200) {
         const result = Fn(res.data);
+        debugger
         const keys = [
           result[0]?.key,
           result[0].children[0]?.key,

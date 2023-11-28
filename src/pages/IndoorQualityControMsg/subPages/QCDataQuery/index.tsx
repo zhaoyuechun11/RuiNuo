@@ -294,6 +294,7 @@ const QCDataQuery = () => {
       controlStatus: controlStatus[0].id,
     });
     getInstrList();
+  
   }, []);
   useEffect(() => {
     getList({

@@ -4,7 +4,7 @@ import style from './mixColLine.less';
 const color = ['#00B4FF', '#FFA533', '#00B852'];
 
 const MixColLine = ({ lineData = [], columnData = [] }) => {
-  debugger;
+
   const customConfig = {
     xField: 'name',
     yField: ['count', 'value'],

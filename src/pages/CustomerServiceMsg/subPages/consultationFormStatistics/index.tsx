@@ -51,7 +51,7 @@ const ConsultationFormStatistics = () => {
         }
       }
     }
-   
+
     setfFllZerohandleList(monthStatisticsList);
   }, [tableHeader, monthStatisticsList]);
   const handleSearch = (changedValues: any) => {
@@ -91,7 +91,6 @@ const ConsultationFormStatistics = () => {
     });
   };
   const getMonthList = (typeList, headerList) => {
-  
     /**设置每一周或者每一月对应的字段month和type值 */
     let list = [];
     let result = Object.values(headerList);
@@ -116,6 +115,7 @@ const ConsultationFormStatistics = () => {
       });
       combinationData.push({ ...target });
     });
+
     setMonthStatisticsList(combinationData);
   };
   // 判断是否为数字
@@ -143,7 +143,7 @@ const ConsultationFormStatistics = () => {
     return obj;
   };
   const groupBy = (objectArray, property) => {
-    return objectArray.reduce( (acc, obj)=> {
+    return objectArray.reduce((acc, obj) => {
       let key = obj[property];
       if (!acc[key]) {
         acc[key] = [];
@@ -244,7 +244,7 @@ const ConsultationFormStatistics = () => {
             columns={tableHeader}
             pagination={false}
             scroll={{ x: 'max-content' }}
-            size='small'
+            size="small"
             summary={(pageData) => {
               return (
                 <>

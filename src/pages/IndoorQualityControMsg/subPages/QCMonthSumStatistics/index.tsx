@@ -233,13 +233,12 @@ const QCMonthSumStatistics = () => {
       var target = result.find((item) => {
         return item.serialNum === obj.serialNum && item.type == obj.type;
       });
-
       if (target) {
+    
         Object.assign(target, obj);
       } else {
         result.push(obj);
       }
-
       return result;
     }, []);
     setLowerPart(mergedArray);

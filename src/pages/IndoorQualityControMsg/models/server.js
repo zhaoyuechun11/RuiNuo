@@ -159,3 +159,21 @@ export function monthStatisticsDetail(params) {
 export function monthStatistics(params) {
   return axiosBase('qc/data/monthStatistics', 'get', params);
 }
+export function allData(params) {
+  return axiosBase('qc/data/graphicalPage', 'get', params);
+}
+export function graphicalExport(params) {
+  return axiosBase('qc/data/graphicalExport', 'get', params);
+}
+export function appraiseAdd(params) {
+  return axiosBase('qc/appraise/add', 'post', params);
+}
+export function appraiseList(params) {
+  return axiosBase('qc/appraise/page', 'get', params);
+}
+export function appraiseUpdate(params) {
+  return axiosBase('qc/appraise/update', 'post', params);
+}
+export function appraiseDelete(params) {
+  return axiosBase('qc/appraise/delete', 'post', params);
+}

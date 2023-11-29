@@ -138,14 +138,14 @@ function axiosBase(url, type, params) {
   let export_name;
   let axiosMain;
   if (type.toUpperCase() === 'GET') {
-    console.log('url', url.split('/').pop());
     if (
       url.split('/').pop() !== 'export' &&
       url !== '/lab/reqMainOrder/comprehensiveQueryOrderExport' &&
       url !== '/lab/reqMainOrder/comprehensiveQuerySplitExport' &&
       url !== 'lab/reportMain/reportComprehensiveQueryExport' &&
       url !== 'lab/consultRegister/weekStatisticsExport' &&
-      url !== 'lab/consultRegister/monthStatisticsExport'
+      url !== 'lab/consultRegister/monthStatisticsExport' &&
+      url !== 'qc/data/graphicalExport'
     ) {
       axiosMain = axios.get(url, {
         params: params,

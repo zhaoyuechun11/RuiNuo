@@ -1,244 +1,144 @@
-import React, { useRef } from 'react';
-import { Line, G2 } from '@ant-design/charts';
-import ReactToPrint from 'react-to-print';
-const data = [
-  {
-    year: '1850',
-    value: 0,
-    category: 'Liquid fuel',
-  },
-  {
-    year: '1850',
-    value: 54,
-    category: 'Solid fuel',
-  },
-  {
-    year: '1850',
-    value: -3,
-    category: 'Gas fuel',
-  },
-  {
-    year: '1851',
-    value: null,
-    category: 'Liquid fuel',
-  },
-  {
-    year: '1851',
-    value: null,
-    category: 'Solid fuel',
-  },
-  {
-    year: '1851',
-    value: 15,
-    category: 'Gas fuel',
-  },
-  {
-    year: '1852',
-    value: 70,
-    category: 'Liquid fuel',
-  },
-  {
-    year: '1852',
-    value: 60,
-    category: 'Solid fuel',
-  },
-  {
-    year: '1852',
-    value: 3,
-    category: 'Gas fuel',
-  },
-];
-G2.registerShape('point', 'breath-point', {
-  draw(cfg, container) {
-    const data = cfg.data;
-    const point = {
-      x: cfg.x,
-      y: cfg.y,
-    };
-    const group = container.addGroup();
+import React, { useEffect, useRef, useState } from 'react';
+import { Form, Input, Table, DatePicker, Select, Button } from 'antd';
+import { instrListForThisUser, getQcListForInstr } from '@/models/server';
+import moment from 'moment';
+import { useDispatch, useSelector } from 'umi';
+import s from './index.less';
+import LeftContent from './components/leftContent';
+import RightContent from './components/rightContent';
 
-    if (data.year === '1852' && data.category === 'Solid fuel') {
-      const decorator1 = group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 10,
-          fill: cfg.color,
-          opacity: 0.5,
-        },
-      });
-      const decorator2 = group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 10,
-          fill: cfg.color,
-          opacity: 0.5,
-        },
-      });
-      const decorator3 = group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 10,
-          fill: cfg.color,
-          opacity: 0.5,
-        },
-      });
-      decorator1.animate(
-        {
-          r: 20,
-          opacity: 0,
-        },
-        {
-          duration: 1800,
-          easing: 'easeLinear',
-          repeat: true,
-        },
-      );
-      decorator2.animate(
-        {
-          r: 20,
-          opacity: 0,
-        },
-        {
-          duration: 1800,
-          easing: 'easeLinear',
-          repeat: true,
-          delay: 600,
-        },
-      );
-      decorator3.animate(
-        {
-          r: 20,
-          opacity: 0,
-        },
-        {
-          duration: 1800,
-          easing: 'easeLinear',
-          repeat: true,
-          delay: 1200,
-        },
-      );
-      group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 6,
-          fill: cfg.color,
-          opacity: 0.7,
-        },
-      });
-      group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 1.5,
-          fill: cfg.color,
-        },
-      });
-    }
-    if (
-      data.category === 'Gas fuel' ||
-      data.category === 'Liquid fuel' ||
-      data.category === 'Solid fuel'
-    ) {
-      group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 3,
-          fill: cfg.color,
-        },
-      });
-    }
-
-    return group;
-  },
-});
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 const QCAnalysisWestguard = () => {
-  const componentRef = useRef(null);
-  const config = {
-    data,
-    xField: 'year',
-    yField: 'value',
-    // range:[0,3],
-    connectNulls: false,
-    seriesField: 'category',
-    meta: {
-      //   value: {
-      //     max: 3,
-      //     min: -3,
-      //   },
-    },
-    xAxis: {
-      type: 'time',
-      grid: {
-        line: {
-          style: {
-            stroke: '#ddd',
-            lineDash: [1, 2],
-          },
-        },
-      },
-    },
-    yAxis: {
-      label: {
-        // 数值格式化为千分位
-        //formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
-        formatter: (v, index) => {
-          console.log('v', v, index);
+  const { AWQcList } = useSelector((state: any) => state.IndoorQualityControMsg);
+  const [form] = Form.useForm();
+  const [instr, setInstr] = useState([]);
+  const dispatch = useDispatch();
 
-          //   if (v == 0) {
-          //     return 'x';
-          //   } else {
-          //     return v + 'SD';
-          //   }
-        },
-
-        tickLine: {
-          style: {
-            lineWidth: 2,
-            stroke: '#aaa',
-          },
-          length: 5,
-        },
-        line: {
-          style: {
-            stroke: '#aaa',
-          },
-        },
-      },
-    },
-    point: {
-      shape: ({ category }) => {
-        console.log(category);
-         return category === 'Gas fuel' ? 'square' : 'circle';
-      },
-      style: (year) => {
-        console.log('year', year);
-        //   return {
-        //     r: Number(year) % 4 ? 0 : 3, // 4 个数据示一个点标记
-        //   };
-        if (year.year === '1852' && year.category === 'Solid fuel') {
-          return { fill: 'red', fillOpacity: 0.5 };
-        }
-      },
-      size: 16,
-    },
-    // point: {
-    //   shape: 'breath-point',
-    // },
+  useEffect(() => {
+    form.setFieldsValue({
+      startDate: [
+        moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'),
+        moment(moment().format('YYYY-MM-DD'), 'YYYY-MM-DD'),
+      ],
+    });
+    getInstrList();
+  }, []);
+  const getInstrList = () => {
+    instrListForThisUser().then((res) => {
+      if (res.code === 200) {
+        form.setFieldsValue({ instrId: res.data[0].id });
+        setInstr(res.data);
+        getQcList({
+          instrId: res.data[0].id,
+          startDate: form.getFieldsValue().startDate[0].format('YYYY-MM-DD'),
+          endDate: form.getFieldsValue().startDate[1].format('YYYY-MM-DD'),
+        });
+      }
+    });
   };
-  const reactToPrintContent = React.useCallback(() => {
-    return componentRef.current;
-  }, [componentRef.current]);
+  const getQcList = (params: any) => {
+    getQcListForInstr(params).then((res) => {
+      if (res.code === 200) {
+        const result = res.data.map((item) => {
+          return {
+            key: item.id,
+            ...item,
+          };
+        });
+        dispatch({
+          type: 'IndoorQualityControMsg/save',
+          payload: {
+            type: 'AWQcList',
+            dataSource: result,
+          },
+        });
+      }
+    });
+  };
+  const seach = () => {};
+  const instrChange = (e: any) => {
+    if (e) {
+      let pararm = {
+        ...form.getFieldsValue(),
+        startDate: form.getFieldsValue().startDate
+          ? form.getFieldsValue().startDate[0].format('YYYY-MM-DD')
+          : '',
+        endDate: form.getFieldsValue().startDate
+          ? form.getFieldsValue().startDate[1].format('YYYY-MM-DD')
+          : '',
+      };
+      getQcList(pararm);
+    } else {
+      dispatch({
+        type: 'IndoorQualityControMsg/save',
+        payload: {
+          type: 'AWQcList',
+          dataSource: [],
+        },
+      });
+    }
+  };
 
+  const handleSearch = (changedValues, allValues) => {
+    dispatch({
+      type: 'IndoorQualityControMsg/save',
+      payload: {
+        type: 'AWFormData',
+        dataSource: allValues,
+      },
+    });
+    dispatch({
+      type: 'IndoorQualityControMsg/save',
+      payload: {
+        type: 'AWItemId',
+        dataSource: '',
+      },
+    });
+    dispatch({
+      type: 'IndoorQualityControMsg/save',
+      payload: {
+        type: 'AWSelectedQcIds',
+        dataSource: [],
+      },
+    });
+  };
+  const renderForm = () => {
+    return (
+      <Form form={form} className={s.form_box} onValuesChange={handleSearch}>
+        <Form.Item name="startDate" label="质控日期">
+          <RangePicker
+            showTime={{ format: 'YYYY-MM-DD' }}
+            format="YYYY-MM-DD"
+            placeholder={['质控开始时间', '质控结束时间']}
+          />
+        </Form.Item>
+        <Form.Item label="仪器" name="instrId">
+          <Select placeholder="请选择仪器" allowClear onChange={instrChange}>
+            {instr.map((item) => {
+              return (
+                <Option value={item.id} key={item.id} labClassId={item.labClassId}>
+                  {item.instrName}
+                </Option>
+              );
+            })}
+          </Select>
+        </Form.Item>
+      </Form>
+    );
+  };
   return (
     <>
-      <ReactToPrint trigger={() => <a href="#">打印</a>} content={reactToPrintContent} />
-      <div ref={componentRef}>
-        <Line {...config} />
+      <div className={s.search_box}>
+        {renderForm()}
+        <Button type="primary" onClick={seach}>
+          查询
+        </Button>
+        <Button type="primary">清空</Button>
+      </div>
+      <div className={s.content_box}>
+        <LeftContent qcList={AWQcList} />
+        <RightContent />
       </div>
     </>
   );

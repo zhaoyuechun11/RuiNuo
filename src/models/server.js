@@ -65,9 +65,18 @@ export function getNodeList(params) {
 export function instrList(params) {
   return axiosBase('/basic/instr/getList', 'get', params);
 }
+export function instrListForThisUser(params) {
+  return axiosBase('basic/instr/getListForThisUser', 'get', params);
+}
 export function recipientList(params) {
   return axiosBase('/sys/user/recipientList', 'get', params);
 }
 export function getArea(params) {
   return axiosBase('/basic/area/getAll', 'get', params);
+}
+export function getQcListForInstr(params) {
+  return axiosBase('qc/controls/getListForInstr', 'get', params);
+}
+export function getReqItemListByQcs(params) {
+  return axiosBase('qc/controlsItem/getReqItemListByQcs', 'get', params);
 }

@@ -11,6 +11,10 @@ const IndoorQualityControMsg = {
     collectionControl: {},
     dataMaintenance: {},
     dataMaintenanceInstr: {},
+    AWSelectedQcIds: [],
+    AWItemId: '',
+    AWFormData: {},
+    AWQcList: [],
   },
   effects: {
     *fetchQCList({ payload }, { call }) {

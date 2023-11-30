@@ -117,7 +117,7 @@ const LeftContent = ({ ...props }) => {
     return className;
   };
   return (
-    <div>
+    <div style={{marginTop:'10px'}}>
       <Table
         rowSelection={rowSelection}
         columns={columns}

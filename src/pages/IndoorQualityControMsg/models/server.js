@@ -177,3 +177,6 @@ export function appraiseUpdate(params) {
 export function appraiseDelete(params) {
   return axiosBase('qc/appraise/delete', 'post', params);
 }
+export function graphicalData(params) {
+  return axiosBase('qc/data/graphicalData', 'get', params);
+}

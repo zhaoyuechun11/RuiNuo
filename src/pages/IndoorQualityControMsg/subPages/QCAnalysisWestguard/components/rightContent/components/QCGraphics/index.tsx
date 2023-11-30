@@ -1,6 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Radio, Checkbox, Table } from 'antd';
 import { Line, G2 } from '@ant-design/charts';
 import ReactToPrint from 'react-to-print';
+import { Button } from '@/components';
+import { useSelector } from 'umi';
 
 const data = [
   {
@@ -157,7 +160,165 @@ G2.registerShape('point', 'breath-point', {
     return group;
   },
 });
+
+const qcData = [
+  {
+    qcId: 8,
+    qcName: 'asdf',
+    batchNo: 'dddff',
+    qcLevelName: '水平3',
+    exprieDt: '2023-11-30',
+    x: 6.0,
+    sd: 3.0,
+    cv: 6.0,
+    thisX: 25.604,
+    thisSd: 18.827,
+    thisCv: 73.531,
+    detail: {
+      '11-25': [
+        {
+          id: 4,
+          qcDate: '11-25',
+          qcDateDetail: '2023-11-25',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平3',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 4.56,
+          calculateSd: -0.48,
+          calculateCv: -24.0,
+        },
+      ],
+      '11-30': [
+        {
+          id: 2,
+          qcDate: '11-30',
+          qcDateDetail: '2023-11-30',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平3',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 50.252,
+          calculateSd: 14.75,
+          calculateCv: 737.5,
+        },
+        {
+          id: 3,
+          qcDate: '11-30',
+          qcDateDetail: '2023-11-30',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平3',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 22.0,
+          calculateSd: 5.33,
+          calculateCv: 266.5,
+        },
+      ],
+    },
+  },
+  {
+    qcId: 8,
+    qcName: 'asdf',
+    batchNo: 'dddff',
+    qcLevelName: '水平4',
+    exprieDt: '2023-11-30',
+    x: 6.0,
+    sd: 3.0,
+    cv: 6.0,
+    thisX: 25.604,
+    thisSd: 18.827,
+    thisCv: 73.531,
+    detail: {
+      '11-25': [
+        {
+          id: 4,
+          qcDate: '11-25',
+          qcDateDetail: '2023-11-25',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平4',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 4.56,
+          calculateSd: -0.48,
+          calculateCv: -24.0,
+        },
+      ],
+      '11-30': [
+        {
+          id: 2,
+          qcDate: '11-30',
+          qcDateDetail: '2023-11-30',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平4',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 50.252,
+          calculateSd: 14.75,
+          calculateCv: 737.5,
+        },
+      ],
+    },
+  },
+];
+const dataSource = [
+  {
+    name: '水平3',
+    val: 3.44,
+    val1: 0.7,
+    val2: 1.44,
+  },
+  {
+    name: '水平4',
+    val: 5.44,
+    val1: 6.7,
+    val2: 7.44,
+  },
+];
+const columnsDetal = [
+  {
+    title: '日期',
+    dataIndex: 'name',
+    align: 'center',
+  },
+  {
+    title: '11-25',
+    dataIndex: 'val',
+    align: 'center',
+  },
+  {
+    title: '11-30',
+    dataIndex: 'val1',
+    align: 'center',
+  },
+  {
+    title: '11-30',
+    dataIndex: 'val2',
+    align: 'center',
+  },
+];
 const QCGraphics = () => {
+  const { AWGraphicalData } = useSelector((state: any) => state.IndoorQualityControMsg);
+  const [qcDetailList, setQcDetailList] = useState([]);
+  const [qcDetailTableHeader, setQcDetailTableHeader] = useState([]);
+  useEffect(() => {
+    // if (AWGraphicalData.qcData?.length > 0) {
+    //   const { qcData } = AWGraphicalData;
+    handleTableHeader(qcData);
+    handleDetail(qcData);
+    // }
+  }, []);
+
   const componentRef = useRef(null);
   const config = {
     data,
@@ -231,12 +392,181 @@ const QCGraphics = () => {
     //   shape: 'breath-point',
     // },
   };
+  const columns = [
+    {
+      title: '质控品',
+      dataIndex: 'qcName',
+      align: 'center',
+    },
+    {
+      title: '批号',
+      dataIndex: 'batchNo',
+      align: 'center',
+    },
+    {
+      title: '有效期',
+      dataIndex: 'exprieDt',
+      align: 'center',
+    },
+    {
+      title: '靶值',
+      dataIndex: 'x',
+      align: 'center',
+    },
+    {
+      title: '标准差',
+      dataIndex: 'sd',
+      align: 'center',
+    },
+    {
+      title: '变异系数',
+      dataIndex: 'cv',
+      align: 'center',
+    },
+    {
+      title: '当前数据',
+      children: [
+        {
+          title: '靶值',
+          dataIndex: 'thisX',
+        },
+        {
+          title: '标准差',
+          dataIndex: 'thisSd',
+        },
+        {
+          title: '变异系数',
+          dataIndex: 'thisCv',
+        },
+      ],
+    },
+  ];
+  const handleDetail = (qcData) => {
+    let rowData = [];
+    qcData?.forEach((item, index) => {
+      let t = [];
+      Object.entries(item.detail).forEach(([key, value]) => {
+        value.forEach((val) => {
+          t.push(val);
+        });
+      });
+      rowData.push({ ['leve' + index]: t });
+    });
+    rowData.forEach((item) => {
+      Object.entries(item).forEach(([key, value]) => {
+        console.log('value', value);
+        value.forEach((val, index) => {
+          let num = index + 1;
+          val['showVal' + [num]] = val.calculateValue;
+          //val['qcLevelName' + [num]] = val.qcLevelName;
+        });
+      });
+    });
+    let afterData = [];
+    rowData.forEach((item) => {
+      let obj = {};
+      Object.entries(item).forEach(([key, value]) => {
+        value.forEach((val, index) => {
+          let num = index + 1;
+          const prop = 'showVal' + num;
+
+          Object.assign(obj, { [prop]: val[prop], qcLevelName: val.qcLevelName });
+        });
+      });
+      afterData.push(obj);
+    });
+    console.log(afterData);
+    setQcDetailList(afterData);
+  };
+
+  const handleTableHeader = (qcData) => {
+    /**设置每一周或者每一月对应的字段month和type值 */
+    // 使用数组方法
+    let list = [
+      {
+        title: '日期',
+        dataIndex: 'qcLevelName',
+        align: 'center',
+      },
+    ];
+    qcData?.forEach((item) => {
+      Object.entries(item.detail).forEach(([key1, value1]) => {
+        value1.forEach((val, index2) => {
+          let index = index2 + 1;
+          list.push({
+            title: key1 + '(' + index + ')',
+            serialNum: index2,
+            dataIndex: 'showVal' + index,
+            align: 'center',
+          });
+        });
+      });
+    });
+
+    var mergedArray = list
+      .reduce((result, obj) => {
+        var target = result.find((item) => {
+          return item.serialNum === obj.serialNum && item.title == obj.title;
+        });
+        if (target) {
+          Object.assign(target, obj);
+        } else {
+          result.push(obj);
+        }
+        return result;
+      }, [])
+      .map((item, index) => {
+        if (index === 0) {
+          return {
+            ...item,
+            dataIndex: 'qcLevelName',
+          };
+        } else {
+          return {
+            ...item,
+            dataIndex: 'showVal' + [index],
+          };
+        }
+      });
+    debugger;
+    setQcDetailTableHeader(mergedArray);
+  };
   return (
     <>
-      <ReactToPrint trigger={() => <a href="#">打印</a>} content={() => componentRef.current} />
+      <div style={{ display: 'flex', margin: '10px 0' }}>
+        <Radio.Group>
+          <Radio value={1}>所有点</Radio>
+          <Radio value={2}>最后点</Radio>
+          <Radio value={3}>最好点</Radio>
+        </Radio.Group>
+        <Checkbox>多图</Checkbox>
+        <Checkbox>显示非累积点</Checkbox>
+        <ReactToPrint
+          trigger={() => <Button btnType="primary">打印</Button>}
+          content={() => componentRef.current}
+        />
+      </div>
       <div ref={componentRef}>
         <Line {...config} />
       </div>
+      <Table
+        scroll={{ x: 'max-content' }}
+        size="small"
+        dataSource={AWGraphicalData?.qcData}
+        columns={columns}
+        pagination={false}
+        bordered
+      ></Table>
+      <Table
+        style={{ marginTop: '20px' }}
+        title={() => '质控数据'}
+        scroll={{ x: 'max-content' }}
+        size="small"
+        dataSource={qcDetailList}
+        columns={qcDetailTableHeader}
+        pagination={false}
+        bordered
+      ></Table>
     </>
   );
 };

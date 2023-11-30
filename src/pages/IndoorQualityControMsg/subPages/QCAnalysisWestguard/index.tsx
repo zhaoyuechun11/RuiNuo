@@ -3,6 +3,8 @@ import { Form, Input, Table, DatePicker, Select, Button } from 'antd';
 import { instrListForThisUser, getQcListForInstr } from '@/models/server';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'umi';
+import { graphicalData } from '../../models/server';
+
 import s from './index.less';
 import LeftContent from './components/leftContent';
 import RightContent from './components/rightContent';
@@ -10,7 +12,9 @@ import RightContent from './components/rightContent';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const QCAnalysisWestguard = () => {
-  const { AWQcList } = useSelector((state: any) => state.IndoorQualityControMsg);
+  const { AWQcList, AWSelectedQcIds, AWItemId, AWFormData } = useSelector(
+    (state: any) => state.IndoorQualityControMsg,
+  );
   const [form] = Form.useForm();
   const [instr, setInstr] = useState([]);
   const dispatch = useDispatch();
@@ -27,7 +31,7 @@ const QCAnalysisWestguard = () => {
   const getInstrList = () => {
     instrListForThisUser().then((res) => {
       if (res.code === 200) {
-        form.setFieldsValue({ instrId: res.data[0].id });
+        form.setFieldsValue({ instrId: res.data[0]?.id });
         setInstr(res.data);
         getQcList({
           instrId: res.data[0].id,
@@ -56,7 +60,33 @@ const QCAnalysisWestguard = () => {
       }
     });
   };
-  const seach = () => {};
+  const seach = () => {
+    if (
+      AWSelectedQcIds.length > 0 &&
+      AWItemId !== '' &&
+      AWFormData.instrId !== '' &&
+      AWFormData.instrId !== undefined &&
+      AWFormData.startDate !== null
+    ) {
+      graphicalData({
+        instrId: AWFormData.instrId,
+        qcDateStart: AWFormData.startDate[0].format('YYYY-MM-DD'),
+        qcDateEnd: AWFormData.startDate[1].format('YYYY-MM-DD'),
+        itemId: AWItemId,
+        qcIds: AWSelectedQcIds,
+      }).then((res) => {
+        if (res.code === 200) {
+          dispatch({
+            type: 'IndoorQualityControMsg/save',
+            payload: {
+              type: 'AWGraphicalData',
+              dataSource: res.data,
+            },
+          });
+        }
+      });
+    }
+  };
   const instrChange = (e: any) => {
     if (e) {
       let pararm = {

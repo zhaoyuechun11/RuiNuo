@@ -241,6 +241,7 @@ const QCMonthSumStatistics = () => {
       }
       return result;
     }, []);
+   
     setLowerPart(mergedArray);
   };
   const qcListChange = (e, option) => {

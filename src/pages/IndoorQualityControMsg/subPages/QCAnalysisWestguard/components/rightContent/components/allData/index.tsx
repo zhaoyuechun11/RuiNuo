@@ -119,7 +119,7 @@ const AllData = () => {
       align: 'center',
       dataIndex: '',
     },
-   
+
     {
       title: '失控原因',
       dataIndex: 'outControlReason',

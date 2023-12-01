@@ -7,50 +7,50 @@ import { useSelector } from 'umi';
 
 const data = [
   {
-    year: '1850',
-    value: 0,
-    category: 'Liquid fuel',
+    date: '11-25',
+    value: 0.88,
+    category: '水平3',
   },
   {
-    year: '1850',
-    value: 54,
-    category: 'Solid fuel',
+    date: '11-25',
+    value: 2.77,
+    category: '水平4',
   },
   {
-    year: '1850',
+    date: '11-25',
+    value: -2.44,
+    category: '水平5',
+  },
+  {
+    date: '11-30',
+    value: null,
+    category: '水平3',
+  },
+  {
+    date: '11-30',
+    value: null,
+    category: '水平4',
+  },
+  {
+    date: '11-30',
     value: -3,
-    category: 'Gas fuel',
+    category: '水平5',
   },
   {
-    year: '1851',
-    value: null,
-    category: 'Liquid fuel',
+    date: '11-30(1)',
+    value: 0,
+    category: '水平3',
   },
-  {
-    year: '1851',
-    value: null,
-    category: 'Solid fuel',
-  },
-  {
-    year: '1851',
-    value: 15,
-    category: 'Gas fuel',
-  },
-  {
-    year: '1852',
-    value: 70,
-    category: 'Liquid fuel',
-  },
-  {
-    year: '1852',
-    value: 60,
-    category: 'Solid fuel',
-  },
-  {
-    year: '1852',
-    value: 3,
-    category: 'Gas fuel',
-  },
+  // {
+  //   date: '11-30(1)',
+  //   value: -3,
+  //   category: '水平4',
+  // },
+  // {
+  //   date: '11-30(1)',
+  //   value: 3,
+  //   category: '水平5',
+  // },
 ];
 G2.registerShape('point', 'breath-point', {
   draw(cfg, container) {
@@ -186,9 +186,10 @@ const qcData = [
           x: 6.0,
           sd: 3.0,
           cv: 6.0,
-          calculateValue: 4.56,
+          calculateValue: 4,
           calculateSd: -0.48,
           calculateCv: -24.0,
+          inuseFlag: false,
         },
       ],
       '11-30': [
@@ -202,9 +203,10 @@ const qcData = [
           x: 6.0,
           sd: 3.0,
           cv: 6.0,
-          calculateValue: 50.252,
-          calculateSd: 14.75,
+          calculateValue: 5,
+          calculateSd: -3.2,
           calculateCv: 737.5,
+          inuseFlag: true,
         },
         {
           id: 3,
@@ -217,8 +219,9 @@ const qcData = [
           sd: 3.0,
           cv: 6.0,
           calculateValue: 22.0,
-          calculateSd: 5.33,
+          calculateSd: -5.33,
           calculateCv: 266.5,
+          inuseFlag: false,
         },
       ],
     },
@@ -247,9 +250,25 @@ const qcData = [
           x: 6.0,
           sd: 3.0,
           cv: 6.0,
+          calculateValue: 4,
+          calculateSd: -0.48,
+          calculateCv: -24.0,
+          inuseFlag: true,
+        },
+        {
+          id: 4,
+          qcDate: '11-25',
+          qcDateDetail: '2023-11-25',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平4',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
           calculateValue: 4.56,
           calculateSd: -0.48,
           calculateCv: -24.0,
+          inuseFlag: false,
         },
       ],
       '11-30': [
@@ -266,6 +285,56 @@ const qcData = [
           calculateValue: 50.252,
           calculateSd: 14.75,
           calculateCv: 737.5,
+          inuseFlag: true,
+        },
+      ],
+    },
+  },
+  {
+    qcId: 8,
+    qcName: 'asdf',
+    batchNo: 'dddff',
+    qcLevelName: '水平5',
+    exprieDt: '2023-11-30',
+    x: 6.0,
+    sd: 3.0,
+    cv: 6.0,
+    thisX: 25.604,
+    thisSd: 18.827,
+    thisCv: 73.531,
+    detail: {
+      '11-25': [
+        {
+          id: 4,
+          qcDate: '11-25',
+          qcDateDetail: '2023-11-25',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平5',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 4.56,
+          calculateSd: -0.48,
+          calculateCv: -24.0,
+          inuseFlag: false,
+        },
+      ],
+      '11-30': [
+        {
+          id: 2,
+          qcDate: '11-30',
+          qcDateDetail: '2023-11-30',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平5',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 50.252,
+          calculateSd: 14.75,
+          calculateCv: 737.5,
+          inuseFlag: true,
         },
       ],
     },
@@ -311,30 +380,63 @@ const QCGraphics = () => {
   const { AWGraphicalData } = useSelector((state: any) => state.IndoorQualityControMsg);
   const [qcDetailList, setQcDetailList] = useState([]);
   const [qcDetailTableHeader, setQcDetailTableHeader] = useState([]);
+  const [graphicsData, setGraphicsData] = useState([]);
+  const [radioActiveVal, setRadioActiveVal] = useState(1);
+  const [isShowAccrue, setIsShowAccrue] = useState(false);
   useEffect(() => {
     // if (AWGraphicalData.qcData?.length > 0) {
     //   const { qcData } = AWGraphicalData;
     handleTableHeader(qcData);
     handleDetail(qcData);
+    handelGraphics(qcData);
     // }
   }, []);
 
   const componentRef = useRef(null);
+  const getTooltips = (value = '', items = []) => {
+    return `
+    <div class="g2-tooltip-title" style="margin-bottom: 12px; margin-top: 12px;"> ${value}</div>
+    <ul>
+      ${items
+        .map((item) => {
+          const { color } = item;
+          return `<li class="g2-tooltip-list-item" data-index="" style="list-style-type: none; padding: 0px; margin: 12px 0px;">
+          <span class="g2-tooltip-marker" style="background: ${color}; width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 8px;"></span>
+                   <span class="g2-tooltip-name">水平:${item.name}</span>,
+                  <span class="g2-tooltip-name"> 批号:${item.data.batchNo}</span>,
+                  <span class="g2-tooltip-name"> 靶值:${item.data.x}</span>,
+                  <span class="g2-tooltip-name"> 标准差:${item.data.sd}</span>,
+                  <span class="g2-tooltip-name"> 变异系数:${item.data.cv}</span>,
+                 </li>
+             
+                 `;
+        })
+        .join('')}
+    </ul>
+    `;
+  };
   const config = {
-    data,
-    xField: 'year',
-    yField: 'value',
+    data: graphicsData,
+    xField: 'qcDate',
+    yField: 'calculateSd',
+
     // range:[0,3],
     connectNulls: false,
-    seriesField: 'category',
+    seriesField: 'qcLevelName',
     meta: {
-      //   value: {
-      //     max: 3,
-      //     min: -3,
-      //   },
+      value: {
+        max: 3,
+        min: -3,
+      },
+    },
+    tooltip: {
+      customContent: (value, items) => {
+        console.log('value', value, items);
+        return getTooltips(value, items);
+      },
     },
     xAxis: {
-      type: 'time',
+      // type: 'time',
       grid: {
         line: {
           style: {
@@ -351,11 +453,11 @@ const QCGraphics = () => {
         formatter: (v, index) => {
           console.log('v', v, index);
 
-          //   if (v == 0) {
-          //     return 'x';
-          //   } else {
-          //     return v + 'SD';
-          //   }
+          if (v == 0) {
+            return 'x';
+          } else {
+            return v + 'SD';
+          }
         },
 
         tickLine: {
@@ -386,7 +488,7 @@ const QCGraphics = () => {
         //   return { fill: 'red', fillOpacity: 0.5 };
         // }
       },
-      size: 16,
+      size: 12,
     },
     // point: {
     //   shape: 'breath-point',
@@ -458,7 +560,6 @@ const QCGraphics = () => {
         value.forEach((val, index) => {
           let num = index + 1;
           val['showVal' + [num]] = val.calculateValue;
-          //val['qcLevelName' + [num]] = val.qcLevelName;
         });
       });
     });
@@ -469,13 +570,11 @@ const QCGraphics = () => {
         value.forEach((val, index) => {
           let num = index + 1;
           const prop = 'showVal' + num;
-
           Object.assign(obj, { [prop]: val[prop], qcLevelName: val.qcLevelName });
         });
       });
       afterData.push(obj);
     });
-    console.log(afterData);
     setQcDetailList(afterData);
   };
 
@@ -528,19 +627,133 @@ const QCGraphics = () => {
           };
         }
       });
-    debugger;
+
     setQcDetailTableHeader(mergedArray);
   };
+  const handelGraphics = (qcData) => {
+    let dateDetail = [];
+    qcData?.forEach((item) => {
+      Object.entries(item.detail).forEach(([key, value]) => {
+        value.forEach((val, index1) => {
+          let num = index1 + 1;
+          val.qcDate = val.qcDate + '(' + num + ')';
+        });
+      });
+    });
+    qcData?.forEach((item) => {
+      Object.entries(item.detail).forEach(([key, value]) => {
+        dateDetail.push(...value);
+      });
+    });
+    setGraphicsData(dateDetail);
+  };
+  const radioChange = (e: any) => {
+    setRadioActiveVal(e.target.value);
+    let dateDetail = [];
+    if (e.target.value === 1) {
+      qcData?.forEach((item) => {
+        Object.entries(item.detail).forEach(([key, value]) => {
+          dateDetail.push(...value);
+        });
+      });
+    }
+    if (e.target.value === 2) {
+      qcData?.forEach((item) => {
+        Object.entries(item.detail).forEach(([key, value]) => {
+          if (value.length === 1) {
+            dateDetail.push(...value);
+          } else {
+            dateDetail.push(value[value.length - 1]);
+          }
+        });
+      });
+      if (isShowAccrue) {
+        let dispersedData = [];
+        qcData?.forEach((item) => {
+          Object.entries(item.detail).forEach(([key, value]) => {
+            value.forEach((valItem) => {
+              if (!valItem.inuseFlag) {
+                dispersedData.push(valItem);
+              }
+            });
+          });
+        });
+
+        let result = dispersedData.map((item) => {
+          return {
+            ...item,
+            calculateSd: (item.calculateValue - item.x) / item.sd,
+            qcLevelName: item.qcLevelName + '离散点',
+          };
+        });
+        dateDetail.push(...result);
+      }
+    }
+    if (e.target.value === 3) {
+      qcData?.forEach((item) => {
+        Object.entries(item.detail).forEach(([key, value]) => {
+          if (value.length === 1) {
+            dateDetail.push(...value);
+          } else {
+            // const min = value.reduce((prev, current) =>
+            //   prev.calculateSd < current.calculateSd ? prev : current,
+            // );
+            // dateDetail.push(min);
+            // 初始化最小值和最小值对应的字段
+            var minValue = Math.abs(value[0].calculateSd);
+            var minField = value[0];
+
+            // 遍历数组对象，比较值的绝对值
+            for (var i = 1; i < value.length; i++) {
+              var absValue = Math.abs(value[i].calculateSd);
+              if (absValue < minValue) {
+                minValue = absValue;
+                minField = value[i];
+              }
+            }
+            dateDetail.push(minField);
+          }
+        });
+      });
+      if (isShowAccrue) {
+        let dispersedData = [];
+        qcData?.forEach((item) => {
+          Object.entries(item.detail).forEach(([key, value]) => {
+            value.forEach((valItem) => {
+              if (!valItem.inuseFlag) {
+                dispersedData.push(valItem);
+              }
+            });
+          });
+        });
+
+        let result = dispersedData.map((item) => {
+          return {
+            ...item,
+            calculateSd: (item.calculateValue - item.x) / item.sd,
+            qcLevelName: item.qcLevelName + '离散点',
+          };
+        });
+        dateDetail.push(...result);
+      }
+    }
+
+    setGraphicsData(dateDetail);
+  };
+  const accrueChange = (e: any) => {
+    setIsShowAccrue(e.target.checked);
+  };
+  const multiGraphChange = (e: any) => {};
   return (
     <>
       <div style={{ display: 'flex', margin: '10px 0' }}>
-        <Radio.Group>
+        <Radio.Group value={radioActiveVal} onChange={radioChange}>
           <Radio value={1}>所有点</Radio>
           <Radio value={2}>最后点</Radio>
           <Radio value={3}>最好点</Radio>
         </Radio.Group>
-        <Checkbox>多图</Checkbox>
-        <Checkbox>显示非累积点</Checkbox>
+        <Checkbox onChange={multiGraphChange}>多图</Checkbox>
+        <Checkbox onChange={accrueChange}>显示非累积点</Checkbox>
         <ReactToPrint
           trigger={() => <Button btnType="primary">打印</Button>}
           content={() => componentRef.current}

@@ -687,7 +687,7 @@ const QCGraphics = () => {
         });
       });
     }
-    if (e.target.value === 2) {
+    if (e.target.value === 2 || e.target.value === 3) {
       if (isShowAccrue) {
         qcData?.forEach((item) => {
           Object.entries(item.detail).forEach(([key, value]) => {
@@ -717,12 +717,24 @@ const QCGraphics = () => {
               if (noLs.length === 1) {
                 dateDetail.push(...noLs);
               } else {
-                dateDetail.push(noLs[noLs.length - 1]);
+                if (e.target.value === 2) {
+                  dateDetail.push(noLs[noLs.length - 1]);
+                }
+                if (e.target.value === 3) {
+                  let minField = getMinField(noLs);
+                  dateDetail.push(minField);
+                }
               }
               if (ls.length === 1) {
                 dateDetail.push(...ls);
               } else {
-                dateDetail.push(ls[ls.length - 1]);
+                if (e.target.value === 2) {
+                  dateDetail.push(ls[ls.length - 1]);
+                }
+                if (e.target.value === 3) {
+                  let minField = getMinField(ls);
+                  dateDetail.push(minField);
+                }
               }
             }
           });
@@ -735,106 +747,122 @@ const QCGraphics = () => {
               if (result.length === 1) {
                 dateDetail.push(...result);
               } else {
-                dateDetail.push(result[result.length - 1]);
+                if (e.target.value === 2) {
+                  dateDetail.push(result[result.length - 1]);
+                }
+                if (e.target.value === 3) {
+                  let minField = getMinField(result);
+                  dateDetail.push(minField);
+                }
               }
             }
           });
         });
       }
     }
-    if (e.target.value === 3) {
-      if (isShowAccrue) {
-        qcData?.forEach((item) => {
-          Object.entries(item.detail).forEach(([key, value]) => {
-            let result = value.map((valItem) => {
-              if (!valItem.inuseFlag) {
-                return {
-                  ...valItem,
-                  calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
-                  qcLevelName: valItem.qcLevelName + '离散点',
-                };
+    setGraphicsData(dateDetail);
+  };
+  const accrueChange = (e: any) => {
+    radioActiveVal;
+    debugger;
+    setIsShowAccrue(e.target.checked);
+    let dateDetail = [];
+    if (e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
+      qcData?.forEach((item) => {
+        Object.entries(item.detail).forEach(([key, value]) => {
+          let result = value.map((valItem) => {
+            if (!valItem.inuseFlag) {
+              return {
+                ...valItem,
+                calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
+                qcLevelName: valItem.qcLevelName + '离散点',
+              };
+            } else {
+              return { ...valItem };
+            }
+          });
+          let ls = [];
+          let noLs = [];
+          if (result.length === 1) {
+            dateDetail.push(...result);
+          } else {
+            result.forEach((item) => {
+              if (item.inuseFlag) {
+                noLs.push(item);
               } else {
-                return { ...valItem };
+                ls.push(item);
               }
             });
-            let ls = [];
-            let noLs = [];
+            if (noLs.length === 1) {
+              dateDetail.push(...noLs);
+            } else {
+              if (radioActiveVal === 2) {
+                dateDetail.push(noLs[noLs.length - 1]);
+              }
+              if (radioActiveVal === 3) {
+                let minField = getMinField(noLs);
+                dateDetail.push(minField);
+              }
+            }
+            if (ls.length === 1) {
+              dateDetail.push(...ls);
+            } else {
+              if (radioActiveVal === 2) {
+                dateDetail.push(ls[ls.length - 1]);
+              }
+              if (radioActiveVal === 3) {
+                let minField = getMinField(ls);
+                dateDetail.push(minField);
+              }
+            }
+          }
+        });
+      });
+    }
+    if (!e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
+      qcData?.forEach((item) => {
+        Object.entries(item.detail).forEach(([key, value]) => {
+          let result = value.filter((item) => item.inuseFlag === true);
+          if (result.length > 0) {
             if (result.length === 1) {
               dateDetail.push(...result);
             } else {
-              result.forEach((item) => {
-                if (item.inuseFlag) {
-                  noLs.push(item);
-                } else {
-                  ls.push(item);
-                }
-              });
-              if (noLs.length === 1) {
-                dateDetail.push(...noLs);
-              } else {
-                var minValue = Math.abs(noLs[0].calculateSd);
-                var minField = noLs[0];
-
-                // 遍历数组对象，比较值的绝对值
-                for (var i = 1; i < noLs.length; i++) {
-                  var absValue = Math.abs(noLs[i].calculateSd);
-                  if (absValue < minValue) {
-                    minValue = absValue;
-                    minField = noLs[i];
-                  }
-                }
-                dateDetail.push(minField);
+              if (radioActiveVal === 2) {
+                dateDetail.push(result[result.length - 1]);
               }
-              if (ls.length === 1) {
-                dateDetail.push(...ls);
-              } else {
-                var minValue = Math.abs(ls[0].calculateSd);
-                var minField = ls[0];
-
-                // 遍历数组对象，比较值的绝对值
-                for (var i = 1; i < ls.length; i++) {
-                  var absValue = Math.abs(ls[i].calculateSd);
-                  if (absValue < minValue) {
-                    minValue = absValue;
-                    minField = ls[i];
-                  }
-                }
+              if (radioActiveVal === 3) {
+                let minField = getMinField(result);
                 dateDetail.push(minField);
               }
             }
-          });
+          }
         });
-      } else {
-        qcData?.forEach((item) => {
-          Object.entries(item.detail).forEach(([key, value]) => {
-            let result = value.filter((item) => item.inuseFlag === true);
-            if (result.length === 1) {
-              dateDetail.push(...result);
-            }
-            if (result.length > 1) {
-              // 初始化最小值和最小值对应的字段
-              var minValue = Math.abs(result[0].calculateSd);
-              var minField = result[0];
-
-              // 遍历数组对象，比较值的绝对值
-              for (var i = 1; i < result.length; i++) {
-                var absValue = Math.abs(result[i].calculateSd);
-                if (absValue < minValue) {
-                  minValue = absValue;
-                  minField = result[i];
-                }
-              }
-              dateDetail.push(minField);
-            }
-          });
+      });
+    }
+    if (radioActiveVal === 1) {
+      qcData?.forEach((item) => {
+        Object.entries(item.detail).forEach(([key, value]) => {
+          dateDetail.push(...value);
         });
-      }
+      });
     }
 
     setGraphicsData(dateDetail);
   };
-  const accrueChange = (e: any) => {
-    setIsShowAccrue(e.target.checked);
+  const getMinField = (result: any) => {
+    // 初始化最小值和最小值对应的字段
+    var minValue = Math.abs(result[0].calculateSd);
+    var minField = result[0];
+
+    // 遍历数组对象，比较值的绝对值
+    for (var i = 1; i < result.length; i++) {
+      var absValue = Math.abs(result[i].calculateSd);
+      if (absValue < minValue) {
+        minValue = absValue;
+        minField = result[i];
+      }
+    }
+    return minField;
   };
   const multiGraphChange = (e: any) => {};
   return (

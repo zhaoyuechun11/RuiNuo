@@ -223,122 +223,152 @@ const qcData = [
           calculateCv: 266.5,
           inuseFlag: false,
         },
-      ],
-    },
-  },
-  {
-    qcId: 8,
-    qcName: 'asdf',
-    batchNo: 'dddff',
-    qcLevelName: '水平4',
-    exprieDt: '2023-11-30',
-    x: 6.0,
-    sd: 3.0,
-    cv: 6.0,
-    thisX: 25.604,
-    thisSd: 18.827,
-    thisCv: 73.531,
-    detail: {
-      '11-25': [
         {
-          id: 4,
-          qcDate: '11-25',
-          qcDateDetail: '2023-11-25',
-          qcId: 8,
-          batchNo: 'dddff',
-          qcLevelName: '水平4',
-          x: 6.0,
-          sd: 3.0,
-          cv: 6.0,
-          calculateValue: 4,
-          calculateSd: -0.48,
-          calculateCv: -24.0,
-          inuseFlag: true,
-        },
-        {
-          id: 4,
-          qcDate: '11-25',
-          qcDateDetail: '2023-11-25',
-          qcId: 8,
-          batchNo: 'dddff',
-          qcLevelName: '水平4',
-          x: 6.0,
-          sd: 3.0,
-          cv: 6.0,
-          calculateValue: 4.56,
-          calculateSd: -0.48,
-          calculateCv: -24.0,
-          inuseFlag: false,
-        },
-      ],
-      '11-30': [
-        {
-          id: 2,
+          id: 3,
           qcDate: '11-30',
           qcDateDetail: '2023-11-30',
           qcId: 8,
           batchNo: 'dddff',
-          qcLevelName: '水平4',
+          qcLevelName: '水平3',
           x: 6.0,
           sd: 3.0,
           cv: 6.0,
-          calculateValue: 50.252,
-          calculateSd: 14.75,
-          calculateCv: 737.5,
-          inuseFlag: true,
-        },
-      ],
-    },
-  },
-  {
-    qcId: 8,
-    qcName: 'asdf',
-    batchNo: 'dddff',
-    qcLevelName: '水平5',
-    exprieDt: '2023-11-30',
-    x: 6.0,
-    sd: 3.0,
-    cv: 6.0,
-    thisX: 25.604,
-    thisSd: 18.827,
-    thisCv: 73.531,
-    detail: {
-      '11-25': [
-        {
-          id: 4,
-          qcDate: '11-25',
-          qcDateDetail: '2023-11-25',
-          qcId: 8,
-          batchNo: 'dddff',
-          qcLevelName: '水平5',
-          x: 6.0,
-          sd: 3.0,
-          cv: 6.0,
-          calculateValue: 4.56,
-          calculateSd: -0.48,
-          calculateCv: -24.0,
+          calculateValue: 28.0,
+          calculateSd: -5.33,
+          calculateCv: 266.5,
           inuseFlag: false,
         },
-      ],
-      '11-30': [
         {
-          id: 2,
+          id: 3,
           qcDate: '11-30',
           qcDateDetail: '2023-11-30',
           qcId: 8,
           batchNo: 'dddff',
-          qcLevelName: '水平5',
+          qcLevelName: '水平3',
           x: 6.0,
           sd: 3.0,
           cv: 6.0,
-          calculateValue: 50.252,
-          calculateSd: 14.75,
-          calculateCv: 737.5,
+          calculateValue: 60.0,
+          calculateSd: -5.33,
+          calculateCv: 266.5,
           inuseFlag: true,
         },
       ],
     },
   },
+  // {
+  //   qcId: 8,
+  //   qcName: 'asdf',
+  //   batchNo: 'dddff',
+  //   qcLevelName: '水平4',
+  //   exprieDt: '2023-11-30',
+  //   x: 6.0,
+  //   sd: 3.0,
+  //   cv: 6.0,
+  //   thisX: 25.604,
+  //   thisSd: 18.827,
+  //   thisCv: 73.531,
+  //   detail: {
+  //     '11-25': [
+  //       {
+  //         id: 4,
+  //         qcDate: '11-25',
+  //         qcDateDetail: '2023-11-25',
+  //         qcId: 8,
+  //         batchNo: 'dddff',
+  //         qcLevelName: '水平4',
+  //         x: 6.0,
+  //         sd: 3.0,
+  //         cv: 6.0,
+  //         calculateValue: 4,
+  //         calculateSd: -0.48,
+  //         calculateCv: -24.0,
+  //         inuseFlag: true,
+  //       },
+  //       {
+  //         id: 4,
+  //         qcDate: '11-25',
+  //         qcDateDetail: '2023-11-25',
+  //         qcId: 8,
+  //         batchNo: 'dddff',
+  //         qcLevelName: '水平4',
+  //         x: 6.0,
+  //         sd: 3.0,
+  //         cv: 6.0,
+  //         calculateValue: 4.56,
+  //         calculateSd: -0.48,
+  //         calculateCv: -24.0,
+  //         inuseFlag: false,
+  //       },
+  //     ],
+  //     '11-30': [
+  //       {
+  //         id: 2,
+  //         qcDate: '11-30',
+  //         qcDateDetail: '2023-11-30',
+  //         qcId: 8,
+  //         batchNo: 'dddff',
+  //         qcLevelName: '水平4',
+  //         x: 6.0,
+  //         sd: 3.0,
+  //         cv: 6.0,
+  //         calculateValue: 50.252,
+  //         calculateSd: 14.75,
+  //         calculateCv: 737.5,
+  //         inuseFlag: true,
+  //       },
+  //     ],
+  //   },
+  // },
+  // {
+  //   qcId: 8,
+  //   qcName: 'asdf',
+  //   batchNo: 'dddff',
+  //   qcLevelName: '水平5',
+  //   exprieDt: '2023-11-30',
+  //   x: 6.0,
+  //   sd: 3.0,
+  //   cv: 6.0,
+  //   thisX: 25.604,
+  //   thisSd: 18.827,
+  //   thisCv: 73.531,
+  //   detail: {
+  //     '11-25': [
+  //       {
+  //         id: 4,
+  //         qcDate: '11-25',
+  //         qcDateDetail: '2023-11-25',
+  //         qcId: 8,
+  //         batchNo: 'dddff',
+  //         qcLevelName: '水平5',
+  //         x: 6.0,
+  //         sd: 3.0,
+  //         cv: 6.0,
+  //         calculateValue: 4.56,
+  //         calculateSd: -0.48,
+  //         calculateCv: -24.0,
+  //         inuseFlag: false,
+  //       },
+  //     ],
+  //     '11-30': [
+  //       {
+  //         id: 2,
+  //         qcDate: '11-30',
+  //         qcDateDetail: '2023-11-30',
+  //         qcId: 8,
+  //         batchNo: 'dddff',
+  //         qcLevelName: '水平5',
+  //         x: 6.0,
+  //         sd: 3.0,
+  //         cv: 6.0,
+  //         calculateValue: 50.252,
+  //         calculateSd: 14.75,
+  //         calculateCv: 737.5,
+  //         inuseFlag: true,
+  //       },
+  //     ],
+  //   },
+  // },
 ];
 const dataSource = [
   {
@@ -658,83 +688,146 @@ const QCGraphics = () => {
       });
     }
     if (e.target.value === 2) {
-      qcData?.forEach((item) => {
-        Object.entries(item.detail).forEach(([key, value]) => {
-          if (value.length === 1) {
-            dateDetail.push(...value);
-          } else {
-            dateDetail.push(value[value.length - 1]);
-          }
-        });
-      });
       if (isShowAccrue) {
-        let dispersedData = [];
         qcData?.forEach((item) => {
           Object.entries(item.detail).forEach(([key, value]) => {
-            value.forEach((valItem) => {
+            let result = value.map((valItem) => {
               if (!valItem.inuseFlag) {
-                dispersedData.push(valItem);
+                return {
+                  ...valItem,
+                  calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
+                  qcLevelName: valItem.qcLevelName + '离散点',
+                };
+              } else {
+                return { ...valItem };
               }
             });
+            let ls = [];
+            let noLs = [];
+            if (result.length === 1) {
+              dateDetail.push(...result);
+            } else {
+              result.forEach((item) => {
+                if (item.inuseFlag) {
+                  noLs.push(item);
+                } else {
+                  ls.push(item);
+                }
+              });
+              if (noLs.length === 1) {
+                dateDetail.push(...noLs);
+              } else {
+                dateDetail.push(noLs[noLs.length - 1]);
+              }
+              if (ls.length === 1) {
+                dateDetail.push(...ls);
+              } else {
+                dateDetail.push(ls[ls.length - 1]);
+              }
+            }
           });
         });
-
-        let result = dispersedData.map((item) => {
-          return {
-            ...item,
-            calculateSd: (item.calculateValue - item.x) / item.sd,
-            qcLevelName: item.qcLevelName + '离散点',
-          };
+      } else {
+        qcData?.forEach((item) => {
+          Object.entries(item.detail).forEach(([key, value]) => {
+            let result = value.filter((item) => item.inuseFlag === true);
+            if (result.length > 0) {
+              if (result.length === 1) {
+                dateDetail.push(...result);
+              } else {
+                dateDetail.push(result[result.length - 1]);
+              }
+            }
+          });
         });
-        dateDetail.push(...result);
       }
     }
     if (e.target.value === 3) {
-      qcData?.forEach((item) => {
-        Object.entries(item.detail).forEach(([key, value]) => {
-          if (value.length === 1) {
-            dateDetail.push(...value);
-          } else {
-            // const min = value.reduce((prev, current) =>
-            //   prev.calculateSd < current.calculateSd ? prev : current,
-            // );
-            // dateDetail.push(min);
-            // 初始化最小值和最小值对应的字段
-            var minValue = Math.abs(value[0].calculateSd);
-            var minField = value[0];
-
-            // 遍历数组对象，比较值的绝对值
-            for (var i = 1; i < value.length; i++) {
-              var absValue = Math.abs(value[i].calculateSd);
-              if (absValue < minValue) {
-                minValue = absValue;
-                minField = value[i];
-              }
-            }
-            dateDetail.push(minField);
-          }
-        });
-      });
       if (isShowAccrue) {
-        let dispersedData = [];
         qcData?.forEach((item) => {
           Object.entries(item.detail).forEach(([key, value]) => {
-            value.forEach((valItem) => {
+            let result = value.map((valItem) => {
               if (!valItem.inuseFlag) {
-                dispersedData.push(valItem);
+                return {
+                  ...valItem,
+                  calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
+                  qcLevelName: valItem.qcLevelName + '离散点',
+                };
+              } else {
+                return { ...valItem };
               }
             });
+            let ls = [];
+            let noLs = [];
+            if (result.length === 1) {
+              dateDetail.push(...result);
+            } else {
+              result.forEach((item) => {
+                if (item.inuseFlag) {
+                  noLs.push(item);
+                } else {
+                  ls.push(item);
+                }
+              });
+              if (noLs.length === 1) {
+                dateDetail.push(...noLs);
+              } else {
+                var minValue = Math.abs(noLs[0].calculateSd);
+                var minField = noLs[0];
+
+                // 遍历数组对象，比较值的绝对值
+                for (var i = 1; i < noLs.length; i++) {
+                  var absValue = Math.abs(noLs[i].calculateSd);
+                  if (absValue < minValue) {
+                    minValue = absValue;
+                    minField = noLs[i];
+                  }
+                }
+                dateDetail.push(minField);
+              }
+              if (ls.length === 1) {
+                dateDetail.push(...ls);
+              } else {
+                var minValue = Math.abs(ls[0].calculateSd);
+                var minField = ls[0];
+
+                // 遍历数组对象，比较值的绝对值
+                for (var i = 1; i < ls.length; i++) {
+                  var absValue = Math.abs(ls[i].calculateSd);
+                  if (absValue < minValue) {
+                    minValue = absValue;
+                    minField = ls[i];
+                  }
+                }
+                dateDetail.push(minField);
+              }
+            }
           });
         });
+      } else {
+        qcData?.forEach((item) => {
+          Object.entries(item.detail).forEach(([key, value]) => {
+            let result = value.filter((item) => item.inuseFlag === true);
+            if (result.length === 1) {
+              dateDetail.push(...result);
+            }
+            if (result.length > 1) {
+              // 初始化最小值和最小值对应的字段
+              var minValue = Math.abs(result[0].calculateSd);
+              var minField = result[0];
 
-        let result = dispersedData.map((item) => {
-          return {
-            ...item,
-            calculateSd: (item.calculateValue - item.x) / item.sd,
-            qcLevelName: item.qcLevelName + '离散点',
-          };
+              // 遍历数组对象，比较值的绝对值
+              for (var i = 1; i < result.length; i++) {
+                var absValue = Math.abs(result[i].calculateSd);
+                if (absValue < minValue) {
+                  minValue = absValue;
+                  minField = result[i];
+                }
+              }
+              dateDetail.push(minField);
+            }
+          });
         });
-        dateDetail.push(...result);
       }
     }
 

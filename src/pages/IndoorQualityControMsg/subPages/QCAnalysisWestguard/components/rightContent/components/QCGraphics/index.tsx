@@ -256,70 +256,70 @@ const qcData = [
       ],
     },
   },
-  // {
-  //   qcId: 8,
-  //   qcName: 'asdf',
-  //   batchNo: 'dddff',
-  //   qcLevelName: '水平4',
-  //   exprieDt: '2023-11-30',
-  //   x: 6.0,
-  //   sd: 3.0,
-  //   cv: 6.0,
-  //   thisX: 25.604,
-  //   thisSd: 18.827,
-  //   thisCv: 73.531,
-  //   detail: {
-  //     '11-25': [
-  //       {
-  //         id: 4,
-  //         qcDate: '11-25',
-  //         qcDateDetail: '2023-11-25',
-  //         qcId: 8,
-  //         batchNo: 'dddff',
-  //         qcLevelName: '水平4',
-  //         x: 6.0,
-  //         sd: 3.0,
-  //         cv: 6.0,
-  //         calculateValue: 4,
-  //         calculateSd: -0.48,
-  //         calculateCv: -24.0,
-  //         inuseFlag: true,
-  //       },
-  //       {
-  //         id: 4,
-  //         qcDate: '11-25',
-  //         qcDateDetail: '2023-11-25',
-  //         qcId: 8,
-  //         batchNo: 'dddff',
-  //         qcLevelName: '水平4',
-  //         x: 6.0,
-  //         sd: 3.0,
-  //         cv: 6.0,
-  //         calculateValue: 4.56,
-  //         calculateSd: -0.48,
-  //         calculateCv: -24.0,
-  //         inuseFlag: false,
-  //       },
-  //     ],
-  //     '11-30': [
-  //       {
-  //         id: 2,
-  //         qcDate: '11-30',
-  //         qcDateDetail: '2023-11-30',
-  //         qcId: 8,
-  //         batchNo: 'dddff',
-  //         qcLevelName: '水平4',
-  //         x: 6.0,
-  //         sd: 3.0,
-  //         cv: 6.0,
-  //         calculateValue: 50.252,
-  //         calculateSd: 14.75,
-  //         calculateCv: 737.5,
-  //         inuseFlag: true,
-  //       },
-  //     ],
-  //   },
-  // },
+  {
+    qcId: 8,
+    qcName: 'asdf',
+    batchNo: 'dddff',
+    qcLevelName: '水平4',
+    exprieDt: '2023-11-30',
+    x: 6.0,
+    sd: 3.0,
+    cv: 6.0,
+    thisX: 25.604,
+    thisSd: 18.827,
+    thisCv: 73.531,
+    detail: {
+      '11-25': [
+        {
+          id: 4,
+          qcDate: '11-25',
+          qcDateDetail: '2023-11-25',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平4',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 4,
+          calculateSd: -0.48,
+          calculateCv: -24.0,
+          inuseFlag: true,
+        },
+        {
+          id: 4,
+          qcDate: '11-25',
+          qcDateDetail: '2023-11-25',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平4',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 4.56,
+          calculateSd: -0.48,
+          calculateCv: -24.0,
+          inuseFlag: false,
+        },
+      ],
+      '11-30': [
+        {
+          id: 2,
+          qcDate: '11-30',
+          qcDateDetail: '2023-11-30',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平4',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: 50.252,
+          calculateSd: 14.75,
+          calculateCv: 737.5,
+          inuseFlag: true,
+        },
+      ],
+    },
+  },
   // {
   //   qcId: 8,
   //   qcName: 'asdf',
@@ -413,6 +413,8 @@ const QCGraphics = () => {
   const [graphicsData, setGraphicsData] = useState([]);
   const [radioActiveVal, setRadioActiveVal] = useState(1);
   const [isShowAccrue, setIsShowAccrue] = useState(false);
+  const [multiGraphDataArray, setMultiGraphDataArray] = useState();
+  const [isMultiGraph, setIsMultiGraph] = useState(false);
   useEffect(() => {
     // if (AWGraphicalData.qcData?.length > 0) {
     //   const { qcData } = AWGraphicalData;
@@ -680,22 +682,404 @@ const QCGraphics = () => {
   const radioChange = (e: any) => {
     setRadioActiveVal(e.target.value);
     let dateDetail = [];
+    let multiGraphData = [];
     if (e.target.value === 1) {
       qcData?.forEach((item) => {
+        let detailAarray = [];
         Object.entries(item.detail).forEach(([key, value]) => {
-          dateDetail.push(...value);
+          if (!isMultiGraph) {
+            dateDetail.push(...value);
+          } else {
+            detailAarray.push(...value);
+          }
         });
+        let reuslt = getConfig(detailAarray);
+        multiGraphData.push({ configData: reuslt });
       });
     }
     if (e.target.value === 2 || e.target.value === 3) {
       if (isShowAccrue) {
         qcData?.forEach((item) => {
+          let detailAarray = [];
           Object.entries(item.detail).forEach(([key, value]) => {
             let result = value.map((valItem) => {
               if (!valItem.inuseFlag) {
                 return {
                   ...valItem,
                   calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
+                  qcLevelName: valItem.qcLevelName + '离散点',
+                };
+              } else {
+                return { ...valItem };
+              }
+            });
+            let ls = [];
+            let noLs = [];
+            if (result.length === 1) {
+              if (!isMultiGraph) {
+                dateDetail.push(...result);
+              } else {
+                detailAarray.push(...result);
+              }
+            } else {
+              result.forEach((item) => {
+                if (item.inuseFlag) {
+                  noLs.push(item);
+                } else {
+                  ls.push(item);
+                }
+              });
+              if (noLs.length === 1) {
+                if (!isMultiGraph) {
+                  dateDetail.push(...noLs);
+                } else {
+                  detailAarray.push(...noLs);
+                }
+              } else {
+                if (e.target.value === 2) {
+                  if (!isMultiGraph) {
+                    dateDetail.push(noLs[noLs.length - 1]);
+                  } else {
+                    detailAarray.push(noLs[noLs.length - 1]);
+                  }
+                }
+                if (e.target.value === 3) {
+                  let minField = getMinField(noLs);
+                  if (!isMultiGraph) {
+                    dateDetail.push(minField);
+                  } else {
+                    detailAarray.push(minField);
+                  }
+                }
+              }
+              if (ls.length === 1) {
+                if (!isMultiGraph) {
+                  dateDetail.push(...ls);
+                } else {
+                  detailAarray.push(...ls);
+                }
+              } else {
+                if (e.target.value === 2) {
+                  if (!isMultiGraph) {
+                    dateDetail.push(ls[ls.length - 1]);
+                  } else {
+                    detailAarray.push(ls[ls.length - 1]);
+                  }
+                }
+                if (e.target.value === 3) {
+                  let minField = getMinField(ls);
+                  if (!isMultiGraph) {
+                    dateDetail.push(minField);
+                  } else {
+                    detailAarray.push(minField);
+                  }
+                }
+              }
+            }
+          });
+          let reuslt = getConfig(detailAarray);
+          multiGraphData.push({ configData: reuslt });
+        });
+      } else {
+        qcData?.forEach((item) => {
+          let detailAarray = [];
+          Object.entries(item.detail).forEach(([key, value]) => {
+            let result = value.filter((item) => item.inuseFlag === true);
+            if (result.length > 0) {
+              if (result.length === 1) {
+                if (!isMultiGraph) {
+                  dateDetail.push(...result);
+                } else {
+                  detailAarray.push(...result);
+                }
+              } else {
+                if (e.target.value === 2) {
+                  if (!isMultiGraph) {
+                    dateDetail.push(result[result.length - 1]);
+                  } else {
+                    detailAarray.push(result[result.length - 1]);
+                  }
+                }
+                if (e.target.value === 3) {
+                  let minField = getMinField(result);
+                  if (!isMultiGraph) {
+                    dateDetail.push(minField);
+                  } else {
+                    detailAarray.push(minField);
+                  }
+                }
+              }
+            }
+          });
+          let reuslt = getConfig(detailAarray);
+          multiGraphData.push({ configData: reuslt });
+        });
+      }
+    }
+    setMultiGraphDataArray(multiGraphData);
+    setGraphicsData(dateDetail);
+  };
+  const accrueChange = (e: any) => {
+    setIsShowAccrue(e.target.checked);
+    let dateDetail = [];
+    let multiGraphData = [];
+    if (e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
+      qcData?.forEach((item) => {
+        let detailAarray = [];
+        Object.entries(item.detail).forEach(([key, value]) => {
+          let result = value.map((valItem) => {
+            if (!valItem.inuseFlag) {
+              return {
+                ...valItem,
+                calculateSd: (valItem.calculateValue - valItem.x) / valItem.sd,
+                qcLevelName: valItem.qcLevelName + '离散点',
+              };
+            } else {
+              return { ...valItem };
+            }
+          });
+          let ls = [];
+          let noLs = [];
+          if (result.length === 1) {
+            if (!isMultiGraph) {
+              dateDetail.push(...result);
+            } else {
+              detailAarray.push(...result);
+            }
+          } else {
+            result.forEach((item) => {
+              if (item.inuseFlag) {
+                noLs.push(item);
+              } else {
+                ls.push(item);
+              }
+            });
+            if (noLs.length === 1) {
+              if (!isMultiGraph) {
+                dateDetail.push(...noLs);
+              } else {
+                detailAarray.push(...noLs);
+              }
+            } else {
+              if (radioActiveVal === 2) {
+                if (!isMultiGraph) {
+                  dateDetail.push(noLs[noLs.length - 1]);
+                } else {
+                  detailAarray.push(noLs[noLs.length - 1]);
+                }
+              }
+              if (radioActiveVal === 3) {
+                let minField = getMinField(noLs);
+                if (!isMultiGraph) {
+                  dateDetail.push(minField);
+                } else {
+                  detailAarray.push(minField);
+                }
+              }
+            }
+            if (ls.length === 1) {
+              if (!isMultiGraph) {
+                dateDetail.push(...ls);
+              } else {
+                detailAarray.push(...ls);
+              }
+            } else {
+              if (radioActiveVal === 2) {
+                if (!isMultiGraph) {
+                  dateDetail.push(ls[ls.length - 1]);
+                } else {
+                  detailAarray.push(ls[ls.length - 1]);
+                }
+              }
+              if (radioActiveVal === 3) {
+                let minField = getMinField(ls);
+                if (!isMultiGraph) {
+                  dateDetail.push(minField);
+                } else {
+                  detailAarray.push(minField);
+                }
+              }
+            }
+          }
+        });
+        let reuslt = getConfig(detailAarray);
+        multiGraphData.push({ configData: reuslt });
+      });
+    }
+    if (!e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
+      qcData?.forEach((item) => {
+        let detailAarray = [];
+        Object.entries(item.detail).forEach(([key, value]) => {
+          let result = value.filter((item) => item.inuseFlag === true);
+          if (result.length > 0) {
+            if (result.length === 1) {
+              if (!isMultiGraph) {
+                dateDetail.push(...result);
+              } else {
+                detailAarray.push(...result);
+              }
+            } else {
+              if (radioActiveVal === 2) {
+                if (!isMultiGraph) {
+                  dateDetail.push(result[result.length - 1]);
+                } else {
+                  detailAarray.push(result[result.length - 1]);
+                }
+              }
+              if (radioActiveVal === 3) {
+                let minField = getMinField(result);
+                if (!isMultiGraph) {
+                  dateDetail.push(minField);
+                } else {
+                  detailAarray.push(minField);
+                }
+              }
+            }
+          }
+        });
+        let reuslt = getConfig(detailAarray);
+        multiGraphData.push({ configData: reuslt });
+      });
+    }
+    if (radioActiveVal === 1) {
+      qcData?.forEach((item) => {
+        let detailAarray = [];
+        Object.entries(item.detail).forEach(([key, value]) => {
+          if (!isMultiGraph) {
+            dateDetail.push(...value);
+          } else {
+            detailAarray.push(...value);
+          }
+        });
+        let reuslt = getConfig(detailAarray);
+        multiGraphData.push({ configData: reuslt });
+      });
+    }
+    setMultiGraphDataArray(multiGraphData);
+    setGraphicsData(dateDetail);
+  };
+  const getMinField = (result: any) => {
+    // 初始化最小值和最小值对应的字段
+    var minValue = Math.abs(result[0].calculateSd);
+    var minField = result[0];
+
+    // 遍历数组对象，比较值的绝对值
+    for (var i = 1; i < result.length; i++) {
+      var absValue = Math.abs(result[i].calculateSd);
+      if (absValue < minValue) {
+        minValue = absValue;
+        minField = result[i];
+      }
+    }
+    return minField;
+  };
+  const getConfig = (data: any) => {
+    const config = {
+      data,
+      xField: 'qcDate',
+      yField: 'calculateSd',
+
+      // range:[0,3],
+      connectNulls: false,
+      seriesField: 'qcLevelName',
+      meta: {
+        value: {
+          max: 3,
+          min: -3,
+        },
+      },
+      tooltip: {
+        customContent: (value, items) => {
+          console.log('value', value, items);
+          return getTooltips(value, items);
+        },
+      },
+      xAxis: {
+        // type: 'time',
+        grid: {
+          line: {
+            style: {
+              stroke: '#ddd',
+              lineDash: [1, 2],
+            },
+          },
+        },
+      },
+      yAxis: {
+        label: {
+          // 数值格式化为千分位
+          //formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
+          formatter: (v, index) => {
+            console.log('v', v, index);
+
+            if (v == 0) {
+              return 'x';
+            } else {
+              return v + 'SD';
+            }
+          },
+
+          tickLine: {
+            style: {
+              lineWidth: 2,
+              stroke: '#aaa',
+            },
+            length: 5,
+          },
+          line: {
+            style: {
+              stroke: '#aaa',
+            },
+          },
+        },
+      },
+      point: {
+        shape: ({ category }) => {
+          console.log(category);
+          return category === 'Gas fuel' ? 'square' : 'circle';
+        },
+        style: (year) => {
+          console.log('year', year);
+          //   return {
+          //     r: Number(year) % 4 ? 0 : 3, // 4 个数据示一个点标记
+          //   };
+          // if (year.year === '1852' && year.category === 'Solid fuel') {
+          //   return { fill: 'red', fillOpacity: 0.5 };
+          // }
+        },
+        size: 12,
+      },
+      // point: {
+      //   shape: 'breath-point',
+      // },
+    };
+    return config;
+  };
+  const multiGraphChange = (e: any) => {
+    setIsMultiGraph(e.target.checked);
+
+    if (e.target.checked && radioActiveVal === 1) {
+      let multiGraphData = [];
+      for (let j = 0, len = qcData.length; j < len; j++) {
+        let detailAarray = [];
+        Object.entries(qcData[j].detail).forEach(([key, value]) => {
+          detailAarray.push(...value);
+        });
+        let reuslt = getConfig(detailAarray);
+        multiGraphData.push({ configData: reuslt });
+      }
+      setMultiGraphDataArray(multiGraphData);
+    }
+    if (!e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
+      let dateDetail = [];
+      for (let j = 0, len = qcData.length; j < len; j++) {
+        Object.entries(qcData[j].detail).forEach(([key, value]) => {
+          if (isShowAccrue) {
+            let result = value.map((valItem) => {
+              if (!valItem.inuseFlag) {
+                return {
+                  ...valItem,
+                  calculateSd: (valItem.calculateValue - valItem.x) / valItem.sd,
                   qcLevelName: valItem.qcLevelName + '离散点',
                 };
               } else {
@@ -717,10 +1101,10 @@ const QCGraphics = () => {
               if (noLs.length === 1) {
                 dateDetail.push(...noLs);
               } else {
-                if (e.target.value === 2) {
+                if (radioActiveVal === 2) {
                   dateDetail.push(noLs[noLs.length - 1]);
                 }
-                if (e.target.value === 3) {
+                if (radioActiveVal === 3) {
                   let minField = getMinField(noLs);
                   dateDetail.push(minField);
                 }
@@ -728,143 +1112,121 @@ const QCGraphics = () => {
               if (ls.length === 1) {
                 dateDetail.push(...ls);
               } else {
-                if (e.target.value === 2) {
+                if (radioActiveVal === 2) {
                   dateDetail.push(ls[ls.length - 1]);
                 }
-                if (e.target.value === 3) {
+                if (radioActiveVal === 3) {
                   let minField = getMinField(ls);
                   dateDetail.push(minField);
                 }
               }
             }
-          });
-        });
-      } else {
-        qcData?.forEach((item) => {
-          Object.entries(item.detail).forEach(([key, value]) => {
+          } else {
             let result = value.filter((item) => item.inuseFlag === true);
             if (result.length > 0) {
               if (result.length === 1) {
                 dateDetail.push(...result);
               } else {
-                if (e.target.value === 2) {
+                if (radioActiveVal === 2) {
                   dateDetail.push(result[result.length - 1]);
                 }
-                if (e.target.value === 3) {
+                if (radioActiveVal === 3) {
                   let minField = getMinField(result);
                   dateDetail.push(minField);
                 }
               }
             }
-          });
+          }
         });
       }
+      setGraphicsData(dateDetail);
     }
-    setGraphicsData(dateDetail);
-  };
-  const accrueChange = (e: any) => {
-    radioActiveVal;
-    debugger;
-    setIsShowAccrue(e.target.checked);
-    let dateDetail = [];
     if (e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
-      qcData?.forEach((item) => {
-        Object.entries(item.detail).forEach(([key, value]) => {
-          let result = value.map((valItem) => {
-            if (!valItem.inuseFlag) {
-              return {
-                ...valItem,
-                calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
-                qcLevelName: valItem.qcLevelName + '离散点',
-              };
-            } else {
-              return { ...valItem };
-            }
-          });
-          let ls = [];
-          let noLs = [];
-          if (result.length === 1) {
-            dateDetail.push(...result);
-          } else {
-            result.forEach((item) => {
-              if (item.inuseFlag) {
-                noLs.push(item);
+      let multiGraphData = [];
+      for (let j = 0, len = qcData.length; j < len; j++) {
+        let detailAarray = [];
+        Object.entries(qcData[j].detail).forEach(([key, value]) => {
+          if (isShowAccrue) {
+            let result = value.map((valItem) => {
+              if (!valItem.inuseFlag) {
+                return {
+                  ...valItem,
+                  calculateSd: (valItem.calculateValue - valItem.x) / valItem.sd,
+                  qcLevelName: valItem.qcLevelName + '离散点',
+                };
               } else {
-                ls.push(item);
+                return { ...valItem };
               }
             });
-            if (noLs.length === 1) {
-              dateDetail.push(...noLs);
-            } else {
-              if (radioActiveVal === 2) {
-                dateDetail.push(noLs[noLs.length - 1]);
-              }
-              if (radioActiveVal === 3) {
-                let minField = getMinField(noLs);
-                dateDetail.push(minField);
-              }
-            }
-            if (ls.length === 1) {
-              dateDetail.push(...ls);
-            } else {
-              if (radioActiveVal === 2) {
-                dateDetail.push(ls[ls.length - 1]);
-              }
-              if (radioActiveVal === 3) {
-                let minField = getMinField(ls);
-                dateDetail.push(minField);
-              }
-            }
-          }
-        });
-      });
-    }
-    if (!e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
-      qcData?.forEach((item) => {
-        Object.entries(item.detail).forEach(([key, value]) => {
-          let result = value.filter((item) => item.inuseFlag === true);
-          if (result.length > 0) {
+            let ls = [];
+            let noLs = [];
             if (result.length === 1) {
-              dateDetail.push(...result);
+              detailAarray.push(...result);
             } else {
-              if (radioActiveVal === 2) {
-                dateDetail.push(result[result.length - 1]);
+              result.forEach((item) => {
+                if (item.inuseFlag) {
+                  noLs.push(item);
+                } else {
+                  ls.push(item);
+                }
+              });
+              if (noLs.length === 1) {
+                detailAarray.push(...noLs);
+              } else {
+                if (radioActiveVal === 2) {
+                  detailAarray.push(noLs[noLs.length - 1]);
+                }
+                if (radioActiveVal === 3) {
+                  let minField = getMinField(noLs);
+                  detailAarray.push(minField);
+                }
               }
-              if (radioActiveVal === 3) {
-                let minField = getMinField(result);
-                dateDetail.push(minField);
+              if (ls.length === 1) {
+                detailAarray.push(...ls);
+              } else {
+                if (radioActiveVal === 2) {
+                  detailAarray.push(ls[ls.length - 1]);
+                }
+                if (radioActiveVal === 3) {
+                  let minField = getMinField(ls);
+                  detailAarray.push(minField);
+                }
+              }
+            }
+          } else {
+            let result = value.filter((item) => item.inuseFlag === true);
+            if (result.length > 0) {
+              if (result.length === 1) {
+                detailAarray.push(...result);
+              } else {
+                if (radioActiveVal === 2) {
+                  detailAarray.push(result[result.length - 1]);
+                }
+                if (radioActiveVal === 3) {
+                  let minField = getMinField(result);
+                  detailAarray.push(minField);
+                }
               }
             }
           }
         });
-      });
+
+        let reuslt = getConfig(detailAarray);
+        multiGraphData.push({ configData: reuslt });
+      }
+      setMultiGraphDataArray(multiGraphData);
     }
-    if (radioActiveVal === 1) {
+    if (!e.target.checked && radioActiveVal === 1) {
+      let dateDetail = [];
       qcData?.forEach((item) => {
         Object.entries(item.detail).forEach(([key, value]) => {
           dateDetail.push(...value);
         });
       });
-    }
 
-    setGraphicsData(dateDetail);
-  };
-  const getMinField = (result: any) => {
-    // 初始化最小值和最小值对应的字段
-    var minValue = Math.abs(result[0].calculateSd);
-    var minField = result[0];
-
-    // 遍历数组对象，比较值的绝对值
-    for (var i = 1; i < result.length; i++) {
-      var absValue = Math.abs(result[i].calculateSd);
-      if (absValue < minValue) {
-        minValue = absValue;
-        minField = result[i];
-      }
+      setGraphicsData(dateDetail);
     }
-    return minField;
   };
-  const multiGraphChange = (e: any) => {};
   return (
     <>
       <div style={{ display: 'flex', margin: '10px 0' }}>
@@ -880,9 +1242,18 @@ const QCGraphics = () => {
           content={() => componentRef.current}
         />
       </div>
-      <div ref={componentRef}>
-        <Line {...config} />
-      </div>
+      {!isMultiGraph ? (
+        <div ref={componentRef}>
+          <Line {...config} />
+        </div>
+      ) : (
+        <div ref={componentRef}>
+          {multiGraphDataArray.map((item) => {
+            return <Line {...item.configData} />;
+          })}
+        </div>
+      )}
+
       <Table
         scroll={{ x: 'max-content' }}
         size="small"

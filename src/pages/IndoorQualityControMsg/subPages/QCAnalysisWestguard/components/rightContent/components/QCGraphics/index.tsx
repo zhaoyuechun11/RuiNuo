@@ -1,165 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Radio, Checkbox, Table } from 'antd';
-import { Line, G2 } from '@ant-design/charts';
+import { Line } from '@ant-design/charts';
 import ReactToPrint from 'react-to-print';
 import { Button } from '@/components';
 import { useSelector } from 'umi';
 
-const data = [
-  {
-    date: '11-25',
-    value: 0.88,
-    category: '水平3',
-  },
-  {
-    date: '11-25',
-    value: 2.77,
-    category: '水平4',
-  },
-  {
-    date: '11-25',
-    value: -2.44,
-    category: '水平5',
-  },
-  {
-    date: '11-30',
-    value: null,
-    category: '水平3',
-  },
-  {
-    date: '11-30',
-    value: null,
-    category: '水平4',
-  },
-  {
-    date: '11-30',
-    value: -3,
-    category: '水平5',
-  },
-  {
-    date: '11-30(1)',
-    value: 0,
-    category: '水平3',
-  },
-  // {
-  //   date: '11-30(1)',
-  //   value: -3,
-  //   category: '水平4',
-  // },
-  // {
-  //   date: '11-30(1)',
-  //   value: 3,
-  //   category: '水平5',
-  // },
-];
-G2.registerShape('point', 'breath-point', {
-  draw(cfg, container) {
-    const data = cfg.data;
-    const point = {
-      x: cfg.x,
-      y: cfg.y,
-    };
-    const group = container.addGroup();
-
-    if (data.year === '1852' && data.category === 'Solid fuel') {
-      const decorator1 = group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 10,
-          fill: cfg.color,
-          opacity: 0.5,
-        },
-      });
-      const decorator2 = group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 10,
-          fill: cfg.color,
-          opacity: 0.5,
-        },
-      });
-      const decorator3 = group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 10,
-          fill: cfg.color,
-          opacity: 0.5,
-        },
-      });
-      decorator1.animate(
-        {
-          r: 20,
-          opacity: 0,
-        },
-        {
-          duration: 1800,
-          easing: 'easeLinear',
-          repeat: true,
-        },
-      );
-      decorator2.animate(
-        {
-          r: 20,
-          opacity: 0,
-        },
-        {
-          duration: 1800,
-          easing: 'easeLinear',
-          repeat: true,
-          delay: 600,
-        },
-      );
-      decorator3.animate(
-        {
-          r: 20,
-          opacity: 0,
-        },
-        {
-          duration: 1800,
-          easing: 'easeLinear',
-          repeat: true,
-          delay: 1200,
-        },
-      );
-      group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 6,
-          fill: cfg.color,
-          opacity: 0.7,
-        },
-      });
-      group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 1.5,
-          fill: cfg.color,
-        },
-      });
-    }
-    if (
-      data.category === 'Gas fuel' ||
-      data.category === 'Liquid fuel' ||
-      data.category === 'Solid fuel'
-    ) {
-      group.addShape('circle', {
-        attrs: {
-          x: point.x,
-          y: point.y,
-          r: 3,
-          fill: cfg.color,
-        },
-      });
-    }
-
-    return group;
-  },
-});
+const rule = {
+  qcRuleId: 19,
+  instrId: 17,
+  instrName: '迈瑞bc-7500c',
+  qcRuleType: 1,
+  qcRuleName: 'Westgard',
+  qcRule: '1_2S,7T,4_1S',
+};
 
 const qcData = [
   {
@@ -190,6 +43,7 @@ const qcData = [
           calculateSd: -0.48,
           calculateCv: -24.0,
           inuseFlag: false,
+          outControlTips: '1_2s',
         },
       ],
       '11-30': [
@@ -206,6 +60,7 @@ const qcData = [
           calculateValue: 5,
           calculateSd: -3.2,
           calculateCv: 737.5,
+          outControlTips: '1_2s',
           inuseFlag: true,
         },
         {
@@ -252,6 +107,7 @@ const qcData = [
           calculateSd: -5.33,
           calculateCv: 266.5,
           inuseFlag: true,
+          outControlTips: '1_2s',
         },
       ],
     },
@@ -284,6 +140,7 @@ const qcData = [
           calculateSd: -0.48,
           calculateCv: -24.0,
           inuseFlag: true,
+          // outControlTips: '1_2s',
         },
         {
           id: 4,
@@ -407,7 +264,10 @@ const columnsDetal = [
   },
 ];
 const QCGraphics = () => {
-  const { AWGraphicalData } = useSelector((state: any) => state.IndoorQualityControMsg);
+  const { AWGraphicalData, AWItem, AWFormData } = useSelector(
+    (state: any) => state.IndoorQualityControMsg,
+  );
+
   const [qcDetailList, setQcDetailList] = useState([]);
   const [qcDetailTableHeader, setQcDetailTableHeader] = useState([]);
   const [graphicsData, setGraphicsData] = useState([]);
@@ -415,12 +275,17 @@ const QCGraphics = () => {
   const [isShowAccrue, setIsShowAccrue] = useState(false);
   const [multiGraphDataArray, setMultiGraphDataArray] = useState();
   const [isMultiGraph, setIsMultiGraph] = useState(false);
+  // const [rule, setRule] = useState();
+  // const [qcData, setQcData] = useState([]);
+
   useEffect(() => {
     // if (AWGraphicalData.qcData?.length > 0) {
-    //   const { qcData } = AWGraphicalData;
+    // const { qcData, rule } = AWGraphicalData;
     handleTableHeader(qcData);
     handleDetail(qcData);
     handelGraphics(qcData);
+    // setRule(rule);
+    // setQcData(qcData);
     // }
   }, []);
 
@@ -439,6 +304,9 @@ const QCGraphics = () => {
                   <span class="g2-tooltip-name"> 靶值:${item.data.x}</span>,
                   <span class="g2-tooltip-name"> 标准差:${item.data.sd}</span>,
                   <span class="g2-tooltip-name"> 变异系数:${item.data.cv}</span>,
+                  <span class="g2-tooltip-name"> 是否存在失控:${
+                    item.data.outControlTips ? '存在' : '不存在'
+                  }</span>
                  </li>
              
                  `;
@@ -446,85 +314,6 @@ const QCGraphics = () => {
         .join('')}
     </ul>
     `;
-  };
-  const config = {
-    data: graphicsData,
-    xField: 'qcDate',
-    yField: 'calculateSd',
-
-    // range:[0,3],
-    connectNulls: false,
-    seriesField: 'qcLevelName',
-    meta: {
-      value: {
-        max: 3,
-        min: -3,
-      },
-    },
-    tooltip: {
-      customContent: (value, items) => {
-        console.log('value', value, items);
-        return getTooltips(value, items);
-      },
-    },
-    xAxis: {
-      // type: 'time',
-      grid: {
-        line: {
-          style: {
-            stroke: '#ddd',
-            lineDash: [1, 2],
-          },
-        },
-      },
-    },
-    yAxis: {
-      label: {
-        // 数值格式化为千分位
-        //formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
-        formatter: (v, index) => {
-          console.log('v', v, index);
-
-          if (v == 0) {
-            return 'x';
-          } else {
-            return v + 'SD';
-          }
-        },
-
-        tickLine: {
-          style: {
-            lineWidth: 2,
-            stroke: '#aaa',
-          },
-          length: 5,
-        },
-        line: {
-          style: {
-            stroke: '#aaa',
-          },
-        },
-      },
-    },
-    point: {
-      shape: ({ category }) => {
-        console.log(category);
-        return category === 'Gas fuel' ? 'square' : 'circle';
-      },
-      style: (year) => {
-        console.log('year', year);
-        //   return {
-        //     r: Number(year) % 4 ? 0 : 3, // 4 个数据示一个点标记
-        //   };
-        // if (year.year === '1852' && year.category === 'Solid fuel') {
-        //   return { fill: 'red', fillOpacity: 0.5 };
-        // }
-      },
-      size: 12,
-    },
-    // point: {
-    //   shape: 'breath-point',
-    // },
   };
   const columns = [
     {
@@ -558,21 +347,16 @@ const QCGraphics = () => {
       align: 'center',
     },
     {
-      title: '当前数据',
-      children: [
-        {
-          title: '靶值',
-          dataIndex: 'thisX',
-        },
-        {
-          title: '标准差',
-          dataIndex: 'thisSd',
-        },
-        {
-          title: '变异系数',
-          dataIndex: 'thisCv',
-        },
-      ],
+      title: '靶值(当前数据)',
+      dataIndex: 'thisX',
+    },
+    {
+      title: '标准差(当前数据)',
+      dataIndex: 'thisSd',
+    },
+    {
+      title: '变异系数(当前数据)',
+      dataIndex: 'thisCv',
     },
   ];
   const handleDetail = (qcData) => {
@@ -715,63 +499,69 @@ const QCGraphics = () => {
             });
             let ls = [];
             let noLs = [];
-            if (result.length === 1) {
-              if (!isMultiGraph) {
-                dateDetail.push(...result);
-              } else {
-                detailAarray.push(...result);
-              }
-            } else {
-              result.forEach((item) => {
-                if (item.inuseFlag) {
-                  noLs.push(item);
-                } else {
-                  ls.push(item);
-                }
-              });
-              if (noLs.length === 1) {
+            if (result.length > 0) {
+              if (result.length === 1) {
                 if (!isMultiGraph) {
-                  dateDetail.push(...noLs);
+                  dateDetail.push(...result);
                 } else {
-                  detailAarray.push(...noLs);
+                  detailAarray.push(...result);
                 }
               } else {
-                if (e.target.value === 2) {
-                  if (!isMultiGraph) {
-                    dateDetail.push(noLs[noLs.length - 1]);
+                result.forEach((item) => {
+                  if (item.inuseFlag) {
+                    noLs.push(item);
                   } else {
-                    detailAarray.push(noLs[noLs.length - 1]);
+                    ls.push(item);
+                  }
+                });
+                if (noLs.length > 0) {
+                  if (noLs.length === 1) {
+                    if (!isMultiGraph) {
+                      dateDetail.push(...noLs);
+                    } else {
+                      detailAarray.push(...noLs);
+                    }
+                  } else {
+                    if (e.target.value === 2) {
+                      if (!isMultiGraph) {
+                        dateDetail.push(noLs[noLs.length - 1]);
+                      } else {
+                        detailAarray.push(noLs[noLs.length - 1]);
+                      }
+                    }
+                    if (e.target.value === 3) {
+                      let minField = getMinField(noLs);
+                      if (!isMultiGraph) {
+                        dateDetail.push(minField);
+                      } else {
+                        detailAarray.push(minField);
+                      }
+                    }
                   }
                 }
-                if (e.target.value === 3) {
-                  let minField = getMinField(noLs);
-                  if (!isMultiGraph) {
-                    dateDetail.push(minField);
+                if (ls.length > 0) {
+                  if (ls.length === 1) {
+                    if (!isMultiGraph) {
+                      dateDetail.push(...ls);
+                    } else {
+                      detailAarray.push(...ls);
+                    }
                   } else {
-                    detailAarray.push(minField);
-                  }
-                }
-              }
-              if (ls.length === 1) {
-                if (!isMultiGraph) {
-                  dateDetail.push(...ls);
-                } else {
-                  detailAarray.push(...ls);
-                }
-              } else {
-                if (e.target.value === 2) {
-                  if (!isMultiGraph) {
-                    dateDetail.push(ls[ls.length - 1]);
-                  } else {
-                    detailAarray.push(ls[ls.length - 1]);
-                  }
-                }
-                if (e.target.value === 3) {
-                  let minField = getMinField(ls);
-                  if (!isMultiGraph) {
-                    dateDetail.push(minField);
-                  } else {
-                    detailAarray.push(minField);
+                    if (e.target.value === 2) {
+                      if (!isMultiGraph) {
+                        dateDetail.push(ls[ls.length - 1]);
+                      } else {
+                        detailAarray.push(ls[ls.length - 1]);
+                      }
+                    }
+                    if (e.target.value === 3) {
+                      let minField = getMinField(ls);
+                      if (!isMultiGraph) {
+                        dateDetail.push(minField);
+                      } else {
+                        detailAarray.push(minField);
+                      }
+                    }
                   }
                 }
               }
@@ -840,63 +630,69 @@ const QCGraphics = () => {
           });
           let ls = [];
           let noLs = [];
-          if (result.length === 1) {
-            if (!isMultiGraph) {
-              dateDetail.push(...result);
-            } else {
-              detailAarray.push(...result);
-            }
-          } else {
-            result.forEach((item) => {
-              if (item.inuseFlag) {
-                noLs.push(item);
-              } else {
-                ls.push(item);
-              }
-            });
-            if (noLs.length === 1) {
+          if (result.length > 0) {
+            if (result.length === 1) {
               if (!isMultiGraph) {
-                dateDetail.push(...noLs);
+                dateDetail.push(...result);
               } else {
-                detailAarray.push(...noLs);
+                detailAarray.push(...result);
               }
             } else {
-              if (radioActiveVal === 2) {
-                if (!isMultiGraph) {
-                  dateDetail.push(noLs[noLs.length - 1]);
+              result.forEach((item) => {
+                if (item.inuseFlag) {
+                  noLs.push(item);
                 } else {
-                  detailAarray.push(noLs[noLs.length - 1]);
+                  ls.push(item);
+                }
+              });
+              if (noLs.length > 0) {
+                if (noLs.length === 1) {
+                  if (!isMultiGraph) {
+                    dateDetail.push(...noLs);
+                  } else {
+                    detailAarray.push(...noLs);
+                  }
+                } else {
+                  if (radioActiveVal === 2) {
+                    if (!isMultiGraph) {
+                      dateDetail.push(noLs[noLs.length - 1]);
+                    } else {
+                      detailAarray.push(noLs[noLs.length - 1]);
+                    }
+                  }
+                  if (radioActiveVal === 3) {
+                    let minField = getMinField(noLs);
+                    if (!isMultiGraph) {
+                      dateDetail.push(minField);
+                    } else {
+                      detailAarray.push(minField);
+                    }
+                  }
                 }
               }
-              if (radioActiveVal === 3) {
-                let minField = getMinField(noLs);
-                if (!isMultiGraph) {
-                  dateDetail.push(minField);
+              if (ls.length > 0) {
+                if (ls.length === 1) {
+                  if (!isMultiGraph) {
+                    dateDetail.push(...ls);
+                  } else {
+                    detailAarray.push(...ls);
+                  }
                 } else {
-                  detailAarray.push(minField);
-                }
-              }
-            }
-            if (ls.length === 1) {
-              if (!isMultiGraph) {
-                dateDetail.push(...ls);
-              } else {
-                detailAarray.push(...ls);
-              }
-            } else {
-              if (radioActiveVal === 2) {
-                if (!isMultiGraph) {
-                  dateDetail.push(ls[ls.length - 1]);
-                } else {
-                  detailAarray.push(ls[ls.length - 1]);
-                }
-              }
-              if (radioActiveVal === 3) {
-                let minField = getMinField(ls);
-                if (!isMultiGraph) {
-                  dateDetail.push(minField);
-                } else {
-                  detailAarray.push(minField);
+                  if (radioActiveVal === 2) {
+                    if (!isMultiGraph) {
+                      dateDetail.push(ls[ls.length - 1]);
+                    } else {
+                      detailAarray.push(ls[ls.length - 1]);
+                    }
+                  }
+                  if (radioActiveVal === 3) {
+                    let minField = getMinField(ls);
+                    if (!isMultiGraph) {
+                      dateDetail.push(minField);
+                    } else {
+                      detailAarray.push(minField);
+                    }
+                  }
                 }
               }
             }
@@ -960,7 +756,7 @@ const QCGraphics = () => {
   };
   const getMinField = (result: any) => {
     // 初始化最小值和最小值对应的字段
-    var minValue = Math.abs(result[0].calculateSd);
+    var minValue = Math.abs(result[0]?.calculateSd);
     var minField = result[0];
 
     // 遍历数组对象，比较值的绝对值
@@ -990,7 +786,6 @@ const QCGraphics = () => {
       },
       tooltip: {
         customContent: (value, items) => {
-          console.log('value', value, items);
           return getTooltips(value, items);
         },
       },
@@ -1008,7 +803,6 @@ const QCGraphics = () => {
       yAxis: {
         label: {
           // 数值格式化为千分位
-          //formatter: (v) => `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
           formatter: (v, index) => {
             console.log('v', v, index);
 
@@ -1039,19 +833,19 @@ const QCGraphics = () => {
           return category === 'Gas fuel' ? 'square' : 'circle';
         },
         style: (year) => {
-          console.log('year', year);
-          //   return {
-          //     r: Number(year) % 4 ? 0 : 3, // 4 个数据示一个点标记
-          //   };
-          // if (year.year === '1852' && year.category === 'Solid fuel') {
-          //   return { fill: 'red', fillOpacity: 0.5 };
-          // }
+          let result = graphicsData.filter(
+            (item) => item.qcDate === year.qcDate && item.qcLevelName === year.qcLevelName,
+          );
+          if (result[0]?.outControlTips) {
+            return { fill: 'red', fillOpacity: 1 };
+          } else {
+            if (rule.qcRule.split(',').includes('1_2S') && Math.abs(result[0]?.calculateSd) >= 2) {
+              return { fill: '#FFC0CB', fillOpacity: 1 };
+            }
+          }
         },
         size: 12,
       },
-      // point: {
-      //   shape: 'breath-point',
-      // },
     };
     return config;
   };
@@ -1160,36 +954,38 @@ const QCGraphics = () => {
             });
             let ls = [];
             let noLs = [];
-            if (result.length === 1) {
-              detailAarray.push(...result);
-            } else {
-              result.forEach((item) => {
-                if (item.inuseFlag) {
-                  noLs.push(item);
+            if (result.length > 0) {
+              if (result.length === 1) {
+                detailAarray.push(...result);
+              } else {
+                result.forEach((item) => {
+                  if (item.inuseFlag) {
+                    noLs.push(item);
+                  } else {
+                    ls.push(item);
+                  }
+                });
+                if (noLs.length === 1) {
+                  detailAarray.push(...noLs);
                 } else {
-                  ls.push(item);
+                  if (radioActiveVal === 2) {
+                    detailAarray.push(noLs[noLs.length - 1]);
+                  }
+                  if (radioActiveVal === 3) {
+                    let minField = getMinField(noLs);
+                    detailAarray.push(minField);
+                  }
                 }
-              });
-              if (noLs.length === 1) {
-                detailAarray.push(...noLs);
-              } else {
-                if (radioActiveVal === 2) {
-                  detailAarray.push(noLs[noLs.length - 1]);
-                }
-                if (radioActiveVal === 3) {
-                  let minField = getMinField(noLs);
-                  detailAarray.push(minField);
-                }
-              }
-              if (ls.length === 1) {
-                detailAarray.push(...ls);
-              } else {
-                if (radioActiveVal === 2) {
-                  detailAarray.push(ls[ls.length - 1]);
-                }
-                if (radioActiveVal === 3) {
-                  let minField = getMinField(ls);
-                  detailAarray.push(minField);
+                if (ls.length === 1) {
+                  detailAarray.push(...ls);
+                } else {
+                  if (radioActiveVal === 2) {
+                    detailAarray.push(ls[ls.length - 1]);
+                  }
+                  if (radioActiveVal === 3) {
+                    let minField = getMinField(ls);
+                    detailAarray.push(minField);
+                  }
                 }
               }
             }
@@ -1243,13 +1039,37 @@ const QCGraphics = () => {
         />
       </div>
       {!isMultiGraph ? (
-        <div ref={componentRef}>
-          <Line {...config} />
-        </div>
+        <>
+          <div>
+            {rule?.instrName}
+            <span>质控项目:{AWItem?.itemName}</span>
+            <span>
+              区间:{AWFormData.startDate ? AWFormData.startDate[0].format('YYYY-MM-DD') : ''}-
+              {AWFormData.startDate ? AWFormData.startDate[1].format('YYYY-MM-DD') : ''}
+            </span>
+            <span>质控规则:{rule?.qcRule}</span>
+          </div>
+          <div ref={componentRef}>
+            <Line {...getConfig(graphicsData)} />
+          </div>
+        </>
       ) : (
         <div ref={componentRef}>
           {multiGraphDataArray.map((item) => {
-            return <Line {...item.configData} />;
+            return (
+              <>
+                <div>
+                  {rule?.instrName}
+                  <span>质控项目:{AWItem?.itemName}</span>
+                  <span>
+                    区间:{AWFormData.startDate ? AWFormData.startDate[0].format('YYYY-MM-DD') : ''}-
+                    {AWFormData.startDate ? AWFormData.startDate[1].format('YYYY-MM-DD') : ''}
+                  </span>
+                  <span>质控规则:{rule?.qcRule}</span>
+                </div>
+                <Line {...item.configData} />;
+              </>
+            );
           })}
         </div>
       )}

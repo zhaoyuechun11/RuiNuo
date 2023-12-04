@@ -12,7 +12,7 @@ const IndoorQualityControMsg = {
     dataMaintenance: {},
     dataMaintenanceInstr: {},
     AWSelectedQcIds: [],
-    AWItemId: '',
+    AWItem: '',
     AWFormData: {},
     AWQcList: [],
     AWGraphicalData: {},

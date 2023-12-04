@@ -24,7 +24,7 @@ const LeftContent = ({ ...props }) => {
       dispatch({
         type: 'IndoorQualityControMsg/save',
         payload: {
-          type: 'AWItemId',
+          type: 'AWItem',
           dataSource: '',
         },
       });
@@ -45,7 +45,7 @@ const LeftContent = ({ ...props }) => {
     dispatch({
       type: 'IndoorQualityControMsg/save',
       payload: {
-        type: 'AWItemId',
+        type: 'AWItem',
         dataSource: '',
       },
     });
@@ -95,8 +95,8 @@ const LeftContent = ({ ...props }) => {
         dispatch({
           type: 'IndoorQualityControMsg/save',
           payload: {
-            type: 'AWItemId',
-            dataSource: res.data[0].id,
+            type: 'AWItem',
+            dataSource: res.data[0],
           },
         });
       }
@@ -106,8 +106,8 @@ const LeftContent = ({ ...props }) => {
     dispatch({
       type: 'IndoorQualityControMsg/save',
       payload: {
-        type: 'AWItemId',
-        dataSource: val.id,
+        type: 'AWItem',
+        dataSource: val,
       },
     });
   };

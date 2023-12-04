@@ -12,7 +12,7 @@ import RightContent from './components/rightContent';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const QCAnalysisWestguard = () => {
-  const { AWQcList, AWSelectedQcIds, AWItemId, AWFormData } = useSelector(
+  const { AWQcList, AWSelectedQcIds, AWItem, AWFormData } = useSelector(
     (state: any) => state.IndoorQualityControMsg,
   );
   const [form] = Form.useForm();
@@ -63,7 +63,7 @@ const QCAnalysisWestguard = () => {
   const seach = () => {
     if (
       AWSelectedQcIds.length > 0 &&
-      AWItemId !== '' &&
+      AWItem !== '' &&
       AWFormData.instrId !== '' &&
       AWFormData.instrId !== undefined &&
       AWFormData.startDate !== null
@@ -72,7 +72,7 @@ const QCAnalysisWestguard = () => {
         instrId: AWFormData.instrId,
         qcDateStart: AWFormData.startDate[0].format('YYYY-MM-DD'),
         qcDateEnd: AWFormData.startDate[1].format('YYYY-MM-DD'),
-        itemId: AWItemId,
+        itemId: AWItem.id,
         qcIds: AWSelectedQcIds,
       }).then((res) => {
         if (res.code === 200) {
@@ -121,7 +121,7 @@ const QCAnalysisWestguard = () => {
     dispatch({
       type: 'IndoorQualityControMsg/save',
       payload: {
-        type: 'AWItemId',
+        type: 'AWItem',
         dataSource: '',
       },
     });

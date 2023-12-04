@@ -5,7 +5,7 @@ import AddOrEdit from './components/addOrEdit';
 import { useSelector } from 'umi';
 import { appraiseList, appraiseDelete } from '../../../../../../models/server';
 const QCEvaluation = () => {
-  const { AWQcList, AWItemId, AWSelectedQcIds } = useSelector(
+  const { AWQcList, AWItem, AWSelectedQcIds } = useSelector(
     (state: any) => state.IndoorQualityControMsg,
   );
   const [pageSize, setPageSize] = useState(10);
@@ -14,10 +14,10 @@ const QCEvaluation = () => {
   const [list, setList] = useState([]);
   const modalRef = useRef(null);
   useEffect(() => {
-    if (AWItemId !== '' && AWSelectedQcIds.length > 0) {
-      getAppraiseList({ pageNum, pageSize, itemId: AWItemId, qcIds: AWSelectedQcIds });
+    if (AWItem !== '' && AWSelectedQcIds.length > 0) {
+      getAppraiseList({ pageNum, pageSize, itemId: AWItem.id, qcIds: AWSelectedQcIds });
     }
-  }, [pageNum, pageSize, AWItemId, AWSelectedQcIds]);
+  }, [pageNum, pageSize, AWItem, AWSelectedQcIds]);
   const columns = [
     {
       title: '评价日期',
@@ -86,7 +86,7 @@ const QCEvaluation = () => {
     appraiseDelete({ ids: [id] }).then((res) => {
       if (res.code === 200) {
         message.success('删除成功!');
-        getAppraiseList({ pageNum, pageSize, itemId: AWItemId, qcIds: AWSelectedQcIds });
+        getAppraiseList({ pageNum, pageSize, itemId: AWItem.id, qcIds: AWSelectedQcIds });
       }
     });
   };
@@ -95,7 +95,7 @@ const QCEvaluation = () => {
     setPageSize(size);
   };
   const add = () => {
-    if (AWQcList.length === 0 || AWItemId == '') {
+    if (AWQcList.length === 0 || AWItem == '') {
       message.warning('质控品列表和项目列表都不能为空哦!');
       return;
     }
@@ -130,7 +130,7 @@ const QCEvaluation = () => {
       <AddOrEdit
         Ref={modalRef}
         refresh={() => {
-          getAppraiseList({ pageNum, pageSize, itemId: AWItemId, qcIds: AWSelectedQcIds });
+          getAppraiseList({ pageNum, pageSize, itemId: AWItem.id, qcIds: AWSelectedQcIds });
         }}
       />
     </>

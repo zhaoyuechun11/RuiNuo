@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 const AddOrEdit = ({ Ref, refresh }) => {
   var now1 = moment().format('YYYY-MM-DD HH:mm:ss');
-  const { AWQcList, AWItemId } = useSelector((state: any) => state.IndoorQualityControMsg);
+  const { AWQcList, AWItem } = useSelector((state: any) => state.IndoorQualityControMsg);
   const { useDetail } = useSelector((state: any) => state.global);
   const dialogRef = useRef();
   const [form] = Form.useForm();
@@ -46,7 +46,7 @@ const AddOrEdit = ({ Ref, refresh }) => {
           qcDate: value.qcDate.format('YYYY-MM-DD'),
           appraiseText,
           qcId,
-          itemId: AWItemId,
+          itemId: AWItem.id,
         }).then((res) => {
           if (res.code == 200) {
             message.success('添加成功');
@@ -60,7 +60,7 @@ const AddOrEdit = ({ Ref, refresh }) => {
         qcDate: value.qcDate.format('YYYY-MM-DD'),
         appraiseText,
         qcId,
-        itemId: AWItemId,
+        itemId: AWItem.id,
         id,
       }).then((res) => {
         if (res.code === 200) {

@@ -5,7 +5,7 @@ import { downLoad } from '@/utils';
 import { allData, graphicalExport } from '../../../../../../models/server';
 
 const AllData = () => {
-  const { AWSelectedQcIds, AWItemId, AWFormData } = useSelector(
+  const { AWSelectedQcIds, AWItem, AWFormData } = useSelector(
     (state: any) => state.IndoorQualityControMsg,
   );
   const [list, setList] = useState([]);
@@ -15,7 +15,7 @@ const AllData = () => {
   useEffect(() => {
     if (
       AWSelectedQcIds.length > 0 &&
-      AWItemId !== '' &&
+      AWItem !== '' &&
       AWFormData.instrId !== '' &&
       AWFormData.instrId !== undefined &&
       AWFormData.startDate !== null
@@ -24,13 +24,13 @@ const AllData = () => {
         instrId: AWFormData.instrId,
         qcDateStart: AWFormData.startDate[0].format('YYYY-MM-DD'),
         qcDateEnd: AWFormData.startDate[1].format('YYYY-MM-DD'),
-        itemId: AWItemId,
+        itemId: AWItem.id,
         qcIds: AWSelectedQcIds,
         pageNum,
         pageSize,
       });
     }
-  }, [AWSelectedQcIds, AWItemId, AWFormData.instrId, AWFormData.startDate, pageNum, pageSize]);
+  }, [AWSelectedQcIds, AWItem, AWFormData.instrId, AWFormData.startDate, pageNum, pageSize]);
   const getAllData = (params: any) => {
     allData(params).then((res) => {
       if (res.code === 200) {
@@ -228,7 +228,7 @@ const AllData = () => {
   const exportData = () => {
     if (
       AWSelectedQcIds.length > 0 &&
-      AWItemId !== '' &&
+      AWItem !== '' &&
       AWFormData.instrId !== '' &&
       AWFormData.instrId !== undefined &&
       AWFormData.startDate !== null
@@ -237,7 +237,7 @@ const AllData = () => {
         instrId: AWFormData.instrId,
         qcDateStart: AWFormData.startDate[0].format('YYYY-MM-DD'),
         qcDateEnd: AWFormData.startDate[1].format('YYYY-MM-DD'),
-        itemId: AWItemId,
+        itemId: AWItem.id,
         qcIds: AWSelectedQcIds,
       }).then((res) => {
         const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });

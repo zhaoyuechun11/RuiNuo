@@ -93,6 +93,23 @@ const qcData = [
           calculateCv: 266.5,
           inuseFlag: false,
         },
+
+        {
+          id: 3,
+          qcDate: '11-30',
+          qcDateDetail: '2023-11-30',
+          qcId: 8,
+          batchNo: 'dddff',
+          qcLevelName: '水平3',
+          x: 6.0,
+          sd: 3.0,
+          cv: 6.0,
+          calculateValue: null,
+          calculateSd:null,
+          calculateCv: 266.5,
+          inuseFlag: true,
+          outControlTips: '1_2s',
+        },
         {
           id: 3,
           qcDate: '11-30',
@@ -227,42 +244,7 @@ const qcData = [
   //   },
   // },
 ];
-const dataSource = [
-  {
-    name: '水平3',
-    val: 3.44,
-    val1: 0.7,
-    val2: 1.44,
-  },
-  {
-    name: '水平4',
-    val: 5.44,
-    val1: 6.7,
-    val2: 7.44,
-  },
-];
-const columnsDetal = [
-  {
-    title: '日期',
-    dataIndex: 'name',
-    align: 'center',
-  },
-  {
-    title: '11-25',
-    dataIndex: 'val',
-    align: 'center',
-  },
-  {
-    title: '11-30',
-    dataIndex: 'val1',
-    align: 'center',
-  },
-  {
-    title: '11-30',
-    dataIndex: 'val2',
-    align: 'center',
-  },
-];
+
 const QCGraphics = () => {
   const { AWGraphicalData, AWItem, AWFormData } = useSelector(
     (state: any) => state.IndoorQualityControMsg,
@@ -273,14 +255,14 @@ const QCGraphics = () => {
   const [graphicsData, setGraphicsData] = useState([]);
   const [radioActiveVal, setRadioActiveVal] = useState(1);
   const [isShowAccrue, setIsShowAccrue] = useState(false);
-  const [multiGraphDataArray, setMultiGraphDataArray] = useState();
+  const [multiGraphDataArray, setMultiGraphDataArray] = useState([]);
   const [isMultiGraph, setIsMultiGraph] = useState(false);
   // const [rule, setRule] = useState();
   // const [qcData, setQcData] = useState([]);
 
   useEffect(() => {
     // if (AWGraphicalData.qcData?.length > 0) {
-    // const { qcData, rule } = AWGraphicalData;
+    //   const { qcData, rule } = AWGraphicalData;
     handleTableHeader(qcData);
     handleDetail(qcData);
     handelGraphics(qcData);
@@ -391,12 +373,11 @@ const QCGraphics = () => {
       });
       afterData.push(obj);
     });
+
     setQcDetailList(afterData);
   };
 
   const handleTableHeader = (qcData) => {
-    /**设置每一周或者每一月对应的字段month和type值 */
-    // 使用数组方法
     let list = [
       {
         title: '日期',
@@ -443,54 +424,55 @@ const QCGraphics = () => {
           };
         }
       });
-
     setQcDetailTableHeader(mergedArray);
   };
   const handelGraphics = (qcData) => {
     let dateDetail = [];
-    qcData?.forEach((item) => {
-      Object.entries(item.detail).forEach(([key, value]) => {
+    for (let i = 0, len = qcData.length; i < len; i++) {
+      Object.entries(qcData[i].detail).forEach(([key, value]) => {
         value.forEach((val, index1) => {
           let num = index1 + 1;
           val.qcDate = val.qcDate + '(' + num + ')';
         });
       });
-    });
-    qcData?.forEach((item) => {
-      Object.entries(item.detail).forEach(([key, value]) => {
+    }
+    for (let i = 0, len = qcData.length; i < len; i++) {
+      Object.entries(qcData[i].detail).forEach(([key, value]) => {
         dateDetail.push(...value);
       });
-    });
+    }
+    debugger;
     setGraphicsData(dateDetail);
   };
   const radioChange = (e: any) => {
     setRadioActiveVal(e.target.value);
     let dateDetail = [];
     let multiGraphData = [];
+    //let chartConfig = {};
     if (e.target.value === 1) {
-      qcData?.forEach((item) => {
+      for (let i = 0, len = qcData.length; i < len; i++) {
         let detailAarray = [];
-        Object.entries(item.detail).forEach(([key, value]) => {
+        Object.entries(qcData[i].detail).forEach(([key, value]) => {
           if (!isMultiGraph) {
             dateDetail.push(...value);
           } else {
             detailAarray.push(...value);
           }
         });
-        let reuslt = getConfig(detailAarray);
-        multiGraphData.push({ configData: reuslt });
-      });
+        let chartConfig = getConfig(detailAarray);
+        multiGraphData.push({ configData: chartConfig });
+      }
     }
     if (e.target.value === 2 || e.target.value === 3) {
       if (isShowAccrue) {
-        qcData?.forEach((item) => {
+        for (let i = 0, len = qcData.length; i < len; i++) {
           let detailAarray = [];
-          Object.entries(item.detail).forEach(([key, value]) => {
+          Object.entries(qcData[i].detail).forEach(([key, value]) => {
             let result = value.map((valItem) => {
               if (!valItem.inuseFlag) {
                 return {
                   ...valItem,
-                  calculateSd: (valItem.calculateValue - valItem.x) / item.sd,
+                  calculateSd: (valItem.calculateValue - valItem.x) / valItem.sd,
                   qcLevelName: valItem.qcLevelName + '离散点',
                 };
               } else {
@@ -567,13 +549,13 @@ const QCGraphics = () => {
               }
             }
           });
-          let reuslt = getConfig(detailAarray);
-          multiGraphData.push({ configData: reuslt });
-        });
+        let  chartConfig = getConfig(detailAarray);
+        multiGraphData.push({ configData: chartConfig });
+        }
       } else {
-        qcData?.forEach((item) => {
+        for (let i = 0, len = qcData.length; i < len; i++) {
           let detailAarray = [];
-          Object.entries(item.detail).forEach(([key, value]) => {
+          Object.entries(qcData[i].detail).forEach(([key, value]) => {
             let result = value.filter((item) => item.inuseFlag === true);
             if (result.length > 0) {
               if (result.length === 1) {
@@ -601,11 +583,12 @@ const QCGraphics = () => {
               }
             }
           });
-          let reuslt = getConfig(detailAarray);
-          multiGraphData.push({ configData: reuslt });
-        });
+         let chartConfig = getConfig(detailAarray);
+         multiGraphData.push({ configData: chartConfig });
+        }
       }
     }
+    
     setMultiGraphDataArray(multiGraphData);
     setGraphicsData(dateDetail);
   };
@@ -613,10 +596,11 @@ const QCGraphics = () => {
     setIsShowAccrue(e.target.checked);
     let dateDetail = [];
     let multiGraphData = [];
+  
     if (e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
-      qcData?.forEach((item) => {
+      for (let i = 0, len = qcData.length; i < len; i++) {
         let detailAarray = [];
-        Object.entries(item.detail).forEach(([key, value]) => {
+        Object.entries(qcData[i].detail).forEach(([key, value]) => {
           let result = value.map((valItem) => {
             if (!valItem.inuseFlag) {
               return {
@@ -698,14 +682,14 @@ const QCGraphics = () => {
             }
           }
         });
-        let reuslt = getConfig(detailAarray);
-        multiGraphData.push({ configData: reuslt });
-      });
+       let chartConfig = getConfig(detailAarray);
+       multiGraphData.push({ configData: chartConfig });
+      }
     }
     if (!e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
-      qcData?.forEach((item) => {
+      for (let i = 0, len = qcData.length; i < len; i++) {
         let detailAarray = [];
-        Object.entries(item.detail).forEach(([key, value]) => {
+        Object.entries(qcData[i].detail).forEach(([key, value]) => {
           let result = value.filter((item) => item.inuseFlag === true);
           if (result.length > 0) {
             if (result.length === 1) {
@@ -733,24 +717,25 @@ const QCGraphics = () => {
             }
           }
         });
-        let reuslt = getConfig(detailAarray);
-        multiGraphData.push({ configData: reuslt });
-      });
+       let chartConfig = getConfig(detailAarray);
+        multiGraphData.push({ configData: chartConfig });
+      }
     }
     if (radioActiveVal === 1) {
-      qcData?.forEach((item) => {
+      for (let i = 0, len = qcData.length; i < len; i++) {
         let detailAarray = [];
-        Object.entries(item.detail).forEach(([key, value]) => {
+        Object.entries(qcData[i].detail).forEach(([key, value]) => {
           if (!isMultiGraph) {
             dateDetail.push(...value);
           } else {
             detailAarray.push(...value);
           }
         });
-        let reuslt = getConfig(detailAarray);
-        multiGraphData.push({ configData: reuslt });
-      });
+       let chartConfig = getConfig(detailAarray);
+       multiGraphData.push({ configData: chartConfig });
+      }
     }
+   
     setMultiGraphDataArray(multiGraphData);
     setGraphicsData(dateDetail);
   };
@@ -1038,7 +1023,7 @@ const QCGraphics = () => {
           content={() => componentRef.current}
         />
       </div>
-      {!isMultiGraph ? (
+      {!isMultiGraph && graphicsData.length > 0 ? (
         <>
           <div>
             {rule?.instrName}
@@ -1053,7 +1038,7 @@ const QCGraphics = () => {
             <Line {...getConfig(graphicsData)} />
           </div>
         </>
-      ) : (
+      ) : multiGraphDataArray.length > 0 && isMultiGraph ? (
         <div ref={componentRef}>
           {multiGraphDataArray.map((item) => {
             return (
@@ -1067,10 +1052,26 @@ const QCGraphics = () => {
                   </span>
                   <span>质控规则:{rule?.qcRule}</span>
                 </div>
-                <Line {...item.configData} />;
+                <Line {...item.configData} />
               </>
             );
           })}
+        </div>
+      ) : (
+        <div
+          style={{
+            padding: '100px 0 130px',
+            color: '#8e8e93',
+            fontSize: '14px',
+            textAlign: 'center',
+          }}
+        >
+          <img
+            src={require('@assets/images/empty/chart_empty.png')}
+            alt="暂无数据图片"
+            style={{ display: 'block', width: '100px', height: '100px', margin: '0 auto' }}
+          />
+          暂无数据
         </div>
       )}
 

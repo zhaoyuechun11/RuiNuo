@@ -927,3 +927,28 @@ export const addKeyToTree = (tree, parentKey = '') => {
     }
   }
 };
+
+// 判断是否为数字
+const isNumber = (str) => {
+  const reg = /^(-?\d+)(\.\d+)?$/;
+  return reg.test(str);
+};
+// 相同的对象属性累加
+export const sameKeySummataion = (arr, matchKey) => {
+  let obj = {};
+  arr.forEach((item) => {
+    for (let key in item) {
+      if (matchKey.indexOf(key) !== -1) {
+        let value = item[key];
+        if (isNumber(value)) {
+          key in obj ? (obj[key] += Number(value)) : (obj[key] = Number(value));
+        }
+      }
+    }
+  });
+  // 这一步可省略  这里为了保留最终数据都包含两位小数点
+  for (var i in obj) {
+    obj[i] = obj[i].toFixed(2);
+  }
+  return obj;
+};

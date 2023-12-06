@@ -1,11 +1,31 @@
 .container {
-    display: flex;
-    .content {
-      flex-grow: 1;
-      width: 78%;
-      margin-left: 20px;
-      padding: 0 30px 30px;
-      background: #ffffff;
-      border-radius: 8px;
+  display: flex;
+  .content {
+    flex-grow: 1;
+    width: 78%;
+    margin-left: 20px;
+    padding: 0 30px 30px;
+    background: #ffffff;
+    border-radius: 8px;
+  }
+}
+.search_box,
+.form_box {
+  display: flex;
+  align-items: center;
+}
+.form_box {
+  :global {
+    & .ant-form-item {
+      margin-right: 10px;
     }
   }
+}
+button {
+  margin-right: 10px;
+}
+.summary_row {
+  :global {
+    text-align: center;
+  }
+}

@@ -12,6 +12,7 @@ const AllData = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [pageNum, setPageNum] = useState(1);
+  const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
   useEffect(() => {
     if (
       AWSelectedQcIds.length > 0 &&
@@ -34,7 +35,13 @@ const AllData = () => {
   const getAllData = (params: any) => {
     allData(params).then((res) => {
       if (res.code === 200) {
-        setList(res.data.records);
+        const result = res.data.records.map((item) => {
+          return {
+            key: item.id,
+            ...item,
+          };
+        });
+        setList(result);
         setTotal(res.data.Total);
       }
     });
@@ -231,7 +238,8 @@ const AllData = () => {
       AWItem !== '' &&
       AWFormData.instrId !== '' &&
       AWFormData.instrId !== undefined &&
-      AWFormData.startDate !== null
+      AWFormData.startDate !== null &&
+      selectedRowKeysVal.length > 0
     ) {
       graphicalExport({
         instrId: AWFormData.instrId,
@@ -239,6 +247,7 @@ const AllData = () => {
         qcDateEnd: AWFormData.startDate[1].format('YYYY-MM-DD'),
         itemId: AWItem.id,
         qcIds: AWSelectedQcIds,
+        ids: selectedRowKeysVal,
       }).then((res) => {
         const blob = new Blob([res], { type: 'application/vnd.ms-excel;charset=utf-8' });
         const href = URL.createObjectURL(blob);
@@ -246,12 +255,21 @@ const AllData = () => {
       });
     }
   };
+  const onSelectChange = (selectedRowKeys: React.SetStateAction<never[]>) => {
+    setSelectedRowKeysVal(selectedRowKeys);
+  };
+  const rowSelection = {
+    selectedRowKeys: selectedRowKeysVal,
+    onChange: onSelectChange,
+  };
+
   return (
     <>
       <Button type="primary" onClick={exportData} style={{ margin: '10px' }}>
         导出
       </Button>
       <Table
+        rowSelection={rowSelection}
         scroll={{ x: 'max-content' }}
         size="small"
         dataSource={list}

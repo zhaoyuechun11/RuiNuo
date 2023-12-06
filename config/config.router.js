@@ -434,6 +434,26 @@ export default {
               component: '@/pages/IndoorQualityControMsg/subPages/QCAnalysisWestguard',
               title: '质控分析westguard',
             },
+            {
+              path: '/indoorQualityControMsg/QCStatisticalTable',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCStatisticalTable',
+              title: '质控CV统计表',
+            },
+            {
+              path: '/indoorQualityControMsg/QCCVFailureRate',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCCVFailureRate',
+              title: '质控CV不合格率',
+            },
+            {
+              path: '/indoorQualityControMsg/QCMonthlyStatistics',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCMonthlyStatistics',
+              title: '质控项目月统计表',
+            },
+            {
+              path: '/indoorQualityControMsg/QCDevelopmentRate',
+              component: '@/pages/IndoorQualityControMsg/subPages/QCDevelopmentRate',
+              title: '质控项目开展率',
+            },
           ],
         },
       ],

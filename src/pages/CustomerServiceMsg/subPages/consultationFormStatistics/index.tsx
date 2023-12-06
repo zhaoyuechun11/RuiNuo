@@ -8,7 +8,8 @@ import {
   weekStatisticsExport,
   monthStatisticsExport,
 } from '../../models/server';
-import { downLoad } from '@/utils';
+import { downLoad, sameKeySummataion } from '@/utils';
+
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 import styles from '../index.less';
@@ -117,30 +118,6 @@ const ConsultationFormStatistics = () => {
     });
 
     setMonthStatisticsList(combinationData);
-  };
-  // 判断是否为数字
-  const isNumber = (str) => {
-    const reg = /^(-?\d+)(\.\d+)?$/;
-    return reg.test(str);
-  };
-  // 数组相同元素累加
-  const sameKeySummataion = (arr, matchKey) => {
-    let obj = {};
-    arr.forEach((item) => {
-      for (let key in item) {
-        if (matchKey.indexOf(key) !== -1) {
-          let value = item[key];
-          if (isNumber(value)) {
-            key in obj ? (obj[key] += Number(value)) : (obj[key] = Number(value));
-          }
-        }
-      }
-    });
-    // 这一步可省略  这里为了保留最终数据都包含两位小数点
-    for (var i in obj) {
-      obj[i] = obj[i].toFixed(2);
-    }
-    return obj;
   };
   const groupBy = (objectArray, property) => {
     return objectArray.reduce((acc, obj) => {

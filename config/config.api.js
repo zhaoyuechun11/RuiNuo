@@ -13,9 +13,9 @@ const env = {
     apiurl_website: 'https://dwww.hire66.com/', //  配置官网链接
     REACT_APP_ENV: 'development',
     // apiurl_web: 'http://cpolar.featherlet.cn',
-    apiurl_web: 'http://211.149.238.180:8080/rnlims',
+     //apiurl_web: 'http://211.149.238.180:8080/rnlims',
     //apiurl_web: 'http://cpolar.featherlet.cn/',
-    //apiurl_web: 'http://araml.natapp1.cc/',
+    apiurl_web: 'http://araml.natapp1.cc/',
   },
 
   production: {

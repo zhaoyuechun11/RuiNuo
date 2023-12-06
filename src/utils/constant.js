@@ -703,7 +703,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/QCStatisticalTable',
         name: '质控CV统计表',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
@@ -717,21 +717,21 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/QCCVFailureRate',
         name: '质控CV不合格率',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/QCMonthlyStatistics',
         name: '质控月统计表',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/QCDevelopmentRate',
         name: '室内质控开展率',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

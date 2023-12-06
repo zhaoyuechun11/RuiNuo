@@ -180,3 +180,15 @@ export function appraiseDelete(params) {
 export function graphicalData(params) {
   return axiosBase('qc/data/graphicalData', 'get', params);
 }
+export function cvStatistics(params) {
+  return axiosBase('qc/data/DataItemCvStatistics', 'get', params);
+}
+export function failureRate(params) {
+  return axiosBase('qc/data/selectDataItemCvBelowRetaStatistics', 'get', params);
+}
+export function monthlyStatistics(params) {
+  return axiosBase('qc/data/selectDataItemMonthStatisticsVO', 'get', params);
+}
+export function developmentRate(params) {
+  return axiosBase('qc/data/selectDataItemOutRateList', 'get', params);
+}

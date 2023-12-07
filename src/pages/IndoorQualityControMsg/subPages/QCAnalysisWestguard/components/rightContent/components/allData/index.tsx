@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Table, Button, message } from 'antd';
 import { useSelector } from 'umi';
 import { downLoad } from '@/utils';
 import { allData, graphicalExport } from '../../../../../../models/server';
+import UserModal from '../userModal';
+import OutOfControlModal from '../outOfControlModal';
 
 const AllData = () => {
   const { AWSelectedQcIds, AWItem, AWFormData } = useSelector(
@@ -13,6 +15,8 @@ const AllData = () => {
   const [total, setTotal] = useState(0);
   const [pageNum, setPageNum] = useState(1);
   const [selectedRowKeysVal, setSelectedRowKeysVal] = useState([]);
+  const userRef = useRef();
+  const ontrolModal = useRef();
   useEffect(() => {
     if (
       AWSelectedQcIds.length > 0 &&
@@ -49,6 +53,17 @@ const AllData = () => {
   const pageChange = (page: any, size: any) => {
     setPageNum(page);
     setPageSize(size);
+  };
+  const refresh = () => {
+    getAllData({
+      instrId: AWFormData.instrId,
+      qcDateStart: AWFormData.startDate[0].format('YYYY-MM-DD'),
+      qcDateEnd: AWFormData.startDate[1].format('YYYY-MM-DD'),
+      itemId: AWItem.id,
+      qcIds: AWSelectedQcIds,
+      pageNum,
+      pageSize,
+    });
   };
   const columns = [
     {
@@ -197,7 +212,7 @@ const AllData = () => {
       dataIndex: 'checkFlag',
       align: 'center',
       render: (text: any) => {
-        return text ? '审核' : '未审核';
+        return text ? '已审核' : '未审核';
       },
     },
     {
@@ -231,6 +246,24 @@ const AllData = () => {
       fixed: 'right',
       align: 'center',
     },
+    {
+      title: '操作',
+      fixed: 'right',
+      align: 'center',
+      width: 250,
+      render: (record) => {
+        return (
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              ontrolModal.current.show(record)
+            }}
+          >
+            失控处理
+          </Button>
+        );
+      },
+    },
   ];
   const exportData = () => {
     if (
@@ -262,11 +295,26 @@ const AllData = () => {
     selectedRowKeys: selectedRowKeysVal,
     onChange: onSelectChange,
   };
-
+  const batchReview = () => {
+    if (selectedRowKeysVal.length == 0) {
+      message.warning('请先选择批量审核的数据');
+      return;
+    }
+    userRef.current.show(1);
+  };
+  const releaseAudit = () => {
+    userRef.current.show(2);
+  };
   return (
     <>
-      <Button type="primary" onClick={exportData} style={{ margin: '10px' }}>
+      <Button type="primary" onClick={exportData}>
         导出
+      </Button>
+      <Button type="primary" onClick={batchReview} style={{ margin: '10px' }}>
+        批量审核
+      </Button>
+      <Button type="primary" onClick={releaseAudit}>
+        批量解审
       </Button>
       <Table
         rowSelection={rowSelection}
@@ -282,6 +330,8 @@ const AllData = () => {
           showTotal: (count: number, range: [number, number]) => `共 ${count} 条`,
         }}
       ></Table>
+      <UserModal Ref={userRef} ids={selectedRowKeysVal} refresh={refresh} />
+      <OutOfControlModal Ref={ontrolModal} refresh={refresh} />
     </>
   );
 };

@@ -192,3 +192,15 @@ export function monthlyStatistics(params) {
 export function developmentRate(params) {
   return axiosBase('qc/data/selectDataItemOutRateList', 'get', params);
 }
+export function audit(params) {
+  return axiosBase('qc/data/audit', 'post', params);
+}
+export function verifyPassword(params) {
+  return axiosBase('sys/user/verifyPassword', 'post', params);
+}
+export function releaseAudit(params) {
+  return axiosBase('qc/data/releaseAudit', 'post', params);
+}
+export function outControlHandle(params) {
+  return axiosBase('qc/data/outControlHandle', 'post', params);
+}

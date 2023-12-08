@@ -456,6 +456,32 @@ export default {
             },
           ],
         },
+        {
+          path: '/traceabilityQuery',
+          name: 'traceabilityQuery',
+          routes: [
+            {
+              path: '/traceabilityQuery/abnormalOperationLog',
+              component: '@/pages/TraceabilityQuery/subPages/abnormalOperationLog',
+              title: '异常日志查询',
+            },
+            {
+              path: '/traceabilityQuery/applicationFormMLog',
+              component: '@/pages/TraceabilityQuery/subPages/applicationFormMLog',
+              title: '申请单日志查询',
+            },
+            {
+              path: '/traceabilityQuery/reportModificationLog',
+              component: '@/pages/TraceabilityQuery/subPages/reportModificationLog',
+              title: '报告单日志查询',
+            },
+            {
+              path: '/traceabilityQuery/tsd',
+              component: '@/pages/TraceabilityQuery/subPages/tsd',
+              title: '报告单日志查询',
+            },
+          ],
+        },
       ],
     },
   ],

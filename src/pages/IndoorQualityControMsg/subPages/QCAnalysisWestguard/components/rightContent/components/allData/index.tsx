@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Table, Button, message } from 'antd';
+import { Table, message, Button } from 'antd';
 import { useSelector } from 'umi';
 import { downLoad } from '@/utils';
+// import {Button} from '@/components'
 import { allData, graphicalExport } from '../../../../../../models/server';
 import UserModal from '../userModal';
 import OutOfControlModal from '../outOfControlModal';
@@ -243,21 +244,20 @@ const AllData = () => {
     {
       title: '失控下限',
       dataIndex: 'limitLow',
-      fixed: 'right',
       align: 'center',
     },
     {
       title: '操作',
       fixed: 'right',
       align: 'center',
-      width: 250,
       render: (record) => {
         return (
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              ontrolModal.current.show(record)
+              ontrolModal.current.show(record);
             }}
+            type="primary"
           >
             失控处理
           </Button>

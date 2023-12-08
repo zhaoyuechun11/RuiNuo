@@ -917,21 +917,21 @@ export const menu = [
     children: [
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/traceabilityQuery/applicationFormMLog',
         name: '申请单修改日志查询',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/traceabilityQuery/reportModificationLog',
         name: '报告单修改日志查询',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/traceabilityQuery/tsd',
         name: '报告单打印日志查询',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
@@ -959,7 +959,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/traceabilityQuery/abnormalOperationLog',
         name: '异常操作日志查询',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

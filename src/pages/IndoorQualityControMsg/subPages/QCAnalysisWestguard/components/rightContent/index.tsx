@@ -10,7 +10,7 @@ const RightContent = () => {
     <Tabs
       defaultActiveKey="1"
       style={{
-        width: '70%',
+        width: '68%',
         marginLeft: '20px',
         paddingLeft: '20px',
         borderLeft: ' 1px solid #cecece',

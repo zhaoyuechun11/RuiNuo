@@ -33,10 +33,15 @@ const QCAnalysisWestguard = () => {
       if (res.code === 200) {
         form.setFieldsValue({ instrId: res.data[0]?.id });
         setInstr(res.data);
+        debugger;
         getQcList({
           instrId: res.data[0].id,
-          startDate: form.getFieldsValue().startDate[0].format('YYYY-MM-DD'),
-          endDate: form.getFieldsValue().startDate[1].format('YYYY-MM-DD'),
+          startDate: form.getFieldsValue().startDate
+            ? form.getFieldsValue().startDate[0].format('YYYY-MM-DD')
+            : '',
+          endDate: form.getFieldsValue().startDate
+            ? form.getFieldsValue().startDate[1].format('YYYY-MM-DD')
+            : '',
         });
       }
     });
@@ -157,6 +162,7 @@ const QCAnalysisWestguard = () => {
       </Form>
     );
   };
+  // const clear = () => {};
   return (
     <>
       <div className={s.search_box}>
@@ -164,7 +170,9 @@ const QCAnalysisWestguard = () => {
         <Button type="primary" onClick={seach}>
           查询
         </Button>
-        <Button type="primary">清空</Button>
+        {/* <Button type="primary" onClick={clear}>
+          清空
+        </Button> */}
       </div>
       <div className={s.content_box}>
         <LeftContent qcList={AWQcList} />

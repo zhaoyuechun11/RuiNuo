@@ -96,7 +96,7 @@ const ReverseHandoverModal = ({ Ref, refresh }) => {
     let params = {
       ...value,
       startDt: value.startDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
-      stopDt: value.stopDt?.format('YYYY-MM-DD') + ' ' + '00:00:00',
+      stopDt: value.stopDt ? value.stopDt.format('YYYY-MM-DD') + ' ' + '00:00:00' : '',
       stopUser: useDetail.id,
       instrId: selectedInstr.id,
       itemId: Number(leftMenuParams.itemId),

@@ -34,7 +34,7 @@ const LeftMenu = () => {
         const keys = [
           result[0]?.key,
           result[0].children[0]?.key,
-          result[0].children[0].children[0]?.key,
+          result[0].children[0]?.children[0]?.key,
         ];
         const leftMenuParams = {
           labClassId: result[0]?.labClassId,

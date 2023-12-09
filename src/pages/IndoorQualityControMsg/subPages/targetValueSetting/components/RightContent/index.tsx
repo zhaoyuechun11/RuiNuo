@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'umi';
 import { Button, Icon } from '@/components';
 import styles from './index.less';
 import { Form, Select, Table, message, Menu, Dropdown } from 'antd';
-import { itemTgValueDelete, itemTgValueList, getListForLabClass } from '../../../../models/server';
+import { itemTgValueDelete, itemTgValueList, getListForLabItem } from '../../../../models/server';
 
 import ReverseHandoverModal from './components/reverseHandoverModal';
 import StopTimeModal from './components/stopTimeModal';
@@ -26,11 +26,11 @@ const RightContent = () => {
   const [order, setOrder] = useState('');
 
   useEffect(() => {
-    if (leftMenuParams?.labClassId) {
+    if (leftMenuParams?.itemId) {
       form.resetFields();
-      getInstrListForLabClass({ labClassId: leftMenuParams?.labClassId });
+      getInstrListForLabClass({ labItemId: leftMenuParams?.itemId });
     }
-  }, [leftMenuParams?.labClassId]);
+  }, [leftMenuParams?.itemId]);
   useEffect(() => {
     if (form.getFieldsValue().instrId && leftMenuParams.itemId) {
       getList({
@@ -47,7 +47,8 @@ const RightContent = () => {
   }, [leftMenuParams?.itemId, form.getFieldsValue().instrId, sort, order]);
 
   const getInstrListForLabClass = (params: any) => {
-    getListForLabClass(params).then((res: any) => {
+    getListForLabItem(params).then((res: any) => {
+      debugger
       form.setFieldsValue({ instrId: res.data[0]?.id });
       setInstrList(res.data);
       dispatch({

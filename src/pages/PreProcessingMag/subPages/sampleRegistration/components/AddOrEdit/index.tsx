@@ -271,23 +271,39 @@ const AddOrEdit = () => {
       ...value.system,
       reqItemPrices,
     };
-    // Object.keys(mainOrderDetail).forEach((key) => {
-    //   console.log('key', key);
-    //   console.log('mainOrderDetail[key]', mainOrderDetail[key]);
+    let updateLogParams = {};
+    let obj = {};
+    Object.keys(value.system).forEach((key) => {
+      console.log('key', key);
+      console.log('mainOrderDetail[key]', mainOrderDetail[key]);
 
-    //   if (mainOrderDetail[key]?._isAMomentObject) {
-    //     if (new Date(mainOrderDetail[key]).getTime() !== new Date(value.system[key]).getTime()) {
-    //       console.log(new Date(mainOrderDetail[key]).getTime());
-    //       console.log(new Date(value.system[key]).getTime());
-    //       value.system[key] =
-    //         mainOrderDetail[key].format('YYYY-MM-DD HH:mm:ss') + '|' + value.system[key];
-    //     }
-    //   } else {
-    //     if (mainOrderDetail[key] !== value.system[key]) {
-    //       value.system[key] = mainOrderDetail[key] + '|' + value.system[key];
-    //     }
-    //   }
-    // });
+      if (mainOrderDetail[key]?._isAMomentObject) {
+        if (new Date(mainOrderDetail[key]).getTime() !== new Date(value.system[key]).getTime()) {
+          console.log(new Date(mainOrderDetail[key]).getTime());
+          console.log(new Date(value.system[key]).getTime());
+          value.system[key] =
+            mainOrderDetail[key].format('YYYY-MM-DD HH:mm:ss') + '|' + value.system[key];
+        }
+      } else {
+        if (mainOrderDetail[key] !== value.system[key] && key !== 'createBy') {
+          //value.system[key] = mainOrderDetail[key] + '|' + value.system[key];
+          updateLogParams = {
+            [key]: mainOrderDetail[key] + '|' + value.system[key],
+          };
+          Object.assign(obj, updateLogParams);
+        }
+      }
+    });
+    Object.keys(value.extend).forEach((key) => {
+      if (mainOrderDetail.extend.extendInfo[key] !== value.extend[key] && key !== 'createBy') {
+        updateLogParams = {
+          [key]: mainOrderDetail.extend.extendInfo[key] + '|' + value.extend[key],
+        };
+        Object.assign(obj, updateLogParams);
+        debugger;
+      }
+    });
+    debugger;
     console.log('value', value);
 
     //return;
@@ -329,7 +345,15 @@ const AddOrEdit = () => {
               });
             }
           }
-
+          addMainUpdateLog({
+            beforeChange: obj,
+            objectId: Number(paramVal.id),
+            winName: '申请单修改',
+          }).then((res) => {
+            if (res.code === 200) {
+              message.success('添加修改日志成功');
+            }
+          });
           //history.push('/preProcessingMag/sampleRegistration');
           history.goBack();
         }

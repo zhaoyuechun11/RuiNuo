@@ -5,7 +5,9 @@ export function getInstrByLabClassName(params) {
 export function getListForLabClass(params) {
   return axiosBase('/basic/instr/getListForLabClass', 'get', params);
 }
-
+export function getListForLabItem(params) {
+  return axiosBase('basic/instr/getListForLabItem', 'get', params);
+}
 export function getNoBindReqItem(params) {
   return axiosBase('/basic/labItem/getNotBindListForReqItem', 'get', params);
 }

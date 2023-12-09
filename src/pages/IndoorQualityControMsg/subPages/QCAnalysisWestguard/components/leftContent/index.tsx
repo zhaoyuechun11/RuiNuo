@@ -49,6 +49,7 @@ const LeftContent = ({ ...props }) => {
         dataSource: '',
       },
     });
+  
   }, []);
   const rowSelection = {
     selectedRowKeys: AWSelectedQcIds,

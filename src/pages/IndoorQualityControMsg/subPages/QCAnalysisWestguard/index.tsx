@@ -18,7 +18,6 @@ const QCAnalysisWestguard = () => {
   const [form] = Form.useForm();
   const [instr, setInstr] = useState([]);
   const dispatch = useDispatch();
-
   useEffect(() => {
     form.setFieldsValue({
       startDate: [
@@ -33,7 +32,6 @@ const QCAnalysisWestguard = () => {
       if (res.code === 200) {
         form.setFieldsValue({ instrId: res.data[0]?.id });
         setInstr(res.data);
-        debugger;
         getQcList({
           instrId: res.data[0].id,
           startDate: form.getFieldsValue().startDate
@@ -94,6 +92,7 @@ const QCAnalysisWestguard = () => {
   };
   const instrChange = (e: any) => {
     if (e) {
+      debugger;
       let pararm = {
         ...form.getFieldsValue(),
         startDate: form.getFieldsValue().startDate
@@ -113,6 +112,16 @@ const QCAnalysisWestguard = () => {
         },
       });
     }
+    dispatch({
+      type: 'IndoorQualityControMsg/save',
+      payload: {
+        type: 'AWGraphicalData',
+        dataSource: {
+          qcData: [],
+          rule: {},
+        },
+      },
+    });
   };
 
   const handleSearch = (changedValues, allValues) => {
@@ -168,7 +177,7 @@ const QCAnalysisWestguard = () => {
       <div className={s.search_box}>
         {renderForm()}
         <Button type="primary" onClick={seach}>
-          查询
+          质控分析
         </Button>
         {/* <Button type="primary" onClick={clear}>
           清空

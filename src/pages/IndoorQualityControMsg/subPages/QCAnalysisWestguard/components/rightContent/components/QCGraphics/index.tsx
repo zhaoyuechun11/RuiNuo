@@ -3,7 +3,7 @@ import { Radio, Checkbox, Table } from 'antd';
 import { Line } from '@ant-design/charts';
 import ReactToPrint from 'react-to-print';
 import { Button } from '@/components';
-import { useSelector } from 'umi';
+import { useDispatch, useSelector } from 'umi';
 
 // const rule = {
 //   qcRuleId: 19,
@@ -257,17 +257,47 @@ const QCGraphics = () => {
   const [isShowAccrue, setIsShowAccrue] = useState(false);
   const [multiGraphDataArray, setMultiGraphDataArray] = useState([]);
   const [isMultiGraph, setIsMultiGraph] = useState(false);
-   const [rule, setRule] = useState();
-   const [qcData, setQcData] = useState([]);
-
+  const [rule, setRule] = useState();
+  const [qcData, setQcData] = useState([]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch({
+      type: 'IndoorQualityControMsg/save',
+      payload: {
+        type: 'AWGraphicalData',
+        dataSource: {
+          qcData: [],
+          rule: {},
+        },
+      },
+    });
+  }, [location.pathname]);
   useEffect(() => {
     if (AWGraphicalData.qcData?.length > 0) {
       const { qcData, rule } = AWGraphicalData;
-    handleTableHeader(qcData);
-    handleDetail(qcData);
-    handelGraphics(qcData);
-    setRule(rule);
-    setQcData(qcData);
+      for (let i = 0; i < qcData.length; i++) {
+        Object.entries(qcData[i].detail).forEach(([key, val]) => {
+          for (let y = 0; y < val.length; y++) {
+            if (val[y].calculateSd > 4) {
+              val[y].calculateSd = 3.9;
+            }
+            if (val[y].calculateSd < -4) {
+              val[y].calculateSd = -3.9;
+            }
+          }
+        });
+      }
+      handleTableHeader(qcData);
+      handleDetail(qcData);
+      handelGraphics(qcData);
+      setRule(rule);
+      setQcData(qcData);
+    } else {
+      handleTableHeader([]);
+      handleDetail([]);
+      handelGraphics([]);
+      setRule({});
+      setQcData([]);
     }
   }, [AWGraphicalData]);
 
@@ -441,7 +471,6 @@ const QCGraphics = () => {
         dateDetail.push(...value);
       });
     }
-    debugger;
     setGraphicsData(dateDetail);
   };
   const radioChange = (e: any) => {
@@ -549,8 +578,8 @@ const QCGraphics = () => {
               }
             }
           });
-        let  chartConfig = getConfig(detailAarray);
-        multiGraphData.push({ configData: chartConfig });
+          let chartConfig = getConfig(detailAarray);
+          multiGraphData.push({ configData: chartConfig });
         }
       } else {
         for (let i = 0, len = qcData.length; i < len; i++) {
@@ -583,12 +612,12 @@ const QCGraphics = () => {
               }
             }
           });
-         let chartConfig = getConfig(detailAarray);
-         multiGraphData.push({ configData: chartConfig });
+          let chartConfig = getConfig(detailAarray);
+          multiGraphData.push({ configData: chartConfig });
         }
       }
     }
-    
+
     setMultiGraphDataArray(multiGraphData);
     setGraphicsData(dateDetail);
   };
@@ -596,7 +625,7 @@ const QCGraphics = () => {
     setIsShowAccrue(e.target.checked);
     let dateDetail = [];
     let multiGraphData = [];
-  
+
     if (e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
       for (let i = 0, len = qcData.length; i < len; i++) {
         let detailAarray = [];
@@ -682,8 +711,8 @@ const QCGraphics = () => {
             }
           }
         });
-       let chartConfig = getConfig(detailAarray);
-       multiGraphData.push({ configData: chartConfig });
+        let chartConfig = getConfig(detailAarray);
+        multiGraphData.push({ configData: chartConfig });
       }
     }
     if (!e.target.checked && (radioActiveVal === 2 || radioActiveVal === 3)) {
@@ -717,7 +746,7 @@ const QCGraphics = () => {
             }
           }
         });
-       let chartConfig = getConfig(detailAarray);
+        let chartConfig = getConfig(detailAarray);
         multiGraphData.push({ configData: chartConfig });
       }
     }
@@ -731,11 +760,11 @@ const QCGraphics = () => {
             detailAarray.push(...value);
           }
         });
-       let chartConfig = getConfig(detailAarray);
-       multiGraphData.push({ configData: chartConfig });
+        let chartConfig = getConfig(detailAarray);
+        multiGraphData.push({ configData: chartConfig });
       }
     }
-   
+
     setMultiGraphDataArray(multiGraphData);
     setGraphicsData(dateDetail);
   };
@@ -759,16 +788,16 @@ const QCGraphics = () => {
       data,
       xField: 'qcDate',
       yField: 'calculateSd',
-
+      autoFit: true,
       // range:[0,3],
       connectNulls: false,
       seriesField: 'qcLevelName',
-      meta: {
-        value: {
-          max: 3,
-          min: -3,
-        },
-      },
+      // meta: {
+      //   value: {
+      //     max: 3,
+      //     min: -3,
+      //   },
+      // },
       tooltip: {
         customContent: (value, items) => {
           return getTooltips(value, items);
@@ -785,7 +814,14 @@ const QCGraphics = () => {
           },
         },
       },
+      slider: {
+        start: 0.1,
+        end: 0.5,
+      },
       yAxis: {
+        tickInterval: 1,
+        max: 4,
+        min: -4,
         label: {
           // 数值格式化为千分位
           formatter: (v, index) => {
@@ -829,7 +865,7 @@ const QCGraphics = () => {
             }
           }
         },
-        size: 12,
+        // size: 12,
       },
     };
     return config;
@@ -1034,7 +1070,7 @@ const QCGraphics = () => {
             </span>
             <span>质控规则:{rule?.qcRule}</span>
           </div>
-          <div ref={componentRef}>
+          <div ref={componentRef} style={{ width: 700 }}>
             <Line {...getConfig(graphicsData)} />
           </div>
         </>
@@ -1052,7 +1088,9 @@ const QCGraphics = () => {
                   </span>
                   <span>质控规则:{rule?.qcRule}</span>
                 </div>
-                <Line {...item.configData} />
+                <div style={{ width: 700 }}>
+                  <Line {...item.configData} />
+                </div>
               </>
             );
           })}

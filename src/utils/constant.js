@@ -938,7 +938,7 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/setting/index',
+        url: '/indoorQualityControMsg/QCModificationLogQuery',
         name: '质控修改日志查询',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',

@@ -70,7 +70,7 @@ const AddOrEditModal = ({ Ref, refresh }) => {
   }));
 
   const onFinish = (value: any) => {
-    debugger;
+  
     if (id) {
       const { displayValue, drawFlag, inuseFlag, resultDt } = value;
       dataMaintenanceUpdate({

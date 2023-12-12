@@ -282,7 +282,7 @@ const QualityControlPRJ = () => {
             {renderForm1()}
             <div className={styles.operateBtns}>
               <Button btnType="primary" onClick={add}>
-                绑定
+                设置
               </Button>
             </div>
           </div>

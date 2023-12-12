@@ -13,16 +13,7 @@ const qcFlag = [
     id: 0,
   },
 ];
-const qcInuse = [
-  {
-    name: '是',
-    id: 1,
-  },
-  {
-    name: '否',
-    id: 0,
-  },
-];
+
 const Update = ({ Ref, refresh }) => {
   const [form] = Form.useForm();
   const dialogRef = useRef();
@@ -48,21 +39,13 @@ const Update = ({ Ref, refresh }) => {
           refresh();
         }
       });
-      debugger;
     });
-    // instrReqItemAdd({ instrId, itemIds: selectedRowKeysVal }).then((res) => {
-    //   if (res.code === 200) {
-    //     message.success('绑定成功!');
-    //     dialogRef.current && dialogRef.current.hide();
-    //     refresh();
-    //   }
-    // });
   };
 
   return (
     <Dialog ref={dialogRef} width={640} title={'修改'} onOk={onOk}>
       <Form form={form} layout={'vertical'} style={{ padding: '20px' }}>
-        <Form.Item label="是否质控项" name="qcFlag">
+        {/* <Form.Item label="是否质控项" name="qcFlag">
           <Select placeholder="请选择是否质控项" allowClear>
             {qcFlag.map((item) => {
               return (
@@ -72,7 +55,7 @@ const Update = ({ Ref, refresh }) => {
               );
             })}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="质控项是否在用" name="qcInuse">
           <Select placeholder="请选择质控项是否在用" allowClear>
             {qcFlag.map((item) => {

@@ -70,7 +70,6 @@ const Bind = ({ Ref, refresh }) => {
       <Table
         dataSource={list}
         columns={columns}
-        scroll={{ x: 1300 }}
         size="small"
         rowSelection={rowSelection}
         pagination={false}

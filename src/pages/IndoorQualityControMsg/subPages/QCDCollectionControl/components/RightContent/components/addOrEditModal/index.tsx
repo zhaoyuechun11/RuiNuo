@@ -16,16 +16,13 @@ const AddOrEditModal = ({ Ref, refresh }) => {
   const [form] = Form.useForm();
   const [id, setId] = useState();
   const [qcList, setQcList] = useState([]);
-  const [selecteQq, setSelecteQq] = useState({});
 
   useImperativeHandle(Ref, () => ({
     show: (val: any) => {
       getQcListForLabClassId({ labClassId: collectionControl.labClassId });
-      debugger
       form.resetFields();
       dialogRef.current && dialogRef.current.show();
       setId(val?.id);
-      setSelecteQq({ qcLevelName: val?.qcLevelName, batchNo: val?.batchNo });
       if (val) {
         form.setFieldsValue({
           ...val,
@@ -64,10 +61,7 @@ const AddOrEditModal = ({ Ref, refresh }) => {
       }
     });
   };
-  const qcChange = (val) => {
-    const result = qcList.filter((item) => (item.id = val));
-    setSelecteQq(result[0]);
-  };
+
   return (
     <Dialog
       ref={dialogRef}
@@ -93,29 +87,16 @@ const AddOrEditModal = ({ Ref, refresh }) => {
             <Form.Item
               name="qcId"
               label="质控品ID"
-              rules={[{ required: true, message: '请选择质控品ID' }]}
+              rules={[{ required: true, message: '请选择质控品ID+质控水平+质控批号' }]}
             >
-              <Select placeholder="请选择质控品ID" allowClear onChange={qcChange}>
+              <Select placeholder="请选择质控品ID+质控水平+质控批号" allowClear>
                 {qcList.length > 0 &&
                   qcList.map((item) => (
                     <Option value={item.id} key={item.id}>
-                      {item.id}
+                      {item.id} {item.batchNo} {item.qcLevelName}
                     </Option>
                   ))}
               </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={11}>
-            <Form.Item label="质控品水平">
-              <Input disabled value={selecteQq?.qcLevelName} />
-            </Form.Item>
-          </Col>
-          <Col span={2}></Col>
-          <Col span={11}>
-            <Form.Item label="质控品批号">
-              <Input disabled value={selecteQq?.batchNo} />
             </Form.Item>
           </Col>
         </Row>

@@ -238,7 +238,7 @@ const QualityControlProduct = () => {
           </Select>
         </Form.Item>
         <Form.Item name="useQc">
-          <Select placeholder="请选择在用质控品" allowClear>
+          <Select placeholder="请选择是否在用质控品" allowClear>
             {useQcList.length > 0 &&
               useQcList.map((item) => (
                 <Option value={item.id} key={item.id}>
@@ -248,7 +248,7 @@ const QualityControlProduct = () => {
           </Select>
         </Form.Item>
         <Form.Item name="checkReportFlag">
-          <Select placeholder="请选择是否存在报告依据" allowClear>
+          <Select placeholder="请选择报告依据" allowClear>
             {reportFlag.length > 0 &&
               reportFlag.map((item) => (
                 <Option value={item.id} key={item.id}>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Table } from 'antd';
 import s from './index.less';
-const ReportPreview = () => {
+const ReportPreviewDetail = () => {
   const columns = [
     {
       title: '检查项目',
@@ -49,4 +49,4 @@ const ReportPreview = () => {
     </div>
   );
 };
-export default ReportPreview;
+export default ReportPreviewDetail;

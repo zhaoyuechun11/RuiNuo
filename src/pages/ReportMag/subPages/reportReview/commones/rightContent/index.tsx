@@ -1,12 +1,13 @@
 import React from 'react';
 import { Tabs } from 'antd';
-import ReportPreview from '../reportPreview ';
+
+import ReportPreviewDetail from '../reportPreviewDetail';
 const { TabPane } = Tabs;
 const RightContent = () => {
   return (
     <Tabs defaultActiveKey="1">
       <TabPane tab="报告单预览" key="1">
-        <ReportPreview />
+        <ReportPreviewDetail />
       </TabPane>
       <TabPane tab="关联报告单" key="2">
         Content of Tab Pane 2

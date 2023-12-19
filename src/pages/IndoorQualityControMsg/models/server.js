@@ -206,3 +206,12 @@ export function releaseAudit(params) {
 export function outControlHandle(params) {
   return axiosBase('qc/data/outControlHandle', 'post', params);
 }
+export function getNoQcBindItemList(params) {
+  return axiosBase('basic/instrItem/getNoQcBindItemList', 'get', params);
+}
+export function qcBind(params) {
+  return axiosBase('basic/instrItem/qcBind', 'post', params);
+}
+export function qcUnbind(params) {
+  return axiosBase('basic/instrItem/qcUnbind', 'post', params);
+}

@@ -591,7 +591,7 @@ export const menu = [
       {
         key: 'setting',
         url: '/indoorQualityControMsg/qualityControlPRJ',
-        name: '质控项目定义',
+        name: '质控项目设置',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
@@ -611,16 +611,8 @@ export const menu = [
       },
       {
         key: 'setting',
-        url: '/indoorQualityControMsg/QCDataConversionRules',
-        name: '质控结果规则转换',
-        icon: 'T8-shezhi-weixuanzhong',
-        selIcon: 'T8-shezhi-xuanzhong',
-      },
-
-      {
-        key: 'setting',
         url: '/indoorQualityControMsg/qualityControlRules',
-        name: '质控规则',
+        name: '质控规则设置',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },
@@ -628,6 +620,13 @@ export const menu = [
         key: 'setting',
         url: '/indoorQualityControMsg/QCDCollectionControl',
         name: '质控数据采集对照',
+        icon: 'T8-shezhi-weixuanzhong',
+        selIcon: 'T8-shezhi-xuanzhong',
+      },
+      {
+        key: 'setting',
+        url: '/indoorQualityControMsg/QCDataConversionRules',
+        name: '质控结果转换规则',
         icon: 'T8-shezhi-weixuanzhong',
         selIcon: 'T8-shezhi-xuanzhong',
       },

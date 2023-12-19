@@ -1,7 +1,7 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
 import { Dialog } from '@components';
 import { message, Table } from 'antd';
-import { instrReqItemAdd, getNoBindReqItem } from '../../../../models/server';
+import { qcBind, getNoQcBindItemList } from '../../../../models/server';
 import { useSelector } from 'umi';
 import moment from 'moment';
 const Bind = ({ Ref, refresh }) => {
@@ -13,7 +13,7 @@ const Bind = ({ Ref, refresh }) => {
   var now = moment().format('YYYY-MM-DD');
   useImperativeHandle(Ref, () => ({
     show: (val: any) => {
-      getList({ labClassId: val?.labClassId, instrId: val?.id });
+      getList({ instrId: val?.id });
       setInstrId(val?.id);
       dialogRef.current && dialogRef.current.show();
     },
@@ -22,11 +22,11 @@ const Bind = ({ Ref, refresh }) => {
     },
   }));
   const columns = [
-    {
-      title: '项目类别',
-      dataIndex: 'className',
-      align: 'center',
-    },
+    // {
+    //   title: '项目类别',
+    //   dataIndex: 'className',
+    //   align: 'center',
+    // },
     {
       title: '项目编号',
       dataIndex: 'itemCode',
@@ -39,13 +39,9 @@ const Bind = ({ Ref, refresh }) => {
     },
   ];
   const onOk = () => {
-    instrReqItemAdd({
+    qcBind({
       instrId,
       itemIds: selectedRowKeysVal,
-      qcFlag: 0,
-      createBy: useDetail.id,
-      createDate: now,
-      qcInuse: 0,
     }).then((res) => {
       if (res.code === 200) {
         message.success('绑定成功!');
@@ -56,7 +52,7 @@ const Bind = ({ Ref, refresh }) => {
   };
 
   const getList = (params: any) => {
-    getNoBindReqItem(params).then((res: any) => {
+    getNoQcBindItemList(params).then((res: any) => {
       if (res.code === 200) {
         const result = res.data.map((item) => {
           return {

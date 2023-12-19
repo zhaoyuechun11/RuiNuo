@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Form, Input, Select, Table, Row, Col, message } from 'antd';
 import { Icon, Button, Confirm } from '@/components';
 import { majorGroup } from '@/models/server';
-import { getInstrByLabClassName, getInstrItemList, instrReqItemDelete } from '../../models/server';
+import { getInstrByLabClassName, getInstrItemList, qcUnbind } from '../../models/server';
 import styles from './index.less';
 import Bind from './components/bind';
 import Update from './components/update';
@@ -142,7 +142,7 @@ const QualityControlPRJ = () => {
     idRef.current = id;
   };
   const handleConfirmOk = () => {
-    instrReqItemDelete({ ids: [idRef.current] }).then((res: { code: number }) => {
+    qcUnbind({ ids: [idRef.current] }).then((res: { code: number }) => {
       if (res.code === 200) {
         getList({ pageNum, pageSize, name: form1.getFieldsValue().name, instrId: currentItem?.id });
         confirmModalRef.current.hide();
